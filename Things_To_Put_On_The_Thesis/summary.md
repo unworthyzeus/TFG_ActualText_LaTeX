@@ -22,7 +22,7 @@
 - That I used 4 GPUs (RTX 2080ti) plus good GPUs (let's say 1500W total aprox) for 12 hours for the final try, about 18 for tries 76-79, and over 200 for all tries, but these should not be counted. (There is a section on how good for the environment the project is , see sustainability, our project is actually good because we now don't need simulations, we compute CKM with great accuracy and with much less energy and time)
 - What are we doing new and differently in general.
 - There are panels, samples, already taken from the dataset to compare them, they are good and bad cases for the prior, take more from the dataset in the style if necessary
-
+- Everything that is (but modified and update to include upto try 80) inside the folder "Internal_Documentation" inside the TFG folder. Specially the "New Prior Formulas Try 78 and 79" document, should be basically included completely, with just structuring changes to fit the TFG.
 
 
 ### How to
