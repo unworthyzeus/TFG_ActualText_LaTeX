@@ -1,0 +1,473 @@
+%%%% PLEASE REPLACE ENTIRELY WITH YOUR OWN CONTENT %%%%
+
+\ifcase\doclanguage
+\or
+  \chapter{Metodologia / desenvolupament del projecte}
+  
+  En aquest capítol es detallarà la metodologia emprada en la realització del treball. Té com a objectiu oferir un compte detallat de les aproximacions i tècniques utilitzades, assegurant la replicabilitat i el rigor acadèmic. No només cobrirà els mètodes de recerca i tècniques de mesurament emprats, sinó que també aprofundirà en les especificitats del desenvolupament de programari i maquinari. Tant si el projecte implica anàlisi qualitativa, mesuraments quantitatius, modelatge computacional com prototipatge físic, aquest capítol hauria d'elucidar com contribueix cada component als objectius generals.
+  
+  A més de descriure els mètodes en si mateixos, el capítol també proporcionarà justificacions per què es van escollir mètodes particulars enfront d'altres. Per exemple, podria explicar la tria d'un llenguatge de programació específic, prova estadística o configuració experimental. El capítol també abordarà les limitacions de la metodologia i com aquestes s'han mitigat o tingut en compte. Els lectors haurien de sortir amb una comprensió clara de com s'ha dut a terme el desenvolupament del projecte, per què s'han escollit determinades opcions i com aquests mètodes serveixen per complir els objectius establerts inicialment.
+  
+\or
+  \chapter{Metodología / desarrollo del proyecto}
+  En este capítulo se detallará la metodología empleada en la realización del trabajo. Su objetivo es ofrecer un relato detallado de los enfoques y técnicas utilizadas, asegurando la replicabilidad y el rigor académico. No solo cubrirá los métodos de investigación y técnicas de medición empleados, sino que también profundizará en las especificidades del desarrollo de software y hardware. Ya sea que el proyecto implique análisis cualitativo, mediciones cuantitativas, modelado computacional o prototipado físico, este capítulo debería elucidar cómo contribuye cada componente a los objetivos generales.
+  
+  Además de describir los métodos en sí mismos, el capítulo también proporcionará justificaciones sobre por qué se eligieron métodos particulares frente a otros. Por ejemplo, podría explicar la elección de un lenguaje de programación específico, prueba estadística o configuración experimental. El capítulo también abordará las limitaciones de la metodología y cómo estas se han mitigado o tenido en cuenta. Los lectores deberían salir con una comprensión clara de cómo se ha llevado a cabo el desarrollo del proyecto, por qué se han escogido determinadas opciones y cómo estos métodos sirven para cumplir los objetivos establecidos inicialmente.
+  
+\else
+  \chapter{Methodology / project development}
+
+  In this chapter, the methodology used in the completion of the work will be detailed. Its aim is to offer a thorough account of the approaches and techniques used, ensuring replicability and academic rigor. It will not only cover the research methods and measurement techniques employed but will also delve into the specifics of software and hardware development. Whether the project involves qualitative analysis, quantitative measurements, computational modeling, or physical prototyping, this chapter should elucidate how each component contributes to the overall objectives.
+  
+  In addition to describing the methods themselves, the chapter will also provide justifications for why specific methods were chosen over others. For example, it may explain the choice of a particular programming language, statistical test, or experimental setup. The chapter will also address the limitations of the methodology and how these have been mitigated or accounted for. Readers should come away with a clear understanding of how the project's development has been carried out, why certain choices were made, and how these methods serve to fulfill the initially established objectives.
+
+\fi
+
+\ifcase\doclanguage\or
+  \section{Introducció d'expressions matemàtiques}
+    
+  \LaTeX{} és una eina inestimable per a la composició tipogràfica de contingut matemàtic. En aquesta secció mostrem les comandes i entorns \LaTeX{} essencials per a l'escriptura matemàtica. Per a més informació consulteu el capítol 3 de \cite{notsoshort}.
+    
+  \subsection{Matemàtiques en línia i aïllades}
+    
+  Per a expressions en línia, utilitzeu \verb|$ ... $| o \verb|\( ... \)|. Escriviu entre \verb|\[ ... \]| les expressions que s'han de mostrar en una línia apart.
+
+\or
+  \section{Introducción de expresiones matemáticas}
+  
+  \LaTeX{} es una herramienta inestimable para la composición tipográfica de contenido matemático. En esta sección, mostraremos los comandos y entornos LaTeX esenciales para la escritura matemática. Para más información consultar el capítulo 3 de \cite{notsoshort}.
+  
+  \subsection{Matemáticas en línea y aisladas}
+  
+  Para expresiones en línea, usar \verb|\( ... \)| o \verb|$ ... $|. Escribir entre \verb|\[ ... \]| las expresiones que han de mostrarse en una línea aparte.
+
+\else
+  \section{Writing mathematical expressions}
+  
+  \LaTeX{} is an invaluable tool for typesetting mathematical content. In this section, we'll cover essential LaTeX commands and environments for mathematical writing. For further information see the chapter 3 of \cite{notsoshort}.
+  
+  \subsection{Inline and Display Math}
+  
+  For inline expressions, use \verb|\( ... \)| or \verb|$ ... $|. Write between \verb|\[ ... \]| those expressions to be shown in its own line.
+\fi
+
+
+\ifcase\doclanguage\or
+\begin{tcblisting}{colback=lime!10!white,colframe=gray!75!black,listing side text}
+El polinomi $p(x) = 3x^2+2x-1$ t\'{e} arrels $x_1=-1$ i $x_2=\frac{1}{3}$.
+
+Sigui la funci\'{o} de xarxa:
+\[ H(s) = \frac{2\zeta\omega_o s}{s^2 + 2\zeta\omega_o s + \omega_o^2} \]
+\end{tcblisting}%
+%
+\or
+\begin{tcblisting}{colback=lime!10!white,colframe=gray!75!black,listing side text}
+El polinomio $p(x) = 3x^2+2x-1$ tiene ra\'{i}ces $x_1=-1$ y $x_2=\frac{1}{3}$.
+
+Sea la funci\'{o}n de red:
+\[ H(s) = \frac{2\zeta\omega_o s}{s^2 + 2\zeta\omega_o s + \omega_o^2} \]
+\end{tcblisting}
+%
+\else
+\begin{tcblisting}{colback=lime!10!white,colframe=gray!75!black,listing side text}
+The polynomial $p(x) = 3x^2 + 2x - 1$ has roots $x_1 = -1$ and $x_2 = \frac{1}{3}$.
+
+Let the network function be:
+\[ H(s) = \frac{2\zeta\omega_o s}{s^2 + 2\zeta\omega_o s + \omega_o^2} \]
+\end{tcblisting}
+\fi
+
+\ifcase\doclanguage\or
+  \subsection{Numeració i agrupació d'equacions}
+  Els entorns \texttt{equation}, \texttt{gather}, \texttt{align} i altres numeren automàticament les equacions. Si definiu una etiqueta dins de l'equació podreu fer referència a ella dins del text usant \verb|\ref{etiqueta}|. Podeu suprimir la numeració amb \verb|\nonumber|.
+\or
+  \subsection{Numeración y agrupación de ecuaciones}
+  Los entornos \texttt{equation}, \texttt{gather}, \texttt{align} y otros numeran automáticamente las ecuaciones. Si se define una etiqueta dentro de la ecuación se podrá hacer referencia a ella dentro del texto usando \verb|\ref{etiqueta}|. Se puede suprimir la numeración con \verb|\nonumber|.
+\else
+  \subsection{Equation Numbering and Grouping}
+  The \texttt{equation}, \texttt{gather}, \texttt{align}, and other environments automatically number the equations. If you define a label within the equation, you can refer to it within the text using \verb|\ref{label}|. You can supress numbering with \verb|\nonumber|.
+\fi
+
+\begin{tcblisting}{colback=lime!10!white,colframe=gray!75!black,listing side text}
+\begin{equation}
+  a + b = c   \label{eq:formula}
+\end{equation}
+Xxxx xxx \ref{eq:formula}.
+
+\begin{gather}
+  c = a + b \\
+  d + e = f   \nonumber
+\end{gather}
+
+\begin{align}
+  c &= a + b \nonumber \\
+  d + e &= f
+\end{align}
+\end{tcblisting}
+
+
+\ifcase\doclanguage\or
+  \subsection{Introducció de matrius}
+\or
+  \subsection{Introducción de matrices}
+\else
+  \subsection{Matrix Typesetting}
+\fi
+  
+\begin{tcblisting}{colback=lime!10!white,colframe=gray!75!black,
+  listing side text}
+$A = \begin{pmatrix}
+  a & b \\
+  c & d
+\end{pmatrix}$
+\end{tcblisting}
+  
+\ifcase\doclanguage\or
+  \section{Taules}
+  
+  El paquet \texttt{booktabs} (\cite{booktabs}) s'utilitza sovint per crear taules amb un espaiat millor i línies horitzontals més llegibles, i el paquet \texttt{array} es pot utilitzar per definir nous tipus de columna. A continuació es mostra un exemple de taula que utilitza aquests paquets i l'entorn \texttt{tabular} (consulteu el codi \LaTeX\ del document per a saber com s'ha creat.):
+  
+  \begin{table}[h]
+    \centering
+    \caption{Taula d'exemple}\label{tbl:taula1}
+    \begin{tabular}{@{} l c >{\raggedright\arraybackslash}p{6.5cm} @{}}
+      \toprule
+      Element & Quantitat & Descripció \\
+      \midrule
+      Mango & 5 & Una fruita taronja \\
+      Plàtan & 2 & Una fruita groga \\
+      Cirera & 20 & Una fruita petita, rodona i vermella \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  
+  En aquest exemple (consulteu el codi font \LaTeX):
+  
+  \begin{itemize}
+    \item \verb|\toprule|, \verb|\midrule|, i \verb|\bottomrule| del paquet \texttt{booktabs} creen línies horitzontals que tenen un espaiat per defecte millor que l'estàndard de \LaTeX\ \verb|\hline|.
+
+    \item La definició \verb|>{\raggedright\arraybackslash}p{3cm}| del paquet \texttt{array} s'utilitza per crear un nou tipus de columna per a la descripció, on el text està alineat a l'esquerra i la columna té una amplada fixa de 3 cm.
+  \end{itemize}
+  
+  Compileu aquest codi amb \LaTeX\ per produir la taula \ref{tbl:taula1}. La taula hauria de semblar bonica i llegible.
+
+\or
+\section{Tablas}
+  
+El paquete \texttt{booktabs} (\cite{booktabs}) se utiliza a menudo para crear tablas con un mejor espaciado y líneas horizontales más legibles, y el paquete \texttt{array} se puede usar para definir nuevos tipos de columnas. Aquí hay un ejemplo de tabla utilizando estos paquetes y el entorno \texttt{tabular} (consultar el código fuente del documento para ver cómo se ha creado):
+  
+\begin{table}[h]
+  \centering
+  \caption{Tabla de Ejemplo}\label{tbl:tabla1}
+  \begin{tabular}{@{} l c >{\raggedright\arraybackslash}p{6cm} @{}}
+    \toprule
+    Artículo & Cantidad & Descripción \\
+    \midrule
+    Manzana & 5 & Una fruta roja \\
+    Plátano & 2 & Una fruta amarilla \\
+    Cereza & 20 & Una fruta pequeña, redonda y roja \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+  
+En este ejemplo (consultar el código fuente \LaTeX):
+  
+\begin{itemize}
+  \item \verb|\toprule|, \verb|\midrule| y \verb|\bottomrule| del paquete \texttt{booktabs} crean líneas horizontales que tienen un mejor espaciado por defecto que el estándar de LaTeX \verb|\hline|.
+  
+  \item La definición \verb|>{\raggedright\arraybackslash}p{3cm}| del paquete \texttt{array} se usa para crear un nuevo tipo de columna para la descripción, donde el texto está alineado a la izquierda y la columna tiene un ancho fijo de 3 cm.
+\end{itemize}
+  
+Compilar este código con \LaTeX\ para producir la tabla \ref{tbl:tabla1}. La tabla debería lucir hermosa y legible.
+
+\else
+  \section{Tables}
+  
+  The \texttt{booktabs} package (\cite{booktabs}) is often used to create tables with better spacing and more readable horizontal lines, and the \texttt{array} package can be used to define new column types. Here's an example table using these packages and the \texttt{tabular} environment (look at the \LaTeX\ code to see how it's created):
+  
+  \begin{table}[h]
+    \centering
+    \caption{Example Table}\label{tbl:table1}
+    \begin{tabular}{@{} l c >{\raggedright\arraybackslash}p{5cm} @{}}
+      \toprule
+      Item & Quantity & Description \\
+      \midrule
+      Apple & 5 & A red fruit \\
+      Banana & 2 & A yellow fruit \\
+      Cherry & 20 & A small, round, red fruit \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  
+  In this example (see the \LaTeX\ source code):
+  
+  \begin{itemize}
+    \item \verb|\toprule|, \verb|\midrule|, and \verb|\bottomrule| from the \texttt{booktabs} package create horizontal lines that have better default spacing than LaTeX's standard \verb|\hline|.
+
+    \item The \texttt{array} package's \verb|>{\raggedright\arraybackslash}p{3cm}| definition is used to create a new column type for the description, where the text is left-aligned and the column has a fixed width of 3 cm.
+  \end{itemize}
+  
+  Compile this code with \LaTeX\ to produce the table \ref{tbl:table1}. The table should look beautiful and readable.
+\fi
+
+\ifcase\doclanguage\or
+  \section{Diagrames}
+    El paquet \textit{TikZ} (\cite{tikz}) permet dibuixar tot tipus de diagrames i gràfics. Val la pena consultar el seu manual d'ús per tal de conèixer el seu funcionament i poder-ne treure tot el suc possible. Cal no deixar-se intimidar per la seva longitud (1300+ pàgines) ja que la majoria d'espai l'ocupen nombrosos exemples que il·lustren les possibilitats del llenguatge.
+    
+    Per si això fos poc, també hi ha disponibles una sèrie de biblioteques addicionals que permeten d'augmentar encara més les funcionalitats del \textit{TikZ} amb l'addició d'ordres per facilitar el dibuix de tot tipus d'objectes, des de xarxes de Petri fins a circuits electrònics, passant per coses tan diverses com calendaris, diagrames d'estats o figures de papiroflèxia.
+    
+    La figura \ref{fig:tikz} mostra alguns exemples de diagrames creats amb el paquet \textit{TikZ}.
+
+\or
+\section{Diagramas}
+  El paquete \textit{TikZ} (\cite{tikz}) permite dibujar todo tipo de diagramas y gráficos. Vale la pena consultar su manual de usuario para entender cómo funciona y aprovechar al máximo sus posibilidades. No cabe dejarse intimidar por su longitud (más de 1300 páginas) ya que la mayoría del espacio está ocupado por numerosos ejemplos que ilustran las capacidades del lenguaje.
+  
+  Por si eso fuera poco, también hay varias bibliotecas adicionales disponibles que mejoran aún más la funcionalidad de \textit{TikZ} con comandos adicionales para dibujar diversos objetos, desde redes de Petri hasta circuitos electrónicos, cubriendo temas diversos como calendarios, diagramas de estados o figuras de origami.
+  
+  La figura \ref{fig:tikz} muestra algunos ejemplos de diagramas creados con el paquete \textit{TikZ}.
+
+\else
+\section{Diagrams}
+  The package \textit{TikZ} (\cite{tikz}) allows you to draw all kinds of diagrams and graphics. It's worth consulting its user manual to understand how it works and make the most of it. Don't be intimidated by its length (1300+ pages) because most of the space is filled with numerous examples illustrating the language's capabilities.
+  
+  As if that were not enough, there are also several additional libraries available that further enhance \textit{TikZ}'s functionality with additional commands for drawing various objects, from Petri nets to electronic circuits, covering diverse topics such as calendars, state diagrams, or origami figures.
+  
+  The figure \ref{fig:tikz} shows some examples of diagrams created using the \textit{TikZ} package.
+
+\fi
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[scale=1,angle radius=.75cm]
+    \node (A) at (-2,0)     [red,left]   {$A$};
+    \node (B) at ( 3,.5)    [red,right]  {$B$};
+    \node (C) at (-2,2)     [blue,left]  {$C$};
+    \node (D) at ( 3,2.5)   [blue,right] {$D$};
+    \node (E) at (60:-5mm)  [below]      {$E$};
+    \node (F) at (60:3.5cm) [above]      {$F$};
+    \coordinate (X) at (intersection cs:first line={(A)--(B)}, second line={(E)--(F)});
+    \coordinate (Y) at (intersection cs:first line={(C)--(D)}, second line={(E)--(F)});
+    \path
+    (A) edge [red, thick]  (B)
+    (C) edge [blue, thick] (D)
+    (E) edge [thick]       (F)
+    pic ["$\alpha$", draw, fill=yellow]   {angle = F--X--A}
+    pic ["$\beta$", draw, fill=green!30] {angle = B--X--F}
+    pic ["$\gamma$", draw, fill=yellow]   {angle = E--Y--D}
+    pic ["$\delta$", draw, fill=green!30] {angle = C--Y--E};
+    \node at ($ (D)!.5!(B) $) [right=1cm,text width=6cm,rounded corners,fill=red!20,inner sep=1ex]
+    {
+      When we assume that $\color{red}AB$ and $\color{blue}CD$ are
+      parallel, i.\,e., ${\color{red}AB} \mathbin{\|} \color{blue}CD$,
+      then $\alpha = \gamma$ and $\beta = \delta$.
+    };
+  \end{tikzpicture}\\
+  \begin{tikzpicture}
+    \tikzset{
+      molla/.style    = {thick,decorate,decoration={coil,aspect=0.9,pre length=0.3cm,post length=0.3cm,segment length=5}},
+      terra/.style    = {fill,pattern=north east lines,draw=none,minimum width=0.75cm,minimum height=0.3cm},
+      amortidor/.style= {thick,decoration={markings,  
+          mark connection node=dmp,
+          mark=at position 0.5 with 
+          {
+            \node (dmp) [thick,inner sep=0pt,transform shape,rotate=-90,minimum width=15pt,minimum height=3pt,draw=none] {};
+            \draw [thick] ($(dmp.north east)+(2pt,0)$) -- (dmp.south east) -- (dmp.south west) -- ($(dmp.north west)+(2pt,0)$);
+            \draw [thick] ($(dmp.north)+(0,-5pt)$) -- ($(dmp.north)+(0,5pt)$);
+          }
+        }, decorate
+      },
+    }
+    \node[draw,outer sep=0pt,thick] (M) [minimum width=1cm, minimum height=2cm] {$M$};
+    \node (ground) [terra,anchor=north,yshift=-0.25cm,minimum width=1.5cm] at (M.south) {};
+    \draw (ground.north east) -- (ground.north west);
+    \draw [thick] (M.south west) ++ (0.2cm,-0.125cm) circle (0.125cm)  (M.south east) ++ (-0.2cm,-0.125cm) circle (0.125cm);
+    
+    \node (wall) [terra, rotate=-90, minimum width=3cm,yshift=-3cm] {};
+    \draw (wall.north east) -- (wall.north west);
+    
+    \draw [molla] (wall.165) -- node[pos=0.5,above] {$K$} ($(M.north west)!(wall.165)!(M.south west)$);
+    \draw [amortidor] (wall.15) -- node[pos=0.5,yshift=0.5cm] {$B$} ($(M.north west)!(wall.15)!(M.south west)$);
+    
+    \draw [-latex,ultra thick] (M.east) ++ (0.2cm,0) -- +(1cm,0) node[anchor=west]{$f(t)=k_m\cdot i(t)$};
+    
+    \draw [-latex,ultra thick] (M.north east) ++ (0,0.1cm) 
+    -- ++(0,0.5cm) -- ++(0.5cm,0) node[anchor=west] {$x(t)$};
+  \end{tikzpicture}\\
+  \begin{circuitikz}[american, decoration={coil}]
+    \draw (0,0) circle[radius=1cm] circle[radius=1.5cm];
+    \draw [->,thick](0,0) -- node[midway, left]{R}(80:1.5) ;
+    \draw [->,thick](0,0) --node[midway,below]{r}(30:1); 
+    \begin{scope}
+      \draw[decorate, decoration={aspect=0.4, segment length=3mm, amplitude=5mm}]
+      (1.25,-0.8) coordinate (a) --node[midway,right=0.5cm]{$V_2$} + (0,2) coordinate (b);
+      \draw[decorate, decoration={aspect=0.4, segment length=5mm, amplitude=5mm}]
+      (-1.25,-0.8) coordinate (c) --node[midway,left=0.5cm]{$V_1$} + (0,2) coordinate (d);
+    \end{scope}
+    % left circuit
+    \draw (-5,1.0) coordinate (e2) to[battery2,v=$V_{cc}$] (-5,-1.0) coordinate(e1);
+    \draw (e1) to[R,l=$R_1$,-] (e1-|c) --(c)node[below=0.5cm]{$N_1$};
+    \draw(e2)-- (d-|e2) to[short,i>=$I$] (d);
+    % right circuit
+    \draw (5,1) coordinate(e3) to[C=C,v=$V$,-*] (5,-1) coordinate (e4);
+    \draw  (b) to[R=$R_2$,i=$i$,-*] (b-|e3)--(e3);
+    \draw   (e4) to[short] (a|-e4)--(a) node[below=0.5cm]{$N_2$};
+    
+  \end{circuitikz}
+   \caption{%
+     \ifcase\doclanguage\or%
+       Diagrames creats usant les ordres del paquet \emph{TikZ}
+     \or
+       Diagramas creados usando les ordres del paquet \emph{TikZ}
+     \else
+       Diagrams created using the commands provided by the \emph{TikZ} package
+     \fi%
+   }\label{fig:tikz}
+\end{figure}
+
+\ifcase\doclanguage\or
+  \section{Gràfiques}
+  
+  Òbviament podeu crear les vostres gràfiques usant un programa informàtic adient, exportant el resultat a algun format gràfic (preferiblement vectorial com ara PDF per no perdre qualitat) i inserint les imatges resultants al document \LaTeX\ en la forma habitual. Aquesta via, però, té l'inconvenient que dificulta aconseguir la coherència i cohesió tipogràfica entre el text del document i el de les imatges. Com a conseqüència, la qualitat del document se'n ressent.
+  
+  Per tant, si es vol aconseguir la màxima coherència tipogràfica entre el text i les gràfiques, és preferible que sigui el propi \LaTeX\ qui s'encarregui de generar les gràfiques (amb les dades que li proporcionem) ja que en aquest cas usarà les mateixes fonts arreu del document.
+  
+  A tal efecte al llarg dels anys s'han desenvolupat múltiples paquets i tècniques per aconseguir aquest objectiu. El que aquí us proposem és usar el paquet «\textbf{pgfplots}», que utilitza internament el paquet \textit{TikZ} per generar una sèrie de \textit{macros} addicional que faciliten el dibuix de gràfiques. La figura \ref{fig:plot} mostra un exemple del que es pot arribar a fer amb aquest paquet, però recomanem fermament que consulteu el manual d'instruccions (\cite{pgfplots}) on s'il·lustren molts més exemples.
+\or
+  \section{Gráficas}
+  
+  Obviamente, pueden crear sus gráficos utilizando un programa informático adecuado, exportando el resultado a algún formato gráfico (preferiblemente vectorial, como PDF, para no perder calidad) e insertando las imágenes resultantes en el documento \LaTeX\ de la forma habitual. Sin embargo, esta opción tiene la desventaja de dificultar la coherencia y cohesión tipográfica entre el texto del documento y el de las imágenes. Como consecuencia, la calidad del documento se ve afectada.
+  
+  Por lo tanto, si se busca lograr la máxima coherencia tipográfica entre el texto y los gráficos, es preferible que sea el propio \LaTeX\ el que se encargue de generar los gráficos (con los datos que le proporcionemos), ya que en este caso utilizará las mismas fuentes en todo el documento.
+  
+  Con este fin, a lo largo de los años se han desarrollado múltiples paquetes y técnicas para lograr este objetivo. Lo que aquí les proponemos es utilizar el paquete «\textbf{pgfplots}», que utiliza internamente el paquete \textit{TikZ} para generar una serie de \textit{macros} adicionales que facilitan el dibujo de gráficos. La figura \ref{fig:plot} muestra un ejemplo de lo que se puede llegar a hacer con este paquete, pero recomendamos encarecidamente que consulten el manual de instrucciones (\cite{pgfplots}), donde se ilustran muchos más ejemplos.
+\else
+  \section{Plotting}
+  
+  Obviously, you can create your graphs using suitable software, exporting the result to a graphic format (preferably vectorial, such as PDF, to avoid loss of quality) and then inserting the resulting images into the \LaTeX\ document in the usual way. However, this approach has the disadvantage of making it difficult to achieve typographic coherence and cohesion between the document text and the images. As a result, the document's quality may suffer.
+  
+  Therefore, if you aim to achieve maximum typographic coherence between the text and the graphics, it is preferable to let \LaTeX\ itself generate the graphics (using the data you provide), as it will use the same fonts throughout the document.
+  
+  To this end, over the years, various packages and techniques have been developed to achieve this goal. What we propose here is to use the \textbf{pgfplots} package, which internally uses the \textit{TikZ} package to generate a set of additional macros that facilitate the drawing of graphs. Figure \ref{fig:plot} shows an example of what can be done with this package, but we strongly recommend consulting the instruction manual (\cite{pgfplots}), which illustrates many more examples.
+\fi
+
+\begin{figure}[ht]
+  \centering
+  \input{data/spice.tikz}
+  \caption{\ifcase\doclanguage\or
+     Exemple de gràfica complexa dibuixada amb ajut del paquet \emph{pgfplots}\or
+     Ejemplo de un gráfico complejo dibujado con la ayuda del paquete \emph{pgfplots}\else
+     Example of a complex graph drawn using the \emph{pgfplots} package\fi
+  }\label{fig:plot}
+\end{figure}
+
+\ifcase\doclanguage\or
+  \section{Llistats de codi}
+  
+  L'entorn \texttt{tcblistings} del paquet \texttt{tcolorbox} (\cite{tcolorbox}) insereix els llistats de codi generats pels paquets \texttt{listings} o \texttt{minted} dins d'una \texttt{tcolorbox}, amb la qual cosa s'aconsegueixen uns llistats molt ben presentats i altament configurables.
+  
+  Com a exemple d'això, a continuació es mostra el llistat d'un programa en llenguatge Python que implementa l'algorisme del «sedàs d'Eratòstenes» per calcular els nombres primers menors d'un cert nombre donat. Observeu que el paquest «listings» és capaç d'interpretar i ressaltar automàticament la sintaxi del llenguatge.
+\or
+  \section{Listados de código}
+
+  El entorno \texttt{tcblistings} del paquete \texttt{tcolorbox} (\cite{tcolorbox}) inserta los listados de código generados por los paquetes \texttt{listings} o \texttt{minted} dentro de una \texttt{tcolorbox}, con lo cual se consiguen unos listados muy bien presentados y altamente configurables.
+
+  Como ejemplo de esto, a continuación se muestra el listado de un programa en lenguaje Python que implementa el algoritmo de la «criba de Eratóstenes» para calcular los números primos menores de cierto número dado. Observar que el paquete «listings» es capaz de interpretar y resaltar automáticamente la sintaxis del lenguaje.
+\else
+  \section{Code Listings}
+
+  The \texttt{tcblistings} environment of the \texttt{tcolorbox} package (\cite{tcolorbox}) inserts code listings generated by the \texttt{listings} or \texttt{minted} packages into a \texttt{tcolorbox}, thereby achieving very well-presented and highly con\-fi\-gu\-ra\-ble listings.
+
+  As an example, the following is the listing of a program in Python language that implements the "Sieve of Eratosthenes" algorithm for calculating prime numbers less than a certain given number. Note that the "listings" package is capable of automatically interpreting and highlighting the language's syntax.
+\fi
+
+\newcommand\ListTitle{\ifcase\doclanguage\or
+  Exemple de Python: Sedàs d'Eratòstenes\or
+  Ejemplo de Python: Criba de Eratóstenes\else
+  Python Example: Sieve of Eratosthenes\fi
+}
+\begin{tcblisting}{colback=gray!5!white,colframe=gray!75!black,listing only,
+    title=\ListTitle, fonttitle=\bfseries, breakable, enhanced jigsaw, leftupper=8mm,
+    listing options={language=python,basicstyle=\ttfamily\small,
+    showstringspaces=false, numbers=left, numberstyle=\footnotesize, stepnumber=1, numbersep=8pt}}
+def sieve_of_eratosthenes(limit):
+  primes = []
+  sieve = [True] * (limit + 1)
+  for num in range(2, limit + 1):
+    if sieve[num]:
+      primes.append(num)
+      for multiple in range(num*num, limit + 1, num):
+        sieve[multiple] = False
+  return primes
+
+# Example usage:
+if __name__ == "__main__":
+  limit = 30
+  print(f"The prime numbers up to {limit} are:
+          {sieve_of_eratosthenes(limit)}")
+\end{tcblisting}
+
+\ifcase\doclanguage\or
+  \section{Unitats}
+  
+  Una de les coses que sovint es menysté a l'hora d'escriure és la correcta representació de valors i unitats, que és essencial en textos científics i tècnics. El paquet \texttt{siunitx} de \LaTeX\ s'ajusta al sistema internacional d'unitats (SI) i amb ell els usuaris poden assegurar-se que els nombres i unitats són presentats amb la notació, espaiat i font adequats, tot respectant les diferents convencions internacionals.
+  
+  A continuació presentem alguns exemples d'ús, però per una presentació exhaustiva de les possibilitats del paquet caldrà que consulteu la seva documentació (\cite{siunitx}).
+  
+  \begin{itemize}
+    \item \textbf{Composició tipogràfica d'unitats senzilles}: Per composar una unitat utilitzant \texttt{siunitx}, podeu fer servir la comanda \verb|\si{}|. Per exemple, per composar "metres per segon," escriuríeu:
+       \verb|\si{\meter\per\second}| que resultaria en «\si{\meter\per\second}» amb l'espaiament correcte entre ells.
+    
+    \item \textbf{Combinació de Nombre i Unitat}: Si voleu incloure un valor amb una unitat, useu la comanda \verb|\SI{}|. Per exemple, per expressar "10 kilo-ohm" escriuríeu:
+       \verb|\SI{10}{\kohm}|, que resulta en \SI{10}{\kohm}. Aquesta comanda assegura que el nombre i la unitat estan adequadament espaiats.
+    
+    \item \textbf{Unitats complexes}: Per unitats més complexes, \texttt{siunitx} permet combinar unitats de diverses maneres. Per exemple, per composar «gigawatts per metre quadrat per estereoradian» podeu usar:
+    
+    \verb|\si{\giga\watt\per\square\meter\per\steradian}|
+    
+    i el paquet treu «\si{\giga\watt\per\square\meter\per\steradian}» tenint cura de tota la formatació adequada i la font.
+  \end{itemize}
+
+  \texttt{siunitx} és molt flexible i pot manejar una àmplia gamma d'unitats i opcions de formatatge de nombres, incloent nombres complexos amb unitats, l'alineació en taules, l'arrodoniment de nombres, i l'establiment d'opcions globals per a la consistència a través d'un document.
+\or
+  \section{Unidades}
+  
+  Una de las cosas que a menudo se pasa por alto al escribir es la correcta representación de valores y unidades, lo cual es esencial en textos científicos y técnicos. El paquete \texttt{siunitx} de \LaTeX\ se ajusta al sistema internacional de unidades (SI) y con él, los usuarios pueden asegurarse de que los números y unidades se presenten con la notación, espaciado y fuente adecuados, respetando las diferentes convenciones internacionales.
+  
+  A continuación, presentamos algunos ejemplos de uso, pero para una presentación exhaustiva de las posibilidades del paquete, deberás consultar su documentación (\cite{siunitx}).
+  
+  \begin{itemize}
+      \item \textbf{Composición tipográfica de unidades simples}: Para componer una unidad utilizando \texttt{siunitx}, puedes usar el comando \verb|\si{}|. Por ejemplo, para componer «metros por segundo», escribirías: \verb|\si{\meter\per\second}|, lo que resultaría en «\si{\meter\per\second}» con el espaciado correcto entre ellos.
+  
+      \item \textbf{Combinación de Número y Unidad}: Si se quiere incluir un valor con una unidad, utiliza el comando \verb|\SI{}|. Por ejemplo, para expresar «10 kilo-ohmios», se escribiría: \verb|\SI{10}{\kohm}|, lo que resulta en \SI{10}{\kohm}. Este comando asegura que el número y la unidad estén adecuadamente espaciados.
+  
+      \item \textbf{Unidades complejas}: Para unidades más complejas, \texttt{siunitx} permite combinar unidades de diversas maneras. Por ejemplo, para componer «gigavatios por metro cuadrado por estereorradian», puedes usar:
+      
+      \verb|\si{\giga\watt\per\square\meter\per\steradian}|
+      
+      y el paquete genera «\si{\giga\watt\per\square\meter\per\steradian}» cuidando de toda la formatación adecuada y la fuente.
+  
+  \end{itemize}
+  
+  \texttt{siunitx} es muy flexible y puede manejar una amplia gama de unidades y opciones de formateo de números, incluso complejos, incluyendo la alineación en tablas, el redondeo de números y el establecimiento de opciones globales para la consistencia a lo largo de un documento.
+  
+\else
+  \section{Units}
+  
+  One of the things that is often overlooked when writing is the correct representation of values and units, which is essential in scientific and technical texts. The \texttt{siunitx} package in \LaTeX\ conforms to the International System of Units (SI), and with it, users can ensure that numbers and units are presented with the appropriate notation, spacing, and font, while respecting different international conventions.
+
+  Below, we present some usage examples, but for a comprehensive overview of the package's capabilities, you should refer to its documentation (\cite{siunitx}).
+
+  \begin{itemize}
+    \item \textbf{Typesetting Simple Units}: To typeset a unit using \texttt{siunitx}, you can use the command \verb|\si{}|. For example, to compose "meters per second," you would write: \verb|\si{\meter\per\second}|, resulting in «\si{\meter\per\second}» with the correct spacing between them.
+
+    \item \textbf{Combining Numbers and Units}: If you want to include a value with a unit, use the \verb|\SI{}| command. For instance, to write "10 kilo ohm" you would write: \verb|\SI{10}{\kohm}|, resulting in \SI{10}{\kohm}. This command ensures that the number and unit are appropriately spaced.
+
+    \item \textbf{Complex Units}: For more complex units, \texttt{siunitx} allows you to combine units in various ways. For example, to compose "gigawatts per square meter per steradian", you can use: 
+    
+    \verb|\si{\giga\watt\per\square\meter\per\steradian}|
+    
+    and the package produces «\si{\giga\watt\per\square\meter\per\steradian}» while taking care of all the proper formatting and font.
+  \end{itemize}
+
+  \texttt{siunitx} is highly flexible and can handle a wide range of units and number formatting options, including complex numbers with units, alignment in tables, rounding of numbers, and setting global options for consistency throughout a document.
+\fi

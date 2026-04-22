@@ -1,0 +1,142 @@
+%%%% PLEASE REPLACE ENTIRELY WITH YOUR OWN CONTENT %%%%
+
+\ifcase\doclanguage
+\or
+  \chapter{Introducció}
+\or
+  \chapter{Introducción}
+\else
+  \chapter{Introduction}
+\fi
+
+\ifcase\doclanguage
+\or
+  Una Introducció que estableix clarament la justificació de la tesi que inclogui:
+\or
+  Una Introducción que establece claramente la justificación de la tesis que incluya:
+\else
+  An Introduction that clearly states the rationale of the thesis that includes:
+\fi
+
+\begin{enumerate}
+  \ifcase\doclanguage
+  \or
+    \item Objectius del treball.
+  \or
+    \item Objetivos del trabajo.
+  \else
+    \item Statement of purpose (objectives).
+  \fi
+
+  \ifcase\doclanguage
+  \or
+    \item Requisits i especificacions.
+  \or
+    \item Requisitos y especificaciones.
+  \else
+    \item Requirements and specifications.
+  \fi
+
+  \ifcase\doclanguage
+  \or
+    \item Mètodes i procediments, citant si aquest treball és una continuació d'un altre projecte o utilitza aplicacions, algoritmes, programari o maquinari desenvolupat anteriorment per altres autors.
+  \or
+    \item Métodos y procedimientos, citando si este trabajo es una continuación de otro proyecto o utiliza aplicaciones, algoritmos, software o hardware desarrollado anteriormente por otros autores.
+  \else
+    \item Methods and procedures, citing if this work is a continuation of another project or it uses applications, algorithms, software or hardware previously developed by other authors.
+  \fi
+
+  \ifcase\doclanguage
+  \or
+    \item Pla de treball amb tasques, fites i un diagrama de Gantt.
+  \or
+    \item Plan de trabajo con tareas, hitos y un diagrama de Gantt.
+  \else
+    \item Work plan with tasks, milestones and a Gantt diagram.
+  \fi
+
+  \ifcase\doclanguage
+  \or
+    \item Descripció de les desviacions del pla inicial i incidències que poden haver ocorregut.
+  \or
+    \item Descripción de las desviaciones del plan inicial e incidencias que pueden haber ocurrido.
+  \else
+    \item Description of the deviations from the initial plan and incidences that may have occurred.
+  \fi
+\end{enumerate}
+
+\ifcase\doclanguage
+\or
+  Els capítols mínims que aquest document de TFE hauria de tenir es descriuen a continuació; no obstant això, poden tenir noms diferents i es poden afegir més capítols.
+\or
+  Los capítulos mínimos que este documento de TFE debería tener se describen a continuación, sin embargo, pueden tener nombres diferentes y se pueden agregar más capítulos.
+\else
+  The minimum chapters that this thesis document should have are described below, nevertheless they can have different names and more chapters can be added.
+\fi
+
+\ifcase\doclanguage
+\or
+  \section{Objectius del treball}
+\or
+  \section{Objectivos del trabajo}
+\else
+  \section{Work goals}
+\fi
+
+\lipsum[1]
+
+\ifcase\doclanguage
+\or
+  \section{Requisits i especificacions}
+\or
+  \section{Requisitos y especificaciones}
+\else
+  \section{Requirements and specifications}
+\fi
+
+\lipsum[2-4]
+
+\ifcase\doclanguage
+\or
+  \section{Mètodes i procediments}
+\or
+  \section{Métodos y procedimientos}
+\else
+  \section{Methods and procedures}
+\fi
+
+\lipsum[5-6]
+
+\ifcase\doclanguage
+\or
+  \section{Pla de treball}
+\or
+  \section{Plan de trabajo}
+\else
+  \section{Work plan}
+\fi
+\label{sec:workplan}
+
+\ifcase\doclanguage
+\or
+  Normalment les figures i taules es col·loquen en els entorns \verb|\figure| i \verb|\table|, que poden flotar lliurement en el document. Pots identificar cada flotant amb un \verb|\label|
+\or
+  Normalmente las figuras y tablas se colocan en los entornos \verb|\figure| y \verb|\table|, que pueden flotar libremente en el documento. Puedes identificar cada flotante con un \verb|\label|
+\else
+  Normally the figures and tables are put in \verb|\figure| and \verb|\table| environments, that can float freely in the document. You can identify each float with a \verb|\label|
+\fi
+
+\begin{figure}[ht]
+  \centering
+  \input{img/gantt_diagrama}
+  \ifcase\doclanguage
+  \or
+    \caption[Diagrama de Gantt del projecte]{\footnotesize{Diagrama de Gantt del projecte. Per a més informació, llegiu el manual \cite{skalagantt} de Skala.}}
+  \or
+    \caption[Diagrama de Gantt del proyecto]{\footnotesize{Diagrama de Gantt del proyecto. Para más información, leer el manual \cite{skalagantt} de Skala.}}
+  \else
+    \caption[Project's Gantt diagram]{\footnotesize{Gantt diagram of the project. For more information read the manual \cite{skalagantt} of Skala.}}
+  \fi
+  \label{fig:gantt}
+\end{figure}
+
