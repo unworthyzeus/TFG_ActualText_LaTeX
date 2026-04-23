@@ -173,9 +173,17 @@ destructive interference around the transmitter.
 
 \subsubsection{Comparison with literature two-ray models}
 
-The coherent two-ray model is a staple of wireless propagation theory, but our
-implementation in \texttt{Try 78} deviates from the standard textbook
-treatment in several ways.
+The coherent interference term used in \texttt{Try 78} is the standard
+\emph{exact} coherent two-ray model from the literature. In particular,
+Eq.~\eqref{eq:c2ray} has the same field-sum structure used in textbook
+derivations: a direct ray plus one reflected ray summed coherently before
+conversion to dB. The practical adaptation in this thesis is not an extra term
+inside the two-ray equation, but the way the reflection coefficient is
+parameterized and calibrated. Put differently, the core two-ray term is the
+literature two-ray model, evaluated with a fitted height-binned effective
+reflection coefficient. The coefficients are fitted independently in 5~m UAV
+height bins and then linearly interpolated across neighboring bins at
+inference time.
 
 \paragraph{Physical vs.\ effective parameters.}
 In classic texts such as Rappaport \cite{rappaport} and Goldsmith
@@ -191,10 +199,12 @@ where $\theta$ is the grazing angle and $\epsilon_c = \epsilon_r - j\sigma/\omeg
 is the complex permittivity of the ground. This requires assuming physical
 constants for the ground (typically $\epsilon_r \approx 15$ for urban soil).
 
-In contrast, our model (Eq.~\ref{eq:field_sum}) replaces the angle-dependent
+In contrast, our implementation keeps the same coherent two-ray equation but
+replaces the angle-dependent
 $\Gamma(\theta)$ with a height-dependent effective coefficient $\Gamma(h_{\mathrm{tx}})
 = \rho e^{j\phi}$. We do not assume a flat dielectric plane; instead, $\rho$
-and $\phi$ are fitted to the CKM dataset. This allows the model to capture
+and $\phi$ are fitted to the CKM dataset in 5~m UAV-height bins, with linear
+interpolation between bins during prediction. This allows the model to capture
 aggregate scattering effects from the real, non-flat urban terrain that a
 pure Fresnel calculation would miss.
 
@@ -207,25 +217,26 @@ P_r(d) \approx P_t G_t G_r \frac{h_{\mathrm{tx}}^2 h_{\mathrm{rx}}^2}{d^4}
 \label{eq:d4_law}
 \end{equation}
 This approximation assumes a perfect reflection ($\Gamma = -1$) and small
-grazing angles. Our model uses the \emph{exact} field sum (Eq.~\ref{eq:field_sum})
-without the $d^4$ approximation, which is necessary because UAV heights are
-often significant relative to horizontal distances, making the small-angle
-approximation invalid.
+grazing angles. Our implementation uses the \emph{exact} field sum
+(Eq.~\ref{eq:field_sum}) without the $d^4$ approximation. This is still a
+standard literature form; it simply avoids a far-field approximation that is
+not appropriate when UAV height is not negligible relative to horizontal
+distance.
 
-\paragraph{Over-unity amplitude ($\rho > 1$).}
-Standard physics dictates $|\Gamma| \le 1$. However, our calibration grid
-search (Sec.~\ref{sec:los_calibration}) allows $\rho \in [0, 1.5]$. While
-physically impossible for a single specular reflection, an effective $\rho > 1$
-allows the linear basis of the two-ray model to capture constructive multipath
-interference from multiple scatterers (e.g., building faces near the transmitter)
-that align with the geometric phase of the ground ray.
+\paragraph{Search range vs.\ fitted values.}
+The calibration grid search (Sec.~\ref{sec:los_calibration}) allows
+$\rho \in [0, 1.5]$ for robustness. However, the fitted values reported in
+Table~\ref{tab:los_params} and the stored calibration remain below unity, so
+the deployed model does not rely on an over-unity reflected ray. In practice,
+the main difference from a purely physical textbook instantiation is therefore
+the fitted height-binned effective coefficient, not an additional propagation
+term.
 
-\paragraph{Radial correction.}
-Standard models \cite{tr38901} treat the two-ray or FSPL result as the final
-mean. Our model adds a calibrated radial residual $r(d_{2D}, h_{\mathrm{tx}})$
-(Eq.~\ref{eq:pl_los}) which acts as a data-driven "mopping up" term for
-systematic geometric errors that neither FSPL nor the two-ray model can
-fully represent.
+\paragraph{Extra calibrated terms outside the two-ray model.}
+The quantities $b(h_{\mathrm{tx}})$ and $r(d_{2D}, h_{\mathrm{tx}})$ in
+Eq.~\eqref{eq:pl_los} are not part of the literature two-ray formula itself.
+They are post-fit calibration terms added on top of the standard two-ray
+prediction to absorb residual systematic errors.
 
 \subsubsection{Calibrated LoS prior}
 

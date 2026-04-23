@@ -59,7 +59,11 @@ C_{\mathrm{2ray}}(x) = -20\log_{10}\left|1 + \rho(h_{\mathrm{tx}})\frac{d_{\math
 \label{eq:c2ray_detail}
 \end{equation}
 
-This spatial interference pattern creates characteristic ring-like behavior in the LoS path-loss maps.
+This is the standard exact coherent two-ray expression, with the practical
+adaptation that the effective coefficients are fitted per 5~m UAV-height bin
+and linearly interpolated between neighboring bins at inference time. This
+spatial interference pattern creates characteristic ring-like behavior in the
+LoS path-loss maps.
 
 \subsubsection{Calibrated LoS prior}
 
