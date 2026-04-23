@@ -1,51 +1,42 @@
-%%%% PLEASE REPLACE ENTIRELY WITH YOUR OWN CONTENT %%%%
-
-\ifcase\doclanguage\or
-\chapter{Conclusions i Línies Futures}
-  \section{Conclusions}
-    \begin{itemize}
-      \item Resumiu els resultats principals del vostre treball.
-      \item Discutiu el grau d'assoliment en relació amb els objectius marcats a l'inici del treball.
-      \item Destaqueu les contribucions del vostre treball al camp d'estudi.
-    \end{itemize}
-  
-  \section{Línies Futures}
-    \begin{itemize}
-      \item Identifiqueu àrees per a futures investigacions o desenvolupament basades en el vostre treball.
-      \item Discutiu possibles vies per ampliar o millorar el projecte.
-      \item Considereu les preguntes que han quedat sense resposta i les oportunitats per a futures exploracions.
-    \end{itemize}
-
-\or
-\chapter{Conclusiones y Líneas Futuras}
-  \section{Conclusiones}
-    \begin{itemize}
-      \item Resuman los resultados principales de su trabajo.
-      \item Discutan el grado de logro en relación con los objetivos establecidos al inicio del trabajo.
-      \item Destaquen las contribuciones de su trabajo al campo de estudio.
-    \end{itemize}
-  
-  \section{Líneas Futuras}
-    \begin{itemize}
-      \item Identifiquen áreas para futuras investigaciones o desarrollo basadas en su trabajo.
-      \item Discutan posibles formas de ampliar o mejorar el proyecto.
-      \item Consideren las preguntas que han quedado sin respuesta y las oportunidades para futuras exploraciones.
-    \end{itemize}
-
-\else
 \chapter{Conclusions and Future Work}
-  \section{Conclusions}
-    \begin{itemize}
-      \item Summarize the main results of your work.
-      \item Discuss the degree of achievement in relation to the objectives set at the beginning of the work.
-      \item Highlight the contributions of your work to the field of study.
-    \end{itemize}
-  
-  \section{Future Directions}
-    \begin{itemize}
-      \item Identify areas for future research or development based on your work.
-      \item Discuss possible ways to expand or improve the project.
-      \item Consider questions that remained unanswered and opportunities for future exploration.
-    \end{itemize}
 
-\fi
+\section{Conclusions}
+
+This thesis started as a dense deep-learning surrogate for UAV radio maps and
+ended as a hybrid prior-anchored CKM prediction pipeline. The main lesson is
+that architecture alone was not enough. The decisive improvements came from
+understanding the target distributions, enforcing strict ground-only metrics,
+separating LoS and NLoS behaviour, and using physical priors where the dataset
+clearly followed physical structure.
+
+The original targets were met by the finished non-DL priors for path loss,
+delay spread, and angular spread. Try 78 achieved \SI{1.9246}{dB} overall
+path-loss RMSE, with \SI{1.7516}{dB} LoS and \SI{3.3967}{dB} NLoS. Try 79
+achieved \SI{28.10}{ns} delay-spread RMSE and \SI{13.74}{\degree}
+angular-spread RMSE on the test split. The final Try 80 neural model is still
+training; its final test results must be inserted once the checkpoint is
+selected.
+
+The main contribution is the final synthesis: a CKM pipeline that combines
+calibrated propagation priors, city-holdout discipline, sinusoidal UAV-height
+conditioning, topology/regime diagnostics, and distribution-first residual
+heads. This is different from both a pure empirical propagation formula and a
+pure black-box CNN.
+
+\section{Future Directions}
+
+The most important future extension is frequency conditioning. The current
+dataset fixes the radio configuration, while a general outdoor CKM model should
+learn how path loss and spreads vary with carrier frequency, bandwidth, antenna
+pattern, and possibly polarization. A natural next dataset would therefore
+contain the same cities simulated at multiple frequencies and antenna settings.
+
+The second extension is field calibration. The priors in Try 78 and Try 79 are
+already interpretable, so a small number of real measurements could be used to
+calibrate the simulator-to-reality gap without retraining the full model from
+scratch.
+
+Finally, the Try 80 idea can be expanded with stronger global-context
+backbones, transmitter-oriented mixup, full corridor losses, and test-time
+adaptation. These should be added only after preserving the current safeguards:
+strict city holdout, ground-only masking, and explicit LoS/NLoS reporting.

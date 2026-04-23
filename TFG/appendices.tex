@@ -1,10 +1,179 @@
-\ifcase\doclanguage\or
-  \chapter{Un apèndix}
-  Es poden incloure apèndixs al TFG però no és obligatori.
-\or
-  \chapter{Un apéndice}
-  Se pueden incuir apéndices en el TFG pero no es obligatorio.
-\else
-  \chapter{An appendix}
-  Appendices may be included in your thesis but it is not a requirement.
-\fi
+\chapter{Reproducibility Appendix}
+
+\section{Detailed attempt log}
+
+This appendix records the detailed experimental sequence used to build the
+final thesis narrative. It is intentionally more operational than the main
+chapters: the purpose is to show how the final design emerged from earlier
+failures, not to re-argue every result.
+
+\subsection{Early image-to-image phase}
+
+The first implementation treated CKM prediction as an aligned
+image-to-image translation problem. This was a reasonable starting point
+because the inputs and outputs share the same \(513\times513\) grid. A U-Net
+generator produced dense maps and a PatchGAN discriminator judged local
+patches. The problem was objective mismatch. A propagation map is not a
+natural image: a visually plausible texture can be numerically wrong by many
+decibels. This is why later attempts reduced or removed adversarial pressure
+and moved toward explicit regression losses.
+
+Tries 9--14 introduced height conditioning and LoS/NLoS-aware evaluation.
+These changes were not cosmetic. UAV height changes the path-length geometry
+and therefore cannot be hidden in the sample index. Likewise, LoS and NLoS
+pixels follow different propagation laws, so mixing them into one global score
+made diagnosis difficult.
+
+\subsection{Artifact removal and masked supervision}
+
+Tries 15--22 attacked three visible problems: checkerboard artifacts, loss of
+thin street and edge structure, and weak radial consistency. GroupNorm replaced
+BatchNorm because the full-resolution jobs used very small batches. A distance
+channel exposed the most important geometric variable directly. Try 20 isolated
+the bilinear decoder change, Try 21 isolated multiscale supervision, and Try
+22 combined both. In the early contract, Try 22 was the strongest clean
+path-loss baseline at about \SI{16.72}{dB}.
+
+The next methodological correction was more important than another decoder
+change: pixels inside buildings are not valid receiver locations. After Try
+33, the project excluded \(topology\_map \ne 0\) pixels from the loss, from
+validation and test metrics, and from error-map visualization. This made the
+task stricter and invalidated easy comparisons to older runs that had not used
+the same mask.
+
+\subsection{Prior-guided residual phase}
+
+Try 41 made the residual formulation explicit:
+\[
+  \widehat{\mathrm{PL}} =
+  \mathrm{PL}_{\mathrm{prior}} + r_\theta(x).
+\]
+The initial raw formula prior was poor, with validation RMSE around
+\SI{67.23}{dB}. Train-only regime-aware calibration improved it to about
+\SI{24.16}{dB}. This result was simultaneously encouraging and limiting:
+the prior clearly contained useful information, but it was not enough to
+replace learning.
+
+Try 42 moved away from the old U-Net/cGAN family toward a PMNet-style residual
+regressor. Try 49 added prior-confidence logic and robust loss weighting; its
+stage-1 branch reached about \SI{18.87}{dB}, while the calibrated prior stayed
+near \SI{23.57}{dB}. The main failure mode was a heavy tail: many pixels were
+moderately accurate, but some NLoS pixels produced very large errors, so RMSE
+stayed much larger than MAE.
+
+Try 48 and Try 50 were useful negative evidence. Several richer NLoS priors
+and structural prior variants were tested, but a candidate refined prior at
+\SI{24.1777}{dB} did not beat the older \SI{23.5746}{dB} calibration, and the
+best Try 50 NLoS sandbox still remained near \SI{41}{dB}. The conclusion was
+that NLoS required more than a scalar correction over a LoS-shaped prior.
+
+\subsection{Final distribution and prior phase}
+
+Try 66 consolidated the PMHHNet family: physical channels, GroupNorm, height
+FiLM, and expert routing. It reached \SI{9.41}{dB} overall, but the split
+metric showed the deeper issue: \SI{3.75}{dB} LoS and \SI{31.48}{dB} NLoS.
+The project was no longer failing uniformly.
+
+Try 76 reframed NLoS as a distributional problem. Instead of predicting a
+single value everywhere, the model predicted sample-level mixture structure
+and then placed components spatially. This produced a much stronger NLoS path
+loss result, around \SI{3.34}{dB} pixel-weighted in the DirectML summary.
+
+Try 78 then showed that LoS path loss was even more deterministic than the
+neural history suggested. The dominant residual over FSPL was a ring field,
+well explained by coherent two-ray interference with fitted effective
+reflection parameters. Try 79 applied a related philosophy to delay and
+angular spreads: use log-domain, regime-wise calibration over geometry and
+local morphology features. Try 80 is the synthesis: frozen Try 78/79 priors
+plus a neural model that predicts bounded residuals.
+
+\section{Try 80 configuration summary}
+
+The active Try 80 configuration uses the canonical dataset
+\texttt{CKM\_Dataset\_270326.h5}, image size \(513\times513\), split seed 42,
+and validation/test ratios of 15\% each after city assignment. It uses
+precomputed priors when available through
+\texttt{try80\_precomputed\_priors.h5}, but the priors are deterministic and
+can also be recomputed.
+
+\begin{table}[ht]
+\centering
+\caption{Main Try 80 configuration values.}
+\label{tab:try80_config_appendix}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+Category & Value \\
+\midrule
+Input channels & 9: topology, LoS mask, NLoS mask, ground mask, combined
+path-loss prior, LoS path-loss prior, NLoS path-loss prior, delay-spread prior,
+angular-spread prior. \\
+Height conditioning & Sinusoidal embedding with FiLM modulation. \\
+Backbone & Four-scale GroupNorm encoder-decoder, base width 96. \\
+Residual distribution & Three mixture components per task/region head. \\
+Residual limits & Path loss: 2 dB LoS and 4 dB NLoS; delay spread: 30 ns LoS
+and 40 ns NLoS; angular spread: 9 degrees LoS and 13 degrees NLoS. \\
+Main losses & Map NLL, distribution KL, moment matching, anchor,
+prior-guard, outlier budget, RMSE, and MAE. \\
+Training & AdamW, learning rate \(2\times10^{-4}\), weight decay 0.01,
+120 epochs, batch size 1, gradient accumulation 8. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The final prediction for each task \(t\) has the same conceptual form:
+\[
+  \hat y_t(x) = y_{t,\mathrm{prior}}(x) + \alpha_t(x)\Delta_t(x),
+  \qquad 0 \le \alpha_t(x) \le 1.
+\]
+This is the central safety mechanism. The network is allowed to improve the
+prior, but the residual is bounded and gated. The prior-guard term then
+penalizes cases where the model moves away from the prior and becomes worse.
+
+\section{Where the formulas are placed}
+
+The appendix is kept as an audit trail, not as a second methodology chapter.
+Detailed formulas are therefore placed where they are first used in the main
+technical narrative. This avoids having two slightly different versions of the
+same prior definition.
+
+\begin{table}[ht]
+\centering
+\caption{Location of the main mathematical definitions.}
+\label{tab:formula_location_appendix}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+Topic & Location in the main text \\
+\midrule
+Ground-pixel mask and RMSE contract &
+Chapter~3, Eqs.~\ref{eq:ground_mask}--\ref{eq:rmse}. \\
+Residual-learning formulation &
+Chapter~3, Eq.~\ref{eq:prior_residual}. \\
+Height conditioning and FiLM modulation &
+Chapter~3, Eqs.~\ref{eq:sin_film}--\ref{eq:film_math}. \\
+Try 78 LoS path-loss prior &
+Section~\ref{sec:try78_detail}, especially Eqs.~\ref{eq:fspl},
+\ref{eq:field_sum}, \ref{eq:c2ray}, and \ref{eq:pl_los}. \\
+Try 78 NLoS calibration &
+Section~\ref{sec:nlos_branch}, especially Eqs.~\ref{eq:cost231},
+\ref{eq:a2g_nlos}, \ref{eq:x78}, and \ref{eq:pl_nlos_final}. \\
+Try 79 spread priors &
+Section~\ref{sec:try79_detail}, especially Eqs.~\ref{eq:raw_spread},
+\ref{eq:x79}, \ref{eq:ridge}, and \ref{eq:inv_log}. \\
+Try 80 prior-anchored GMM &
+Section~\ref{sec:try80_detail}, especially Eqs.~\ref{eq:try80_mu},
+\ref{eq:try80_point}, and \ref{eq:try80_loss}. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+This placement makes the appendix optional for understanding the mathematics.
+A reader can follow the thesis from the main chapters alone; the appendix adds
+the chronological and reproducibility context behind those choices.
+
+\section{Final-result placeholder}
+
+The final Try 80 checkpoint is not yet frozen. Therefore, the validation values
+reported in the main chapters must be replaced by final test-split results
+before submission. The thesis should keep the current wording until that
+evaluation is complete: Try 80 validation results are training diagnostics, not
+final scientific claims.

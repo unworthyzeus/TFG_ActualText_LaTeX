@@ -1,6 +1,8 @@
 ### This is a summary of things I've been thinking that need to be included it in the thesis.
 
-- How the dataset is structured, image size, everything that it contains (topology, LoS mask, path loss, delay spread, angular spread, antenna height by sample, sample number and city)
+- What's the problem and project scope (base yourself on the project proposal and workplan)
+- How the dataset is structured, image size, everything that it contains (topology, LoS mask, path loss, delay spread, angular spread, antenna height by sample, sample number and city).
+- Characteristics of the dataset, and limitations, path loss is uint8, and I'm not sure if one of the spreads too, check the documentation. One of the 3 is float 16 for certain though.
 - Original goals <20º rmse for angular spread, <50ns rmse for delay spread, <5dB rmse for path loss (global nLoS plus LoS results)
 - First approach of UNet + CGAN, doesn't work, retry.
 - Different approaches before changing architecture like upsampling, etc (see Try 22).
@@ -23,7 +25,10 @@
 - What are we doing new and differently in general.
 - There are panels, samples, already taken from the dataset to compare them, they are good and bad cases for the prior, take more from the dataset in the style if necessary
 - Everything that is (but modified and update to include upto try 80) inside the folder "Internal_Documentation" inside the TFG folder. Specially the "New Prior Formulas Try 78 and 79" document, should be basically included completely, with just structuring changes to fit the TFG.
-
+- Abreviations of terms you add, adding them to the abbreviations section.
+- Explain the new comparison with SOA, where does the sinusoidal film embedding come from, what did I get inspired with.
+- Modify the Gantt (with Tikz) so that it shows the different attempts we've done (not 80), but like global changes 1-20, 20-50,50-75,76-80 basically. Which are different architectures. Also base yourself for the original Gantts on Project Proposal and Workplan and also the Project Critical Review 
+- Basically how things have changed since I started the project, what worked and what didn't.
 
 ### How to
 
@@ -35,10 +40,12 @@
 - For any doubts, ask me.
 - The acknowledgemtns and dedication I'll do them myself.
 - Tell me when you finish.
-
+- Do all the TFG, but leave the final final results of try 80 as placeholders, because the model is still training , but the prior (try 78 and try 79) are already finished and so is everything else.
+- DO NOT change any section from the TFG "Plantilla", just put subsections if you need to.
+- Complete all sections
 
 ### Style specifications
 
 - Use the same style and format as the baseline already in the project
-- Use figures, create them new or recycle from the project
+- Use figures, create them new or recycle from the project (TFGPractice), for example the diagrams/ folder, or the tikz inside New Prior Formulas Try 78 and 79.tex
 - Number the figures, equations, etc.

@@ -1,142 +1,120 @@
-%%%% PLEASE REPLACE ENTIRELY WITH YOUR OWN CONTENT %%%%
+\chapter{Introduction}
 
-\ifcase\doclanguage
-\or
-  \chapter{Introducció}
-\or
-  \chapter{Introducción}
-\else
-  \chapter{Introduction}
-\fi
+Reliable radio coverage prediction is a central requirement for future 6G
+systems in which UAVs may act as aerial base stations, relays, or temporary
+coverage nodes. A classical ray-tracing simulator can produce detailed channel
+knowledge maps, but this is too expensive to repeat every time the transmitter
+height, the city morphology, or the deployment assumptions change. In the 6G
+literature, a channel knowledge map is a site-specific, location-tagged
+repository of channel information that can support environment-aware planning
+and reduce online channel-acquisition overhead
+\cite{zengx2021ckm,ckmtutorial2024}. This thesis studies whether a learned
+surrogate can predict dense channel maps directly from urban geometry while
+preserving enough physical structure to generalize to cities not seen during
+training.
 
-\ifcase\doclanguage
-\or
-  Una Introducció que estableix clarament la justificació de la tesi que inclogui:
-\or
-  Una Introducción que establece claramente la justificación de la tesis que incluya:
-\else
-  An Introduction that clearly states the rationale of the thesis that includes:
-\fi
+The project is formulated as dense image-to-image regression on
+$513\times513$ pixel city maps. The input is primarily a building-height
+topology map, a LoS/NLoS mask, and the UAV antenna height. The outputs studied
+through the project are path loss, delay spread, and angular spread. The final
+line of work combines interpretable non-deep-learning priors with deep residual
+models, so the neural network learns corrections around a strong physical
+anchor instead of rediscovering the whole propagation law from scratch.
 
-\begin{enumerate}
-  \ifcase\doclanguage
-  \or
-    \item Objectius del treball.
-  \or
-    \item Objetivos del trabajo.
-  \else
-    \item Statement of purpose (objectives).
-  \fi
+\section{Work goals}
 
-  \ifcase\doclanguage
-  \or
-    \item Requisits i especificacions.
-  \or
-    \item Requisitos y especificaciones.
-  \else
-    \item Requirements and specifications.
-  \fi
+The initial technical targets were defined in physical units and were kept as
+the main success criteria throughout the project:
 
-  \ifcase\doclanguage
-  \or
-    \item Mètodes i procediments, citant si aquest treball és una continuació d'un altre projecte o utilitza aplicacions, algoritmes, programari o maquinari desenvolupat anteriorment per altres autors.
-  \or
-    \item Métodos y procedimientos, citando si este trabajo es una continuación de otro proyecto o utiliza aplicaciones, algoritmos, software o hardware desarrollado anteriormente por otros autores.
-  \else
-    \item Methods and procedures, citing if this work is a continuation of another project or it uses applications, algorithms, software or hardware previously developed by other authors.
-  \fi
+\begin{itemize}
+  \item path-loss RMSE below \SI{5}{dB};
+  \item delay-spread RMSE below \SI{50}{ns};
+  \item angular-spread RMSE below \SI{20}{\degree};
+  \item separate reporting for global, LoS, and NLoS regions.
+\end{itemize}
 
-  \ifcase\doclanguage
-  \or
-    \item Pla de treball amb tasques, fites i un diagrama de Gantt.
-  \or
-    \item Plan de trabajo con tareas, hitos y un diagrama de Gantt.
-  \else
-    \item Work plan with tasks, milestones and a Gantt diagram.
-  \fi
+The most important methodological objective was not only to obtain a low
+average RMSE, but to do so under a strict city-holdout protocol. In this
+setting, complete cities are reserved for validation and testing. This is a
+harder and more deployment-relevant condition than random pixel or random tile
+splits, because the model must extrapolate to urban layouts it has never seen.
 
-  \ifcase\doclanguage
-  \or
-    \item Descripció de les desviacions del pla inicial i incidències que poden haver ocorregut.
-  \or
-    \item Descripción de las desviaciones del plan inicial e incidencias que pueden haber ocurrido.
-  \else
-    \item Description of the deviations from the initial plan and incidences that may have occurred.
-  \fi
-\end{enumerate}
+\section{Requirements and specifications}
 
-\ifcase\doclanguage
-\or
-  Els capítols mínims que aquest document de TFE hauria de tenir es descriuen a continuació; no obstant això, poden tenir noms diferents i es poden afegir més capítols.
-\or
-  Los capítulos mínimos que este documento de TFE debería tener se describen a continuación, sin embargo, pueden tener nombres diferentes y se pueden agregar más capítulos.
-\else
-  The minimum chapters that this thesis document should have are described below, nevertheless they can have different names and more chapters can be added.
-\fi
+The project uses the CKM HDF5 dataset
+\texttt{CKM\_Dataset\_270326.h5}. The canonical dataset contains 66 real-city
+scenarios and 16180 samples. Each sample is a $513\times513$ pixel raster with
+the following fields:
 
-\ifcase\doclanguage
-\or
-  \section{Objectius del treball}
-\or
-  \section{Objectivos del trabajo}
-\else
-  \section{Work goals}
-\fi
+\begin{table}[ht]
+\centering
+\caption{Main CKM dataset fields used in the thesis.}
+\label{tab:dataset_fields_intro}
+\begin{tabularx}{\textwidth}{lllX}
+\toprule
+Field & Shape & Type & Role \\
+\midrule
+\texttt{topology\_map} & $513^2$ & float32 & Building height in metres. Pixels with buildings are not valid receiver locations. \\
+\texttt{los\_mask} & $513^2$ & uint8 & Binary LoS/NLoS visibility mask. \\
+\texttt{path\_loss} & $513^2$ & uint8 & Ray-traced path loss in dB, quantized at approximately \SI{1}{dB}. \\
+\texttt{delay\_spread} & $513^2$ & uint16 & Delay-spread target, stored as integers and evaluated in ns after decoding. \\
+\texttt{angular\_spread} & $513^2$ & uint8 & Angular-spread target, stored as integers and evaluated in degrees after decoding. \\
+\texttt{uav\_height} & scalar & float32 & UAV transmitter height, used for conditioning and physical priors. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
-\lipsum[1]
+All losses and metrics are computed only on ground pixels. Building pixels are
+kept in the input topology because they explain propagation, but they are
+excluded from error accumulation because the receiver is assumed to be on the
+ground. The fixed receiver height used in the analytic priors is
+\SI{1.5}{m}. The transmitter is the UAV antenna, whose height varies
+continuously across the dataset.
 
-\ifcase\doclanguage
-\or
-  \section{Requisits i especificacions}
-\or
-  \section{Requisitos y especificaciones}
-\else
-  \section{Requirements and specifications}
-\fi
+\section{Methods and procedures}
 
-\lipsum[2-4]
+The work started from a U-Net and pix2pix-style cGAN baseline
+\cite{isola2017pix2pix}. This was a natural first approach because the task is
+dense map prediction, but the adversarial component did not solve the physical
+errors that mattered most. Later attempts changed decoder upsampling, added
+multi-scale supervision, separated metrics and regimes, introduced physical
+prior channels, and finally moved to topology-partitioned experts.
 
-\ifcase\doclanguage
-\or
-  \section{Mètodes i procediments}
-\or
-  \section{Métodos y procedimientos}
-\else
-  \section{Methods and procedures}
-\fi
+The largest methodological change came after the models repeatedly failed on
+NLoS tails. Histogram analysis showed that the path-loss distribution in NLoS
+regions is not well described by a single Gaussian-like target. This motivated
+Try 76: a distribution-first architecture with a sample-level GMM head followed
+by a map head that assigns pixels to distribution components. Try 77 applied
+the same idea to delay and angular spreads, where spike-plus-tail behaviour is
+even more visible.
 
-\lipsum[5-6]
+The final stage changed the role of deep learning again. Try 78 built a strong
+interpretable path-loss prior from FSPL, coherent two-ray LoS propagation, and
+calibrated NLoS corrections. Try 79 built log-domain ridge-calibrated priors
+for delay and angular spread. Try 80 then combined these frozen priors with a
+shared multi-task residual network.
 
-\ifcase\doclanguage
-\or
-  \section{Pla de treball}
-\or
-  \section{Plan de trabajo}
-\else
-  \section{Work plan}
-\fi
+\section{Work plan}
 \label{sec:workplan}
 
-\ifcase\doclanguage
-\or
-  Normalment les figures i taules es col·loquen en els entorns \verb|\figure| i \verb|\table|, que poden flotar lliurement en el document. Pots identificar cada flotant amb un \verb|\label|
-\or
-  Normalmente las figuras y tablas se colocan en los entornos \verb|\figure| y \verb|\table|, que pueden flotar libremente en el documento. Puedes identificar cada flotante con un \verb|\label|
-\else
-  Normally the figures and tables are put in \verb|\figure| and \verb|\table| environments, that can float freely in the document. You can identify each float with a \verb|\label|
-\fi
+The original work plan assumed a mostly linear path: literature review, dataset
+preparation, baseline U-Net/cGAN training, model improvement, evaluation, and
+writing. The actual project became more experimental because each stage exposed
+a different limitation. Figure~\ref{fig:gantt} therefore shows the plan as the
+major technical phases rather than as all 80 individual attempts.
 
 \begin{figure}[ht]
   \centering
   \input{img/gantt_diagrama}
-  \ifcase\doclanguage
-  \or
-    \caption[Diagrama de Gantt del projecte]{\footnotesize{Diagrama de Gantt del projecte. Per a més informació, llegiu el manual \cite{skalagantt} de Skala.}}
-  \or
-    \caption[Diagrama de Gantt del proyecto]{\footnotesize{Diagrama de Gantt del proyecto. Para más información, leer el manual \cite{skalagantt} de Skala.}}
-  \else
-    \caption[Project's Gantt diagram]{\footnotesize{Gantt diagram of the project. For more information read the manual \cite{skalagantt} of Skala.}}
-  \fi
+  \caption[Project's Gantt diagram]{Gantt diagram of the project, grouped by
+  the main architectural phases rather than by individual attempts.}
   \label{fig:gantt}
 \end{figure}
 
+The main deviation from the initial plan was the discovery that a standard
+image-to-image CNN could look plausible in LoS-dominated regions while still
+failing badly in NLoS regions. This forced several changes: stricter ground-only
+masking, regime-level diagnostics, topology experts, physical priors, and
+finally the distribution-first and prior-anchored designs. The result is a
+project whose final method is more hybrid and more interpretable than the
+initial proposal anticipated.

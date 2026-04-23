@@ -1,27 +1,173 @@
-%%%% PLEASE REPLACE ENTIRELY WITH YOUR OWN CONTENT %%%%
-
-\ifcase\doclanguage\or
-\chapter{Anàlisi de sostenibilitat i implicacions ètiques}
-Des del curs 2023-24, la normativa de TFG de l'ETSETB demana la inclusió d'un informe de sostenibilitat a la memòria del treball. Aquesta anàlisi consisteix en una valoració dels impactes ambientals, socials i econòmics, i les possibles implicacions ètiques que ha comportat la realització del TFG. En el cas que el TFG plantegi un producte/servei/sistema/edifici/etc., que podria arribar a implementar-se, l’anàlisi també ha de realitzar-se sobre els impactes que tindria la proposta en la seva execució durant les diferents etapes del seu cicle de vida.
-
-A la plataforma ATENEA trobareu un document separat amb les instruccions detallades de què ha de contenir i com cal confeccionar l'informe de sostenibilitat.
-
-{\bigskip\bfseries {\large IMPORTANT:} Noteu que l'antic capítol de «Pressupost del projecte» ara queda integrat en l'anàlisi de sostenibilitat, concretament en les cel·les «Econòmic/Desenvolupament del TFG» i «Econòmic/Execució del projecte».}
-
-\or
-\chapter{Análisis de sostenibilidad e implicaciones éticas}
-A partir del curso 2023-24, la normativa de TFG de la ETSETB solicita la inclusión de un informe de sostenibilidad en la memoria del trabajo. Este análisis consiste en una evaluación de los impactos ambientales, sociales y económicos, así como las posibles implicaciones éticas derivadas de la realización del TFG. En el caso de que el TFG plantee un producto/servicio/sistema/edificio, etc., que pudiera llegar a implementarse, el análisis también debe abordar los impactos que la propuesta tendría durante las diferentes etapas de su ciclo de vida.
-
-En la plataforma ATENEA encontrarán un documento aparte con instrucciones detalladas sobre lo que debe contener y cómo elaborar el informe de sostenibilidad.
-
-{\bigskip\bfseries {\large IMPORTANTE:} Tener en cuenta que el antiguo capítulo de «Presupuesto del proyecto» ahora se integra en el análisis de sostenibilidad, específicamente en las celdas «Económico/Desarrollo del TFG» y «Económico/Ejecución del proyecto».}
-
-\else
 \chapter{Sustainability Analysis and Ethical Implications}
-Starting from the academic year 2023-24, the TFG regulations of ETSETB require the inclusion of a sustainability report in the project's documentation. This analysis involves an assessment of environmental, social, and economic impacts, as well as potential ethical implications resulting from the completion of the TFG. In the case where the TFG involves a product/service/system/building, etc., that could be implemented, the analysis should also address the impacts that the proposal would have during the various stages of its lifecycle.
 
-Detailed instructions on what the sustainability report should contain and how to prepare it can be found on the ATENEA platform.
+This chapter follows the ETSETB sustainability guide structure: first a
+sustainability matrix, then the ethical implications, and finally the relation
+with the Sustainable Development Goals. The analysis separates the development
+of the BT from the hypothetical execution of the project, because this thesis
+does not manufacture a physical product. Its deployable result is a software
+pipeline for faster CKM prediction.
 
-{\bigskip\bfseries {\large IMPORTANT:} Please note that the previous chapter on "Project Budget" is now integrated into the sustainability analysis, specifically in the cells "Economic Cell/Development of BT" and "Economic Cell/Project Execution".}
+\section{Sustainability matrix}
 
-\fi
+\begin{table}[ht]
+\centering
+\caption{Sustainability matrix summary for the thesis.}
+\label{tab:sustainability_matrix}
+\begin{tabularx}{\textwidth}{lXXX}
+\toprule
+Perspective & Development of BT & Project execution & Risks and limitations \\
+\midrule
+Environmental &
+GPU training, laptop use, storage, and writing. &
+Reduced need for repeated ray-tracing simulations. &
+Extra retraining, larger models, or poor reuse of cached priors could increase footprint. \\
+Economic &
+Student and supervision time, plus shared HPC use. &
+Lower planning cost if the surrogate replaces repeated simulations. &
+Real deployment needs field validation and maintenance. \\
+Social &
+Skills gained in wireless modelling, ML, and scientific reporting. &
+Faster UAV coverage planning for temporary or emergency networks. &
+Bias toward represented city morphologies and risk of overclaiming simulated results. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Environmental impact}
+
+\textbf{Development of the BT.} The main environmental cost of the academic
+work was electricity for computation. The final Try~80 line used four RTX~2080
+Ti-class GPUs for approximately \SI{12}{h}, consuming about \SI{18}{kWh}.
+The final Try~76--79 stage required roughly \SI{18}{h} of similar GPU time,
+adding about \SI{27}{kWh}. The complete exploratory project exceeded
+\SI{400}{GPU-h}; at the same approximation of \SI{1.5}{kW} per four-GPU node,
+this corresponds to roughly \SI{150}{kWh} and approximately
+\SI{30}{kgCO2e} at an illustrative factor of 0.2~kgCO2e/kWh. This
+exploratory footprint is a one-time research overhead, not the marginal cost
+of using the final system in deployment.
+
+Several decisions reduced avoidable impact: using city-holdout validation
+instead of repeated full retraining for every diagnostic, reusing calibration
+artifacts from Try 78 and Try 79 in Try 80, plotting from saved histories, and
+keeping final priors frozen rather than recomputing them blindly in every
+experiment.
+
+\textbf{Project execution.} In operation, a trained CKM surrogate can reduce
+the number of ray-tracing simulations required during planning. A ray tracer is
+still needed to generate reliable training data and to validate new regimes, 
+but this is a one time thing. And now this model can generalize without needing
+new simulations for 6G enabled 7.125GHz UAV enabled networks, which is the main future use case.
+The surrogate can also be used for fast what-if analyses during planning: 
+it is not a replacement for ray tracing in every scenario, but it can evaluate
+many UAV heights or urban alternatives at much lower marginal energy cost.
+
+
+\textbf{Risks and limitations.} The environmental benefit depends on reuse. If
+the model is retrained from scratch for every new city or frequency, the energy
+advantage becomes weaker, but this shouldn't be the case unless very different cities are considered. 
+The analysis also does not include the embodied carbon of the GPUs or the data-centre infrastructure,
+because the project used existing shared equipment.
+
+\subsection{Economic impact}
+
+\textbf{Development of the BT.} Table~\ref{tab:sustainability_budget} gives an
+indicative professional-cost view. It is not a billed project budget, but it
+answers the guide's request to quantify human and material resources.
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.1}
+\caption{Indicative economic cost of the BT development.}
+\label{tab:sustainability_budget}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrr>{\raggedright\arraybackslash}p{3cm}}
+\toprule
+Task or resource & Quantity & Unit cost & Cost & Notes \\
+\midrule
+Literature review and proposal     & 60\,h         & 12\,EUR/h        &    720\,EUR & Initial scope and SOA \\
+Dataset and baseline implementation & 90\,h        & 12\,EUR/h        & 1\,080\,EUR & HDF5, U-Net/cGAN, masking \\
+Experiment design and debugging    & 180\,h        & 12\,EUR/h        & 2\,160\,EUR & Tries, priors, experts, evaluation \\
+Writing and figures                & 120\,h        & 12\,EUR/h        & 1\,440\,EUR & Thesis text and diagrams \\
+Supervision meetings and his time for dataset generation from simulation           & 50\,h         & 40\,EUR/h        & 2\,000\,EUR & Advisor time \\
+GPU compute, final Try\,80         & 48\,GPU-h     & 0.25\,EUR/GPU-h  &    12\,EUR  & 4$\times$ RTX\,2080\,Ti, 12\,h \\
+GPU compute, Tries 76--79          & 72\,GPU-h     & 0.25\,EUR/GPU-h  &    18\,EUR  & 4$\times$ RTX\,2080\,Ti, 18\,h \\
+Exploratory compute                & $\approx$400\,GPU-h & 0.25\,EUR/GPU-h & $\approx$100\,EUR & Research iterations \\
+Electricity                        & ---           & incl.\ in GPU-h  &     0\,EUR  & Covered by GPU rental rate \\
+Storage and code hosting           & ---           & free             &     0\,EUR  & GitHub \\
+\midrule
+\textbf{Total indicative cost}     &               &                  & \textbf{$\approx$7\,530\,EUR} & \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Project execution.} The project is economically attractive if the
+trained surrogate reduces repeated ray-tracing runs during network planning.
+The main future costs would be dataset generation for new frequencies or
+regions, occasional recalibration with field data, model maintenance, and
+quality assurance before operational use.
+
+\textbf{Risks and limitations.} The largest economic risk is a simulator-to-real
+gap. If real measurements show that the ray-traced dataset does not transfer,
+additional field campaigns and recalibration would be necessary. Another risk
+is scope growth: making a frequency-general outdoor CKM model requires new
+simulations, larger storage, and more validation.
+
+\subsection{Social impact}
+
+\textbf{Development of the BT.} The work had a positive educational impact: it
+required combining propagation theory, machine learning, HPC workflows,
+scientific writing, and reproducible evaluation. The thesis also required
+continuous critical review of failed approaches, which is a useful professional
+practice. Inclusive language is used where applicable, and the work does not
+assign technical roles or expected users by gender.
+
+\textbf{Project execution.} Faster CKM prediction can help plan temporary UAV
+coverage for public events, emergency response, rural extensions, or
+infrastructure restoration. The direct beneficiaries would be network planners
+and, indirectly, users who receive more reliable wireless coverage.
+
+\textbf{Risks and limitations.} The project could negatively affect users if
+coverage decisions were made from overconfident simulated predictions without
+field validation. There is also a representativeness risk: the 66-city dataset
+is broad, but no dataset covers every urban morphology, construction material,
+or socioeconomic context. Future systems should monitor errors by city type,
+height bin, and LoS/NLoS regime rather than using one global RMSE as the only
+quality indicator.
+
+\section{Ethical implications}
+
+The work addresses the need for faster and more transparent radio-map
+prediction in UAV-enabled networks. That need was initially defined by the
+project proposal and refined through experiment results: pure deep learning was
+not enough, so the final method keeps interpretable priors and reports
+regime-level errors.
+
+The main ethical obligation is honesty about validity. The dataset is simulated
+through ray tracing, so the thesis must not claim real-world deployment
+performance without field measurements. The final Try 80 results are also left
+as placeholders until training finishes and a frozen checkpoint is selected.
+
+The project aligns with professional engineering ethics by documenting
+assumptions, avoiding data leakage between cities, reporting limitations, and
+making the evaluation contract explicit. A future operational system should
+also include human review before coverage decisions affect public-service or
+emergency deployments.
+
+\section{Relationship with the Sustainable Development Goals}
+
+The thesis is most closely aligned with:
+
+\begin{itemize}
+  \item \textbf{SDG 9: Industry, Innovation and Infrastructure.} The project
+  develops a method for faster planning and evaluation of wireless
+  infrastructure.
+  \item \textbf{SDG 11: Sustainable Cities and Communities.} Better radio-map
+  prediction can support temporary and resilient urban connectivity. With less needed resources to plan wireless infrastructure.
+  \item \textbf{SDG 13: Climate Action.} The method can reduce repeated
+  high electricity (hence carbon) costs of simulation once a validated surrogate is available, although this
+  benefit depends on responsible reuse and avoiding unnecessary retraining.
+\end{itemize}
+
+The contribution is indirect: this thesis does not deploy infrastructure by
+itself, but it can reduce planning cost and help future UAV network tools make
+coverage decisions faster and with clearer uncertainty reporting.

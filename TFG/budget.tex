@@ -1,1 +1,31 @@
-Hello, I will do this later
+\chapter{Budget}
+
+The project budget is mainly a development and computation budget. No physical
+prototype was manufactured. The main resources were student engineering time,
+supervision time, local workstation use, and HPC GPU time.
+
+\begin{table}[ht]
+\centering
+\caption{Estimated development budget. Monetary values are indicative and can
+be adjusted to the official ETSETB costing criteria.}
+\label{tab:budget}
+\begin{tabularx}{\textwidth}{lrrX}
+\toprule
+Item & Quantity & Unit cost & Notes \\
+\midrule
+Student engineering work & 450 h & 0 EUR & Academic work; opportunity cost not billed. \\
+Academic supervision & 25 h & 0 EUR & Included in degree supervision. \\
+Cluster GPU compute, final Try 80 & 4 GPUs x 12 h & shared & RTX 2080 Ti-class run. \\
+Cluster GPU compute, Tries 76--79 & 4 GPUs x 18 h & shared & Final-stage experiments before Try 80. \\
+Exploratory compute & over 200 h & shared & Research iterations; not counted as deployable cost. \\
+Storage and code hosting & existing & 0 EUR & Reused institutional/local infrastructure. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+If electricity is costed separately, a representative final Try 80 run at
+approximately \SI{1.5}{kW} for \SI{12}{h} consumes about \SI{18}{kWh}. At
+\SI{0.20}{EUR/kWh}, this corresponds to approximately 3.6 EUR of electricity
+for the final run. This value is small compared with personnel time and also
+small compared with repeatedly running full ray-tracing simulations for new
+deployments.

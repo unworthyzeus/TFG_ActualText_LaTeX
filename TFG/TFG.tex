@@ -1,4 +1,4 @@
-% These are "magic" comments understood by the "TeXStudio" editor
+﻿% These are "magic" comments understood by the "TeXStudio" editor
 % !TeX encoding = UTF-8
 % !TeX TS-program = lualatex
 % !TeX TXS-program:bibliography = biber
@@ -22,7 +22,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%% Please UNCOMMENT and/or provide suitable information to the macros below
-%%% Si us plau, DESCOMENTEU i/o ompliu les macros següents amb la informació adient.
+%%% Si us plau, DESCOMENTEU i/o ompliu les macros segÃ¼ents amb la informaciÃ³ adient.
 
 %%% Specify the document language
 %%%   1: Catalan
@@ -33,14 +33,14 @@
 % Set-up language and load language-related cover page macros
 \input{config/lang.tex}
 
-%%% Thesis Title / Títol del TFG
+%%% Thesis Title / TÃ­tol del TFG
 \setTitle{Channel Knowledge Map Prediction with Deep Learning for 6G UAV-Enabled Networks}
 
 %%% Name of the Thesis Author / Nom de l'autor del TFG
 \setAuthor{Guillem Moreno Garcia}
 
 %%% Degree's name. Uncomment the "setDegree" macro and set its argument to one:
-%%% Nom del Grau. Descomenteu la macro «setDegree» i passeu-li un d'aquests paràmetres:
+%%% Nom del Grau. Descomenteu la macro Â«setDegreeÂ» i passeu-li un d'aquests parÃ metres:
 %%%   \GEF     - Physics Engineering            <<<< DON'T USE THIS, as the template is not approved by the GEF faculty yet
 %%%   \GREELEC - Electronics Engineering
 %%%   \GRETST  - Telecommunications Engineering
@@ -49,7 +49,7 @@
 %%% Name of the Thesis Advisor / Director
 \setAdvisor{Sergi Abadal, Evgenii Vinogradov}
 
-%%% Name of the Thesis Rewiewer / «Ponent»
+%%% Name of the Thesis Rewiewer / Â«PonentÂ»
 \setReviewer{TBD}
 
 %%% Document's date (\TFGdate by default)
@@ -77,11 +77,11 @@
 \input{summary}                   % <<<<<< Please replace "summary.tex" entirely with your own content written in the required languages.
 
 
-%%%% DEDICATION PAGE / PÀGINA DE DEDICATÒRIA %%%%
+%%%% DEDICATION PAGE / PÃ€GINA DE DEDICATÃ’RIA %%%%
 \input{dedication}
 
 
-%%%% ACKNOWLEDGEMENTS / AGRAÏMENTS %%%%
+%%%% ACKNOWLEDGEMENTS / AGRAÃMENTS %%%%
 \input{acknowlegdements}
 
 
@@ -91,21 +91,21 @@
 
 %%%% INDEX %%%%
 \clearpage
-\addcontentsline{toc}{section}{\ifcase\doclanguage\or Índex\or Índice\else Contents\fi}
+\addcontentsline{toc}{section}{\ifcase\doclanguage\or Ãndex\or Ãndice\else Contents\fi}
 \tableofcontents
 
 
 %%%% LISTS %%%%
 \listoffigures 
-\addcontentsline{toc}{section}{\ifcase\doclanguage\or Índex de figures \or Lista de figuras \else List of figures\fi}
+\addcontentsline{toc}{section}{\ifcase\doclanguage\or Ãndex de figures \or Lista de figuras \else List of figures\fi}
 \listoftables
-\addcontentsline{toc}{section}{\ifcase\doclanguage\or Índex de taules \or Índice de cuadros \else List of tables\fi}
+\addcontentsline{toc}{section}{\ifcase\doclanguage\or Ãndex de taules \or Ãndice de cuadros \else List of tables\fi}
 %\lstlistoflistings
 
 
 %%%% ACRONYMS %%%% <<<<<< PLEASE DEFINE YOUR ACRONYMS IN "acronyms.tex"
 \clearpage
-\newcommand\AbbrvName{\ifcase\doclanguage\or Sigles i acrònims\or Siglas y acrónimos\else Abbreviations\fi}
+\newcommand\AbbrvName{\ifcase\doclanguage\or Sigles i acrÃ²nims\or Siglas y acrÃ³nimos\else Abbreviations\fi}
 \addcontentsline{toc}{section}{\AbbrvName}
 \printacronyms[
   heading=chapter*,
@@ -141,9 +141,7 @@
 \input{results}
 
 
-%%%% BUDGET %%%%
-% Budget chapter. Please replace "budget.tex" entirely with your own content written in the desired language.
-\input{budget}
+% Budget is integrated into the sustainability analysis chapter.
 
 
 %%%% SUSTAINABILITY REPORT %%%%    <<<<<<<<<<<<<<<< NEW !!
@@ -159,27 +157,9 @@
 %%%% BIBLIOGRAPHY %%%%
 \nocite{*}               % Forces all entries to be printed, even if not cited
 % Bibliography intro
-% Supress this macro (or modify its contents to suit your needs).
 \defbibnote{bib-intro}{%
-\ifcase\doclanguage\or
-  El sistema \textit{biblatex} simplifica la gestió de la bibliografia en treballs científics, proporcionant automatització i personalització en el format de les citacions. Això permet a l'autor del document enfocar-se en el contingut sense haver de preocupar-se per l'estil de les referències, estalviant temps i reduint errors.
-  
-  La base de dades de referències bibliogràfiques és al fitxer «TFG.bib» i és allà on heu d'afegir les vostres referències. Consulteu el manual del \texttt{biblatex}, secció «Database Guide», per conèixer els tipus de referències i camps disponibles.
-  
-  Podeu modificar (o suprimir) aquesta nota editant la macro \texttt{\textbackslash defbibnote} al fitxer «TFG.tex».
-  \par\hfil\rule[3pt]{.5\textwidth}{0.4pt}\hfil\par\or
-  El sistema \textit{biblatex} simplifica la gestión de la bibliografía en trabajos científicos, proporcionando automatización y personalización en el formato de las citas. Esto permite al autor del documento enfocarse en el contenido sin tener que preocuparse por el estilo de las referencias, ahorrando tiempo y reduciendo errores.
-  
-  La base de datos de referencias bibliográficas está en el archivo «TFG.bib» y es allí donde se deben añadir vuestras referencias. Consultar el manual de \texttt{biblatex}, sección «Database Guide», para conocer los tipos de referencias y campos disponibles.
-  
-  Podéis modificar (o suprimir) esta nota editando la macro \texttt{\textbackslash defbibnote} en el archivo «TFG.tex».
-  \par\hfil\rule[3pt]{.5\textwidth}{0.4pt}\hfil\par\else
-  The \textit{biblatex} system simplifies the management of the bibliography in scientific works, providing automation and customization in the format of citations. This allows the document's author to focus on the content without having to worry about the style of the references, saving time and reducing errors.
-  
-  The bibliographic references database is in the file “TFG.bib”, and this is where you should add your references. Consult the \texttt{biblatex} manual, section “Database Guide”, to learn about the available types of references and fields.
-  
-  You can modify (or delete) this note by editing the \texttt{\textbackslash defbibnote} macro in the file “TFG.tex”.
-  \par\hfil\rule[3pt]{.5\textwidth}{0.4pt}\hfil\par\fi%
+References used for the propagation models, neural-network baselines, training
+techniques, and LaTeX tooling cited in this thesis.
 }
 \printbibliography[heading=bibintoc,prenote={bib-intro}]
 

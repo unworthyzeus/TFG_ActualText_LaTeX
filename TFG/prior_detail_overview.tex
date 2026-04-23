@@ -1,0 +1,188 @@
+This section provides the technical documentation for the non-DL physical
+priors (\texttt{Try 78} and \texttt{Try 79}) and the final joint architecture
+(\texttt{Try 80}). It serves as a bridge between the high-level attempt history
+and the numerical results, explaining the exact mathematical transformations,
+how every parameter was fitted in practice, and what is genuinely new in the
+final \texttt{Try 80} approach.
+
+\paragraph{Notation convention.}
+Following the notation used in the ETSETB template, vectors and matrices are
+typeset in bold roman font. Vectors use lowercase symbols and matrices, maps or
+tensors use uppercase symbols. Scalars are left in italic math font. For
+example, \(\textbf{x}_n\) denotes the feature vector of pixel \(n\),
+\(\textbf{X}\) denotes a design matrix, \(\textbf{w}\) denotes a vector of
+fitted coefficients, and \(y_n\), \(d_{2D,n}\), or \(h_{\mathrm{tx}}\) denote
+scalar quantities. The implementation often stores full maps as tensors, but
+the derivations below use a pixel index \(n\) whenever this makes the
+regression or likelihood clearer.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{p{2.2cm} p{3.1cm} p{4.0cm} X}
+\toprule
+\textbf{Block} & \textbf{Literature basis} & \textbf{CKM adaptation} &
+\textbf{Role in \texttt{Try 80}} \\
+\midrule
+Path-loss LoS & FSPL and coherent two-ray propagation &
+Effective height-dependent reflection parameters and radial residuals fitted
+from CKM LoS pixels &
+Frozen LoS prior, injected as an input channel and used as the anchor for
+bounded residual learning. \\
+\addlinespace
+Path-loss NLoS & COST-231/Hata-style urban loss and A2G elevation envelopes &
+Regime-wise calibration with local density, height, shadowing and elevation
+features &
+Frozen NLoS prior selected by the explicit LoS/NLoS geometry mask. \\
+\addlinespace
+Delay and angular spread & Log-domain large-scale spread modelling and
+LoS/NLoS separation &
+Regime-wise ridge regression in \(\log(1+y)\) space using multiscale
+morphology and obstruction features &
+Frozen spread priors used as anchors for the multi-task residual model. \\
+\addlinespace
+\texttt{Try 80} residual model & Probabilistic regression and mixture-density
+ideas &
+Prior-anchored per-pixel GMM with residual caps, anchor gates, explicit
+region masks and shared multi-task trunk &
+Learns residual uncertainty and local corrections without replacing the
+interpretable priors. \\
+\bottomrule
+\end{tabularx}
+\caption{One-page summary of what is inherited from the literature, what is
+adapted to CKM, and what is reused or newly assembled in \texttt{Try 80}.}
+\label{tab:executive_summary}
+\end{table}
+
+\subsection{High-level architecture}
+
+The central design decision in \texttt{Try 80} is \emph{not} to learn path
+loss, delay spread, and angular spread from scratch. Instead:
+
+\begin{itemize}
+\item \texttt{Try 78} provides a frozen prior for \texttt{path\_loss},
+\item \texttt{Try 79} provides frozen priors for \texttt{delay\_spread} and
+      \texttt{angular\_spread},
+\item \texttt{Try 80} learns bounded residual corrections around those priors.
+\end{itemize}
+
+The deterministic or interpretable structure is kept in the prior, and the deep
+model is used only for the residual part that the prior cannot explain.
+Figure~\ref{fig:pipeline} illustrates the overall pipeline.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  box/.style={rectangle, draw, rounded corners=3pt, minimum width=2.2cm,
+              minimum height=0.75cm, align=center, font=\footnotesize},
+  arr/.style={-{Stealth[length=5pt]}, thick},
+  node distance=0.5cm and 1.1cm
+]
+\node[box, fill=blue!15]  (t78) {Try 78\\(path loss)};
+\node[box, fill=green!15, below=of t78] (t79) {Try 79\\(spreads)};
+\node[box, fill=orange!15, right=1.2cm of t78, yshift=-0.62cm] (inject)
+      {Prior injection\\(input channels)};
+\node[box, fill=red!15, right=1.2cm of inject] (dnn)
+      {DNN residual\\multi-task};
+\node[box, fill=gray!20, right=1.2cm of dnn] (out)
+      {PL, DS, AS\\outputs};
+
+\draw[arr] (t78) -- (inject);
+\draw[arr] (t79) -- (inject);
+\draw[arr] (inject) -- (dnn);
+\draw[arr] (dnn) -- (out);
+
+\node[below=0.25cm of dnn, font=\scriptsize, text width=2.4cm, align=center]
+      {$\delta \in [-\delta_{\max}, +\delta_{\max}]$};
+\end{tikzpicture}
+\caption{Overall \texttt{Try 80} pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta$ around them.}
+\label{fig:pipeline}
+\end{figure}
+
+\subsection{What was reused from the literature, what was changed, and what is new}
+
+The \texttt{Try 80} approach is not a single literature formula, but a
+multi-stage construction. The following points summarize the technical
+decisions for each task.
+
+\subsubsection{Try 78: path loss}
+
+\paragraph{What the literature provides.}
+FSPL is a textbook formula \cite{rappaport} that gives the power loss of a
+plane wave in free space as a function of distance and frequency. The two-ray
+model for a transmitter above a flat reflecting ground is also classical
+\cite{rappaport}. The COST-231 extension of the Hata model is a standard
+empirical formula for macrocell path loss in the 1.5--2 GHz range.
+Treating LoS and NLoS as fundamentally different propagation regimes is
+standard practice in 3GPP TR 38.901 \cite{tr38901}.
+
+\paragraph{What we took exactly from the literature.}
+The FSPL formula is used verbatim. The two-ray concept---direct ray plus
+ground-reflected ray with a complex-valued sum---is taken directly from the
+standard derivation in \cite{rappaport}. The COST-231 formula is used
+verbatim including all empirical constants. The qualitative idea of LoS/NLoS
+regime separation is taken from \cite{tr38901}.
+
+\paragraph{What we changed or did not take.}
+\begin{itemize}
+\item \textbf{Reflection coefficient $\Gamma$.} Instead of material-based
+      Fresnel coefficients, $\Gamma$ is replaced by an \emph{effective} complex
+      parameter $\rho(h_{\mathrm{tx}}) e^{j\phi(h_{\mathrm{tx}})}$ fitted
+      per UAV height bin from data.
+\item \textbf{Height-bin fitting.} Independent $(\rho, \phi, b)$ triples are
+      fitted per 5 m height bin, producing a height-dependent effective model
+      necessary because the CKM dataset covers roughly 10--460 m of UAV height.
+\item \textbf{Radial residual correction.} A separate range-dependent
+      correction term $r(d_{2D})$ is added to capture systematic smooth trends
+      in the residuals of the two-ray fit.
+\item \textbf{Regime-wise linear calibration on top of COST-231.} A 15-feature
+      design vector $\textbf{x}_{78}(x)$ and regime-wise OLS calibration correct the
+      raw prior using local density, height, NLoS support, and elevation
+      features. This step has no direct literature equivalent.
+\end{itemize}
+
+\subsubsection{Try 79: delay spread and angular spread}
+
+\paragraph{What the literature provides.}
+3GPP TR 38.901 \cite{tr38901} and WINNER II \cite{winner2} model delay spread
+and angular spread as log-normal random variables. Separate parameters are
+given for LoS and NLoS, and for different scenario types. Empirical UAV studies
+\cite{cai2019,izydorczyk2019} report that delay and angular spread increase as
+the UAV elevation angle decreases, which was corroborated by inspecting the
+dataset data.
+
+\paragraph{What we changed or did not take.}
+\begin{itemize}
+\item \textbf{Log-domain modelling.} We reuse the literature assumption
+      that spreads are log-normally distributed, so we predict $\log(1+y)$.
+\item \textbf{Morphology features.} Standard models use distance and antenna
+      height; we extend this with local building density and height features
+      extracted from the CKM map.
+\end{itemize}
+
+\subsubsection{Try 80: architecture and loss}
+
+\begin{itemize}
+\item \textbf{No stochastic channel simulator.} We fit a deterministic
+      regression that predicts the \emph{expected} spread value at each map
+      pixel, conditioned on local geometry.
+\item \textbf{Map-derived morphology features.} Per-pixel features such as
+      local building density $\rho_k(x)$, mean building height $h_k(x)$,
+      NLoS-support fraction $n_k(x)$, blocker depth $b_{41}(x)$, transmitter
+      clearance $c_{41}(x)$, and taller-building fraction $t_{41}(x)$ have
+      no equivalent in 3GPP or WINNER.
+\item \textbf{Regime-wise ridge regression per pixel.} The regime-wise ridge
+      regression and the associated fallback hierarchy are entirely our
+      construction, designed to handle the sparse-regime problem that arises
+      when the dataset is stratified across
+      $\mathrm{metric} \times \mathrm{topology} \times \mathrm{LoS/NLoS}
+      \times \mathrm{antenna\_bin}$.
+\item \textbf{Shared UNet with FiLM.} The backbone is a standard medical/vision
+      U-Net, but with sinusoidal FiLM conditioning on UAV height.
+\item \textbf{Prior-anchoring.} This is a genuinely new design choice for
+      this project: the model can only learn small corrections $[-\delta,
+      +\delta]$ relative to the physical priors.
+\item \textbf{UAV height as a feature.} The normalized height
+      $h_{\mathrm{norm}}$ and its square $h_{\mathrm{norm}}^2$ are included
+      because the CKM dataset spans a wide range of UAV heights.
+\end{itemize}

@@ -58,8 +58,11 @@
 \usepackage[svgnames]{xcolor}
 
 %%%% TABLES %%%%
-%\usepackage{array}
+\usepackage{array}
+\usepackage{multirow}
 \usepackage{tabularx,booktabs}
+\usepackage{float}
+\usepackage{subcaption}
 
 %%%% ACRONYMS %%%%
 \usepackage{acro}
@@ -69,6 +72,7 @@
 \usepackage{graphicx}
 \usepackage{caption}        %
 \usepackage{tikz}           % Generic vector graphics language
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,decorations.pathreplacing,fit,backgrounds}
 \usepackage{pgfgantt}       % Gantt diagrams. See "pgfgantt" manual for reference
 
 %%%% ELECTRONIC CIRCUITS %%%%
@@ -76,6 +80,9 @@
 
 %%%% PLOTTING %%%%
 \usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{pgfplotstable}
+\usepgfplotslibrary{groupplots}
 
 %%%% COLOR BOXES %%%%
 \usepackage{tcolorbox}
@@ -90,4 +97,3 @@
 
 %%%% HYPERLINKS %%%%
 \usepackage{hyperref}
-

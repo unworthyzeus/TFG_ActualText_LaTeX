@@ -1,66 +1,57 @@
-% Macro definitions for the template's translatable texts
-\newcommand\GanttTitleText{\ifcase\doclanguage Fases del Projecte\or Fases del Proyecto\else Phases of the Project\fi}
-\newcommand\GanttFirstQuarter{\ifcase\doclanguage {1r T.}\or {1.ᵉʳ T.}\else {1st Q.}\fi}
-\newcommand\GanttSecondQuarter{\ifcase\doclanguage {2n T.}\or {2.ᵒ T.}\else {2nd Q.}\fi}
-\newcommand\GanttThirdQuarter{\ifcase\doclanguage {3r T.}\or {3.ᵉʳ T.}\else {3rd Q.}\fi}
-\newcommand\GanttTodayLabel{\ifcase\doclanguage Ara\or Ahora\else Now\fi}
-\newcommand\GanttPlanningGroup{\ifcase\doclanguage Planificació\or Planificación\else Planning\fi}
-\newcommand\GanttProcessGroup{\ifcase\doclanguage Procés\or Proceso\else Process\fi}
-\newcommand\GanttFutureGroup{\ifcase\doclanguage Futur\or Futuro\else Future\fi}
-\newcommand\GanttPhaseOne{\ifcase\doclanguage Fase1\or Fase1\else Phase1\fi}
-\newcommand\GanttPhaseTwo{\ifcase\doclanguage Fase2\or Fase2\else Phase2\fi}
-\newcommand\GanttPhaseThree{\ifcase\doclanguage Fase3\or Fase3\else Phase3\fi}
-\newcommand\GanttPhaseFour{\ifcase\doclanguage Fase4\or Fase4\else Phase4\fi}
-\newcommand\GanttPhaseFive{\ifcase\doclanguage Fase5\or Fase5\else Phase5\fi}
-\newcommand\GanttTesting{\ifcase\doclanguage Proves\or Pruebas\else Testing\fi}
-\newcommand\GanttEnvironment{\ifcase\doclanguage Medi Ambient\or Medio Ambiente\else Environm.\fi}
-\newcommand\GanttFuture{\ifcase\doclanguage Futur\or Futuro\else Future\fi}
-
-
+\makebox[\textwidth][c]{%
 \begin{ganttchart}[
-  expand chart=\textwidth,
-  y unit title=0.5cm,
-  y unit chart=0.5cm,
-  vgrid,hgrid,
+  x unit=0.4cm,
+  y unit title=0.6cm,
+  y unit chart=0.6cm,
+  vgrid,
+  hgrid,
   title height=1,
-  today=25,%
-  today offset=.5,%
-  today label=\GanttTodayLabel,%
-  bar/.style={draw,fill=cyan},
-  bar incomplete/.append style={fill=yellow!50},
-  bar height=0.7
-]{1}{30}
+  bar/.style={draw,fill=cyan!55},
+  bar incomplete/.append style={fill=yellow!55},
+  progress label text={},
+  title label font=\small,
+  group label font=\small\bfseries,
+  bar label font=\small,
+  milestone label font=\small\itshape,
+  group/.style={draw,fill=gray!25},
+  bar height=0.7,
+  milestone/.style={fill=black}
+]{1}{24}
 
-  % days
-  \gantttitle{\GanttTitleText}{30} \\
-  \gantttitle{2023}{15}
-  \gantttitle{2024}{15} \\
-  \gantttitle{\GanttFirstQuarter}{5}
-  \gantttitle{\GanttSecondQuarter}{5}
-  \gantttitle{\GanttThirdQuarter}{5}
-  \gantttitle{\GanttFirstQuarter}{5}
-  \gantttitle{\GanttSecondQuarter}{5}
-  \gantttitle{\GanttThirdQuarter}{5} \\
-  
-  % boxes elem0 .. elem10
-  \ganttgroup[inline=false]{\GanttPlanningGroup}{2}{9}\\
-  \ganttbar[progress=100]{\GanttPhaseOne}{2}{8} \\
-  \ganttbar[progress=100]{\GanttPhaseTwo}{5}{9} \\
-  \ganttbar[progress=100]{\GanttPhaseThree}{2}{4} \\
-  \ganttgroup[inline=false]{\GanttProcessGroup}{10}{23}\\
-  \ganttbar[progress=100]{\GanttPhaseFour}{10}{18} \\
-  \ganttbar[progress=100]{\GanttPhaseFive}{19}{23} \\
-  \ganttbar[progress=100]{\GanttTesting}{10}{22} \\
-  \ganttgroup[inline=false]{\GanttFutureGroup}{24}{29}\\
-  \ganttbar[progress=25]{\GanttEnvironment}{25}{29} \\
-  \ganttbar[progress=25]{\GanttFuture}{24}{29} \\
-  
-  % relations
-  \ganttlink{elem1}{elem5}
-  \ganttlink{elem1}{elem5}
-  \ganttlink{elem2}{elem7}
-  \ganttlink{elem3}{elem7}
-  \ganttlink{elem5}{elem6}
-  \ganttlink{elem6}{elem9}
-  \ganttlink{elem7}{elem10}
-\end{ganttchart}
+  \gantttitle{Project Timeline (Weeks)}{24} \\
+  \gantttitle{Jan}{2}
+  \gantttitle{Feb}{4}
+  \gantttitle{Mar}{4}
+  \gantttitle{Apr}{5}
+  \gantttitle{May}{4}
+  \gantttitle{Jun}{5} \\
+
+  \ganttgroup{WP1: Introduction and Research}{1}{6} \\
+  \ganttbar[progress=100]{Proposal, workplan, SOA review}{1}{4} \\
+  \ganttbar[progress=100]{Literature on 6G UAV formulas}{1}{6} \\
+
+  \ganttgroup{WP2: Data Augmentation \& Heuristics}{10}{20} \\
+  \ganttbar[progress=100]{Attempts 23--32: Spread-branch \& first priors}{10}{12} \\
+  \ganttbar[progress=100]{Attempts 33--40: Building-mask exclusion}{12}{13} \\
+  \ganttbar[progress=100]{Attempts 41--50: Physical prior \& PMNet backbone}{13}{15} \\
+  \ganttbar[progress=100]{Try 78--79: Frozen non-DL priors}{18}{20} \\
+
+  \ganttgroup{WP3: Deep Learning Pipeline}{5}{22} \\
+  \ganttbar[progress=100]{Attempts 1--8: U-Net and pix2pix cGAN}{5}{7} \\
+  \ganttbar[progress=100]{Attempts 9--14: Height \& LoS/NLoS splits}{7}{8} \\
+  \ganttbar[progress=100]{Attempts 15--19: GroupNorm \& distance-map}{8}{9} \\
+  \ganttbar[progress=100]{Attempts 20--22: Bilinear decoder \& multiscale}{9}{10} \\
+  \ganttbar[progress=100]{Attempts 51--66: PMHHNet consolidation}{14}{16} \\
+  \ganttbar[progress=100]{Attempts 67--75: Anti-overfitting \& multi-expert}{15}{17} \\
+  \ganttbar[progress=100]{Attempts 76--77: Distribution-first GMM}{16}{18} \\
+  \ganttbar[progress=100]{Try 80: Joint prior-anchored residual model}{20}{22} \\
+
+  \ganttgroup{WP4: Testing}{18}{22} \\
+  \ganttbar[progress=100]{Model evaluation against ground truth}{18}{22} \\
+
+  \ganttgroup{WP5: Project Report}{8}{24} \\
+  \ganttbar[progress=100]{Critical review and documentation}{8}{14} \\
+  \ganttbar[progress=100]{Final thesis writing and formatting}{18}{24} \\
+  \ganttmilestone{Final Review \& Presentation}{24}
+\end{ganttchart}%
+}
