@@ -28,12 +28,16 @@ The raw NLoS prior takes the conservative (higher) of the two estimates:
 \label{eq:nlos_raw}
 \end{equation}
 
-The full raw prior blends LoS and NLoS estimates using the LoS mask $m_{\mathrm{LoS}}(x) \in [0,1]$:
+The full raw prior combines LoS and NLoS estimates using the binary LoS mask $m_{\mathrm{LoS}}(x) \in \{0,1\}$:
 \begin{equation}
 \mathrm{PL}^{(0)}(x) = m_{\mathrm{LoS}}(x)\,\mathrm{PL}_{\mathrm{LoS,blend}}(x) + \left(1-m_{\mathrm{LoS}}(x)\right)\mathrm{PL}_{\mathrm{NLoS,raw}}(x)
 \label{eq:pl0}
 \end{equation}
-with $\mathrm{PL}_{\mathrm{LoS,blend}}(x) = 0.7\,\mathrm{PL}_{\mathrm{LoS,path}}(x) + 0.3\min\!\left(\mathrm{PL}_{\mathrm{LoS,path}}(x),\,\mathrm{PL}_{\mathrm{A2G,LoS}}(x)\right)$.
+Since $m_{\mathrm{LoS}}(x)$ is binary, this is a hard switch between the LoS and NLoS expressions. Eq.~\eqref{eq:los_blend} defines a legacy auxiliary soft blend inside the LoS branch:
+\[
+\mathrm{PL}_{\mathrm{LoS,blend}}(x) = 0.7\,\mathrm{PL}_{\mathrm{LoS,path}}(x) + 0.3\min\!\left(\mathrm{PL}_{\mathrm{LoS,path}}(x),\,\mathrm{PL}_{\mathrm{A2G,LoS}}(x)\right).
+\]
+Here $\mathrm{PL}_{\mathrm{LoS,path}}(x)$ is the legacy LoS path term from the old formula prior, not the calibrated coherent two-ray map. In the final frozen \texttt{Try 80} path, LoS pixels are taken directly from the calibrated two-ray prior, so this mixed expression is retained only for historical completeness.
 
 \subsubsection{Stage 2: map-derived morphology features}
 
@@ -61,6 +65,8 @@ Elevation angle: $\theta(x) = \arctan\!\left(\frac{h_{\mathrm{tx}}-h_{\mathrm{rx
 \subsubsection{Stage 3: regime-wise linear calibration}
 
 The regime $r$ is identified by: coarse topology (\texttt{open\_lowrise}, \texttt{mixed\_midrise}, or \texttt{dense\_highrise}), propagation state (LoS or NLoS), and antenna height bin (\texttt{low\_ant}, \texttt{mid\_ant}, or \texttt{high\_ant}), giving up to $3 \times 2 \times 3 = 18$ regimes.
+
+The stored calibration for this legacy mixed-prior map still contains both LoS and NLoS regime coefficients. However, in the final frozen \texttt{Try 80} path-loss assembly only the NLoS pixels from this calibrated map are used, because LoS pixels are replaced by the separate calibrated coherent two-ray prior.
 
 The topology class is assigned by thresholding map-level building density $\bar\rho_{\mathrm{map}}$ and mean building height $\bar h_{\mathrm{map}}$ with thresholds $d_1 = 0.12$, $d_2 = 0.28$, $h_1 = 12$~m, $h_2 = 28$~m. The antenna-height bin uses tertiles with cutoffs at 58.12 m and 103.85 m.
 
@@ -100,8 +106,8 @@ Model & RMSE (dB) & Role in Try 80\\
 \midrule
 FSPL (LoS only)            & 3.9540 & ablation baseline (not used)\\
 FSPL + radial residual     & 3.7086 & ablation baseline (not used)\\
-Coherent two-ray (LoS)     & 1.7516 & building block $\to$ folded into Hybrid LoS\\
-Hybrid LoS                 & 1.7516 & \textbf{frozen LoS prior} (used in Try 80)\\
+Coherent two-ray (LoS)     & 1.7516 & \textbf{frozen LoS prior} (used in Try 80)\\
+Hybrid LoS                 & 1.7516 & legacy auxiliary variant (not used in final Try 80 path)\\
 Hybrid NLoS                & 3.3967 & \textbf{frozen NLoS prior} (used in Try 80)\\
 \midrule
 \textbf{Hybrid overall}    & \textbf{1.9246} & combined frozen prior (Try 80 input)\\
