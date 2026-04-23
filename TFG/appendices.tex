@@ -18,6 +18,13 @@ natural image: a visually plausible texture can be numerically wrong by many
 decibels. This is why later attempts reduced or removed adversarial pressure
 and moved toward explicit regression losses.
 
+In hindsight, the cGAN branch was useful because it made this mismatch visible
+early. The discriminator rewarded local realism, but the thesis metric rewards
+calibrated physical values under a ground mask. A sharp NLoS-looking shadow
+that is \SI{30}{dB} too low is still a bad radio map. This is why the later
+work stopped treating texture quality as a proxy for propagation quality and
+started reporting LoS/NLoS, topology, and antenna-height errors separately.
+
 Tries 9--14 introduced height conditioning and LoS/NLoS-aware evaluation.
 These changes were not cosmetic. UAV height changes the path-length geometry
 and therefore cannot be hidden in the sample index. Likewise, LoS and NLoS
@@ -61,6 +68,13 @@ near \SI{23.57}{dB}. The main failure mode was a heavy tail: many pixels were
 moderately accurate, but some NLoS pixels produced very large errors, so RMSE
 stayed much larger than MAE.
 
+The PMNet control line also clarified what the prior was and was not doing.
+Try 44, a no-prior PMNet-v3-style control, learned the LoS part to roughly
+\SI{4.27}{dB} but still left NLoS near \SI{38.58}{dB}. That result is important
+because it cannot be blamed on a bad physical-prior channel. The model had
+enough information to recover the smooth radial component, but not enough
+distributional structure to place blocked-link values reliably.
+
 Try 48 and Try 50 were useful negative evidence. Several richer NLoS priors
 and structural prior variants were tested, but a candidate refined prior at
 \SI{24.1777}{dB} did not beat the older \SI{23.5746}{dB} calibration, and the
@@ -74,10 +88,23 @@ FiLM, and expert routing. It reached \SI{9.41}{dB} overall, but the split
 metric showed the deeper issue: \SI{3.75}{dB} LoS and \SI{31.48}{dB} NLoS.
 The project was no longer failing uniformly.
 
+Several PMHHNet-era fixes were real engineering improvements, but none changed
+the basic diagnosis by themselves. Disabling an overly tolerant Huber setup,
+restoring full-resolution reconstruction losses, reducing excessive
+regularisation, removing centre-heavy corridor weighting, and restoring early
+high-frequency injection all made training more honest. Yet the no-prior
+reruns still showed the same pattern: LoS became reasonable, while NLoS
+remained much worse. The bottleneck had moved from backbone design to target
+modelling.
+
 Try 76 reframed NLoS as a distributional problem. Instead of predicting a
 single value everywhere, the model predicted sample-level mixture structure
 and then placed components spatially. This produced a much stronger NLoS path
 loss result, around \SI{3.34}{dB} pixel-weighted in the DirectML summary.
+The key lesson was that the prior was not the only route to a good model. If a
+network can estimate the correct marginal distribution and assign pixels to
+its components, it can approach the performance of a strong prior even without
+being handed the prior explicitly.
 
 Try 78 then showed that LoS path loss was even more deterministic than the
 neural history suggested. The dominant residual over FSPL was a ring field,
@@ -86,6 +113,15 @@ reflection parameters. Try 79 applied a related philosophy to delay and
 angular spreads: use log-domain, regime-wise calibration over geometry and
 local morphology features. Try 80 is the synthesis: frozen Try 78/79 priors
 plus a neural model that predicts bounded residuals.
+
+The final spread attempts added one more lesson: path loss, delay spread, and
+angular spread should not be forced into the same mental template. Path-loss
+LoS is structured and almost deterministic; path-loss NLoS is narrow in value
+but noisy in spatial placement. Delay and angular spread are different again:
+their most informative behaviour is often in NLoS, where multipath and
+scattering create the tail that matters for channel quality. This is why the
+final attempt history ends with distributions and regime-aware targets rather
+than only with larger encoders.
 
 \section{Try 80 configuration summary}
 
@@ -169,6 +205,153 @@ Section~\ref{sec:try80_detail}, especially Eqs.~\ref{eq:try80_mu},
 This placement makes the appendix optional for understanding the mathematics.
 A reader can follow the thesis from the main chapters alone; the appendix adds
 the chronological and reproducibility context behind those choices.
+
+\section{Representative Try 80 inspection panels}
+
+The qualitative appendix is generated with \newline
+\texttt{TFGpractice/TFGEightiethTry80/scripts/generate\_try80\_appendix\_panels.py}.
+It reuses the Try 80 validation split, the current
+\texttt{best\_model.pt} checkpoint, and the frozen Try 78/79 priors. The script
+selects one validation sample for each macro expert
+\((\mathrm{open},\mathrm{mixed},\mathrm{dense})\times
+(\mathrm{low},\mathrm{mid},\mathrm{high})\), renders the same six-column by
+three-row layout for each case, and writes a JSON manifest next to the images.
+
+The rows in each panel are the three targets: path loss, delay spread, and
+angular spread. The columns are, from left to right: ground truth, frozen prior,
+Try 80 model output, context or support mask, model minus ground-truth error,
+and model minus prior residual. This makes the panels useful both for visual
+inspection and for checking that the model is still behaving as a
+prior-anchored residual corrector.
+
+\begin{table}[ht]
+\centering
+\caption{Try 80 appendix panels generated from validation samples.}
+\label{tab:try80_appendix_panels}
+\small
+\begin{tabular}{llll}
+\toprule
+Expert & City & Sample & Height bin \\
+\midrule
+open/low & Chiang Mai & sample\_04525 & low \\
+open/mid & Chiang Mai & sample\_04521 & mid \\
+open/high & Segovia & sample\_13192 & high \\
+mixed/low & Chiang Mai & sample\_04438 & low \\
+mixed/mid & Chiang Mai & sample\_04436 & mid \\
+mixed/high & Chiang Mai & sample\_04437 & high \\
+dense/low & Chiang Mai & sample\_04446 & low \\
+dense/mid & Chiang Mai & sample\_04448 & mid \\
+dense/high & Chiang Mai & sample\_04447 & high \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The exact PNG filenames and per-sample RMSE values are stored in
+\newline
+\texttt{img/thesis\_figures/try80\_appendix\_panels/manifest.json}.
+
+\clearpage
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Segovia_sample_13192.png}
+\caption{Try 80 appendix panel for an open, high-antenna validation sample.}
+\label{fig:appendix_try80_open_high}
+\end{figure}
+
+\clearpage
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Chiang_Mai_sample_04437.png}
+\caption{Try 80 appendix panel for a mixed, high-antenna validation sample.}
+\label{fig:appendix_try80_mixed_high}
+\end{figure}
+
+\clearpage
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Chiang_Mai_sample_04447.png}
+\caption{Try 80 appendix panel for a dense, high-antenna validation sample.}
+\label{fig:appendix_try80_dense_high}
+\end{figure}
+
+\clearpage
+\section{Important implementation snippets}
+
+The full implementation remains in the repository; the snippets below include
+only the parts most relevant for reproducing the prior-anchored Try 80 design.
+They are included here so the appendix contains the bridge between the formulas
+in Chapter~3 and the code that produced the reported figures.
+
+\subsection{Frozen prior assembly}
+
+The Try 80 prior computer combines the calibrated Try 78 path-loss prior with
+the calibrated Try 79 spread priors. The path-loss branch keeps separate LoS
+and NLoS estimates, then blends them with the visibility mask:
+
+{\footnotesize
+\begin{verbatim}
+ct6 = classify_topology(topology)
+ct3 = macro_topology_class(ct6)
+ant = ant_bin(h_tx)
+
+los_prior = _predict_two_ray_map(h_tx, self._path_los_cal)
+nlos_prior = _compute_try78_nlos_map(topology, los_mask, h_tx,
+                                     self._path_nlos_cal)
+path_prior = np.where(los_mask > 0.5, los_prior, nlos_prior)
+
+delay_prior = _compute_try79_metric_prior("delay_spread", ct6, ant,
+                                          los_mask, shared, self._spread_cal)
+angular_prior = _compute_try79_metric_prior("angular_spread", ct6, ant,
+                                            los_mask, shared, self._spread_cal)
+\end{verbatim}
+}
+
+\subsection{Try 80 input tensor}
+
+Each sample is passed to the model as nine aligned channels. The first four
+channels describe geometry and support masks; the last five channels are the
+frozen priors, normalized to stable numeric ranges:
+
+{\footnotesize
+\begin{verbatim}
+channels = np.stack([
+    topology_input,
+    los,
+    nlos,
+    ground_f,
+    path_prior / 180.0,
+    path_prior_los / 180.0,
+    path_prior_nlos / 180.0,
+    np.log1p(np.clip(delay_prior, 0.0, None)) / LOG1P_DELAY_NORM,
+    np.log1p(np.clip(angular_prior, 0.0, None)) / LOG1P_ANGULAR_NORM,
+], axis=0)
+\end{verbatim}
+}
+
+\subsection{Bounded residual decoder}
+
+The model does not predict an unconstrained map. It predicts bounded residuals
+around the prior, with separate LoS and NLoS residual limits and a learned
+local gate \(\alpha\). For the spread targets, residuals are capped in native
+units and then mapped back to the log domain:
+
+{\footnotesize
+\begin{verbatim}
+residual_max_native = self.residual_max[task].to(device).view(1, 2, 1, 1, 1)
+global_delta_native = torch.tanh(global_raw["delta_mu_raw"]) * residual_max_native
+local_delta_native = torch.tanh(local_raw["local_delta_raw"]) * residual_max_native
+alpha = torch.sigmoid(local_raw["alpha_logits"] + self.cfg.alpha_bias)
+
+delta_total_native = torch.clamp(global_delta_native + local_delta_native,
+                                 min=-residual_max_native,
+                                 max=residual_max_native)
+
+mu_native = (prior_native_region + alpha * delta_total_native).clamp_min(0.0)
+mu = torch.log1p(mu_native)
+pred_region = (p * mu).sum(dim=2)
+pred = (pred_region * region_masks.squeeze(2)).sum(dim=1, keepdim=True)
+\end{verbatim}
+}
 
 \section{Final-result placeholder}
 

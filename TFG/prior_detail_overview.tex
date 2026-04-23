@@ -99,6 +99,302 @@ Figure~\ref{fig:pipeline} illustrates the overall pipeline.
 \label{fig:pipeline}
 \end{figure}
 
+\subsection{How to construct a good prior}
+\label{sec:good_prior_design}
+
+The most important lesson from the prior phase is that a useful prior is not
+just a formula that looks physical. A good prior is a complete, internally
+consistent measurement-to-prediction pipeline. It must use the same formula at
+fitting time and inference time, compute its features in the same units in both
+places, respect the evaluation mask, and encode only those physical assumptions
+that are actually visible in the data. This distinction explains why the
+earlier prior attempts around \texttt{Try 41}--\texttt{Try 50} looked very
+similar to the final \texttt{Try 78} prior, but produced radically different
+NLoS results.
+
+\subsubsection{A prior is more than an analytical equation}
+
+The first physical-prior experiments used the correct high-level idea:
+\begin{equation}
+  \widehat{\mathrm{PL}}(x)
+  =
+  \mathrm{PL}_{\mathrm{prior}}(x)
+  +
+  r_{\theta}(x),
+  \label{eq:good_prior_residual}
+\end{equation}
+where the analytical map explains the large-scale propagation trend and the
+network or calibration only predicts what remains. This idea was already much
+better than asking a CNN to rediscover path loss from raw topology alone.
+However, the numerical result showed that the first prior pipeline was still
+not good enough: the raw physical formula gave approximately
+\SI{67.23}{dB} RMSE, train-only regime-aware calibration improved it to about
+\SI{24.16}{dB}, and the enhanced obstruction-aware prior used around
+\texttt{Try 45} still reported approximately \SI{41.27}{dB} NLoS RMSE.
+
+The mistake would be to interpret this as evidence that physical priors were
+useless. The later results show the opposite. The real issue was that the
+prior was being used as a \emph{collection of formulas}, while the final
+\texttt{Try 78} prior treats it as a reproducible estimator. A formula can be
+correct in isolation and still fail if the fitted calibration is attached to a
+different runtime formula, or if the morphology features used during fitting
+are scaled differently from those used during evaluation. This is exactly the
+kind of failure that hurts NLoS most, because NLoS is controlled by local
+obstructions, nearby building density, elevation angle, and regime identity
+rather than by distance alone.
+
+\subsubsection{Why the old prior and \texttt{Try 78} were not equivalent}
+
+The earlier prior line and \texttt{Try 78} shared many ingredients:
+FSPL/two-ray geometry, COST-231-style urban attenuation, LoS/NLoS regime
+separation, antenna-height bins, and local obstruction features. On a slide,
+they can look almost identical. The difference is that \texttt{Try 78} removed
+several hidden inconsistencies.
+
+First, the base formula and the fitted calibration were made to match. In the
+old \texttt{Try 47}-derived prior, the calibration had been fitted for an
+A2G-strengthened prior of the form
+\(\mathrm{hybrid\_two\_ray\_cost231\_a2g\_nlos}\), but some runtime paths used
+the simpler \(\mathrm{hybrid\_two\_ray\_cost231}\) prior channel. The fitted
+coefficients therefore corrected one prior while inference sometimes supplied
+another. This is a severe error for NLoS pixels, because the A2G-NLoS envelope
+is precisely the part that changes the blocked-region baseline.
+
+Second, \texttt{Try 78} removed a feature-scale mismatch. In the older
+pipeline, the calibration script and the runtime data path did not compute the
+local-height features in exactly the same scale. The fitting code saw height
+features derived from raw or near-raw topology values, whereas the runtime path
+could apply the calibration to already normalized tensors and then divide by a
+height scale again. This made the same physical quantity appear with different
+magnitudes during fitting and inference. The calibration coefficients then had
+to compensate for an implementation mismatch instead of learning a stable
+physical correction. Because NLoS loss depends strongly on local building
+height and obstruction morphology, this mismatch was much more damaging in
+NLoS than in LoS.
+
+Third, regime assignment became sample-based instead of mainly city-label
+based. The earlier calibration inherited city-type mappings from previous
+experiments. This is useful when the split is stable, but it is less robust
+when a specific sample differs from the average morphology of its city.
+\texttt{Try 78} derives the coarse regime from the sample topology itself:
+building density, mean building height, LoS/NLoS mask, and antenna-height bin.
+This makes the prior closer to the actual input geometry and better aligned
+with city-holdout generalization.
+
+Fourth, the whole prior was evaluated as a self-contained prior-only system.
+\texttt{Try 78} loads the HDF5 arrays directly, computes the propagation
+formula, constructs the feature vector, fits the calibration on fit cities, and
+evaluates on held-out cities. This removed the ambiguity introduced by a larger
+training pipeline with normalized tensors, YAML-controlled formula channels,
+and separate calibration scripts. The result was not just cleaner code; it was
+a different scientific object. It became possible to say exactly what the
+prior knows and exactly how it is fitted.
+
+\subsubsection{Scope of this mismatch}
+
+It is important not to overgeneralize this diagnosis. The feature-scale
+mismatch described above was a real problem in the \emph{prior calibration}
+path, especially in the branch descended from \texttt{Try 47}. It does not
+mean that all bad NLoS results in earlier deep-learning branches were caused
+by the same hidden normalization bug.
+
+The no-prior and weak-prior DL branches had other verified problems. Some
+late residual experiments disabled or weakened the main full-resolution loss;
+some used excessive regularization, causing predictions to remain too close to
+the prior; some used Huber or smoothed objectives that reduced sensitivity to
+large NLoS tail errors; and some corridor-weighting settings over-emphasized
+the centre of the map. These were training-design issues, not the same
+fit-vs-runtime calibration-scale mismatch.
+
+The clearest evidence is that the bad NLoS behaviour appears even in branches
+where the prior path was absent or disabled. The clean \texttt{Try 44}
+no-prior PMNet-v3 control learned the LoS part reasonably well
+(\(\mathrm{RMSE}_{\mathrm{LoS}}\approx\SI{4.27}{dB}\)), but still failed in
+NLoS (\(\mathrm{RMSE}_{\mathrm{NLoS}}\approx\SI{38.58}{dB}\)). This run did
+not depend on the obstruction-calibrated formula prior, so its NLoS error
+cannot be explained by the prior's fit-vs-runtime feature mismatch. Later
+no-prior reruns showed the same pattern: for example, \texttt{Try 60}
+reported about \SI{3.94}{dB} LoS RMSE and \SI{50.50}{dB} NLoS RMSE on the
+open-sparse vertical expert; adding stronger NLoS supervision in
+\texttt{Try 61} improved the lowrise NLoS number to about \SI{36.30}{dB}, but
+did not solve it. \texttt{Try 73} explicitly disabled the formula-prior input,
+the obstruction-feature input, and the residual-over-prior objective
+(\texttt{enabled = false} for the corresponding configuration blocks);
+nevertheless, its
+no-prior experts still showed NLoS errors around
+\(\SI{41}{dB}\)--\(\SI{49}{dB}\) in the available validation summaries, while
+LoS stayed near \SI{4}{dB}--\SI{6}{dB}. In other words, the network could learn
+the smooth radial/free-space structure, but it could not learn the blocked
+NLoS distribution from direct point regression alone.
+
+\texttt{Try 76} was therefore not just a cleanup of the prior pipeline. It was
+built from scratch without the physical prior and diagnosed the deeper failure
+mode: the old DL family tended toward NLoS mode collapse, with predicted NLoS
+means around \SI{36.5}{dB} against target means around \SI{107.1}{dB}. That
+pattern is not the signature of a small feature-scale bug. It is the signature
+of a point-regression model being structurally mismatched to the NLoS target
+distribution. The histogram study showed that NLoS path loss is better
+described by a multi-component distribution than by a single Gaussian-like
+output, and that large NLoS errors are rare enough to be underweighted by
+ordinary pixel losses but large enough to dominate RMSE.
+
+Therefore the correct interpretation is twofold. The old prior branch really
+was harmed by formula and feature-scaling inconsistencies, and fixing those
+inconsistencies explains why \texttt{Try 78} became so strong. However, the
+bad NLoS behavior of earlier direct DL models should not be dismissed as a
+prior-calibration bug. Those models were also intrinsically weak for NLoS
+because their losses and output distributions did not represent the blocked,
+multi-modal, heavy-tailed regime well enough. This is why the thesis keeps
+\texttt{Try 76} as a genuine modelling advance, not merely as a cleanup of the
+prior pipeline.
+
+\subsubsection{What changed in the LoS branch}
+
+The final \texttt{Try 78} LoS prior is also not merely the old
+two-ray/COST-ish branch with better bookkeeping. The early physical priors used
+an incoherent or piecewise large-scale two-ray idea: FSPL at shorter ranges and
+a plane-earth two-ray trend at longer ranges. This captures the fact that
+clear propagation is radial and height-dependent, but it does not model the
+ring-like interference pattern visible in the CKM LoS maps.
+
+The final LoS branch instead uses a fitted coherent two-ray model. The received
+field is treated as a complex sum of a direct path and an image-source
+reflected path. Rather than assuming a textbook Fresnel reflection coefficient
+for a perfectly flat material, the model fits an effective complex reflection
+coefficient
+\[
+  \Gamma(h_{\mathrm{tx}})
+  =
+  \rho(h_{\mathrm{tx}})\,e^{j\phi(h_{\mathrm{tx}})}
+\]
+per UAV-height bin. This gives the model enough freedom to represent the CKM
+simulator's effective ground-reflection behaviour without pretending that the
+urban scene is a perfectly smooth dielectric plane. A height-dependent bias
+and a small radial residual correction are then added to remove systematic
+range-dependent errors.
+
+This is the reason for the large LoS jump. FSPL alone reached about
+\SI{3.9540}{dB} LoS RMSE. Adding a simple radial residual improved only
+slightly, to about \SI{3.7086}{dB}. The coherent two-ray/ring model reduced
+LoS RMSE to about \SI{1.7516}{dB}. In other words, the dominant LoS error was
+not random urban complexity. It was a deterministic radial interference
+pattern that the old prior family had not represented explicitly. Once that
+pattern was modelled as coherent interference, the LoS branch became almost a
+closed-form reconstruction of the simulator's large-scale behaviour.
+
+\subsubsection{What changed in the NLoS branch}
+
+The NLoS improvement is more subtle. \texttt{Try 78} did not discover a
+single magic NLoS formula. It made the old obstruction-aware idea usable by
+making every component agree with the others. The raw NLoS branch combines a
+COST-231/Hata-style urban attenuation curve with an elevation-aware A2G
+envelope and keeps the more conservative prediction:
+\[
+  \mathrm{PL}_{\mathrm{NLoS,raw}}(x)
+  =
+  \max
+  \left(
+    \mathrm{PL}_{\mathrm{COST231}}(x),
+    \mathrm{PL}_{\mathrm{A2G,NLoS}}(x)
+  \right).
+\]
+This is still only a baseline. It says that low-elevation, obstructed links
+should be more lossy than clear links, but it cannot know whether a particular
+street pixel lies in a shallow transition region, a deep shadow, or a dense
+urban canyon.
+
+The decisive step is the calibrated feature vector. For each pixel,
+\texttt{Try 78} constructs features from the prior value, log-distance,
+multiscale building density, multiscale building height, multiscale NLoS
+support, elevation angle, and an empirical shadow-variance proxy. These
+features are then fitted separately by coarse topology class, LoS/NLoS state,
+and antenna-height bin. The prior therefore does not use one global correction
+for all blocked pixels. It learns a different correction for, for example, a
+low-altitude NLoS pixel in a dense high-rise map than for a high-altitude NLoS
+pixel in an open low-rise map.
+
+This design is close in spirit to the literature, but not identical to it.
+The literature provides the physical axes: distance, frequency, height,
+elevation angle, LoS/NLoS state, and scenario class. Our contribution is to
+turn the CKM topology map into the missing local scenario descriptors. Instead
+of assigning the whole map to one scenario and applying a single empirical
+curve, the model computes local density and obstruction support around every
+receiver pixel. That is what makes the prior map-aware rather than just
+scenario-aware.
+
+\subsubsection{What was improved relative to the literature}
+
+The final prior should be read as a hybrid between classical propagation
+models and dataset-specific calibration. The classical part is important
+because it gives the correct coordinate system: path loss is primarily a
+function of distance, frequency, antenna height, elevation angle, and
+propagation state. The dataset-specific part is equally important because CKM
+is not a textbook macrocell measurement campaign. It is a dense urban
+ray-tracing map with a centred UAV transmitter, a fixed receiver height, a
+\SI{7.125}{GHz} carrier, and a full topology raster for every sample.
+
+Compared with applying literature formulas directly, the final prior improves
+four things.
+
+\begin{enumerate}
+\item \textbf{It replaces assumed ground material with fitted effective
+      reflection.} A textbook two-ray model would require a dielectric
+      constant, conductivity, polarization, and a flat ground assumption.
+      \texttt{Try 78} instead fits \(\rho\), \(\phi\), and bias from CKM LoS
+      pixels, which captures the effective simulator behaviour.
+\item \textbf{It keeps the coherent interference pattern.} Many simplified
+      two-ray uses collapse the model into a monotonic distance law. The CKM
+      LoS maps contain rings, so preserving the complex field sum is essential.
+\item \textbf{It localizes the scenario description.} 3GPP-style models define
+      broad scenarios such as urban macro or urban micro. The prior keeps that
+      idea but computes local morphology features directly from the topology
+      map, at 15 m and 41 m scales.
+\item \textbf{It separates physical extrapolation from empirical correction.}
+      FSPL, two-ray, COST-231, and A2G envelopes define the shape of the prior;
+      train-only calibration adapts that shape to CKM without letting the
+      calibration see the evaluation cities.
+\end{enumerate}
+
+The practical lesson is that a good prior is neither a pure textbook formula
+nor a black-box regressor. A pure formula is too rigid for dense CKM maps, and
+a black-box regressor can lose the physical coordinate system. The successful
+prior is in the middle: it starts from literature-backed propagation structure,
+then uses the dataset to fit the parameters and local correction terms that the
+literature cannot know.
+
+\subsubsection{Resulting design rules}
+
+From the failed and successful prior attempts, the following rules were used
+for the final \texttt{Try 78}/\texttt{Try 80} construction:
+
+\begin{itemize}
+\item \textbf{Use the prior only on valid receiver pixels.} Fitting and
+      evaluation must use the same ground-pixel mask as the final metric.
+\item \textbf{Fit and apply the same formula.} The formula used to generate
+      training features must be exactly the formula used at inference time.
+\item \textbf{Keep units explicit.} Distances, heights, topology values, and
+      normalized features must have one definition shared by fitting and
+      inference.
+\item \textbf{Hard-separate LoS and NLoS when the dataset provides a reliable
+      mask.} The two regimes have different physics and should not be forced
+      through one global curve.
+\item \textbf{Let the literature define the axes, not all coefficients.}
+      Distance, height, frequency, and elevation angle come from propagation
+      theory; effective reflection and morphology corrections are fitted from
+      CKM.
+\item \textbf{Prefer bounded residual learning after the prior.} Once the
+      prior explains the deterministic structure, the neural model should make
+      local corrections instead of being allowed to overwrite the prior
+      arbitrarily.
+\end{itemize}
+
+These rules explain why \texttt{Try 78} could reach
+\SI{1.9246}{dB} overall path-loss RMSE, with \SI{1.7516}{dB} LoS and
+\SI{3.3967}{dB} NLoS, while earlier priors with similar names and similar
+ingredients were still stuck around \SI{40}{dB} NLoS. The improvement came
+from using the right physical structure \emph{and} making the complete
+calibration pipeline internally consistent.
+
 \subsection{What was reused from the literature, what was changed, and what is new}
 
 The \texttt{Try 80} approach is not a single literature formula, but a

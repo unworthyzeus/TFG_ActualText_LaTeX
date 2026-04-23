@@ -275,7 +275,7 @@ If a sample has more than 2\,500 valid LoS pixels, a random subsample of
 height into height bins of 5 m width:
 
 \begin{equation}
-h_{\mathrm{bin}} = 5 \cdot \left\lfloor \frac{h_{\mathrm{tx}}}{5} \right\rceil
+h_{\mathrm{bin}} = 5 \cdot \operatorname{round}\!\left(\frac{h_{\mathrm{tx}}}{5}\right)
 \end{equation}
 
 Each bin is further subsampled to a maximum of 8\,000 pixels total.
@@ -359,6 +359,12 @@ version (treating it as effectively constant across heights).
 Bins where both $\rho_k^*$ and $b_k^*$ differ noticeably from the smoothed
 global trend are flagged as suspicious (typically high-altitude bins with few
 samples), and their raw fit values are replaced by the smoothed values.
+At inference time the UAV height is not forced to be exactly one of the fitted
+5 m bin centers. The implementation linearly interpolates $\rho(h_{\mathrm{tx}})$,
+$\phi(h_{\mathrm{tx}})$, $b(h_{\mathrm{tx}})$, and the radial residual profile
+between the two nearest height bins, and clamps to the nearest endpoint outside
+the fitted range. This keeps the prior continuous with respect to UAV height
+instead of introducing discrete jumps every 5 m.
 
 \subsubsection{Radial residual correction}
 
@@ -449,20 +455,20 @@ where training data is sparser.}
   ymin=70, ymax=130,
   grid=major,
   legend pos=south east,
-  title={FSPL vs.\ calibrated two-ray LoS prior ($h_{\mathrm{tx}} = 60$ m, $f = 3.5$ GHz)}
+  title={FSPL vs.\ calibrated two-ray LoS prior ($h_{\mathrm{tx}} = 60$ m, $f = 7.125$ GHz)}
 ]
 \addplot[thick, blue, domain=10:2000, samples=200]
-  {32.45 + 20*ln(sqrt(x^2+3481)/1000)/ln(10) + 20*ln(3500)/ln(10)};
+  {32.45 + 20*ln(sqrt(x^2+3481)/1000)/ln(10) + 20*ln(7125)/ln(10)};
 \addlegendentry{FSPL}
 \addplot[thick, red, domain=10:2000, samples=200]
-  {32.45 + 20*ln(sqrt(x^2+3481)/1000)/ln(10) + 20*ln(3500)/ln(10)
+  {32.45 + 20*ln(sqrt(x^2+3481)/1000)/ln(10) + 20*ln(7125)/ln(10)
    - 20*ln(abs(1 + 0.54 * sqrt(x^2+3481)/sqrt(x^2+3721) *
-   cos(deg(2*3.14159*(sqrt(x^2+3721)-sqrt(x^2+3481))*3500e6/3e8))))/ln(10)};
+   cos(deg(2*3.14159*(sqrt(x^2+3721)-sqrt(x^2+3481))*7125e6/3e8))))/ln(10)};
 \addlegendentry{Two-ray (approx.)}
 \end{axis}
 \end{tikzpicture}
 \caption{Schematic comparison of FSPL and the coherent two-ray model for a
-60 m UAV at 3.5 GHz ($h_{\mathrm{rx}} = 1.5$ m). The two-ray model produces
+60 m UAV at 7.125 GHz ($h_{\mathrm{rx}} = 1.5$ m). The two-ray model produces
 a characteristic oscillatory pattern around the FSPL baseline, corresponding
 to alternating zones of constructive and destructive interference.}
 \label{fig:tworay_pl}
@@ -567,7 +573,7 @@ $\tau_{\mathrm{NLoS}} = 7.52$ deg.
 \begin{itemize}
 \item $\lambda_0$: a free-space-like offset that scales with UAV height and
       frequency~\cite{khawaja_survey,wocc2021}. The CKM dataset uses
-      $f = 7.125$ GHz (FR2 lower edge per 3GPP NR~\cite{tr38901}); for
+      $f = 7.125$ GHz (upper edge of FR1 in 3GPP NR~\cite{tr38901}); for
       $h_{\mathrm{tx}} = 50$ m at that frequency, $\lambda_0 \approx 103$ dB.
 \item $\beta_{\mathrm{NLoS}} = -16.16$ dB: a baseline NLoS attenuation
       offset relative to $\lambda_0$.
@@ -603,6 +609,29 @@ stronger attenuation, the model keeps the A2G value. This prevents the raw
 prior from becoming unrealistically optimistic in NLoS streets where neither
 source model is fully valid on its own.
 
+\subsubsection{Stage 2: raw hybrid prior assembly}
+
+The NLoS construction above defines only the obstructed branch. The full raw
+prior used by the calibration stage is assembled only after both branch
+estimates are available: the calibrated two-ray/A2G LoS branch from
+Eq.~\eqref{eq:los_blend}, and the conservative NLoS branch from
+Eq.~\eqref{eq:nlos_raw}.
+
+The soft LoS branch is:
+
+\begin{equation}
+\mathrm{PL}_{\mathrm{LoS,blend}}(x)
+=
+0.7\,\mathrm{PL}_{\mathrm{LoS,path}}(x)
++0.3\min\left(\mathrm{PL}_{\mathrm{LoS,path}}(x), \mathrm{PL}_{\mathrm{A2G,LoS}}(x)\right)
+\label{eq:los_blend}
+\end{equation}
+
+The $0.7/0.3$ blend in Eq.~\eqref{eq:los_blend} gives 70\% weight to the
+two-ray LoS model and 30\% weight to the minimum of the two-ray model and an
+A2G LoS envelope. This prevents the prediction from becoming unrealistically
+optimistic at constructive-interference peaks in the LoS case.
+
 The full raw prior blends the LoS and NLoS estimates using the LoS mask
 $m_{\mathrm{LoS}}(x) \in [0,1]$:
 
@@ -615,22 +644,7 @@ m_{\mathrm{LoS}}(x)\,\mathrm{PL}_{\mathrm{LoS,blend}}(x)
 \label{eq:pl0}
 \end{equation}
 
-with a soft blend for the LoS branch:
-
-\begin{equation}
-\mathrm{PL}_{\mathrm{LoS,blend}}(x)
-=
-0.7\,\mathrm{PL}_{\mathrm{LoS,path}}(x)
-+0.3\min\left(\mathrm{PL}_{\mathrm{LoS,path}}(x), \mathrm{PL}_{\mathrm{A2G,LoS}}(x)\right)
-\label{eq:los_blend}
-\end{equation}
-
-The $0.7/0.3$ blend in Eq.~\eqref{eq:los_blend} gives 70\% weight to the
-two-ray LoS model and 30\% weight to the minimum of the two-ray model and an
-A2G LoS envelope. This prevents the prediction from exceeding a physically
-motivated upper bound in the LoS case.
-
-\subsubsection{Stage 2: map-derived morphology features}
+\subsubsection{Stage 3: map-derived morphology features}
 
 From $\mathrm{PL}^{(0)}(x)$ and the map topology, a 15-element feature
 vector is computed:
@@ -720,7 +734,10 @@ The pair $(\mathrm{PL}^{(0)}(x)^2, \mathrm{PL}^{(0)}(x))$ allows the linear
 model to fit a \emph{quadratic} relationship in the raw prior. Including both
 $P^2$ and $P$ as features lets the calibration curve be:
 $\hat P = \beta_1 P^2 + \beta_2 P + \cdots$, which can correct for
-systematic curvature in the raw prior.
+systematic curvature in the raw prior. This pair is intentionally redundant:
+the squared feature is completely determined by the raw-prior feature. It is
+kept because the calibrated fit improves when the linear model is allowed to
+represent a curved mapping from raw prior to measured path loss.
 
 \paragraph{Distance term.}
 $\log(1+d_{2D}(x))$: the logarithm of one plus the horizontal distance,
@@ -734,9 +751,13 @@ increase in predicted dB loss \cite{rappaport,cost231}.
 \label{par:boxmean}
 
 All multiscale features use the same 2D box-mean operator
-$\mathrm{BoxMean}_k$. For a map $f : \mathbb{Z}^2 \to \mathbb{R}$ and a
-window half-width $p = \lfloor k/2 \rfloor$, the value at pixel
-$x = (i, j)$ is:
+$\mathrm{BoxMean}_k$. In the prior vector this operator is not a standalone
+feature; it is the common construction used to compute the neighborhood terms
+\(\rho_{15},\rho_{41}\) from the building mask, \(h_{15},h_{41}\) from
+density-weighted building height, and \(n_{15},n_{41}\) from the ground-NLoS
+support mask. For a generic input map \(f : \mathbb{Z}^2 \to \mathbb{R}\) and a
+window half-width \(p = \lfloor k/2 \rfloor\), the value at pixel
+\(x = (i, j)\) is:
 
 \begin{equation}
 \mathrm{BoxMean}_k(f)(i,j)
@@ -896,8 +917,9 @@ where $\theta^\circ = \theta \cdot 180/\pi$ is in degrees. $\theta_{\mathrm{norm
 \label{eq:sigma_nlos_v2}
 \end{align}
 
-with fitted values $\alpha_{\mathrm{NLoS}} = 2.3197$, $\mu_{\mathrm{NLoS}}
-= 0.2361$. The blended proxy is:
+with fitted values $\alpha_{\mathrm{LoS}} = 0.0272$, $\mu_{\mathrm{LoS}}
+= 0.7475$, $\alpha_{\mathrm{NLoS}} = 2.3197$, and
+$\mu_{\mathrm{NLoS}} = 0.2361$. The blended proxy is:
 
 \begin{equation}
 \sigma_{\mathrm{shadow}}(x)=
@@ -906,8 +928,10 @@ m_{\mathrm{LoS}}(x)\,\sigma_{\mathrm{LoS}}(x)
 \label{eq:sigma_blend}
 \end{equation}
 
-This acts as a spatially varying uncertainty proxy: higher values at low
-elevation angles, where propagation conditions are more difficult.
+This acts as a spatially varying uncertainty proxy rather than a measured
+shadow-fading standard deviation. Higher values occur at low elevation angles,
+where propagation conditions are more difficult; the LoS/NLoS blend lets the
+same feature have a different scale in the two visibility regimes.
 
 \paragraph{Interaction terms.}
 The three pairwise products
@@ -917,8 +941,21 @@ $n_{41}(x)\theta_{\mathrm{norm}}(x)$
 allow the linear model to capture effects where building density or NLoS
 support \emph{modifies} the slope of path loss with distance or elevation
 angle, rather than just shifting it.
+These terms are also deliberately correlated with their factors. For example,
+$n_{41}(x)\log(1+d_{2D}(x))$ cannot vary independently of $n_{41}(x)$ or
+$\log(1+d_{2D}(x))$. This cross-correlation makes coefficient interpretation
+less clean, but removing such terms can reduce performance because the fit then
+loses a simple way to express ``distance matters differently in blocked
+streets''. Determining exactly which terms are dispensable would require a
+large ablation sweep over pairs or subsets of features. Even a pairwise
+screening would scale as $O(n^2)$ runs for a vector with $n$ terms, and each
+run would have to regenerate and inspect large calibration artifacts. The LoS
+two-ray calibration JSON used by \texttt{Try 80}, for example, is about
+200\,000 lines long, mostly because it stores height-dependent radial residual
+profiles. For this reason the final vector keeps some correlated terms when
+they improved validation behavior.
 
-\subsubsection{Stage 3: regime-wise linear calibration}
+\subsubsection{Stage 4: regime-wise linear calibration}
 
 The regime $r$ is identified by three keys:
 \begin{itemize}
@@ -1047,7 +1084,7 @@ The large bias weight ($w_{15} = 48.83$) and the large negative
 shadowing-proxy weight ($w_{12} = -47.15$) partially cancel, together
 acting as a calibrated effective offset for this regime.
 
-\subsubsection{Stage 4: region replacement and clipping}
+\subsubsection{Stage 5: region replacement and clipping}
 
 \begin{equation}
 \mathrm{PL}_{\mathrm{NLoS}}(x)

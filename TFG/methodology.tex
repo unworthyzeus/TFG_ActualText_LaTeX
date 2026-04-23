@@ -475,6 +475,219 @@ are not cleanly Gaussian; their empirical distributions resemble a near-zero spi
 heavy tail (representing NLoS scattering). Standard Mean Squared Error (MSE) objectives tend to underrepresent these rare
 but physically significant heavy-tail spread values, necessitating a dedicated mixture head.
 
+\subsection{How to construct a good deep-learning model for radio maps}
+\label{sec:good_dl_model_design}
+
+The main lesson from the deep-learning attempts is that the architecture is
+secondary to the question: \emph{what statistical object is the network being
+asked to predict?} Path loss, delay spread, and angular spread are all dense
+radio maps, but they are not the same kind of target. Treating them as three
+ordinary image-to-image regression problems led to the repeated failures of
+the early U-Net, cGAN, PMNet, and PMHHNet branches. The successful late
+designs first identified the distribution of each target and only then chose
+the model, loss, routing, and conditioning.
+
+\subsubsection{A prior is useful, but not the core requirement}
+
+The project initially made the physical prior look indispensable because the
+best mid-project models were residual-over-prior systems. However,
+\texttt{Try 76} showed that the prior was not the essential ingredient. It
+used no COST-231 prior, no coherent two-ray prior, no knife-edge channel, and
+no residual-over-prior decomposition. It still obtained NLoS path-loss results
+close to the final prior family because it modelled the NLoS distribution
+directly. This changes the interpretation of the final \texttt{Try 78},
+\texttt{Try 79}, and \texttt{Try 80} designs. The priors are not magic
+external knowledge. They are convenient, stable ways of estimating the same
+large-scale statistics that a distribution-aware neural model can also learn
+if it is given the right objective and enough evidence.
+
+Therefore, a prior should be seen as an efficiency and stability device, not
+as a substitute for modelling the target correctly. A good prior reduces the
+burden on the network by supplying a strong mean prediction, especially for
+LoS path loss and log-spread baselines. A good GMM or mixture-density network
+can instead learn that mean and uncertainty internally. Both strategies work
+when the model knows the support, modes, masks, and regime split of the target.
+Both fail when the training objective compresses distinct physical regimes
+into one averaged map.
+
+\subsubsection{Path loss: LoS has structure, NLoS has a narrow but noisy law with outliers}
+
+For path loss, the LoS and NLoS targets have different meanings. LoS is not
+just the easy subset. It contains a strong deterministic spatial structure:
+distance decay, UAV-height dependence, and in CKM a visible coherent two-ray
+ring pattern. This is why even imperfect models often reached LoS RMSE around
+\SI{4}{dB}. A CNN can learn a smooth radial law from the distance map and
+topology context, but it cannot invent coherent interference if the loss and
+features do not encourage that structure. The final prior solved this with an
+explicit coherent two-ray model; a neural model could also solve it, but it
+would need enough capacity and a loss that rewards the ring structure rather
+than only the pixel average.
+
+NLoS is different. In the valid ground pixels of CKM, the NLoS path-loss
+marginal is not wildly spread over the full \SIrange{0}{180}{dB} output
+interval. It is relatively narrow, concentrated around the blocked-link
+attenuation level, but it is spatially noisy, contains outliers, and is hard
+to place. A pixel just behind a corner, a pixel inside a street canyon, and a
+pixel in a shallow shadow can have similar global statistics but different
+local errors. The model therefore faces two tasks at once: estimating the
+right NLoS value range and locating the rare high-error blocked pockets. This
+is why ordinary point regression failed in a confusing way. The model did not
+need to predict an arbitrarily broad distribution, but it did need to know
+\emph{which} NLoS distribution it was in, where each pixel sat inside it, and
+which pixels belonged to the tail. The old PMHHNet family instead produced
+catastrophic NLoS mode collapse: predicted NLoS means around \SI{36.5}{dB}
+against target means around \SI{107.1}{dB}. The issue was not that NLoS was
+impossible; it was that the network and loss were representing it as an
+ordinary residual image.
+
+This explains the \texttt{Try 76} design. Stage A estimates the per-sample
+target distribution through a GMM, while Stage B predicts the spatial
+assignment of pixels to mixture components. The first part answers
+``what values should this map contain?'' The second answers ``where should
+those values go?'' This separation is exactly what direct MSE, Huber, and
+plain RMSE heads were missing.
+
+\subsubsection{Delay spread and angular spread: NLoS is the important regime}
+
+Delay spread and angular spread are even more distributional than path loss.
+In LoS regions, the direct path dominates: delay spread can be very small, and
+angular spread can collapse toward a narrow direction. In NLoS regions, the
+same quantities become much more meaningful because the receiver sees
+diffracted, reflected, and scattered components. A high delay spread or a wide
+angular spread is not merely an error-prone outlier; it is the physical signal
+that multipath has become important.
+
+The histogram study makes this visible. Figure~\ref{fig:target_prediction_histograms}
+aggregates the validation histograms used in the Try 76/77 diagnosis. Path-loss
+NLoS shows the old mode-collapse failure: the target NLoS mass sits around
+\SI{107}{dB}, while the old prediction histogram puts too much mass at much
+smaller values. The spread targets are different. Their targets contain a
+large near-zero or low-value component plus a long, irregular tail. The
+prediction histograms learn the bulk of the distribution but truncate much of
+that tail. In the histogram table behind the figure, delay-spread target
+\(p_{99}\) is about \SI{142}{ns}, while the corresponding prediction
+\(p_{99}\) is only about \SI{47}{ns}; angular-spread target \(p_{99}\) is
+about \(74^\circ\), while the prediction \(p_{99}\) is about \(43^\circ\).
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{img/thesis_figures/distribution_histograms/target_prediction_histograms.png}
+\caption{Aggregated target and prediction histograms from the Try 74/75
+histogram study. The vertical scale is logarithmic to show the rare tail mass:
+path-loss NLoS suffers from mode collapse, while delay and angular spreads
+learn the bulk but miss part of the high-value tail.}
+\label{fig:target_prediction_histograms}
+\end{figure}
+
+This is why the LoS/NLoS interpretation of the spread metrics is not the same
+as for path loss. For path loss, LoS is the clean deterministic branch and
+NLoS is the hard blocked branch. For delay and angular spread, NLoS is often
+where the target contains the most useful channel information. It is therefore
+good, not suspicious, that the final spread models can have lower or
+competitive NLoS RMSE: the NLoS spread distribution contains stronger
+geometry-driven signals, while the LoS distribution is dominated by a
+near-zero spike plus quantisation and simulator noise. A model that only
+optimizes global RMSE may overfit the spike and underrepresent the physically
+important tail. The correct approach is to model the spike and the tail
+separately, as in the \texttt{Try 77} spike-plus-tail design and the
+\texttt{Try 79} log-domain regime-wise calibration.
+
+The radio-map images show the same phenomenon spatially. For spread targets,
+the model often captures the low-frequency image structure: broad regions of
+small spread, broad NLoS areas, and the general city-scale morphology. What it
+misses are local high-spread islands, such as a zone where rays may bounce off
+a tall or especially reflective building and arrive through a small number of
+strong delayed paths. These are not random visual speckles, but they are also
+not fully predictable from coarse morphology. A model must choose its tail
+policy. It can be conservative in the statistical sense and predict few
+outliers, which gives many false negatives in the tail; or it can be
+conservative in the engineering sense and over-predict possible high-spread
+zones, accepting more false positives. The results in this thesis mostly use
+the first policy: avoid hallucinating too many high-spread islands. For future
+network-planning use, the second policy may be preferable, because engineering
+design often cares more about not missing worst-case multipath than about
+avoiding every false alarm.
+
+\subsubsection{Why the cGAN line failed}
+
+The cGAN attempts failed because adversarial image realism was the wrong
+pressure for this problem. A radio map is not judged by whether it looks like
+a plausible texture; it is judged by physically calibrated errors under a
+ground mask, separated by LoS/NLoS, topology, and antenna height. The
+discriminator encouraged sharper outputs and plausible local detail, but it
+did not know that a \SI{30}{dB} NLoS underprediction is much worse than a
+visually smooth map. GAN losses are also weak at preserving calibrated
+absolute units: they can improve perceptual sharpness while leaving the mean,
+tail, or regime-specific error wrong.
+
+This mattered especially for NLoS and spread targets. The rare high-error
+regions are not generic high-frequency texture. They are tied to blocked
+streets, corners, local density, elevation angle, and scattering. A cGAN can
+hallucinate texture, but it cannot recover a missing statistical tail unless
+the objective explicitly demands the correct tail mass and the correct
+physical units. In this project, once the evaluation was made strict
+city-holdout and regime-aware, the cGAN family did not solve the real
+failure mode.
+
+\subsubsection{Why PMNet and PMHHNet were not enough}
+
+PMNet and PMHHNet were much better ideas than the early cGAN line because they
+matched radio-map structure more closely. PMNet-style context aggregation
+helps with long-range spatial dependence. PMHHNet added high-frequency
+topology information, height FiLM conditioning, GroupNorm, topology experts,
+and explicit physical channels. These changes explain why LoS became good and
+overall RMSE improved substantially.
+
+However, our implementations still failed for two reasons. First, several
+branches had training-design defects: the main full-resolution reconstruction
+loss was disabled or weak in some YAMLs, Huber losses masked large NLoS tail
+errors, over-regularization made predictions collapse toward a baseline,
+corridor weighting over-emphasized the centre of the map, and one PMHHNet path
+temporarily failed to inject the high-frequency topology signal into the early
+stem. These were implementation problems, and fixing them improved stability.
+
+Second, even after those fixes, PMNet and PMHHNet were still mostly
+point-regression architectures. They predicted one value per pixel without
+first estimating the sample-level target distribution. That is sufficient for
+smooth LoS path loss, but not for NLoS path loss or spread tails. The network
+could reduce average error by predicting a safe central value, while RMSE
+remained dominated by the pixels whose physical regime had been averaged
+away. This is the reason the project moved from ``better backbone'' to
+``better probabilistic target model''.
+
+\subsubsection{Design rules that survived}
+
+The final practical rules for deep-learning radio-map prediction are the
+following.
+
+\begin{enumerate}
+\item \textbf{Identify the target distribution first.} Decide whether the
+      target is smooth, narrow, multi-modal, spike-plus-tail, or
+      heavy-tailed before choosing MSE, Huber, GMM, NLL, or residual losses.
+\item \textbf{Separate LoS and NLoS semantically, not only as metrics.}
+      LoS path loss is mostly deterministic structure; NLoS path loss is a
+      blocked-link distribution-placement problem; NLoS spreads are often
+      the physically informative part of the target.
+\item \textbf{Report regime metrics throughout training.} A good global RMSE
+      can hide a broken NLoS branch. LoS, NLoS, topology class, antenna
+      height, and target-specific metrics must be visible in validation.
+\item \textbf{Use priors when they reduce burden, not because they are
+      mandatory.} A frozen prior is useful when it gives a reliable baseline,
+      but a distribution-aware model can also work without it if it learns the
+      correct marginal and spatial assignment.
+\item \textbf{Do not use visual realism as a proxy for radio accuracy.}
+      Adversarial or perceptual losses must be subordinate to calibrated
+      physical-unit losses and distribution checks.
+\item \textbf{Keep masks, units, and support explicit.} Ground masking,
+      no-data handling, clipping ranges, log transforms for spreads, and
+      city-holdout splits are part of the model definition, not preprocessing
+      details.
+\item \textbf{Choose an explicit tail-risk policy.} For delay and angular
+      spread, false-negative outliers make maps look cleaner but can miss
+      worst-case multipath; false-positive outliers are less pretty but may be
+      safer for conservative engineering planning.
+\end{enumerate}
+
 
 
 \section{Try 78 and Try 79 priors: overview and literature basis}

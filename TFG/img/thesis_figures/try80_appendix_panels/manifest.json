@@ -1,0 +1,216 @@
+{
+  "split": "val",
+  "config": "C:\\TFG\\TFGpractice\\TFGEightiethTry80\\experiments\\try80_joint_big.yaml",
+  "checkpoint": "C:\\TFG\\TFGpractice\\cluster_outputs\\TFGEightiethTry80\\try80_joint_big\\best_model.pt",
+  "device": "cpu",
+  "main_panel": "try80_main_panel.png",
+  "panels": [
+    {
+      "file": "try80_panel_open_low_ant_Chiang_Mai_sample_04525.png",
+      "city": "Chiang Mai",
+      "sample": "sample_04525",
+      "h_tx_m": 48.57728958129883,
+      "topology_class_6": "open_sparse_vertical",
+      "expert": "open|low_ant",
+      "score_mean_model_rmse": 18.29616153240204,
+      "metrics": {
+        "path_loss": {
+          "model_rmse": 1.276314377784729,
+          "prior_rmse": 1.4275319576263428
+        },
+        "delay_spread": {
+          "model_rmse": 43.6015739440918,
+          "prior_rmse": 41.80459213256836
+        },
+        "angular_spread": {
+          "model_rmse": 10.01059627532959,
+          "prior_rmse": 10.714754104614258
+        }
+      }
+    },
+    {
+      "file": "try80_panel_open_mid_ant_Chiang_Mai_sample_04521.png",
+      "city": "Chiang Mai",
+      "sample": "sample_04521",
+      "h_tx_m": 61.176902770996094,
+      "topology_class_6": "open_sparse_vertical",
+      "expert": "open|mid_ant",
+      "score_mean_model_rmse": 19.212419668833416,
+      "metrics": {
+        "path_loss": {
+          "model_rmse": 1.228471279144287,
+          "prior_rmse": 1.449342966079712
+        },
+        "delay_spread": {
+          "model_rmse": 46.00947189331055,
+          "prior_rmse": 45.42115783691406
+        },
+        "angular_spread": {
+          "model_rmse": 10.39931583404541,
+          "prior_rmse": 11.316640853881836
+        }
+      }
+    },
+    {
+      "file": "try80_panel_open_high_ant_Segovia_sample_13192.png",
+      "city": "Segovia",
+      "sample": "sample_13192",
+      "h_tx_m": 144.12716674804688,
+      "topology_class_6": "open_sparse_vertical",
+      "expert": "open|high_ant",
+      "score_mean_model_rmse": 4.428943236668904,
+      "metrics": {
+        "path_loss": {
+          "model_rmse": 0.8562772274017334,
+          "prior_rmse": 1.2881057262420654
+        },
+        "delay_spread": {
+          "model_rmse": 7.093657970428467,
+          "prior_rmse": 6.095211029052734
+        },
+        "angular_spread": {
+          "model_rmse": 5.336894512176514,
+          "prior_rmse": 5.9921464920043945
+        }
+      }
+    },
+    {
+      "file": "try80_panel_mixed_low_ant_Chiang_Mai_sample_04438.png",
+      "city": "Chiang Mai",
+      "sample": "sample_04438",
+      "h_tx_m": 37.06338119506836,
+      "topology_class_6": "mixed_compact_lowrise",
+      "expert": "mixed|low_ant",
+      "score_mean_model_rmse": 18.561001618703205,
+      "metrics": {
+        "path_loss": {
+          "model_rmse": 2.1505322456359863,
+          "prior_rmse": 2.189974546432495
+        },
+        "delay_spread": {
+          "model_rmse": 38.758331298828125,
+          "prior_rmse": 39.1040153503418
+        },
+        "angular_spread": {
+          "model_rmse": 14.774141311645508,
+          "prior_rmse": 16.415189743041992
+        }
+      }
+    },
+    {
+      "file": "try80_panel_mixed_mid_ant_Chiang_Mai_sample_04436.png",
+      "city": "Chiang Mai",
+      "sample": "sample_04436",
+      "h_tx_m": 60.05031204223633,
+      "topology_class_6": "mixed_compact_lowrise",
+      "expert": "mixed|mid_ant",
+      "score_mean_model_rmse": 12.1356410185496,
+      "metrics": {
+        "path_loss": {
+          "model_rmse": 1.8514487743377686,
+          "prior_rmse": 1.9738636016845703
+        },
+        "delay_spread": {
+          "model_rmse": 20.12014389038086,
+          "prior_rmse": 18.215673446655273
+        },
+        "angular_spread": {
+          "model_rmse": 14.435330390930176,
+          "prior_rmse": 15.998397827148438
+        }
+      }
+    },
+    {
+      "file": "try80_panel_mixed_high_ant_Chiang_Mai_sample_04437.png",
+      "city": "Chiang Mai",
+      "sample": "sample_04437",
+      "h_tx_m": 247.6047821044922,
+      "topology_class_6": "mixed_compact_lowrise",
+      "expert": "mixed|high_ant",
+      "score_mean_model_rmse": 4.577615857124329,
+      "metrics": {
+        "path_loss": {
+          "model_rmse": 1.4161616563796997,
+          "prior_rmse": 1.6970221996307373
+        },
+        "delay_spread": {
+          "model_rmse": 2.8165905475616455,
+          "prior_rmse": 2.073176860809326
+        },
+        "angular_spread": {
+          "model_rmse": 9.50009536743164,
+          "prior_rmse": 10.588400840759277
+        }
+      }
+    },
+    {
+      "file": "try80_panel_dense_low_ant_Chiang_Mai_sample_04446.png",
+      "city": "Chiang Mai",
+      "sample": "sample_04446",
+      "h_tx_m": 24.805675506591797,
+      "topology_class_6": "dense_block_midrise",
+      "expert": "dense|low_ant",
+      "score_mean_model_rmse": 10.036033233006796,
+      "metrics": {
+        "path_loss": {
+          "model_rmse": 3.560404062271118,
+          "prior_rmse": 3.5641462802886963
+        },
+        "delay_spread": {
+          "model_rmse": 19.094402313232422,
+          "prior_rmse": 18.444114685058594
+        },
+        "angular_spread": {
+          "model_rmse": 7.453293323516846,
+          "prior_rmse": 7.7024312019348145
+        }
+      }
+    },
+    {
+      "file": "try80_panel_dense_mid_ant_Chiang_Mai_sample_04448.png",
+      "city": "Chiang Mai",
+      "sample": "sample_04448",
+      "h_tx_m": 85.31753540039062,
+      "topology_class_6": "dense_block_midrise",
+      "expert": "dense|mid_ant",
+      "score_mean_model_rmse": 20.035253206888836,
+      "metrics": {
+        "path_loss": {
+          "model_rmse": 2.986992835998535,
+          "prior_rmse": 3.0337343215942383
+        },
+        "delay_spread": {
+          "model_rmse": 39.22916030883789,
+          "prior_rmse": 42.02635955810547
+        },
+        "angular_spread": {
+          "model_rmse": 17.889606475830078,
+          "prior_rmse": 20.29041290283203
+        }
+      }
+    },
+    {
+      "file": "try80_panel_dense_high_ant_Chiang_Mai_sample_04447.png",
+      "city": "Chiang Mai",
+      "sample": "sample_04447",
+      "h_tx_m": 311.6376647949219,
+      "topology_class_6": "dense_block_midrise",
+      "expert": "dense|high_ant",
+      "score_mean_model_rmse": 7.586473226547241,
+      "metrics": {
+        "path_loss": {
+          "model_rmse": 2.174508810043335,
+          "prior_rmse": 2.294137954711914
+        },
+        "delay_spread": {
+          "model_rmse": 5.86572790145874,
+          "prior_rmse": 5.078396320343018
+        },
+        "angular_spread": {
+          "model_rmse": 14.719182968139648,
+          "prior_rmse": 16.355224609375
+        }
+      }
+    }
+  ]
+}

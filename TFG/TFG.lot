@@ -9,26 +9,27 @@
 \contentsline {table}{\numberline {2.3}{\ignorespaces Emerging techniques ranked by expected impact on CKM NLoS RMSE.}}{31}{table.caption.11}%
 \contentsline {table}{\numberline {2.4}{\ignorespaces Positioning of Try~80 against the most relevant published methods.}}{32}{table.caption.12}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.2}{\ignorespaces One-page summary of what is inherited from the literature, what is adapted to CKM, and what is reused or newly assembled in \texttt {Try 80}.}}{38}{table.caption.19}%
-\contentsline {table}{\numberline {3.3}{\ignorespaces Representative fitted LoS two-ray parameters by height bin.}}{47}{table.caption.47}%
-\contentsline {table}{\numberline {3.4}{\ignorespaces Term-by-term inventory of the \texttt {Try 78} calibration vector.}}{52}{table.caption.56}%
-\contentsline {table}{\numberline {3.5}{\ignorespaces Try 78 pixel-weighted RMSE (dB) on the evaluation split. The ``Role'' column indicates whether the model is used as a frozen prior in \texttt {Try 80}, serves only as an ablation baseline, or is an intermediate construction step.}}{58}{table.caption.71}%
-\contentsline {table}{\numberline {3.6}{\ignorespaces Term-by-term inventory of the direct terms in the \texttt {Try 79} spread calibration vector.}}{63}{table.caption.76}%
-\contentsline {table}{\numberline {3.7}{\ignorespaces Interaction terms in the \texttt {Try 79} spread calibration vector.}}{64}{table.caption.77}%
-\contentsline {table}{\numberline {3.8}{\ignorespaces Delay spread: calibrated test RMSE (ns) by topology class.}}{67}{table.caption.86}%
-\contentsline {table}{\numberline {3.9}{\ignorespaces Angular spread: calibrated test RMSE ($^\circ $) by topology class.}}{67}{table.caption.87}%
-\contentsline {table}{\numberline {3.1}{\ignorespaces Evolution of modelling techniques and lessons across the attempt history.}}{76}{table.caption.13}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces One-page summary of what is inherited from the literature, what is adapted to CKM, and what is reused or newly assembled in \texttt {Try 80}.}}{42}{table.caption.26}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Representative fitted LoS two-ray parameters by height bin.}}{56}{table.caption.61}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Term-by-term inventory of the \texttt {Try 78} calibration vector.}}{61}{table.caption.71}%
+\contentsline {table}{\numberline {3.5}{\ignorespaces Try 78 pixel-weighted RMSE (dB) on the evaluation split. The ``Role'' column indicates whether the model is used as a frozen prior in \texttt {Try 80}, serves only as an ablation baseline, or is an intermediate construction step.}}{68}{table.caption.86}%
+\contentsline {table}{\numberline {3.6}{\ignorespaces Term-by-term inventory of the direct terms in the \texttt {Try 79} spread calibration vector.}}{73}{table.caption.91}%
+\contentsline {table}{\numberline {3.7}{\ignorespaces Interaction terms in the \texttt {Try 79} spread calibration vector.}}{74}{table.caption.92}%
+\contentsline {table}{\numberline {3.8}{\ignorespaces Delay spread: calibrated test RMSE (ns) by topology class.}}{77}{table.caption.101}%
+\contentsline {table}{\numberline {3.9}{\ignorespaces Angular spread: calibrated test RMSE ($^\circ $) by topology class.}}{77}{table.caption.102}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces Evolution of modelling techniques and lessons across the attempt history.}}{86}{table.caption.13}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Representative experimental milestones.}}{79}{table.caption.100}%
-\contentsline {table}{\numberline {4.2}{\ignorespaces Representative RMSE evolution across the project. Values are reported under their own experiment contract and are used to show trend and diagnosis, not to claim every row is directly comparable.}}{83}{table.caption.101}%
-\contentsline {table}{\numberline {4.3}{\ignorespaces Try 78 final hybrid path-loss prior, pixel-weighted RMSE.}}{84}{table.caption.102}%
-\contentsline {table}{\numberline {4.4}{\ignorespaces Try 79 calibrated test results, pixel-weighted RMSE.}}{84}{table.caption.103}%
-\contentsline {table}{\numberline {4.5}{\ignorespaces Try 80 current validation snapshot. These are placeholders, not final test results.}}{84}{table.caption.104}%
-\contentsline {table}{\numberline {4.6}{\ignorespaces Approximate quantisation RMSE implied by the stored target precision. The float16 values use the unit in the upper part of the observed range (about 180 for path loss/angular spread and 678 for delay spread); float32 is effectively negligible at this scale.}}{84}{table.caption.108}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Representative experimental milestones.}}{90}{table.caption.115}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Representative RMSE evolution across the project. Values are reported under their own experiment contract and are used to show trend and diagnosis, not to claim every row is directly comparable.}}{94}{table.caption.116}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Try 78 final hybrid path-loss prior, pixel-weighted RMSE.}}{95}{table.caption.117}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Try 79 calibrated test results, pixel-weighted RMSE.}}{95}{table.caption.118}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces Try 80 current validation snapshot. These are placeholders, not final test results.}}{95}{table.caption.119}%
+\contentsline {table}{\numberline {4.6}{\ignorespaces Approximate quantisation RMSE implied by the stored target precision. The float16 values use the unit in the upper part of the observed range (about 180 for path loss/angular spread and 678 for delay spread); float32 is effectively negligible at this scale.}}{95}{table.caption.123}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces Sustainability matrix summary for the thesis.}}{85}{table.caption.109}%
-\contentsline {table}{\numberline {5.2}{\ignorespaces Indicative economic cost of the BT development.}}{87}{table.caption.110}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces Sustainability matrix summary for the thesis.}}{96}{table.caption.124}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Indicative economic cost of the BT development.}}{98}{table.caption.125}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces Main Try 80 configuration values.}}{97}{table.caption.112}%
-\contentsline {table}{\numberline {A.2}{\ignorespaces Location of the main mathematical definitions.}}{98}{table.caption.113}%
+\contentsline {table}{\numberline {A.1}{\ignorespaces Main Try 80 configuration values.}}{109}{table.caption.127}%
+\contentsline {table}{\numberline {A.2}{\ignorespaces Location of the main mathematical definitions.}}{110}{table.caption.128}%
+\contentsline {table}{\numberline {A.3}{\ignorespaces Try 80 appendix panels generated from validation samples.}}{111}{table.caption.129}%

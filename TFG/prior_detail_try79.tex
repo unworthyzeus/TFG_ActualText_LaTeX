@@ -110,6 +110,15 @@ block handles range and height. The morphology block measures whether there
 are nearby scatterers. The interaction block allows the model to express
 statements such as ``density matters more at low elevation'' or ``being below
 nearby rooftops matters most when NLoS support is already high''.
+As in the Try 78 path-loss vector, some of these terms are not independent.
+For instance, \(z^{(0)}(x)^2\) is determined by \(z^{(0)}(x)\), and
+\(t_{41}(x)n_{41}(x)\) is tied to both the taller-building and NLoS-support
+features. This cross-correlation means individual fitted coefficients should
+not be interpreted as isolated physical constants. The terms were kept because
+the calibrated prior improved with them, and a rigorous feature-pruning study
+would require many repeated calibration runs. A simple pairwise screening would
+already scale as \(O(n^2)\) for an \(n\)-term vector, before considering
+higher-order subsets.
 
 \begin{table}[H]
 \centering
@@ -193,6 +202,11 @@ The new features beyond those in \(\textbf{x}_{78}\) are:
 h_{\mathrm{norm}} = \frac{\log\!\left(1+\max(h_{\mathrm{tx}}-h_{\mathrm{rx}},0)\right)}{\log(401)}
 \label{eq:hnorm}
 \end{equation}
+This compresses UAV height into \([0,1]\) on a log scale, using
+\(\log(401)\) as the normalizer for an expected maximum height difference of
+about 400 m. The vector also includes \(h_{\mathrm{norm}}^2\), which is an
+intentionally correlated basis expansion that lets the linear model learn a
+curved height effect.
 
 \paragraph{Blocker depth.}
 \begin{equation}
@@ -273,6 +287,11 @@ Sufficient statistics are accumulated incrementally:
 \textbf{v}_r &\mathrel{+}= \textbf{X}_{r,s}^\top \textbf{z}_{r,s} \quad \forall s
 \end{align}
 so the full design matrix is never materialised in memory.
+This is important in practice because the calibration artifacts are already
+large even after compression into fitted coefficients and profiles. The Try 78
+LoS calibration JSON reused by Try 80 is approximately 200\,000 lines, and the
+spread calibration must be rerun separately for delay spread and angular
+spread whenever the feature set changes.
 
 \paragraph{Fallback hierarchy.} If a regime has fewer than $4 \times 23 = 92$ pixels:
 \begin{enumerate}
