@@ -421,16 +421,18 @@ regime separation is taken from \cite{tr38901}.
 
 \paragraph{What we changed or did not take.}
 \begin{itemize}
-\item \textbf{Reflection coefficient $\Gamma$.} Instead of material-based
-      Fresnel coefficients, $\Gamma$ is replaced by an \emph{effective} complex
-      parameter $\rho(h_{\mathrm{tx}}) e^{j\phi(h_{\mathrm{tx}})}$ fitted
-      per UAV height bin from data.
-\item \textbf{Height-bin fitting.} Independent $(\rho, \phi, b)$ triples are
-      fitted per 5 m height bin, producing a height-dependent effective model
-      necessary because the CKM dataset covers roughly 10--460 m of UAV height.
+\item \textbf{Reflection coefficient $\Gamma$.} The coherent two-ray equation
+      itself is kept, but the material-based Fresnel coefficient is replaced by
+      an \emph{effective} complex parameter
+      $\rho(h_{\mathrm{tx}}) e^{j\phi(h_{\mathrm{tx}})}$ fitted from data.
+\item \textbf{Height-bin fitting.} Independent $(\rho, \phi, b)$ values are
+      fitted per 5~m UAV-height bin and linearly interpolated between
+      neighboring bins at inference, producing a height-dependent effective
+      model needed because the CKM dataset covers roughly 10--460 m of UAV
+      height.
 \item \textbf{Radial residual correction.} A separate range-dependent
-      correction term $r(d_{2D})$ is added to capture systematic smooth trends
-      in the residuals of the two-ray fit.
+      correction term $r(d_{2D})$ is added after the standard two-ray
+      prediction to capture systematic smooth trends in its residuals.
 \item \textbf{Regime-wise linear calibration on top of COST-231.} A 15-feature
       design vector $\textbf{x}_{78}(x)$ and regime-wise OLS calibration correct the
       raw prior using local density, height, NLoS support, and elevation

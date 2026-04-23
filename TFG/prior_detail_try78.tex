@@ -173,9 +173,17 @@ destructive interference around the transmitter.
 
 \subsubsection{Comparison with literature two-ray models}
 
-The coherent two-ray model is a staple of wireless propagation theory, but our
-implementation in \texttt{Try 78} deviates from the standard textbook
-treatment in several ways.
+The coherent interference term used in \texttt{Try 78} is the standard
+\emph{exact} coherent two-ray model from the literature. In particular,
+Eq.~\eqref{eq:c2ray} has the same field-sum structure used in textbook
+derivations: a direct ray plus one reflected ray summed coherently before
+conversion to dB. The practical adaptation in this thesis is not an extra term
+inside the two-ray equation, but the way the reflection coefficient is
+parameterized and calibrated. Put differently, the core two-ray term is the
+literature two-ray model, evaluated with a fitted height-binned effective
+reflection coefficient. The coefficients are fitted independently in 5~m UAV
+height bins and then linearly interpolated across neighboring bins at
+inference time.
 
 \paragraph{Physical vs.\ effective parameters.}
 In classic texts such as Rappaport \cite{rappaport} and Goldsmith
@@ -191,10 +199,12 @@ where $\theta$ is the grazing angle and $\epsilon_c = \epsilon_r - j\sigma/\omeg
 is the complex permittivity of the ground. This requires assuming physical
 constants for the ground (typically $\epsilon_r \approx 15$ for urban soil).
 
-In contrast, our model (Eq.~\ref{eq:field_sum}) replaces the angle-dependent
+In contrast, our implementation keeps the same coherent two-ray equation but
+replaces the angle-dependent
 $\Gamma(\theta)$ with a height-dependent effective coefficient $\Gamma(h_{\mathrm{tx}})
 = \rho e^{j\phi}$. We do not assume a flat dielectric plane; instead, $\rho$
-and $\phi$ are fitted to the CKM dataset. This allows the model to capture
+and $\phi$ are fitted to the CKM dataset in 5~m UAV-height bins, with linear
+interpolation between bins during prediction. This allows the model to capture
 aggregate scattering effects from the real, non-flat urban terrain that a
 pure Fresnel calculation would miss.
 
@@ -207,25 +217,26 @@ P_r(d) \approx P_t G_t G_r \frac{h_{\mathrm{tx}}^2 h_{\mathrm{rx}}^2}{d^4}
 \label{eq:d4_law}
 \end{equation}
 This approximation assumes a perfect reflection ($\Gamma = -1$) and small
-grazing angles. Our model uses the \emph{exact} field sum (Eq.~\ref{eq:field_sum})
-without the $d^4$ approximation, which is necessary because UAV heights are
-often significant relative to horizontal distances, making the small-angle
-approximation invalid.
+grazing angles. Our implementation uses the \emph{exact} field sum
+(Eq.~\ref{eq:field_sum}) without the $d^4$ approximation. This is still a
+standard literature form; it simply avoids a far-field approximation that is
+not appropriate when UAV height is not negligible relative to horizontal
+distance.
 
-\paragraph{Over-unity amplitude ($\rho > 1$).}
-Standard physics dictates $|\Gamma| \le 1$. However, our calibration grid
-search (Sec.~\ref{sec:los_calibration}) allows $\rho \in [0, 1.5]$. While
-physically impossible for a single specular reflection, an effective $\rho > 1$
-allows the linear basis of the two-ray model to capture constructive multipath
-interference from multiple scatterers (e.g., building faces near the transmitter)
-that align with the geometric phase of the ground ray.
+\paragraph{Search range vs.\ fitted values.}
+The calibration grid search (Sec.~\ref{sec:los_calibration}) allows
+$\rho \in [0, 1.5]$ for robustness. However, the fitted values reported in
+Table~\ref{tab:los_params} and the stored calibration remain below unity, so
+the deployed model does not rely on an over-unity reflected ray. In practice,
+the main difference from a purely physical textbook instantiation is therefore
+the fitted height-binned effective coefficient, not an additional propagation
+term.
 
-\paragraph{Radial correction.}
-Standard models \cite{tr38901} treat the two-ray or FSPL result as the final
-mean. Our model adds a calibrated radial residual $r(d_{2D}, h_{\mathrm{tx}})$
-(Eq.~\ref{eq:pl_los}) which acts as a data-driven "mopping up" term for
-systematic geometric errors that neither FSPL nor the two-ray model can
-fully represent.
+\paragraph{Extra calibrated terms outside the two-ray model.}
+The quantities $b(h_{\mathrm{tx}})$ and $r(d_{2D}, h_{\mathrm{tx}})$ in
+Eq.~\eqref{eq:pl_los} are not part of the literature two-ray formula itself.
+They are post-fit calibration terms added on top of the standard two-ray
+prediction to absorb residual systematic errors.
 
 \subsubsection{Calibrated LoS prior}
 
@@ -617,7 +628,7 @@ estimates are available: the calibrated two-ray/A2G LoS branch from
 Eq.~\eqref{eq:los_blend}, and the conservative NLoS branch from
 Eq.~\eqref{eq:nlos_raw}.
 
-The soft LoS branch is:
+The legacy LoS blend is defined as:
 
 \begin{equation}
 \mathrm{PL}_{\mathrm{LoS,blend}}(x)
@@ -630,10 +641,14 @@ The soft LoS branch is:
 The $0.7/0.3$ blend in Eq.~\eqref{eq:los_blend} gives 70\% weight to the
 two-ray LoS model and 30\% weight to the minimum of the two-ray model and an
 A2G LoS envelope. This prevents the prediction from becoming unrealistically
-optimistic at constructive-interference peaks in the LoS case.
+optimistic at constructive-interference peaks in the LoS case. Here
+$\mathrm{PL}_{\mathrm{LoS,path}}(x)$ denotes the \emph{legacy} LoS path term
+used in older formula-based variants: FSPL at short range and the classical
+asymptotic two-ray crossover law at longer range. It is not the calibrated
+coherent two-ray map of Eq.~\eqref{eq:pl_los}.
 
-The full raw prior blends the LoS and NLoS estimates using the LoS mask
-$m_{\mathrm{LoS}}(x) \in [0,1]$:
+The full raw prior combines the LoS and NLoS estimates using the binary LoS
+mask $m_{\mathrm{LoS}}(x) \in \{0,1\}$:
 
 \begin{equation}
 \mathrm{PL}^{(0)}(x)
@@ -643,6 +658,14 @@ m_{\mathrm{LoS}}(x)\,\mathrm{PL}_{\mathrm{LoS,blend}}(x)
 \left(1-m_{\mathrm{LoS}}(x)\right)\mathrm{PL}_{\mathrm{NLoS,raw}}(x)
 \label{eq:pl0}
 \end{equation}
+
+Since $m_{\mathrm{LoS}}(x)$ is binary, Eq.~\eqref{eq:pl0} is a hard switch:
+it selects the LoS expression on LoS pixels and the NLoS expression on NLoS
+pixels. The auxiliary blend in Eq.~\eqref{eq:los_blend} was used in older
+\texttt{Try 78} variants to keep the LoS formula below an A2G envelope. In
+the final frozen \texttt{Try 80} path, LoS pixels come directly from the
+calibrated coherent two-ray prior, so Eq.~\eqref{eq:pl0} and
+Eq.~\eqref{eq:los_blend} are retained only for historical completeness.
 
 \subsubsection{Stage 3: map-derived morphology features}
 
@@ -967,6 +990,12 @@ The regime $r$ is identified by three keys:
 \end{itemize}
 This gives up to $3 \times 2 \times 3 = 18$ regimes.
 
+The stored calibration for this legacy mixed-prior map still contains both LoS
+and NLoS regime coefficients. However, in the final frozen \texttt{Try 80}
+path-loss assembly only the NLoS pixels from this calibrated map are used,
+because LoS pixels are replaced by the separate calibrated coherent two-ray
+prior.
+
 \paragraph{How topology class and antenna bin are computed.}
 These are \emph{per-map} scalar labels, not per-pixel quantities.
 They are derived once from the full topology tensor and UAV height.
@@ -1153,8 +1182,8 @@ Model & RMSE (dB) & Role in Try 80\\
 \midrule
 FSPL (LoS only)            & 3.9540 & ablation baseline (not used)\\
 FSPL + radial residual     & 3.7086 & ablation baseline (not used)\\
-Coherent two-ray (LoS)     & 1.7516 & building block $\to$ folded into Hybrid LoS\\
-Hybrid LoS                 & 1.7516 & \textbf{frozen LoS prior} (used in Try 80)\\
+Coherent two-ray (LoS)     & 1.7516 & \textbf{frozen LoS prior} (used in Try 80)\\
+Hybrid LoS                 & 1.7516 & legacy auxiliary variant (not used in final Try 80 path)\\
 Hybrid NLoS                & 3.3967 & \textbf{frozen NLoS prior} (used in Try 80)\\
 \midrule
 \textbf{Hybrid overall}    & \textbf{1.9246} & combined frozen prior (Try 80 input)\\
@@ -1163,32 +1192,12 @@ Hybrid NLoS                & 3.3967 & \textbf{frozen NLoS prior} (used in Try 80
 \end{table}
 
 \paragraph{Why do Coherent two-ray (LoS) and Hybrid LoS show the same RMSE?}
-The two rows report the same value (1.7516 dB) on the \emph{evaluation split},
-but they are not identical models.
-
-\begin{itemize}
-\item \textbf{Coherent two-ray (LoS)} is the standalone two-ray model
-      (Eq.~\ref{eq:pl_los}) applied only to LoS pixels, with no soft clipping
-      from an A2G envelope.
-\item \textbf{Hybrid LoS} applies the blend of Eq.~\ref{eq:los_blend}:
-      $0.7\,\mathrm{PL}_{\mathrm{LoS,path}} + 0.3\min(\mathrm{PL}_{\mathrm{LoS,path}},
-      \mathrm{PL}_{\mathrm{A2G,LoS}})$.
-      For the vast majority of pixels the two-ray prediction is already below
-      the A2G LoS envelope, so the $\min$ resolves to the two-ray value and
-      the blend collapses to $0.7P + 0.3P = P$. The two formulas therefore
-      coincide on almost all evaluation pixels, producing the same aggregate RMSE.
-\end{itemize}
-
-The practical difference only surfaces on pixels where the two-ray model
-predicts \emph{unrealistically low} path loss (constructive-interference peaks
-that overshoot the measurement). On those pixels the A2G envelope acts as a
-physical upper-bound cap, slightly raising the prediction and preventing it
-from being overly optimistic. On the training set, where such edge cases
-appear more frequently, Hybrid LoS was marginally better than the standalone
-two-ray; the improvement rounds away at the reported precision for the
-evaluation split. The hybrid formulation was therefore kept as the frozen LoS
-prior in \texttt{Try 80} because it is more conservative and physically
-bounded, even though the difference is not visible at this precision.
+This comparison is included for historical completeness. In the current
+\texttt{Try 80} implementation, the frozen LoS prior is the calibrated
+coherent two-ray map; the Hybrid LoS blend is not used in the final path-loss
+assembly. The two rows report the same value (1.7516 dB) on the
+\emph{evaluation split} because, on almost all pixels, the auxiliary A2G
+envelope does not change the underlying LoS value.
 
 \begin{figure}[H]
 \centering
