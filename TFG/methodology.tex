@@ -15,6 +15,14 @@ city assignment. This avoids the most common optimistic error in spatial radio
 prediction: training on one part of a city and testing on another visually
 similar part of the same city.
 
+The non-deep-learning baselines Try 78 (path-loss prior) and Try 79 (spread
+prior) do not require a validation set for early stopping or hyperparameter
+selection, so they use a two-way split: 70\% train and 30\% test, with the
+same \texttt{split\_seed = 42} and the same city-holdout assignment logic.
+The training cities are therefore identical to those of the deep-learning
+models; the 30\% test holdout of Try 78/79 corresponds to the union of the
+15\% validation and 15\% test cities used by Try 76, 77, and 80.
+
 The receiver mask is:
 \begin{equation}
   m_{\mathrm{ground}}(i,j) =
