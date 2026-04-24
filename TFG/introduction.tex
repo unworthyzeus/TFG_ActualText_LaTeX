@@ -33,11 +33,80 @@ the main success criteria throughout the project:
   \item separate reporting for global, LoS, and NLoS regions.
 \end{itemize}
 
+These numerical targets were set in the project proposal and kept unchanged
+throughout the thesis. They are meant to match the order of magnitude at
+which a ray-tracing surrogate starts being useful for planning and coverage
+decisions. A few dB of path-loss RMSE is compatible with practical link-budget
+margins, and tens of ns of delay spread and tens of degrees of angular spread
+stay well inside typical multipath spread values reported by 3GPP TR\,38.901
+for UMa/UMi scenarios. The proposal also fixed a secondary engineering goal,
+namely a 10--100$\times$ reduction in channel-map generation time compared to
+a ray tracer, which is satisfied automatically by any CNN-based surrogate once
+the model is trained.
+
 The most important methodological objective was not only to obtain a low
 average RMSE, but to do so under a strict city-holdout protocol. In this
 setting, complete cities are reserved for validation and testing. This is a
 harder and more deployment-relevant condition than random pixel or random tile
 splits, because the model must extrapolate to urban layouts it has never seen.
+
+\section{Research questions and contributions}
+
+The thesis is organised around three research questions, which also define
+the three main scientific claims of the final pipeline:
+
+\begin{itemize}
+  \item \textbf{RQ1.} Can a single deep-learning surrogate predict per-pixel
+        path loss, delay spread, and angular spread on \(513\times513\)
+        channel-knowledge maps, under strict city-holdout evaluation, with
+        errors compatible with the thesis targets?
+  \item \textbf{RQ2.} Which part of the prediction should be left to a
+        calibrated analytic prior and which part should be left to the neural
+        network, so that the hybrid model is both accurate and interpretable?
+  \item \textbf{RQ3.} How does the continuous UAV transmitter height
+        (\SIrange{12}{478}{m}) affect the prediction error, and is the same
+        architecture able to cover the full height range without per-height
+        retraining?
+\end{itemize}
+
+The main contributions corresponding to these questions are:
+
+\begin{itemize}
+  \item A reproducible pipeline for dense \(513\times513\) CKM prediction on
+        the FR3 UAV dataset, with ground-only masking, city-holdout splits,
+        and sinusoidal FiLM conditioning on continuous UAV altitude.
+  \item A calibrated non-deep-learning path-loss prior (Try~78) based on a
+        coherent two-ray LoS model and a regime-wise OLS NLoS head,
+        achieving \SI{1.75}{dB} LoS and \SI{3.40}{dB} NLoS RMSE under
+        city-holdout evaluation.
+  \item A calibrated non-deep-learning spread prior (Try~79) combining
+        log-domain ridge regression with geometry and morphology features,
+        reaching \SI{28.10}{ns} delay-spread RMSE and
+        \ang{13.74} angular-spread RMSE on the same split.
+  \item A prior-anchored joint neural residual model (Try~80) that shares a
+        single backbone across the three targets, conditioned on the frozen
+        Try~78 and Try~79 priors.
+  \item A distribution-first diagnosis of the previous PMHHNet family
+        (Tries~66--75) that identifies NLoS mode collapse and motivates the
+        Try~76 GMM architecture. The distribution analysis is released as
+        supporting documentation alongside the code.
+\end{itemize}
+
+\section{Thesis outline}
+
+The state-of-the-art chapter surveys cGAN and U-Net image-to-image baselines,
+the PMNet and RMTransformer families on the ICASSP~2023 challenge,
+physics-hybrid and PINN approaches, AIRMap, Gao et al., PathFinder, and
+distribution-aware and heteroscedastic methods; it closes with the fairness
+axes along which Try~80 is positioned. The methodology chapter describes the
+CKM dataset, the ground-mask protocol, the attempt-evolution table, the shared
+PMHHNet architecture with sinusoidal height conditioning, and the four
+prior-detail subsections for Tries~78, 79 and 80. The results chapter reports
+the quantitative outcomes: the Try~78 LoS waterfall, per-expert and per-height
+breakdowns, Try~79 spread results, and the Try~80 validation snapshot. The
+sustainability and conclusions chapters close the thesis, followed by the
+appendices with the representative validation panels and the Try~80
+configuration summary.
 
 \section{Requirements and specifications}
 

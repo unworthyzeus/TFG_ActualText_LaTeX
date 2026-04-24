@@ -1,4 +1,5 @@
 % DON'T CHANGE THIS LINE
+\phantomsection
 \addcontentsline{toc}{section}{\ifcase\doclanguage\or Resum \or Resumen \else Summary\fi}
 
 %%% RESUM EN CATALA
@@ -6,39 +7,53 @@
   \huge\bfseries\raggedright Resum~\hrulefill
 \end{center}
 Aquest TFG estudia la prediccio de mapes de coneixement de canal per a xarxes
-6G amb UAVs. A partir de mapes urbans de 513 x 513 pixels, mascares LoS/NLoS i
-altura de l'antena, es prediuen perdua de trajecte, dispersio temporal i
-dispersio angular. Despres de provar U-Net, cGANs, experts i priors fisics, el
-treball convergeix en un model hibrid: priors interpretables calibrats per
-Try 78 i Try 79, mes un model residual conjunt a Try 80. Els priors finals
-assoleixen 1.92 dB en perdua de trajecte, 28.10 ns en delay spread i 13.74
-graus en angular spread. Els resultats finals de Try 80 queden pendents de
-substituir quan finalitzi l'entrenament.
+6G amb UAVs. A partir del conjunt de dades CKM (66 ciutats reals, 16180
+mostres, mapes urbans de 513 x 513 pixels amb mascares LoS/NLoS i altura
+d'antena continua entre 12 i 478 m) es prediuen perdua de trajecte, dispersio
+temporal i dispersio angular sota un protocol estricte de validacio per
+ciutats complerts, en que ciutats senceres queden reservades per a validacio
+i test. Despres de provar U-Nets, cGANs, experts i priors fisics, el treball
+convergeix en un model hibrid: priors interpretables calibrats per Try 78
+(model coherent de dos raigs per a LoS i calibracio per regims per a NLoS) i
+Try 79 (regressio ridge en espai logaritmic per als dos spreads), amb un model
+residual conjunt afegit a Try 80. Els priors finals assoleixen 1.92 dB en
+perdua de trajecte, 28.10 ns en delay spread i 13.74 graus en angular spread
+sobre les ciutats de test. Try 80 es presenta com a extensio en curs a partir
+d'aquests priors.
 
 %%% RESUMEN EN CASTELLANO
 \begin{center}
   \huge\bfseries\raggedleft\vspace*{.5\baselineskip} \hrulefill ~Resumen
 \end{center}
 Este TFG estudia la prediccion de mapas de conocimiento de canal para redes 6G
-con UAVs. A partir de mapas urbanos de 513 x 513 pixeles, mascaras LoS/NLoS y
-altura de antena, se predicen perdida de trayecto, dispersion temporal y
-dispersion angular. Tras probar U-Net, cGANs, expertos y priors fisicos, el
-trabajo converge en un modelo hibrido: priors interpretables calibrados en
-Try 78 y Try 79, mas un modelo residual conjunto en Try 80. Los priors finales
-alcanzan 1.92 dB en perdida de trayecto, 28.10 ns en delay spread y 13.74
-grados en angular spread. Los resultados finales de Try 80 quedan pendientes de
-sustitucion cuando termine el entrenamiento.
+con UAVs. A partir del conjunto de datos CKM (66 ciudades reales, 16180
+muestras, mapas urbanos de 513 x 513 pixeles con mascaras LoS/NLoS y altura de
+antena continua entre 12 y 478 m) se predicen perdida de trayecto, dispersion
+temporal y dispersion angular bajo un protocolo estricto de validacion por
+ciudades completas, en el que ciudades enteras se reservan para validacion y
+test. Tras probar U-Nets, cGANs, expertos y priors fisicos, el trabajo
+converge en un modelo hibrido: priors interpretables calibrados en Try 78
+(modelo coherente de dos rayos para LoS y calibracion por regimenes para
+NLoS) y Try 79 (regresion ridge en espacio logaritmico para ambos spreads),
+mas un modelo residual conjunto en Try 80. Los priors finales alcanzan
+1.92 dB en perdida de trayecto, 28.10 ns en delay spread y 13.74 grados en
+angular spread sobre las ciudades de test. Try 80 se presenta como extension
+en curso sobre estos priors.
 
 %%% ENGLISH SUMMARY
 \begin{center}
   \huge\bfseries\raggedright\vspace*{.5\baselineskip} Summary~\hrulefill
 \end{center}
 This thesis studies channel knowledge map prediction for 6G UAV-enabled
-networks. From 513 x 513 urban maps, LoS/NLoS masks, and antenna height, the
-project predicts path loss, delay spread, and angular spread. After testing
-U-Nets, cGANs, expert models, and physical priors, the final direction becomes
-a hybrid one: calibrated interpretable priors from Try 78 and Try 79 plus a
-joint residual model in Try 80. The finished priors reach 1.92 dB path-loss
-RMSE, 28.10 ns delay-spread RMSE, and 13.74 degree angular-spread RMSE. Final
-Try 80 test results are intentionally left as placeholders until training and
-checkpoint selection are complete.
+networks. Using the CKM dataset (66 real cities, 16{,}180 samples, $513\times
+513$ urban maps with LoS/NLoS masks and a continuous UAV antenna height
+between 12 and 478 m), the project predicts path loss, delay spread, and
+angular spread under a strict city-holdout evaluation protocol, where entire
+cities are reserved for validation and test. After testing U-Nets, cGANs,
+expert models, and physical priors, the project converges on a hybrid design:
+calibrated interpretable priors from Try 78 (coherent two-ray LoS model and
+regime-wise NLoS calibration) and Try 79 (log-domain ridge regression for
+both spreads), plus a joint residual model in Try 80. The finished priors
+reach 1.92 dB path-loss RMSE, 28.10 ns delay-spread RMSE, and 13.74 degree
+angular-spread RMSE on the held-out test cities. Try 80 is presented as an
+in-flight extension on top of these priors.

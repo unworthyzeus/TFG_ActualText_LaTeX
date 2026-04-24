@@ -91,21 +91,27 @@
 
 %%%% INDEX %%%%
 \clearpage
+\phantomsection
 \addcontentsline{toc}{section}{\ifcase\doclanguage\or Ãndex\or Ãndice\else Contents\fi}
 \tableofcontents
 
 
 %%%% LISTS %%%%
-\listoffigures 
+\clearpage
+\phantomsection
 \addcontentsline{toc}{section}{\ifcase\doclanguage\or Ãndex de figures \or Lista de figuras \else List of figures\fi}
-\listoftables
+\listoffigures
+\clearpage
+\phantomsection
 \addcontentsline{toc}{section}{\ifcase\doclanguage\or Ãndex de taules \or Ãndice de cuadros \else List of tables\fi}
+\listoftables
 %\lstlistoflistings
 
 
 %%%% ACRONYMS %%%% <<<<<< PLEASE DEFINE YOUR ACRONYMS IN "acronyms.tex"
 \clearpage
 \newcommand\AbbrvName{\ifcase\doclanguage\or Sigles i acrÃ²nims\or Siglas y acrÃ³nimos\else Abbreviations\fi}
+\phantomsection
 \addcontentsline{toc}{section}{\AbbrvName}
 \printacronyms[
   heading=chapter*,
@@ -155,7 +161,6 @@
 
 
 %%%% BIBLIOGRAPHY %%%%
-\nocite{*}               % Forces all entries to be printed, even if not cited
 % Bibliography intro
 \defbibnote{bib-intro}{%
 References used for the propagation models, neural-network baselines, training

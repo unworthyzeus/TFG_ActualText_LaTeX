@@ -67,7 +67,7 @@ steps. Values are included only when the metric contract is sufficiently clear;
 otherwise the row records the technical lesson rather than forcing an
 unreliable comparison.
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \caption{Evolution of modelling techniques and lessons across the attempt
 history.}
@@ -249,12 +249,17 @@ is not required.
 
 The decisive diagnosis after Try 75 was that NLoS path loss was not merely a
 harder regression target; it possessed a fundamentally different error
-distribution. Try 76 addressed this by predicting the parameters of a Gaussian
-Mixture Model (GMM) rather than a simple point estimate.
+distribution.  This diagnosis came from comparing predicted and ground-truth
+histograms: the maps showed where the model was wrong, but the histograms
+showed \emph{what} the model had misunderstood.  The central idea of the late
+pipeline was therefore to identify the target distribution before asking a
+network to perform pixel-by-pixel prediction.  Try 76 addressed this by
+predicting the parameters of a Gaussian Mixture Model (GMM) rather than a
+simple point estimate.
 
-\begin{figure}[p]
+\begin{figure}[htbp]
 \centering
-\resizebox{\linewidth}{!}{%
+\resizebox{0.9\linewidth}{!}{%
 \begin{tikzpicture}[
     >=stealth, thick,
     nd/.style={draw, rectangle, rounded corners=3pt, minimum width=2.6cm,
@@ -353,9 +358,9 @@ Try 77 applied the same idea to delay spread and angular spread. These targets
 are closer to a "spike-plus-tail" distribution (a spike near zero for LoS, and
 a heavy tail for NLoS).
 
-\begin{figure}[p]
+\begin{figure}[htbp]
 \centering
-\resizebox{\linewidth}{!}{%
+\resizebox{0.9\linewidth}{!}{%
 \begin{tikzpicture}[
     >=stealth, thick,
     nd/.style={draw, rectangle, rounded corners=3pt, minimum width=2.6cm,
@@ -455,8 +460,6 @@ spatially varying per-pixel predictions.}
 \label{fig:try77_system}
 \end{figure}
 
-
-
 For path loss, Try 76 utilized 12 specialized experts: six topology classes partitioned by LoS
 and NLoS regions. As shown in Figure~\ref{fig:try76_system}, Stage A acts as a distribution head, predicting the global GMM parameters
 $(\pi_k,\mu_k,\sigma_k)$ from map features and altitude conditioning.
@@ -485,7 +488,12 @@ radio maps, but they are not the same kind of target. Treating them as three
 ordinary image-to-image regression problems led to the repeated failures of
 the early U-Net, cGAN, PMNet, and PMHHNet branches. The successful late
 designs first identified the distribution of each target and only then chose
-the model, loss, routing, and conditioning.
+the model, loss, routing, and conditioning.  The literature review on MDN and
+GMM channel models was then carried out while writing the thesis, after this
+distribution-first idea had already emerged from the CKM diagnostics.  That
+review showed that mixture-density ideas exist in wireless channel modelling,
+but that their use as a global distribution guide for dense radio-map
+prediction remains an innovative contribution of this thesis.
 
 \subsubsection{A prior is useful, but not the core requirement}
 
@@ -500,6 +508,22 @@ directly. This changes the interpretation of the final \texttt{Try 78},
 external knowledge. They are convenient, stable ways of estimating the same
 large-scale statistics that a distribution-aware neural model can also learn
 if it is given the right objective and enough evidence.
+
+This is also why the final pipeline reintroduces priors without contradicting
+the \texttt{Try 76} lesson. The order in which the evidence arrived matters:
+\texttt{Try 76} came immediately after the post-\texttt{Try 75} histogram
+diagnosis, which showed that the dominant failure mode was an
+output-distribution mismatch rather than a missing physical channel. The
+first response was to fix the deep-learning side and prove that NLoS path
+loss can be modelled without extra physics. Once that point was made, the
+question became which part of the pipeline is cheapest and most auditable.
+For LoS path loss the answer turned out to be a short analytic model with a
+handful of fitted constants (\texttt{Try 78}); for delay and angular spread
+the answer was a log-domain ridge regression over geometry and morphology
+features (\texttt{Try 79}); \texttt{Try 80} then anchors a shared neural
+residual head to both. The priors in the final pipeline are therefore an
+efficiency and stability device, not a substitute for distribution-aware
+modelling.
 
 Therefore, a prior should be seen as an efficiency and stability device, not
 as a substitute for modelling the target correctly. A good prior reduces the
@@ -545,7 +569,11 @@ target distribution through a GMM, while Stage B predicts the spatial
 assignment of pixels to mixture components. The first part answers
 ``what values should this map contain?'' The second answers ``where should
 those values go?'' This separation is exactly what direct MSE, Huber, and
-plain RMSE heads were missing.
+plain RMSE heads were missing.  In practical terms, the GMM head gives the
+model a global description of the distribution it is about to draw; the decoder
+then performs the local placement.  This is why distribution prediction can
+help a radio-map model even when the final deliverable is still a deterministic
+per-pixel map.
 
 \subsubsection{Delay spread and angular spread: NLoS is the important regime}
 
@@ -569,9 +597,9 @@ that tail. In the histogram table behind the figure, delay-spread target
 \(p_{99}\) is only about \SI{47}{ns}; angular-spread target \(p_{99}\) is
 about \(74^\circ\), while the prediction \(p_{99}\) is about \(43^\circ\).
 
-\begin{figure}[p]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{img/thesis_figures/distribution_histograms/target_prediction_histograms.png}
+\includegraphics[width=0.9\textwidth]{img/thesis_figures/distribution_histograms/target_prediction_histograms.png}
 \caption{Aggregated target and prediction histograms from the Try 74/75
 histogram study. The vertical scale is logarithmic to show the rare tail mass:
 path-loss NLoS suffers from mode collapse, while delay and angular spreads
@@ -583,7 +611,7 @@ This is why the LoS/NLoS interpretation of the spread metrics is not the same
 as for path loss. For path loss, LoS is the clean deterministic branch and
 NLoS is the hard blocked branch. For delay and angular spread, NLoS is often
 where the target contains the most useful channel information. It is therefore
-good, not suspicious, that the final spread models can have lower or
+physically consistent that the final spread models can have lower or
 competitive NLoS RMSE: the NLoS spread distribution contains stronger
 geometry-driven signals, while the LoS distribution is dominated by a
 near-zero spike plus quantisation and simulator noise. A model that only
@@ -688,6 +716,256 @@ following.
       safer for conservative engineering planning.
 \end{enumerate}
 
+\section{GMM component count and distribution choice}
+\label{sec:gmm_k_choice}
+
+The Stage-A distribution heads in \texttt{Try 76} and \texttt{Try 77}
+represent each per-sample target marginal as a parametric family. Choosing
+the family and its number of components $K$ is not a free hyperparameter; it
+is constrained by the empirical shape of the CKM histograms. A dedicated
+diagnostic, \texttt{docs/distribution\_classes.md} inside the \texttt{Try 76}
+tree, fits a fixed shortlist of parametric models to the aggregated validation
+histograms of every target under each topology class and LoS/NLoS split, and
+ranks them by the KL divergence
+\(\mathrm{KL}(p_{\mathrm{empirical}}\;||\;p_{\mathrm{model}})\).  The shortlist
+contains Gaussian, Laplace, skew-Normal, log-Normal, Gamma, Weibull, a
+spike-plus-exponential model for near-degenerate targets, and Gaussian
+mixtures with $K\in\{2,3,4,5\}$.
+
+Table~\ref{tab:gmm_k_choice} summarises the winning family for the four
+targets used in this thesis, aggregated across all cities. The table uses the
+target-side (ground-truth) histograms, because the distribution-head objective
+is defined against the ground-truth marginal, not the current prediction.
+
+\begin{table}[H]
+\centering
+\caption{Best-fit parametric family for each target distribution on the CKM
+validation histograms, across all cities. Based on the KL-ranking study in
+\texttt{TFGpractice/TFGSeventySixthTry76/docs/distribution\_classes.md}.}
+\label{tab:gmm_k_choice}
+\begin{tabularx}{\textwidth}{lcX}
+\toprule
+Target & Best family & Shape notes \\
+\midrule
+Path loss, LoS   & GMM-4 & Single dominant mode near \SI{97}{dB} with a mild
+                              low-tail; GMM-4 wins on the raw target
+                              histogram, but a Gaussian is already
+                              competitive. \\
+Path loss, NLoS  & GMM-5 & Narrow peak near \SI{107}{dB} plus a secondary
+                              low-variance mode; a single Gaussian is too
+                              wide. \\
+Delay spread     & GMM-5 & Near-zero spike plus a long exponential tail;
+                              the spike-plus-exponential family is a close
+                              second. \\
+Angular spread   & spike-plus-exp. & Dirac-like spike near 0\textdegree{} plus
+                              a heavy tail; GMM can approximate it but
+                              spike-plus-exp is the native family. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Three consequences follow. First, a single Gaussian (or any unimodal head) is
+never the best family for NLoS path loss or for the two spreads. This is
+exactly the regime in which the earlier PMHHNet family produced mode collapse
+with a single-output MSE head. Second, the number of components that wins is
+consistently $K\in\{4, 5\}$ for the raw path-loss and spread targets, not
+$K=3$. The Stage-A heads in this thesis therefore use $K=5$ by default on
+the Try~76/77 target-distribution experts, even though the code supports
+$K\in\{2,\dots,5\}$. The \texttt{num\_components} field in the \texttt{Try 80}
+configuration (\(K=3\)) controls a different quantity: the shared backbone's
+residual distribution head after the frozen Try~78/Try~79 priors have already
+explained the main LoS, NLoS, delay-spread, and angular-spread structure. In
+that residual space, three modes are sufficient to model negative correction,
+near-zero correction, and positive correction, while avoiding a larger mixture
+that would be harder to stabilize during the final multi-task training. Third, the
+angular-spread target is better served by a native spike-plus-exponential
+head than by a GMM, because its marginal is effectively degenerate at
+\ang{0}; this is implemented directly in the \texttt{Try 77} angular-spread
+experts.
+
+\section{Loss functions of the final pipeline}
+\label{sec:loss_functions}
+
+The final Try~80 joint objective sums a per-task composite loss over the
+three targets \(\mathcal{T} = \{\mathrm{PL}, \mathrm{DS}, \mathrm{AS}\}\).
+For a target \(t\in\mathcal{T}\) with valid-pixel mask \(M_t\), the per-task
+loss is a weighted combination of eight terms
+\begin{equation}
+\mathcal{L}_t = \lambda_{\mathrm{nll}}\mathcal{L}_{\mathrm{nll}}
+ + \lambda_{\mathrm{kl}}\mathcal{L}_{\mathrm{kl}}
+ + \lambda_{\mathrm{mm}}\mathcal{L}_{\mathrm{mm}}
+ + \lambda_{\mathrm{a}}\mathcal{L}_{\mathrm{anchor}}
+ + \lambda_{\mathrm{g}}\mathcal{L}_{\mathrm{guard}}
+ + \lambda_{\mathrm{o}}\mathcal{L}_{\mathrm{out}}
+ + \lambda_{\mathrm{r}}\mathcal{L}_{\mathrm{rmse}}
+ + \lambda_{\mathrm{m}}\mathcal{L}_{\mathrm{mae}},
+\label{eq:try80_total}
+\end{equation}
+with the canonical weights used in
+\texttt{TFGEightiethTry80/experiments/try80\_joint\_big.yaml}:
+\((\lambda_{\mathrm{nll}},\lambda_{\mathrm{kl}},\lambda_{\mathrm{mm}},
+\lambda_{\mathrm{a}},\lambda_{\mathrm{g}},\lambda_{\mathrm{o}},
+\lambda_{\mathrm{r}},\lambda_{\mathrm{m}})=(1.0,0.25,0.10,0.05,0.10,
+0.02,0.40,0.10)\) and total loss
+\(\mathcal{L} = \sum_{t\in\mathcal{T}}\mathcal{L}_t\).
+
+Below, \(y_i\) is the ground-truth pixel value, \(\hat{y}_i\) is the model
+prediction in native units, \(\hat{y}^{(0)}_i\) is the frozen prior
+prediction, \(\mu_k, \sigma_k, \pi_k\) are the \(k\)-th Stage-A GMM
+parameters, \(p_{k,i}\) is the Stage-B soft component assignment at pixel
+\(i\), and the sums run only over valid pixels.
+
+\paragraph{Per-pixel negative log-likelihood.} The main likelihood term.
+Stage B predicts a local mean-residual \(\mu_i\) and log-variance
+\(\log\sigma_i^2\) inside a frozen Stage-A mixture, and the loss is the
+Gaussian NLL in the target's transformed space:
+\begin{equation}
+\mathcal{L}_{\mathrm{nll}} =
+ \frac{1}{|M_t|}\sum_{i\in M_t}\left[
+ \frac{(\mu_i - y_i)^2}{2\,\sigma_i^2} + \frac{1}{2}\log\sigma_i^2
+ \right].
+\label{eq:try80_nll_summary}
+\end{equation}
+
+\paragraph{Stage-A distribution KL.} Keeps the per-sample GMM predicted by
+Stage A close to the empirical target histogram inside the same sample. Let
+\(p_k\) be the Stage-A mixture weights, \(\bar\pi_k\) be the empirical soft
+assignment of target pixels to each component, and \(\bar\delta_k\) be the
+per-component mean shift; the loss is
+\begin{equation}
+\mathcal{L}_{\mathrm{kl}} =
+ \sum_{k=1}^{K}\bar\pi_k\,
+ \log\!\left(\frac{\bar\pi_k + \varepsilon}{p_k + \varepsilon}\right)
+ + \beta\,\|\bar\delta_k\|_2^2 ,
+\label{eq:try80_kl_summary}
+\end{equation}
+with \(\varepsilon=10^{-6}\) and a small weight \(\beta\) that penalises
+unrealistic per-component shifts.
+
+\paragraph{Moment matching.} Prevents the backbone from drifting to the right
+mean but wrong variance:
+\begin{equation}
+\mathcal{L}_{\mathrm{mm}} =
+ \bigl(\overline{\hat{y}}-\overline{y}\bigr)^2
+ + \bigl(\sigma_{\hat{y}} - \sigma_{y}\bigr)^2,
+\label{eq:try80_mm}
+\end{equation}
+where the means and standard deviations are taken over valid pixels.
+
+\paragraph{Anchor and prior-guard.} Two light regularisers that keep the
+residual head honest. Anchor penalises unused head capacity
+\(\mathcal{L}_{\mathrm{anchor}} = \tfrac{1}{|M_t|}\sum_i \alpha_i^2 +
+\|\delta^{\mathrm{global}}\|_2^2 + \tfrac{1}{|M_t|}\sum_i
+\|\delta^{\mathrm{local}}_i\|_2^2\), where \(\alpha\), \(\delta^{\mathrm{global}}\),
+and \(\delta^{\mathrm{local}}\) are the scalar blend, per-sample mean shift,
+and per-pixel residual produced by the Stage-B head. Prior-guard forbids the
+model from being systematically worse than the frozen prior:
+\begin{equation}
+\mathcal{L}_{\mathrm{guard}} =
+ \max\!\left(0,\,
+ \mathrm{RMSE}(\hat{y},y) - \mathrm{RMSE}(\hat{y}^{(0)},y)\right)^2.
+\label{eq:try80_guard}
+\end{equation}
+
+\paragraph{Outlier budget.} Caps the total probability mass assigned to the
+tail component above a soft-assignment threshold \(\tau = 0.60\):
+\begin{equation}
+\mathcal{L}_{\mathrm{out}} =
+ \left(\frac{1}{|M_t|}\sum_{i\in M_t}\mathbb{1}\!\left[p_{K,i}>\tau\right]
+ - \beta_{\mathrm{out}}\right)_+^2,
+\label{eq:try80_out}
+\end{equation}
+with a small target budget \(\beta_{\mathrm{out}}\), so the tail component
+does not silently absorb the whole image.
+
+\paragraph{Supervised pixel losses.} Two standard terms anchor the native
+output to the ground truth:
+\begin{equation}
+\mathcal{L}_{\mathrm{rmse}} = \sqrt{
+ \frac{1}{|M_t|}\sum_{i\in M_t}(\hat{y}_i - y_i)^2},
+\qquad
+\mathcal{L}_{\mathrm{mae}} =
+ \frac{1}{|M_t|}\sum_{i\in M_t}|\hat{y}_i - y_i|.
+\label{eq:try80_rmse_mae_summary}
+\end{equation}
+\(\mathcal{L}_{\mathrm{rmse}}\) is the dominant supervised term at
+\(\lambda_{\mathrm{r}}=0.40\), consistent with the thesis performance targets.
+
+Tries 67--71 used a different loss bundle centred on a main masked MSE, a
+multi-scale path-loss auxiliary, a masked Laplacian ``PDE'' residual, and an
+NLoS focus term. The distribution-first tries (\texttt{Try 76},
+\texttt{Try 77}) drop the multi-scale auxiliary and the Laplacian residual in
+favour of the GMM NLL and KL terms above, because the main failure they
+address is distributional rather than structural.
+
+\section{Training hyperparameters}
+\label{sec:hyperparams}
+
+Table~\ref{tab:hyperparams} summarises the training configuration of the
+final prior-anchored pipeline. The values for \texttt{Try 76},
+\texttt{Try 77}, and \texttt{Try 80} are read directly from the YAML files
+under \texttt{TFGpractice/TFG*/experiments/}. Older tries are reported more
+compactly because the final thesis line inherits only the architectural
+lessons from them, not the training stack.
+
+\begin{table}[H]
+\centering
+\caption{Training configuration of the final pipeline. Unless otherwise
+stated, all runs use AdamW, \texttt{ReduceLROnPlateau} with patience 15--20,
+image size $513\times513$, batch size 1 per GPU, and gradient accumulation
+over 8 steps.}
+\label{tab:hyperparams}
+\small
+\begin{tabularx}{\textwidth}{lXXX}
+\toprule
+Config & Try 76 / 77 experts & Try 80 joint & Try 67--71 (historical) \\
+\midrule
+Input channels   & topology, LoS, NLoS, ground mask (4 + scalar height) & topology + Try 78/79 priors + masks (9) & topology, LoS, distance, formula prior, knife-edge (5--6) \\
+Optimizer        & AdamW ($\beta_1{=}0.9, \beta_2{=}0.999$) & AdamW & AdamW \\
+Learning rate    & \num{3e-4} & \num{2e-4} & \num{1e-3} to \num{3e-4} (cosine or plateau) \\
+Weight decay     & 0.01 & 0.01 & 0.015--0.030 \\
+Batch size       & 1 & 1 & 1 \\
+Grad accumulation& 8 & 8 & 16 (68) / 8 (69) \\
+Warmup epochs    & 2 & 2 & 2--5 \\
+Epochs           & 80--120 & 120 & 80--150 \\
+Scheduler        & ReduceLROnPlateau, patience 15 & ReduceLROnPlateau, patience 20 & ReduceLROnPlateau (post-April~2025 patch) \\
+SWA              & Off & Off & On, start fraction 0.60 \\
+Label noise      & Off & Off & On, $\sigma_{\mathrm{dB}}=0.5$ \\
+CutMix           & Off & Off (D4 augmentation only) & On, $p=0.25$--$0.45$, FiLM-safe \\
+EMA weights      & Off & Off & On, decay 0.9975 \\
+Dropout          & 0.10 (decoder only) & 0.10 (decoder only) & 0.12 (69) -- 0.20 (67) \\
+Height encoding  & Sinusoidal FiLM, 16 log-freqs over $[12,478]$ m & Sinusoidal FiLM, 2 depths & Sinusoidal FiLM, 8 injection points \\
+GMM components $K$ & 5 (Stage A, path/delay), spike+exp (angular) & 3 (residual head on anchored output) & --- (MSE/Huber heads) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Two patterns deserve emphasis. First, the move from Tries~67--71 to Try~76
+onward is a simplification, not a complication: SWA, EMA, CutMix, label noise,
+and the multi-auxiliary losses are all turned off, and the training stack
+becomes a plain AdamW + ReduceLROnPlateau loop. This is consistent with the
+distribution-first philosophy: once the output head and target distribution
+are correct, the classical training-stabilisation tricks become unnecessary.
+Second, Try~80 uses a smaller learning rate than the Try~76/Try~77 experts
+(\num{2e-4} vs \num{3e-4}) because it is fine-tuning a residual head whose
+inputs already include the strong Try~78/Try~79 priors; pushing the learning
+rate higher pulls the residual head away from the anchors faster than
+\texttt{prior\_guard} can catch it.
+
+\section{Training diagnostics and curves}
+\label{sec:train_curves}
+
+The complete per-epoch training metrics for the Try~76, Try~77, and Try~80
+runs are logged as JSON under each try's \texttt{outputs/} directory and can
+be plotted by running \texttt{scripts/plot\_history.py} inside the
+corresponding try folder. The repository also contains pre-rendered panels
+with the Stage-A distribution diagnostics for the Try~76 experts under
+\texttt{TFGSeventySixthTry76/docs/}, and the main Try~80 history plot is
+reproduced in the results chapter as
+Figure~\ref{fig:try80_history}. Because the final Try~80 checkpoint is not
+yet frozen, curves are included only as training diagnostics and not as
+finalised loss plots.
+
 
 
 \section{Try 78 and Try 79 priors: overview and literature basis}
@@ -697,6 +975,25 @@ following.
 
 \section{Try 78: Path Loss Prior}
 \label{sec:try78_detail}
+
+\subsection*{Reader map}
+
+The Try~78 section is intentionally detailed because it is the mathematical
+core of the final path-loss result.  A reader only interested in the modelling
+logic can follow it in four passes.  First, the LoS branch starts from FSPL and
+adds a coherent two-ray field sum, which explains the radial ring structure
+observed in the CKM maps.  Second, the NLoS branch uses a calibrated
+regime-wise model over topology and obstruction features, because a LoS-shaped
+formula cannot explain blocked streets by itself.  Third, both branches are
+fitted only on the training split and then evaluated with the same
+pixel-weighted ground-mask RMSE used elsewhere in the thesis.  Finally, the
+Try~78 output becomes the frozen path-loss anchor consumed by Try~80.
+
+The most important results to retain while reading the details are the LoS
+waterfall in Table~\ref{tab:try78_los_waterfall} and the final path-loss
+numbers in Table~\ref{tab:try78_results}: the coherent two-ray branch reduces
+LoS error to about \SI{1.75}{dB}, and the full hybrid prior reaches about
+\SI{1.92}{dB} overall on the held-out test cities.
 
 \input{prior_detail_try78}
 

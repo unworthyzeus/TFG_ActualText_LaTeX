@@ -37,14 +37,20 @@ Bias toward represented city morphologies and risk of overclaiming simulated res
 
 \textbf{Development of the BT.} The main environmental cost of the academic
 work was electricity for computation. The final Try~80 line used four RTX~2080
-Ti-class GPUs for approximately \SI{12}{h}, consuming about \SI{18}{kWh}.
-The final Try~76--79 stage required roughly \SI{18}{h} of similar GPU time,
-adding about \SI{27}{kWh}. The complete exploratory project exceeded
+Ti GPUs for approximately \SI{12}{h}, consuming about \SI{18}{kWh}.
+Tries~76 and 77 (the 12-expert distribution-first training) also used the
+same four-GPU node, adding roughly \SI{18}{h} of GPU time and about
+\SI{27}{kWh}. The non-deep-learning priors of Tries~78 and~79 do not need the
+cluster: the calibration code runs on a single GPU or CPU through the
+DirectML backend, takes a few hours end-to-end on a consumer laptop, and is
+mentioned here only for completeness since the main carbon cost comes from
+the deep-learning stages. The complete exploratory project exceeded
 \SI{400}{GPU-h}; at the same approximation of \SI{1.5}{kW} per four-GPU node,
 this corresponds to roughly \SI{150}{kWh} and approximately
-\SI{30}{kgCO2e} at an illustrative factor of 0.2~kgCO2e/kWh. This
-exploratory footprint is a one-time research overhead, not the marginal cost
-of using the final system in deployment.
+\SI{30}{kgCO2e} at an illustrative factor of 0.2~kgCO2e/kWh (a rough
+order-of-magnitude based on public grid-mix references for Spain in~2024).
+This exploratory footprint is a one-time research overhead, not the marginal
+cost of using the final system in deployment.
 
 Several decisions reduced avoidable impact: using city-holdout validation
 instead of repeated full retraining for every diagnostic, reusing calibration
@@ -54,17 +60,22 @@ experiment.
 
 \textbf{Project execution.} In operation, a trained CKM surrogate can reduce
 the number of ray-tracing simulations required during planning. A ray tracer is
-still needed to generate reliable training data and to validate new regimes, 
-but this is a one time thing. And now this model can generalize without needing
-new simulations for 6G enabled 7.125GHz UAV enabled networks, which is the main future use case.
-The surrogate can also be used for fast what-if analyses during planning: 
+still needed to generate reliable training data and to validate new regimes,
+but that cost is concentrated in dataset creation and periodic recalibration
+rather than in every planning query. For the simulated FR3 UAV setting studied
+in this thesis, centred on \SI{7.125}{GHz}, the surrogate can generalise across
+the held-out cities without launching a new ray-tracing run for each UAV height
+or urban map.
+The surrogate can also be used for fast what-if analyses during planning:
 it is not a replacement for ray tracing in every scenario, but it can evaluate
 many UAV heights or urban alternatives at much lower marginal energy cost.
 
 
 \textbf{Risks and limitations.} The environmental benefit depends on reuse. If
 the model is retrained from scratch for every new city or frequency, the energy
-advantage becomes weaker, but this shouldn't be the case unless very different cities are considered. 
+advantage becomes weaker. This is most likely when the deployment environment
+differs substantially from the simulated cities, frequency, antenna assumptions,
+or propagation conditions used in this thesis.
 The analysis also does not include the embodied carbon of the GPUs or the data-centre infrastructure,
 because the project used existing shared equipment.
 
@@ -162,7 +173,9 @@ The thesis is most closely aligned with:
   develops a method for faster planning and evaluation of wireless
   infrastructure.
   \item \textbf{SDG 11: Sustainable Cities and Communities.} Better radio-map
-  prediction can support temporary and resilient urban connectivity. With less needed resources to plan wireless infrastructure.
+  prediction can support temporary and resilient urban connectivity while
+  reducing the resources needed to evaluate alternative wireless-infrastructure
+  plans.
   \item \textbf{SDG 13: Climate Action.} The method can reduce repeated
   high electricity (hence carbon) costs of simulation once a validated surrogate is available, although this
   benefit depends on responsible reuse and avoiding unnecessary retraining.

@@ -2,31 +2,42 @@
 \acswitchoff 
 \babel@toc {english}{}\relax 
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {1.1}{\ignorespaces Project's Gantt diagram}}{18}{figure.caption.8}%
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Project's Gantt diagram}}{21}{figure.caption.15}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Try 76 distribution-first path-loss system. Stage~A learns global GMM parameters $(\mitpi _k,\mitmu _k,\mitsigma _k)$ from pooled features conditioned on UAV height; Stage~B produces per-pixel soft assignments and within-component offsets anchored to those parameters.}}{37}{figure.caption.16}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Overall \texttt {Try 80} pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\mitdelta $ around them.}}{43}{figure.caption.27}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Two-ray geometry. Direct path (blue) has length $d_{\mathrm {LoS}}$; reflected path (green) has the same total length as the image-source path (gray dashed), which is $d_{\mathrm {ref}}$.}}{51}{figure.caption.44}%
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Effective ground-reflection amplitude $\mitrho ^*$ as a function of UAV height, fitted independently per 5 m height bin. Values are stable in the range $0.47$--$0.56$ for 10--130 m, then rise slightly at higher altitudes where training data is sparser.}}{57}{figure.caption.62}%
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Schematic comparison of FSPL and the coherent two-ray model for a 60 m UAV at 7.125 GHz ($h_{\mathrm {rx}} = 1.5$ m). The two-ray model produces a characteristic oscillatory pattern around the FSPL baseline, corresponding to alternating zones of constructive and destructive interference.}}{57}{figure.caption.63}%
-\contentsline {figure}{\numberline {3.8}{\ignorespaces Try 78 pixel-weighted RMSE values. The coherent two-ray model reduces LoS RMSE from 3.95 dB (FSPL) to 1.75 dB, a gain of 2.2 dB.}}{69}{figure.caption.88}%
-\contentsline {figure}{\numberline {3.9}{\ignorespaces Pipeline for the \texttt {Try 78} hybrid path loss prior. The LoS branch relies on an explicit two-ray interference model, while the NLoS branch calibrates a raw prior against map-derived morphology features using regime-wise OLS. The two branches are hard-switched based on the LoS mask to produce the final frozen prior.}}{70}{figure.caption.89}%
-\contentsline {figure}{\numberline {3.10}{\ignorespaces Feature grouping used by the \texttt {Try 79} calibrated spread prior. The calibrated model is linear in \(\textbf {x}_{79}\), but the features include nonlinear transforms and interactions selected from propagation intuition.}}{74}{figure.caption.93}%
-\contentsline {figure}{\numberline {3.11}{\ignorespaces Pipeline for the \texttt {Try 79} delay and angular spread priors. Both spread modalities share this identical linear architecture, predicting expected spread in the log domain via regime-wise ridge regression over 23 spatial and geometric features.}}{78}{figure.caption.103}%
-\contentsline {figure}{\numberline {3.12}{\ignorespaces Schematic of the \texttt {Try 80} Shared UNet architecture with FiLM conditioning.}}{82}{figure.caption.104}%
-\contentsline {figure}{\numberline {3.13}{\ignorespaces Detailed \texttt {Try 80} sinusoidal height-conditioning path.}}{82}{figure.caption.106}%
-\contentsline {figure}{\numberline {3.14}{\ignorespaces Detailed prior-anchored GMM head used by \texttt {Try 80}.}}{83}{figure.caption.108}%
-\contentsline {figure}{\numberline {3.15}{\ignorespaces Composite \texttt {Try 80} loss. The probabilistic terms train the mixture density, while the anchor and guard terms enforce the prior-residual interpretation.}}{85}{figure.caption.114}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Try 77 spread-prediction system. The Stage~A mixture head separately models the near-zero spike (LoS direct path) and the heavy-tailed components (NLoS scattering). Stage~B decodes these into spatially varying per-pixel predictions.}}{87}{figure.caption.17}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Aggregated target and prediction histograms from the Try 74/75 histogram study. The vertical scale is logarithmic to show the rare tail mass: path-loss NLoS suffers from mode collapse, while delay and angular spreads learn the bulk but miss part of the high-value tail.}}{88}{figure.caption.21}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Try 76 distribution-first path-loss system. Stage~A learns global GMM parameters $(\mitpi _k,\mitmu _k,\mitsigma _k)$ from pooled features conditioned on UAV height; Stage~B produces per-pixel soft assignments and within-component offsets anchored to those parameters.}}{42}{figure.caption.23}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Try 77 spread-prediction system. The Stage~A mixture head separately models the near-zero spike (LoS direct path) and the heavy-tailed components (NLoS scattering). Stage~B decodes these into spatially varying per-pixel predictions.}}{42}{figure.caption.24}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Aggregated target and prediction histograms from the Try 74/75 histogram study. The vertical scale is logarithmic to show the rare tail mass: path-loss NLoS suffers from mode collapse, while delay and angular spreads learn the bulk but miss part of the high-value tail.}}{45}{figure.caption.28}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Overall \texttt {Try 80} pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\mitdelta $ around them.}}{54}{figure.caption.42}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Two-ray geometry. Direct path (blue) has length $d_{\mathrm {LoS}}$; reflected path (green) has the same total length as the image-source path (gray dashed), which is $d_{\mathrm {ref}}$.}}{62}{figure.caption.59}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Effective ground-reflection amplitude $\mitrho ^*$ as a function of UAV height, fitted independently per 5 m height bin. Values are stable in the range $0.47$--$0.56$ for 10--130 m, then rise slightly at higher altitudes where training data is sparser.}}{68}{figure.caption.77}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Schematic comparison of FSPL and the coherent two-ray model for a 60 m UAV at 7.125 GHz ($h_{\mathrm {rx}} = 1.5$ m). The two-ray model produces a characteristic oscillatory pattern around the FSPL baseline, corresponding to alternating zones of constructive and destructive interference.}}{69}{figure.caption.78}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Try 78 pixel-weighted RMSE values. The coherent two-ray model reduces LoS RMSE from 3.95 dB (FSPL) to 1.75 dB, a gain of 2.2 dB.}}{81}{figure.caption.103}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Pipeline for the \texttt {Try 78} hybrid path loss prior. The LoS branch relies on an explicit two-ray interference model, while the NLoS branch calibrates a raw prior against map-derived morphology features using regime-wise OLS. The two branches are hard-switched based on the LoS mask to produce the final frozen prior.}}{82}{figure.caption.104}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Feature grouping used by the \texttt {Try 79} calibrated spread prior. The calibrated model is linear in \(\textbf {x}_{79}\), but the features include nonlinear transforms and interactions selected from propagation intuition.}}{86}{figure.caption.108}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Pipeline for the \texttt {Try 79} delay and angular spread priors. Both spread modalities share this identical linear architecture, predicting expected spread in the log domain via regime-wise ridge regression over 23 spatial and geometric features.}}{90}{figure.caption.118}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Schematic of the \texttt {Try 80} Shared UNet architecture with FiLM conditioning.}}{94}{figure.caption.119}%
+\contentsline {figure}{\numberline {3.13}{\ignorespaces Detailed \texttt {Try 80} sinusoidal height-conditioning path.}}{94}{figure.caption.121}%
+\contentsline {figure}{\numberline {3.14}{\ignorespaces Detailed prior-anchored GMM head used by \texttt {Try 80}.}}{95}{figure.caption.123}%
+\contentsline {figure}{\numberline {3.15}{\ignorespaces Composite \texttt {Try 80} loss. The probabilistic terms train the mixture density, while the anchor and guard terms enforce the prior-residual interpretation.}}{97}{figure.caption.129}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Current Try 80 validation snapshot against its frozen priors. This figure is a placeholder until final test evaluation is complete.}}{91}{figure.caption.120}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Representative Try 80 inspection panel for a validation sample. The panel shows the three targets, their frozen priors, the model outputs, topology and LoS/NLoS support, model error, and model-prior residual maps.}}{92}{figure.caption.121}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Try 80 validation history against frozen priors. Placeholder diagnostic, not a final test result.}}{93}{figure.caption.122}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Current Try 80 validation snapshot against its frozen priors. This figure is a placeholder until final test evaluation is complete.}}{105}{figure.caption.138}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Representative Try 80 inspection panel for a validation sample. Rows: path loss, delay spread, angular spread. Columns: ground truth, frozen prior (Try 78/79), Try 80 prediction, context / support mask, prior error ($\mathrm {Prior}-\mathrm {GT}$), and model correction ($\mathrm {Try\,80}-\mathrm {Prior}$).}}{106}{figure.caption.139}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Try 80 validation history against frozen priors. Placeholder diagnostic, not a final test result.}}{107}{figure.caption.140}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {A.1}{\ignorespaces Try 80 appendix panel for an open, high-antenna validation sample.}}{112}{figure.caption.130}%
-\contentsline {figure}{\numberline {A.2}{\ignorespaces Try 80 appendix panel for a mixed, high-antenna validation sample.}}{113}{figure.caption.131}%
-\contentsline {figure}{\numberline {A.3}{\ignorespaces Try 80 appendix panel for a dense, high-antenna validation sample.}}{114}{figure.caption.132}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {D.1}{\ignorespaces Try 80 appendix panel for an open, high-antenna validation sample.}}{126}{figure.caption.148}%
+\contentsline {figure}{\numberline {D.2}{\ignorespaces Try 80 appendix panel for a mixed, high-antenna validation sample.}}{127}{figure.caption.149}%
+\contentsline {figure}{\numberline {D.3}{\ignorespaces Try 80 appendix panel for a dense, high-antenna validation sample.}}{128}{figure.caption.150}%
+\contentsline {figure}{\numberline {D.4}{\ignorespaces Try 80 appendix panel for an open, low-antenna validation sample.}}{129}{figure.caption.151}%
+\contentsline {figure}{\numberline {D.5}{\ignorespaces Try 80 appendix panel for an open, mid-antenna validation sample.}}{130}{figure.caption.152}%
+\contentsline {figure}{\numberline {D.6}{\ignorespaces Try 80 appendix panel for a mixed, low-antenna validation sample.}}{131}{figure.caption.153}%
+\contentsline {figure}{\numberline {D.7}{\ignorespaces Try 80 appendix panel for a mixed, mid-antenna validation sample.}}{132}{figure.caption.154}%
+\contentsline {figure}{\numberline {D.8}{\ignorespaces Try 80 appendix panel for a dense, low-antenna validation sample.}}{133}{figure.caption.155}%
+\contentsline {figure}{\numberline {D.9}{\ignorespaces Try 80 appendix panel for a dense, mid-antenna validation sample.}}{134}{figure.caption.156}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }

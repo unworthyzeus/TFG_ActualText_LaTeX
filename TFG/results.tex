@@ -1,9 +1,11 @@
 \chapter{Results}
 
 This chapter reports the main quantitative and qualitative outcomes of the
-project. Final Try 80 test results are intentionally left as placeholders
-because the model is still being trained and the final checkpoint has not yet
-been frozen.
+project. The headline numbers come from the frozen Try~78 and Try~79 priors,
+which are reproducible and evaluated on the final city-holdout test split.
+Try~80 is reported as an in-flight extension built on top of those frozen
+priors: the chapter includes its current validation snapshot as a training
+diagnostic, but not as a finalised test result.
 
 \section{Experiments and Tests}
 
@@ -11,7 +13,7 @@ Table~\ref{tab:timeline_results} summarizes the most important milestones. The
 early rows are not meant as a leaderboard because masking rules and objectives
 changed during the project; they document why the next stage was necessary.
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \caption{Representative experimental milestones.}
 \label{tab:timeline_results}
@@ -36,6 +38,42 @@ reduced LoS RMSE from roughly \SI{3.95}{dB} with FSPL to
 \SI{1.75}{dB}. The final hybrid prior reached \SI{1.9246}{dB} overall under the
 pixel-weighted metric.
 
+\subsection{Try 78 LoS prior progression}
+
+The LoS branch of Try 78 was developed as a short waterfall of three
+increasingly physical models fitted on the same city-holdout split, so the gain
+from each modelling choice can be isolated
+(Table~\ref{tab:try78_los_waterfall}).
+
+\begin{table}[H]
+\centering
+\caption{Try 78 LoS path-loss progression: three priors evaluated on the same
+city-holdout test set (pixel-weighted RMSE).}
+\label{tab:try78_los_waterfall}
+\begin{tabular}{lcc}
+\toprule
+Prior & LoS RMSE (dB) & Gain over previous \\
+\midrule
+FSPL only                       & 3.9540 & --- \\
+FSPL + radial residual          & 3.7086 & $-$0.25 \\
+\textbf{Coherent two-ray}       & \textbf{1.7516} & $\mathbf{-1.96}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two lessons follow. First, adding a purely radial correction on top of FSPL
+only buys about \SI{0.25}{dB}. The residuals that a non-coherent model can
+absorb are small compared to the structured deviation from FSPL. Second,
+switching to a \emph{coherent} two-ray model with a fitted effective reflection
+coefficient $(\rho, \phi)$ per \SI{5}{m} UAV-height bin removes almost
+\SI{2}{dB} of additional error. This is exactly the magnitude expected when the
+dataset contains a visible ground-reflection interference pattern, because the
+radial-residual model cannot reproduce the oscillatory ring structure with a
+purely monotonic function of distance. The two-ray model is therefore not just
+a better fit numerically; it is a physically motivated explanation of the
+dominant LoS residual shape in CKM, and it is why Try 80 uses the two-ray
+output directly as a frozen anchor rather than re-learning it from pixels.
+
 \section{RMSE evolution and interpretation}
 
 The RMSE history should be read as a sequence of increasingly strict
@@ -47,7 +85,7 @@ direction of the project: from direct image regression, to prior-guided
 residual learning, to frozen calibrated priors and finally to the joint Try 80
 model.
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \caption{Representative RMSE evolution across the project. Values are reported
 under their own experiment contract and are used to show trend and diagnosis,
@@ -94,7 +132,7 @@ near \SI{3.75}{dB}, while NLoS error remained above \SI{30}{dB}. A single
 overall number would hide the fact that the LoS branch was nearly solved for
 that stage while the NLoS branch was still structurally wrong.
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \caption{Try 78 final hybrid path-loss prior, pixel-weighted RMSE.}
 \label{tab:try78_results}
@@ -113,7 +151,7 @@ Try 79 showed that a large part of the spread targets can also be explained by
 geometry, morphology, and calibration without a neural network. It fitted 114
 regimes in the test evaluation.
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \caption{Try 79 calibrated test results, pixel-weighted RMSE.}
 \label{tab:try79_results}
@@ -127,13 +165,132 @@ Angular spread ($^\circ$) & 13.74 & 15.28 & 8.66 \\
 \end{tabular}
 \end{table}
 
+\subsection{Try 76 as a distribution-first reference}
+
+Try 76 is not the final model of this thesis, but its result is quoted here
+because it is the piece of evidence that motivated the final path-loss design.
+Trained with no physical prior of any kind, no COST-231 formula, no knife-edge
+channel, and no residual-over-prior structure, the distribution-first Try 76
+family reached a pixel-weighted NLoS path-loss RMSE of approximately
+\SI{3.34}{dB} on its own city-holdout test split. The two lessons it provided
+were (i) a plain MSE/Huber regressor with a single Gaussian-shaped output head
+cannot represent the NLoS path-loss target because that marginal is strongly
+multi-modal, and (ii) once the output head is a Gaussian mixture conditioned
+on the UAV height, the NLoS mode-collapse that dominated the error budget of
+Tries 66--69 disappears. This is a small RMSE difference compared to the
+Try 78 non-DL prior (\SI{3.40}{dB} NLoS), but it is a qualitatively different
+result because it is obtained without injecting any physics. Full derivation
+and per-expert numbers are treated in the methodology chapter and in the
+Try 76 appendix material.
+
+\subsection{Try 76 to Try 78: why priors came back}
+
+Reading the project in chronological order, the move from Try 76 to Try 78 can
+look contradictory: the first demonstrates that a distribution-aware neural
+head does not need a physical prior to solve NLoS path loss, and the second
+goes back to an explicit analytic prior. The sequence is consistent once the
+order in which the evidence arrived is spelled out. Try 76 came
+\emph{immediately after} the post-Try-75 histogram diagnosis. That diagnosis
+showed that the main deficit of the PMHHNet family was not a missing physical
+channel, but an output-distribution mismatch. The first response was therefore
+to fix the deep-learning side: change the objective, change the output head,
+and show that NLoS path loss can in fact be modelled without extra physics.
+Once that point was made, the question changed. Given that the full target
+distribution is tractable, which part of the prediction pipeline is the
+cheapest and most auditable? For LoS path loss the answer turned out to be a
+\SI{100}{\mathrm{-}}line analytic model with a handful of fitted constants
+(Try 78), not a neural residual head. For delay and angular spread the answer
+was a log-domain ridge regression over geometry and morphology features
+(Try 79). Try 80 then keeps the Try 76/77 distribution-aware philosophy but
+anchors the neural residual head to the Try 78/79 priors rather than forcing
+the network to rediscover them from pixels. The priors in the final pipeline
+are an efficiency and stability device, not a contradiction of the Try 76
+result.
+
+\subsection{Try 77: GMM experts for delay and angular spread}
+
+Try 77 applies the Try 76 distribution-first recipe to delay spread and
+angular spread. It partitions the dataset into the same six topology classes
+and trains two GMM experts per class (one per spread target), for a total of
+twelve experts. The training code, per-expert configuration files, and
+submission scripts are all in the repository
+(\texttt{TFGpractice/TFGSeventySeventhTry77/}), but the evaluation artefacts
+needed for a per-expert table are produced on the SLURM cluster and have not
+been mirrored into this document yet. Try 77 is therefore included in the
+methodology chapter as the architecture that produced the GMM spread priors
+consumed indirectly through Try 79, with final per-expert numbers deferred to
+the appendix once the cluster outputs are pulled.
+
+\subsection{RMSE by UAV transmitter height}
+
+The CKM dataset covers UAV heights from about \SI{12}{m} to almost
+\SI{478}{m}, so the conditional error at a single aggregate RMSE can hide
+strong altitude-dependent structure. Tables~\ref{tab:try78_by_height} and
+\ref{tab:try79_by_height} therefore break the Try 78 path loss and the Try 79
+delay-spread and angular-spread priors into four UAV-height bins, using the
+same pixel-weighted aggregation as the headline tables.
+
+\begin{table}[H]
+\centering
+\caption{Try 78 path-loss pixel-weighted RMSE by UAV transmitter height, on
+the city-holdout test split.}
+\label{tab:try78_by_height}
+\begin{tabular}{lcccc}
+\toprule
+UAV height bin (m) & Overall RMSE (dB) & LoS RMSE (dB) & NLoS RMSE (dB) & \# samples \\
+\midrule
+12--50   & 2.180 & 1.797 & 3.756 & 1211 \\
+50--150  & 1.936 & 1.785 & 3.228 & 2634 \\
+150--300 & 1.680 & 1.666 & 2.259 &  786 \\
+300--500 & 1.627 & 1.619 & 2.255 &  362 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Try 79 delay spread and angular spread calibrated pixel-weighted RMSE
+by UAV transmitter height, on the city-holdout test split.}
+\label{tab:try79_by_height}
+\small
+\begin{tabular}{lcccc}
+\toprule
+UAV height bin (m) & Metric & Overall & LoS & NLoS \\
+\midrule
+12--50   & Delay spread (ns)       & 39.90 & 43.04 & 35.13 \\
+50--150  & Delay spread (ns)       & 27.17 & 26.72 & 28.29 \\
+150--300 & Delay spread (ns)       &  8.70 &  8.79 &  8.13 \\
+300--500 & Delay spread (ns)       &  3.70 &  3.80 &  2.76 \\
+\midrule
+12--50   & Angular spread ($^\circ$) & 15.69 & 18.81 &  9.93 \\
+50--150  & Angular spread ($^\circ$) & 14.19 & 15.89 &  8.41 \\
+150--300 & Angular spread ($^\circ$) & 10.39 & 11.07 &  4.49 \\
+300--500 & Angular spread ($^\circ$) &  8.85 &  9.34 &  2.85 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The altitude dependence is monotonic and physically intuitive. Higher UAV
+transmitters see more of the ground as unobstructed LoS and encounter fewer
+deep shadow pockets, so both the NLoS pixel fraction and the worst-case tails
+shrink. Path-loss NLoS RMSE drops from \SI{3.76}{dB} at low altitudes to
+\SI{2.26}{dB} above \SI{300}{m}, and delay-spread NLoS RMSE collapses from
+\SI{35}{ns} to under \SI{3}{ns} in the same comparison. The opposite is true
+for the absolute number of samples: the dataset is dominated by the
+\SI{50}{\mathrm{-}}\SI{150}{m} band, so the global aggregate RMSE reflects that
+regime more than the higher-altitude extremes. A practical consequence for
+Try 80 is that the neural residual head has less to correct at high altitudes,
+where the Try 78 prior is already close to the quantisation floor. The
+remaining headroom lives in the low-altitude, NLoS-heavy bin, which is exactly
+where a distribution-aware residual can matter.
+
 For Try 80, the current validation snapshot over 2750 samples is useful as a
 training diagnostic but is not the final thesis claim. It shows that the joint
 model can already improve some prior metrics while remaining close to the
 anchors. These values must be replaced by final test numbers after checkpoint
 selection.
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \caption{Try 80 current validation snapshot. These are placeholders, not final
 test results.}
@@ -201,17 +358,24 @@ figure is a placeholder until final test evaluation is complete.}
 \end{figure}
 
 Figure~\ref{fig:try80_panel} shows a representative Try 80 validation
-inspection panel. The same plotting script is used for the appendix panels:
-the first three rows compare ground truth, frozen prior, and model output; the
-fourth row shows topology and visibility masks; the last two rows show the
-model error and the residual change applied to the prior.
+inspection panel. The same plotting script is used for all appendix panels:
+each row is one of the three targets (path loss, delay spread, angular
+spread) and the six columns are, from left to right, the ground truth, the
+frozen Try 78/79 prior, the Try 80 prediction, a context or support map,
+the prior error \(\mathrm{Prior}-\mathrm{GT}\), and the model correction
+\(\mathrm{Try\,80}-\mathrm{Prior}\). The last two columns are the main
+diagnostic: if the residual head is doing its job, the sign and location of
+the correction (column~6) should mirror the sign and location of the prior
+error (column~5).
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\textwidth,height=0.86\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_main_panel.png}
-\caption{Representative Try 80 inspection panel for a validation sample. The
-panel shows the three targets, their frozen priors, the model outputs,
-topology and LoS/NLoS support, model error, and model-prior residual maps.}
+\caption{Representative Try 80 inspection panel for a validation sample.
+Rows: path loss, delay spread, angular spread. Columns: ground truth,
+frozen prior (Try 78/79), Try 80 prediction, context / support mask, prior
+error ($\mathrm{Prior}-\mathrm{GT}$), and model correction
+($\mathrm{Try\,80}-\mathrm{Prior}$).}
 \label{fig:try80_panel}
 \end{figure}
 
@@ -260,7 +424,7 @@ and \(0.289^\circ\) for angular spread. This is not the dominant error in the
 current Try~80 snapshot, but it is an irreducible resolution limit of the saved
 labels and becomes important once residual errors approach the sub-unit regime.
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \caption{Approximate quantisation RMSE implied by the stored target precision.
 The float16 values use the unit in the upper part of the observed range
@@ -272,7 +436,7 @@ effectively negligible at this scale.}
 Target & Current integer step & Current floor & Float16 floor near max. \\
 \midrule
 Path loss & \SI{1}{dB} & \SI{0.289}{dB} & \(\approx\SI{0.036}{dB}\) \\
-Delay spread & \SI{1}{ns} & \SI{0.289}{ns} & \(\approx\SI{0.144}{ns}\) \\
+Delay spread & \SI{1}{ns} & \SI{0.289}{ns} & \(\approx\SI{0.036}{ns}\) \\
 Angular spread & \(1^\circ\) & \(0.289^\circ\) & \(\approx0.036^\circ\) \\
 \bottomrule
 \end{tabular}

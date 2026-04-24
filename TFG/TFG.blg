@@ -1,8 +1,15 @@
-[0] Config.pm:306> INFO - This is Biber 2.18
-[1] Config.pm:309> INFO - Logfile is 'TFG.blg'
-[544] biber-MSWIN64:340> INFO - === 
-[649] Biber.pm:418> INFO - Reading 'TFG.bcf'
-[1041] Utils.pm:410> ERROR - Error: Found biblatex control file version 3.11, expected version 3.9.
-This means that your biber (2.18) and biblatex (3.21) versions are incompatible.
-See compat matrix in biblatex or biber PDF documentation.
-[1042] Biber.pm:135> INFO - ERRORS: 1
+[0] Config.pm:328> INFO - This is Biber 2.21
+[0] Config.pm:331> INFO - Logfile is 'TFG.blg'
+[99] biber-MSWIN64:342> INFO - === 
+[142] Biber.pm:421> INFO - Reading 'TFG.bcf'
+[249] Biber.pm:1002> INFO - Found 45 citekeys in bib section 0
+[261] Biber.pm:4487> INFO - Processing section 0
+[270] Biber.pm:4678> INFO - Looking for bibtex file 'TFG.bib' for section 0
+[320] bibtex.pm:1713> INFO - LaTeX decoding ...
+[358] bibtex.pm:1519> INFO - Found BibTeX data source 'TFG.bib'
+[597] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[597] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[597] Biber.pm:4307> INFO - Sorting list 'nyt/global//global/global/global' of type 'entry' with template 'nyt' and locale 'en-US'
+[597] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
+[638] bbl.pm:676> INFO - Writing 'TFG.bbl' with encoding 'UTF-8'
+[665] bbl.pm:779> INFO - Output to TFG.bbl
