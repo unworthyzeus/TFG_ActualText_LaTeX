@@ -1,0 +1,224 @@
+\babel@toc {english}{}\relax 
+\acswitchoff 
+\babel@toc {english}{}\relax 
+\contentsline {section}{Summary}{2}{section*.1}%
+\contentsline {section}{Acknowledgements}{5}{section*.3}%
+\contentsline {section}{Revision history and approval record}{6}{section*.5}%
+\contentsline {section}{Contents}{7}{section*.6}%
+\contentsline {section}{List of figures}{11}{section*.8}%
+\contentsline {section}{List of tables}{15}{section*.10}%
+\contentsline {section}{Abbreviations}{17}{section*.12}%
+\contentsline {chapter}{\numberline {1}Introduction}{19}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Work goals}{19}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Research questions and contributions}{20}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Thesis outline}{21}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Requirements and specifications}{21}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Methods and procedures}{22}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Work plan}{22}{section.1.6}%
+\contentsline {chapter}{\numberline {2}State of the art}{24}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Channel knowledge maps as the thesis context}{24}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Classical propagation models and channel statistics}{25}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Free-space and two-ray propagation}{25}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Empirical and semi-empirical models}{25}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}UAV and air-to-ground channel models}{25}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Delay spread and angular spread in standard channel models}{26}{subsection.2.2.4}%
+\contentsline {section}{\numberline {2.3}Deep learning for radio-map estimation}{26}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Image-to-image translation baselines}{26}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}PMNet and the ICASSP outdoor challenge family}{27}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Transformers, state-space models, and attention-based encoders}{28}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Foundation models for radio maps}{28}{subsection.2.3.4}%
+\contentsline {section}{\numberline {2.4}Physics-informed and hybrid neural approaches}{28}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Geometry-assisted and diffraction-aware deep learning}{28}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Physics-informed neural networks}{29}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Prior-residual decomposition}{29}{subsection.2.4.3}%
+\contentsline {section}{\numberline {2.5}Channel statistics prediction: delay spread and angular spread}{30}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Empirical models for spread parameters}{30}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Deep learning for wideband channel statistics}{30}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}Distributional mismatch and the spike-plus-exponential problem}{30}{subsection.2.5.3}%
+\contentsline {section}{\numberline {2.6}Distribution-aware and multi-target modelling}{31}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Heteroscedastic uncertainty}{31}{subsection.2.6.1}%
+\contentsline {subsection}{\numberline {2.6.2}Gaussian mixture model heads}{31}{subsection.2.6.2}%
+\contentsline {subsection}{\numberline {2.6.3}Stochastic diffusion models}{32}{subsection.2.6.3}%
+\contentsline {subsection}{\numberline {2.6.4}Multitask and joint prediction}{32}{subsection.2.6.4}%
+\contentsline {section}{\numberline {2.7}Training stabilisation and regularisation techniques}{32}{section.2.7}%
+\contentsline {subsection}{\numberline {2.7.1}Stochastic weight averaging}{32}{subsection.2.7.1}%
+\contentsline {subsection}{\numberline {2.7.2}Exponential moving average weights}{33}{subsection.2.7.2}%
+\contentsline {subsection}{\numberline {2.7.3}Feature-wise linear modulation}{33}{subsection.2.7.3}%
+\contentsline {section}{\numberline {2.8}Key benchmarks and fair-comparison protocol}{33}{section.2.8}%
+\contentsline {subsection}{\numberline {2.8.1}Why headline numbers cannot be compared directly}{33}{subsection.2.8.1}%
+\contentsline {subsection}{\numberline {2.8.2}Tarhouni et al.\ --- measured suburban path-loss prediction}{34}{subsection.2.8.2}%
+\contentsline {subsection}{\numberline {2.8.3}AIRMap --- adaptive digital-twin radio maps}{34}{subsection.2.8.3}%
+\contentsline {subsection}{\numberline {2.8.4}Gao et al.\ --- multi-layer segmentation with corridor weighting}{35}{subsection.2.8.4}%
+\contentsline {subsection}{\numberline {2.8.5}PathFinder --- multi-transmitter domain adaptation}{35}{subsection.2.8.5}%
+\contentsline {subsection}{\numberline {2.8.6}ICASSP 2025 indoor challenge}{36}{subsection.2.8.6}%
+\contentsline {section}{\numberline {2.9}Emerging techniques for closing the NLoS gap}{36}{section.2.9}%
+\contentsline {section}{\numberline {2.10}Position of Try 80 in the literature}{37}{section.2.10}%
+\contentsline {subsection}{\numberline {2.10.1}What is novel about Try 80}{37}{subsection.2.10.1}%
+\contentsline {subsection}{\numberline {2.10.2}What Try 80 does not claim}{37}{subsection.2.10.2}%
+\contentsline {subsection}{\numberline {2.10.3}Summary of position}{38}{subsection.2.10.3}%
+\contentsline {chapter}{\numberline {3}Methodology / project development}{39}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Dataset protocol}{39}{section.3.1}%
+\contentsline {section}{\numberline {3.2}From U-Net and cGAN to masked baselines}{40}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Chronological attempt analysis}{40}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Physical priors and PMHHNet}{42}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Mathematical Evolution: From PMNet to PMHHNet}{42}{subsection.3.4.1}%
+\contentsline {paragraph}{High-Frequency (HF) Stem.}{42}{paragraph*.21}%
+\contentsline {paragraph}{Continuous Sinusoidal FiLM Conditioning.}{42}{paragraph*.22}%
+\contentsline {subsection}{\numberline {3.4.2}Limitations and Legacy}{43}{subsection.3.4.2}%
+\contentsline {section}{\numberline {3.5}Distribution-first modelling}{43}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}How to construct a good deep-learning model for radio maps}{43}{subsection.3.5.1}%
+\contentsline {subsubsection}{A prior is useful, but not the core requirement}{45}{subsubsection*.25}%
+\contentsline {subsubsection}{Path loss: LoS has structure, NLoS has a narrow but noisy law with outliers}{46}{subsubsection*.26}%
+\contentsline {subsubsection}{Delay spread and angular spread: NLoS is the important regime}{46}{subsubsection*.27}%
+\contentsline {subsubsection}{Why the cGAN line failed}{48}{subsubsection*.29}%
+\contentsline {subsubsection}{Why PMNet and PMHHNet were not enough}{48}{subsubsection*.30}%
+\contentsline {subsubsection}{Design rules that survived}{49}{subsubsection*.31}%
+\contentsline {section}{\numberline {3.6}GMM component count and distribution choice}{49}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Loss functions of the final pipeline}{51}{section.3.7}%
+\contentsline {paragraph}{Per-pixel negative log-likelihood.}{51}{paragraph*.33}%
+\contentsline {paragraph}{Stage-A distribution KL.}{51}{paragraph*.34}%
+\contentsline {paragraph}{Moment matching.}{51}{paragraph*.35}%
+\contentsline {paragraph}{Anchor and prior-guard.}{52}{paragraph*.36}%
+\contentsline {paragraph}{Outlier budget.}{52}{paragraph*.37}%
+\contentsline {paragraph}{Supervised pixel losses.}{52}{paragraph*.38}%
+\contentsline {section}{\numberline {3.8}Training hyperparameters}{52}{section.3.8}%
+\contentsline {section}{\numberline {3.9}Training diagnostics and curves}{53}{section.3.9}%
+\contentsline {section}{\numberline {3.10}Try 78 and Try 79 priors: overview and literature basis}{54}{section.3.10}%
+\contentsline {paragraph}{Notation convention.}{54}{paragraph*.40}%
+\contentsline {subsection}{\numberline {3.10.1}High-level architecture}{55}{subsection.3.10.1}%
+\contentsline {subsection}{\numberline {3.10.2}How to construct a good prior}{55}{subsection.3.10.2}%
+\contentsline {subsubsection}{A prior is more than an analytical equation}{55}{subsubsection*.43}%
+\contentsline {subsubsection}{Why the old prior and \texttt {Try 78} were not equivalent}{56}{subsubsection*.44}%
+\contentsline {subsubsection}{Scope of this mismatch}{57}{subsubsection*.45}%
+\contentsline {subsubsection}{What changed in the LoS branch}{58}{subsubsection*.46}%
+\contentsline {subsubsection}{What changed in the NLoS branch}{58}{subsubsection*.47}%
+\contentsline {subsubsection}{What was improved relative to the literature}{59}{subsubsection*.48}%
+\contentsline {subsubsection}{Resulting design rules}{60}{subsubsection*.49}%
+\contentsline {subsection}{\numberline {3.10.3}What was reused from the literature, what was changed, and what is new}{60}{subsection.3.10.3}%
+\contentsline {subsubsection}{Try 78: path loss}{60}{subsubsection*.50}%
+\contentsline {paragraph}{What the literature provides.}{60}{paragraph*.51}%
+\contentsline {paragraph}{What we took exactly from the literature.}{61}{paragraph*.52}%
+\contentsline {paragraph}{What we changed or did not take.}{61}{paragraph*.53}%
+\contentsline {subsubsection}{Try 79: delay spread and angular spread}{61}{subsubsection*.54}%
+\contentsline {paragraph}{What the literature provides.}{61}{paragraph*.55}%
+\contentsline {paragraph}{What we changed or did not take.}{61}{paragraph*.56}%
+\contentsline {subsubsection}{Try 80: architecture and loss}{61}{subsubsection*.57}%
+\contentsline {section}{\numberline {3.11}Try 78: Path Loss Prior}{62}{section.3.11}%
+\contentsline {subsection}{\numberline {3.11.1}LoS branch: enhanced two-ray model}{62}{subsection.3.11.1}%
+\contentsline {subsubsection}{Geometry and distances}{63}{subsubsection*.58}%
+\contentsline {subsubsection}{Free-space path-loss baseline}{64}{subsubsection*.60}%
+\contentsline {paragraph}{Derivation.}{64}{paragraph*.61}%
+\contentsline {paragraph}{Physical meaning.}{64}{paragraph*.62}%
+\contentsline {subsubsection}{Enhanced two-ray correction}{64}{subsubsection*.63}%
+\contentsline {paragraph}{Term-by-term interpretation.}{65}{paragraph*.64}%
+\contentsline {subsubsection}{Comparison with literature two-ray models}{65}{subsubsection*.65}%
+\contentsline {paragraph}{Physical vs.\ effective parameters.}{65}{paragraph*.66}%
+\contentsline {paragraph}{The $d^4$ approximation.}{66}{paragraph*.67}%
+\contentsline {paragraph}{Search range vs.\ fitted values.}{66}{paragraph*.68}%
+\contentsline {paragraph}{Extra calibrated terms outside the two-ray model.}{66}{paragraph*.69}%
+\contentsline {subsubsection}{Calibrated LoS prior}{66}{subsubsection*.70}%
+\contentsline {subsection}{\numberline {3.11.2}Calibration of the LoS two-ray model}{69}{subsection.3.11.2}%
+\contentsline {subsubsection}{Data preparation}{69}{subsubsection*.72}%
+\contentsline {subsubsection}{Grid search for $(\rho , \phi )$}{70}{subsubsection*.73}%
+\contentsline {subsubsection}{Post-fit Gaussian smoothing across height bins}{70}{subsubsection*.74}%
+\contentsline {subsubsection}{Radial residual correction}{71}{subsubsection*.75}%
+\contentsline {subsubsection}{Fitted parameter values}{71}{subsubsection*.76}%
+\contentsline {subsection}{\numberline {3.11.3}NLoS branch}{72}{subsection.3.11.3}%
+\contentsline {subsubsection}{Stage 1: raw NLoS propagation prior}{72}{subsubsection*.80}%
+\contentsline {paragraph}{COST-231 term.}{72}{paragraph*.81}%
+\contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:cost231}.}{73}{paragraph*.82}%
+\contentsline {paragraph}{Elevation-aware UAV envelope.}{73}{paragraph*.83}%
+\contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:a2g_nlos}.}{74}{paragraph*.84}%
+\contentsline {subsubsection}{Stage 2: raw hybrid prior assembly}{74}{subsubsection*.85}%
+\contentsline {subsubsection}{Stage 3: map-derived morphology features}{75}{subsubsection*.86}%
+\contentsline {paragraph}{Base masks.}{77}{paragraph*.88}%
+\contentsline {paragraph}{Quadratic raw-prior feature.}{78}{paragraph*.89}%
+\contentsline {paragraph}{Distance term.}{78}{paragraph*.90}%
+\contentsline {paragraph}{Per-pixel box-mean operator.}{78}{paragraph*.91}%
+\contentsline {paragraph}{Multiscale building density.}{79}{paragraph*.92}%
+\contentsline {paragraph}{Multiscale building height.}{79}{paragraph*.93}%
+\contentsline {paragraph}{Multiscale NLoS-support.}{80}{paragraph*.94}%
+\contentsline {paragraph}{Elevation angle.}{80}{paragraph*.95}%
+\contentsline {paragraph}{Shadowing proxy.}{80}{paragraph*.96}%
+\contentsline {paragraph}{Interaction terms.}{81}{paragraph*.97}%
+\contentsline {subsubsection}{Stage 4: regime-wise linear calibration}{81}{subsubsection*.98}%
+\contentsline {paragraph}{How topology class and antenna bin are computed.}{81}{paragraph*.99}%
+\contentsline {paragraph}{How $\textbf {w}^{78}_{r}$ is fitted.}{82}{paragraph*.100}%
+\contentsline {subsubsection}{Stage 5: region replacement and clipping}{83}{subsubsection*.101}%
+\contentsline {subsection}{\numberline {3.11.4}Evaluation metric: pixel-weighted RMSE}{83}{subsection.3.11.4}%
+\contentsline {subsection}{\numberline {3.11.5}Observed Try 78 results}{84}{subsection.3.11.5}%
+\contentsline {section}{\numberline {3.12}Try 79: Delay and Angular Spread Priors}{85}{section.3.12}%
+\contentsline {subsection}{\numberline {3.12.1}Physical motivation for log-domain modeling}{85}{subsection.3.12.1}%
+\contentsline {subsection}{\numberline {3.12.2}Pixel-wise notation for the Try 79 fit}{86}{subsection.3.12.2}%
+\contentsline {subsection}{\numberline {3.12.3}Raw spread prior in log domain}{86}{subsection.3.12.3}%
+\contentsline {subsection}{\numberline {3.12.4}Calibrated spread prior}{87}{subsection.3.12.4}%
+\contentsline {subsubsection}{Stage 2: 23-feature vector and design matrix}{87}{subsubsection*.103}%
+\contentsline {paragraph}{Normalised transmitter height.}{89}{paragraph*.107}%
+\contentsline {paragraph}{Blocker depth.}{90}{paragraph*.108}%
+\contentsline {paragraph}{Transmitter clearance.}{90}{paragraph*.109}%
+\contentsline {paragraph}{Taller-building fraction.}{90}{paragraph*.110}%
+\contentsline {subsubsection}{Stage 3: regime-wise ridge regression}{90}{subsubsection*.111}%
+\contentsline {paragraph}{Fallback hierarchy.}{91}{paragraph*.112}%
+\contentsline {subsubsection}{Stage 4: inverse transform and clipping}{91}{subsubsection*.113}%
+\contentsline {subsection}{\numberline {3.12.5}Try 79 results}{92}{subsection.3.12.5}%
+\contentsline {section}{\numberline {3.13}Try 80: Joint Prior-Anchored Residual Model}{93}{section.3.13}%
+\contentsline {subsection}{\numberline {3.13.1}Experimental protocol and reporting status}{93}{subsection.3.13.1}%
+\contentsline {subsection}{\numberline {3.13.2}Prior-Anchored GMM Residual Model}{94}{subsection.3.13.2}%
+\contentsline {subsection}{\numberline {3.13.3}Architecture: Shared UNet with FiLM}{96}{subsection.3.13.3}%
+\contentsline {paragraph}{Detailed sinusoidal height embedding and FiLM path.}{97}{paragraph*.118}%
+\contentsline {paragraph}{Detailed prior-anchored GMM head.}{98}{paragraph*.120}%
+\contentsline {subsection}{\numberline {3.13.4}Composite Optimization Objective}{98}{subsection.3.13.4}%
+\contentsline {paragraph}{Map negative log-likelihood.}{98}{paragraph*.122}%
+\contentsline {paragraph}{Distributional KL term.}{99}{paragraph*.123}%
+\contentsline {paragraph}{Moment matching.}{99}{paragraph*.124}%
+\contentsline {paragraph}{Anchor and guard terms.}{99}{paragraph*.125}%
+\contentsline {paragraph}{Outlier budget and deterministic losses.}{99}{paragraph*.126}%
+\contentsline {chapter}{\numberline {4}Results}{101}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Experiments and Tests}{101}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Try 78 LoS prior progression}{102}{subsection.4.1.1}%
+\contentsline {section}{\numberline {4.2}RMSE evolution and interpretation}{103}{section.4.2}%
+\contentsline {paragraph}{Split-comparability note.}{105}{paragraph*.131}%
+\contentsline {subsection}{\numberline {4.2.1}Try 76 as a distribution-first reference}{106}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Try 76 to Try 78: why priors came back}{109}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Try 77: GMM experts for delay and angular spread}{110}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}RMSE by UAV transmitter height}{112}{subsection.4.2.4}%
+\contentsline {subsection}{\numberline {4.2.5}Try 78 path-loss prior by topology class}{113}{subsection.4.2.5}%
+\contentsline {section}{\numberline {4.3}Data Visualization}{115}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Limitations}{116}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Sustainability Analysis and Ethical Implications}{121}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Sustainability matrix}{121}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Environmental impact}{122}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Economic impact}{122}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Social impact}{123}{subsection.5.1.3}%
+\contentsline {section}{\numberline {5.2}Ethical implications}{124}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Relationship with the Sustainable Development Goals}{124}{section.5.3}%
+\contentsline {chapter}{\numberline {6}Conclusions and Future Work}{125}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Conclusions}{125}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Answers to the research questions}{125}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Main contributions}{126}{subsection.6.1.2}%
+\contentsline {subsection}{\numberline {6.1.3}Negative results}{126}{subsection.6.1.3}%
+\contentsline {section}{\numberline {6.2}Future Directions}{127}{section.6.2}%
+\contentsline {chapter}{Bibliography}{128}{chapter*.151}%
+\contentsline {chapter}{\numberline {A}Detailed Attempt Log}{132}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Early image-to-image phase}{132}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Artifact removal and masked supervision}{132}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Prior-guided residual phase}{133}{section.A.3}%
+\contentsline {section}{\numberline {A.4}Final distribution and prior phase}{133}{section.A.4}%
+\contentsline {chapter}{\numberline {B}Try 80 Configuration Summary}{135}{appendix.B}%
+\contentsline {chapter}{\numberline {C}Formula Placement}{136}{appendix.C}%
+\contentsline {chapter}{\numberline {D}Representative Try 80 Inspection Panels}{137}{appendix.D}%
+\contentsline {chapter}{\numberline {E}Implementation Snippets}{148}{appendix.E}%
+\contentsline {section}{\numberline {E.1}Frozen prior assembly}{148}{section.E.1}%
+\contentsline {section}{\numberline {E.2}Try 80 input tensor}{148}{section.E.2}%
+\contentsline {section}{\numberline {E.3}Bounded residual decoder}{149}{section.E.3}%
+\contentsline {chapter}{\numberline {F}CKM Generator Interface and Reproducibility Tool}{150}{appendix.F}%
+\contentsline {section}{\numberline {F.1}Interface overview}{150}{section.F.1}%
+\contentsline {section}{\numberline {F.2}How the tool is run}{152}{section.F.2}%
+\contentsline {section}{\numberline {F.3}Accepted inputs}{153}{section.F.3}%
+\contentsline {section}{\numberline {F.4}Configurable controls}{154}{section.F.4}%
+\contentsline {section}{\numberline {F.5}Image scaling and raw numeric data}{155}{section.F.5}%
+\contentsline {section}{\numberline {F.6}Model-grid fitting and interpolation}{155}{section.F.6}%
+\contentsline {section}{\numberline {F.7}Mask policies}{156}{section.F.7}%
+\contentsline {section}{\numberline {F.8}Outputs}{156}{section.F.8}%
+\contentsline {section}{\numberline {F.9}Performance controls}{159}{section.F.9}%
+\contentsline {chapter}{\numberline {G}Final-Result Placeholder}{161}{appendix.G}%
