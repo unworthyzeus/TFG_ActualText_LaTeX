@@ -508,7 +508,7 @@ prediction remains an innovative contribution of this thesis.
 The project initially made the physical prior look indispensable because the
 best mid-project models were residual-over-prior systems. However,
 \texttt{Try 76} showed that the prior was not the essential ingredient. It
-used no COST-231 prior, no coherent two-ray prior, no knife-edge channel, and
+used no COST-231 prior, no enhanced two-ray prior, no knife-edge channel, and
 no residual-over-prior decomposition. It still obtained NLoS path-loss results
 close to the final prior family because it modelled the NLoS distribution
 directly. This changes the interpretation of the final \texttt{Try 78},
@@ -551,7 +551,7 @@ ring pattern. This is why even imperfect models often reached LoS RMSE around
 \SI{4}{dB}. A CNN can learn a smooth radial law from the distance map and
 topology context, but it cannot invent coherent interference if the loss and
 features do not encourage that structure. The final prior solved this with an
-explicit coherent two-ray model; a neural model could also solve it, but it
+explicit enhanced two-ray model; a neural model could also solve it, but it
 would need enough capacity and a loss that rewards the ring structure rather
 than only the pixel average.
 
@@ -809,13 +809,25 @@ loss is a weighted combination of eight terms
  + \lambda_{\mathrm{m}}\mathcal{L}_{\mathrm{mae}},
 \label{eq:try80_total}
 \end{equation}
-with the canonical weights used in
-\texttt{TFGEightiethTry80/experiments/try80\_joint\_big.yaml}:
-\((\lambda_{\mathrm{nll}},\lambda_{\mathrm{kl}},\lambda_{\mathrm{mm}},
-\lambda_{\mathrm{a}},\lambda_{\mathrm{g}},\lambda_{\mathrm{o}},
-\lambda_{\mathrm{r}},\lambda_{\mathrm{m}})=(1.0,0.25,0.10,0.05,0.10,
-0.02,0.40,0.10)\) and total loss
+with the canonical weights used in the base
+\texttt{try80\_joint\_big.yaml} configuration:
+\[
+\begin{aligned}
+(\lambda_{\mathrm{nll}}, \lambda_{\mathrm{kl}},
+ \lambda_{\mathrm{mm}}, \lambda_{\mathrm{a}})
+  &= (1.00, 0.25, 0.10, 0.05),\\
+(\lambda_{\mathrm{g}}, \lambda_{\mathrm{o}},
+ \lambda_{\mathrm{r}}, \lambda_{\mathrm{m}})
+  &= (0.10, 0.02, 0.40, 0.10).
+\end{aligned}
+\]
+The total loss is
 \(\mathcal{L} = \sum_{t\in\mathcal{T}}\mathcal{L}_t\).
+This is the base \texttt{try80\_joint\_big} setting. The later
+\texttt{try80\_joint\_huge\_relaxed\_residuals} run keeps the same loss
+families but raises the RMSE weight to \(\lambda_{\mathrm{r}}=1.50\), as
+reported in the detailed Try~80 subsection; the two values therefore refer to
+different YAML variants.
 
 Below, \(y_i\) is the ground-truth pixel value, \(\hat{y}_i\) is the model
 prediction in native units, \(\hat{y}^{(0)}_i\) is the frozen prior
@@ -842,9 +854,11 @@ assignment of target pixels to each component, and \(\bar\delta_k\) be the
 per-component mean shift; the loss is
 \begin{equation}
 \mathcal{L}_{\mathrm{kl}} =
- \sum_{k=1}^{K}\bar\pi_k\,
+ \sum_{k=1}^{K}\left[
+ \bar\pi_k\,
  \log\!\left(\frac{\bar\pi_k + \varepsilon}{p_k + \varepsilon}\right)
- + \beta\,\|\bar\delta_k\|_2^2 ,
+ + \beta\,\bar\pi_k\|\bar\delta_k\|_2^2
+ \right],
 \label{eq:try80_kl_summary}
 \end{equation}
 with \(\varepsilon=10^{-6}\) and a small weight \(\beta\) that penalises
@@ -896,7 +910,8 @@ output to the ground truth:
  \frac{1}{|M_t|}\sum_{i\in M_t}|\hat{y}_i - y_i|.
 \label{eq:try80_rmse_mae_summary}
 \end{equation}
-\(\mathcal{L}_{\mathrm{rmse}}\) is the dominant supervised term at
+\(\mathcal{L}_{\mathrm{rmse}}\) is the dominant supervised term in the base
+\texttt{try80\_joint\_big} configuration, where
 \(\lambda_{\mathrm{r}}=0.40\), consistent with the thesis performance targets.
 
 Tries 67--71 used a different loss bundle centred on a main masked MSE, a
@@ -923,8 +938,11 @@ stated, all runs use AdamW, \texttt{ReduceLROnPlateau} with patience 15--20,
 image size $513\times513$, batch size 1 per GPU, and gradient accumulation
 over 8 steps.}
 \label{tab:hyperparams}
-\small
-\begin{tabularx}{\textwidth}{lXXX}
+\scriptsize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.17\textwidth}
+                            >{\raggedright\arraybackslash}X
+                            >{\raggedright\arraybackslash}X
+                            >{\raggedright\arraybackslash}X}
 \toprule
 Config & Try 76 / 77 experts & Try 80 joint & Try 67--71 (historical) \\
 \midrule
@@ -933,7 +951,7 @@ Optimizer        & AdamW ($\beta_1{=}0.9, \beta_2{=}0.999$) & AdamW & AdamW \\
 Learning rate    & \num{3e-4} & \num{2e-4} & \num{1e-3} to \num{3e-4} (cosine or plateau) \\
 Weight decay     & 0.01 & 0.01 & 0.015--0.030 \\
 Batch size       & 1 & 1 & 1 \\
-Grad accumulation& 8 & 8 & 16 (68) / 8 (69) \\
+Grad accumulation & 8 & 8 & 16 (68) / 8 (69) \\
 Warmup epochs    & 2 & 2 & 2--5 \\
 Epochs           & 80--120 & 120 & 80--150 \\
 Scheduler        & ReduceLROnPlateau, patience 15 & ReduceLROnPlateau, patience 20 & ReduceLROnPlateau (post-April~2025 patch) \\
@@ -989,7 +1007,7 @@ finalised loss plots.
 The Try~78 section is intentionally detailed because it is the mathematical
 core of the final path-loss result.  A reader only interested in the modelling
 logic can follow it in four passes.  First, the LoS branch starts from FSPL and
-adds a coherent two-ray field sum, which explains the radial ring structure
+adds an enhanced two-ray field sum, which explains the radial ring structure
 observed in the CKM maps.  Second, the NLoS branch uses a calibrated
 regime-wise model over topology and obstruction features, because a LoS-shaped
 formula cannot explain blocked streets by itself.  Third, both branches are
@@ -999,7 +1017,7 @@ Try~78 output becomes the frozen path-loss anchor consumed by Try~80.
 
 The most important results to retain while reading the details are the LoS
 waterfall in Table~\ref{tab:try78_los_waterfall} and the final path-loss
-numbers in Table~\ref{tab:try78_results}: the coherent two-ray branch reduces
+numbers in Table~\ref{tab:try78_results}: the enhanced two-ray branch reduces
 LoS error to about \SI{1.75}{dB}, and the full hybrid prior reaches about
 \SI{1.92}{dB} overall on the held-out test cities.
 

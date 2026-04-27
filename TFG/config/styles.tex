@@ -119,6 +119,18 @@
 % Increase spacing between cell content and borders
 \renewcommand{\arraystretch}{1.3}
 
+% Keep equations and floats from opening large vertical gaps. The template
+% defaults are generous; these values are still readable but avoid half-empty
+% pages in equation-heavy methodology sections.
+\setlength{\abovedisplayskip}{8pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{8pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{5pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{5pt plus 2pt minus 1pt}
+\setlength{\textfloatsep}{12pt plus 2pt minus 2pt}
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}
+\setlength{\intextsep}{10pt plus 2pt minus 2pt}
+\setlength{\emergencystretch}{2em}
+
 %%% BIBLIOGRAPHY STYLE %%%
 \ExecuteBibliographyOptions{  
   sorting=nyt,
@@ -127,10 +139,12 @@
 \setlength\bibitemsep{0.5\baselineskip}
 
 %%% FIGURE's CAPTION STYLE %%%
-\DeclareCaptionFont{blue}{\color{blue}}
+\DeclareCaptionFont{degreecolor}{\color{DegreeColor}}
 \captionsetup{
-  labelfont={blue,sf,bf},
-  textfont=it,
+  labelfont={degreecolor,sf,bf},
+  textfont={it,small},
+  justification=justified,
+  singlelinecheck=false,
 }
 
 %%% TIKZ/PGF DRAWING GLOBAL STYLES %%%
@@ -160,5 +174,8 @@
 \hypersetup{
   breaklinks=true,
   colorlinks=true,    % CHANGE TO "true" IF YOU WANT COLORED TEXT LINKS INSTEAD OF BEING SURROUNDED BY A BORDER.
+  linkcolor=DegreeColor,
+  citecolor=DegreeColor,
+  urlcolor=UPCblue,
 %  hidelinks,          % UNCOMMENT IF YOU WANT TO REMOVE COLOR AND BORDER AROUND THE LINKS.
 }

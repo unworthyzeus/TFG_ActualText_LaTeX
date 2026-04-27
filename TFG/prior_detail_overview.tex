@@ -24,7 +24,7 @@ regression or likelihood clearer.
 \textbf{Block} & \textbf{Literature basis} & \textbf{CKM adaptation} &
 \textbf{Role in \texttt{Try 80}} \\
 \midrule
-Path-loss LoS & FSPL and coherent two-ray propagation &
+Path-loss LoS & FSPL and enhanced two-ray propagation &
 Effective height-dependent reflection parameters and radial residuals fitted
 from CKM LoS pixels &
 Frozen LoS prior, injected as an input channel and used as the anchor for
@@ -257,7 +257,9 @@ a plane-earth two-ray trend at longer ranges. This captures the fact that
 clear propagation is radial and height-dependent, but it does not model the
 ring-like interference pattern visible in the CKM LoS maps.
 
-The final LoS branch instead uses a fitted coherent two-ray model. The received
+The final LoS branch instead uses the enhanced two-ray model: a coherent
+field-sum two-ray equation with effective reflection parameters fitted from
+CKM data. The received
 field is treated as a complex sum of a direct path and an image-source
 reflected path. Rather than assuming a textbook Fresnel reflection coefficient
 for a perfectly flat material, the model fits an effective complex reflection
@@ -275,7 +277,7 @@ range-dependent errors.
 
 This is the reason for the large LoS jump. FSPL alone reached about
 \SI{3.9540}{dB} LoS RMSE. Adding a simple radial residual improved only
-slightly, to about \SI{3.7086}{dB}. The coherent two-ray/ring model reduced
+slightly, to about \SI{3.7086}{dB}. The enhanced two-ray ring model reduced
 LoS RMSE to about \SI{1.7516}{dB}. In other words, the dominant LoS error was
 not random urban complexity. It was a deterministic radial interference
 pattern that the old prior family had not represented explicitly. Once that

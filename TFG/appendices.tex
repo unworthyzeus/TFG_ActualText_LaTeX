@@ -106,7 +106,7 @@ being handed the prior explicitly.
 
 Try 78 then showed that LoS path loss was even more deterministic than the
 neural history suggested. The dominant residual over FSPL was a ring field,
-well explained by coherent two-ray interference with fitted effective
+well explained by the enhanced two-ray model with fitted effective
 reflection parameters. Try 79 applied a related philosophy to delay and
 angular spreads: use log-domain, regime-wise calibration over geometry and
 local morphology features. Try 80 is the synthesis: frozen Try 78/79 priors
@@ -206,28 +206,26 @@ the chronological and reproducibility context behind those choices.
 
 \chapter{Representative Try 80 Inspection Panels}
 
-The qualitative appendix is generated with \newline
-\texttt{TFGpractice/TFGEightiethTry80/scripts/generate\_try80\_appendix\_panels.py}.
-It reuses the Try 80 validation split, the current
-\texttt{best\_model.pt} checkpoint, and the frozen Try 78/79 priors. The
-script selects one validation sample for each macro expert
+The qualitative appendix is generated with
+\texttt{TFGpractice/TFGEightiethTry80/scripts/}\newline
+\texttt{generate\_try80\_appendix\_panels.py}. It uses the validation split,
+the near-final huge path-loss-finetuned checkpoint, DirectML inference, and
+the frozen Try 78/79 priors. The script selects one validation
+sample for each macro expert
 \((\mathrm{open},\mathrm{mixed},\mathrm{dense})\times
-(\mathrm{low},\mathrm{mid},\mathrm{high})\), and --- because the purpose of
-the appendix is to show the prior-anchored story in action --- only keeps
-candidates for which the Try 80 prediction beats the frozen prior on all
-three outputs simultaneously (path loss, delay spread, angular spread). Each
-bucket then picks the candidate with the best mean model RMSE. A JSON
-manifest next to the images records the file names, cities, samples, antenna
-height, and per-task prior and model RMSE.
+(\mathrm{low},\mathrm{mid},\mathrm{high})\). It keeps candidates for which
+Try 80 beats the frozen prior on all three outputs, then chooses the
+best-mean-RMSE candidate while drawing from different cities where the
+validation split provides visually distinct examples. The manifest next to
+the images records filenames, city, sample, antenna height, and per-task RMSE.
 
-The script emits each panel in two equivalent layouts, so the appendix can use
-whichever one fits the page orientation better. The \textbf{wide} layout
-(\(3\times 6\)) uses the three targets as rows and the six inspection
-stages as columns; the \textbf{tall} layout (\(6\times 3\)) transposes that
-into six inspection-stage rows and three target columns. The six inspection
-stages, in order, are:
+The script can emit both a wide and a tall layout, but the thesis keeps only
+the tall \(6\times 3\) version to avoid duplicating the same evidence. In this
+layout, the six inspection stages are rows and the three targets are columns.
+The six inspection stages, in order, are:
 
 \begin{enumerate}
+\setlength\itemsep{0.15em}
   \item \textbf{Ground truth} --- the ray-traced reference field.
   \item \textbf{Frozen prior (Try 78/79)} --- the calibrated analytic prior
         that Try 80 receives as an input channel and anchors to.
@@ -243,33 +241,34 @@ stages, in order, are:
   \item \textbf{Model correction} --- the signed residual
         \(\mathrm{Try\,80}-\mathrm{Prior}\) that the neural head applies on
         top of the prior. If the model has learned a useful residual,
-        column~6 should \emph{anti-correlate} with column~5: where the prior
+        row~6 should \emph{anti-correlate} with row~5: where the prior
         is too high, the model should push down, and vice versa.
 \end{enumerate}
 
-Columns 5 and 6 are therefore the main \emph{diagnostic} columns: the thesis
+Rows 5 and 6 are therefore the main \emph{diagnostic} rows: the thesis
 claim is that Try 80 is a prior-anchored residual corrector, and the visible
 agreement (in sign and location) between the prior-error map and the
 model-correction map is the direct qualitative evidence for that claim.
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
-\caption{Try 80 appendix panels generated from validation samples.}
+\caption{Try 80 appendix panels generated from validation samples with the
+near-final huge checkpoint.}
 \label{tab:try80_appendix_panels}
-\small
+\footnotesize
 \begin{tabular}{llll}
 \toprule
 Expert & City & Sample & Height bin \\
 \midrule
-open/low & Chiang Mai & sample\_04525 & low \\
-open/mid & Chiang Mai & sample\_04521 & mid \\
-open/high & Segovia & sample\_13192 & high \\
-mixed/low & Chiang Mai & sample\_04438 & low \\
-mixed/mid & Chiang Mai & sample\_04436 & mid \\
-mixed/high & Chiang Mai & sample\_04437 & high \\
-dense/low & Chiang Mai & sample\_04446 & low \\
-dense/mid & Chiang Mai & sample\_04448 & mid \\
-dense/high & Chiang Mai & sample\_04447 & high \\
+open/low & Segovia & sample\_13213 & low \\
+open/mid & Segovia & sample\_13215 & mid \\
+open/high & Nazareth & sample\_10722 & high \\
+mixed/low & Dubrovnik & sample\_05288 & low \\
+mixed/mid & Nice & sample\_10828 & mid \\
+mixed/high & Nice & sample\_10814 & high \\
+dense/low & Chiang Mai & sample\_04519 & low \\
+dense/mid & Tunis & sample\_14651 & mid \\
+dense/high & Tunis & sample\_14694 & high \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -281,73 +280,82 @@ The exact PNG filenames and per-sample RMSE values are stored in
 \clearpage
 \begin{figure}[p]
 \centering
-\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Segovia_sample_13192.png}
-\caption{Try 80 appendix panel for an open, high-antenna validation sample.}
-\label{fig:appendix_try80_open_high}
-\end{figure}
-
-\clearpage
-\begin{figure}[p]
-\centering
-\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Chiang_Mai_sample_04437.png}
-\caption{Try 80 appendix panel for a mixed, high-antenna validation sample.}
-\label{fig:appendix_try80_mixed_high}
-\end{figure}
-
-\clearpage
-\begin{figure}[p]
-\centering
-\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Chiang_Mai_sample_04447.png}
-\caption{Try 80 appendix panel for a dense, high-antenna validation sample.}
-\label{fig:appendix_try80_dense_high}
-\end{figure}
-
-\clearpage
-\begin{figure}[p]
-\centering
-\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Chiang_Mai_sample_04525.png}
-\caption{Try 80 appendix panel for an open, low-antenna validation sample.}
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovia_sample_13213_6x3.png}
+\caption{Try 80 \(6\times3\) inspection panel for an open, low-antenna
+validation sample in Segovia.}
 \label{fig:appendix_try80_open_low}
 \end{figure}
 
 \clearpage
 \begin{figure}[p]
 \centering
-\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Chiang_Mai_sample_04521.png}
-\caption{Try 80 appendix panel for an open, mid-antenna validation sample.}
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Segovia_sample_13215_6x3.png}
+\caption{Try 80 \(6\times3\) inspection panel for an open, mid-antenna
+validation sample in Segovia.}
 \label{fig:appendix_try80_open_mid}
 \end{figure}
 
 \clearpage
 \begin{figure}[p]
 \centering
-\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Chiang_Mai_sample_04438.png}
-\caption{Try 80 appendix panel for a mixed, low-antenna validation sample.}
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Nazareth_sample_10722_6x3.png}
+\caption{Try 80 \(6\times3\) inspection panel for an open, high-antenna
+validation sample in Nazareth.}
+\label{fig:appendix_try80_open_high}
+\end{figure}
+
+\clearpage
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Dubrovnik_sample_05288_6x3.png}
+\caption{Try 80 \(6\times3\) inspection panel for a mixed, low-antenna
+validation sample in Dubrovnik.}
 \label{fig:appendix_try80_mixed_low}
 \end{figure}
 
 \clearpage
 \begin{figure}[p]
 \centering
-\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Chiang_Mai_sample_04436.png}
-\caption{Try 80 appendix panel for a mixed, mid-antenna validation sample.}
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_sample_10828_6x3.png}
+\caption{Try 80 \(6\times3\) inspection panel for a mixed, mid-antenna
+validation sample in Nice.}
 \label{fig:appendix_try80_mixed_mid}
 \end{figure}
 
 \clearpage
 \begin{figure}[p]
 \centering
-\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chiang_Mai_sample_04446.png}
-\caption{Try 80 appendix panel for a dense, low-antenna validation sample.}
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Nice_sample_10814_6x3.png}
+\caption{Try 80 \(6\times3\) inspection panel for a mixed, high-antenna
+validation sample in Nice.}
+\label{fig:appendix_try80_mixed_high}
+\end{figure}
+
+\clearpage
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chiang_Mai_sample_04519_6x3.png}
+\caption{Try 80 \(6\times3\) inspection panel for a dense, low-antenna
+validation sample in Chiang Mai.}
 \label{fig:appendix_try80_dense_low}
 \end{figure}
 
 \clearpage
 \begin{figure}[p]
 \centering
-\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Chiang_Mai_sample_04448.png}
-\caption{Try 80 appendix panel for a dense, mid-antenna validation sample.}
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis_sample_14651_6x3.png}
+\caption{Try 80 \(6\times3\) inspection panel for a dense, mid-antenna
+validation sample in Tunis.}
 \label{fig:appendix_try80_dense_mid}
+\end{figure}
+
+\clearpage
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Tunis_sample_14694_6x3.png}
+\caption{Try 80 \(6\times3\) inspection panel for a dense, high-antenna
+validation sample in Tunis.}
+\label{fig:appendix_try80_dense_high}
 \end{figure}
 
 \clearpage
@@ -364,7 +372,7 @@ The Try 80 prior computer combines the calibrated Try 78 path-loss prior with
 the calibrated Try 79 spread priors. The path-loss branch keeps separate LoS
 and NLoS estimates, then blends them with the visibility mask:
 
-{\footnotesize
+{\scriptsize
 \begin{verbatim}
 ct6 = classify_topology(topology)
 ct3 = macro_topology_class(ct6)
@@ -388,7 +396,7 @@ Each sample is passed to the model as nine aligned channels. The first four
 channels describe geometry and support masks; the last five channels are the
 frozen priors, normalized to stable numeric ranges:
 
-{\footnotesize
+{\scriptsize
 \begin{verbatim}
 channels = np.stack([
     topology_input,
@@ -411,11 +419,16 @@ around the prior, with separate LoS and NLoS residual limits and a learned
 local gate \(\alpha\). For the spread targets, residuals are capped in native
 units and then mapped back to the log domain:
 
-{\footnotesize
+{\scriptsize
 \begin{verbatim}
-residual_max_native = self.residual_max[task].to(device).view(1, 2, 1, 1, 1)
-global_delta_native = torch.tanh(global_raw["delta_mu_raw"]) * residual_max_native
-local_delta_native = torch.tanh(local_raw["local_delta_raw"]) * residual_max_native
+residual_max_native = self.residual_max[task].to(device)
+residual_max_native = residual_max_native.view(1, 2, 1, 1, 1)
+
+global_delta_native = torch.tanh(global_raw["delta_mu_raw"])
+global_delta_native = global_delta_native * residual_max_native
+
+local_delta_native = torch.tanh(local_raw["local_delta_raw"])
+local_delta_native = local_delta_native * residual_max_native
 alpha = torch.sigmoid(local_raw["alpha_logits"] + self.cfg.alpha_bias)
 
 delta_total_native = torch.clamp(global_delta_native + local_delta_native,

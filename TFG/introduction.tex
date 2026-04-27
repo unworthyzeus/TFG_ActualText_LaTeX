@@ -76,7 +76,7 @@ The main contributions corresponding to these questions are:
         the FR3 UAV dataset, with ground-only masking, city-holdout splits,
         and sinusoidal FiLM conditioning on continuous UAV altitude.
   \item A calibrated non-deep-learning path-loss prior (Try~78) based on a
-        coherent two-ray LoS model and a regime-wise OLS NLoS head,
+        enhanced two-ray LoS model and a regime-wise OLS NLoS head,
         achieving \SI{1.75}{dB} LoS and \SI{3.40}{dB} NLoS RMSE under
         city-holdout evaluation.
   \item A calibrated non-deep-learning spread prior (Try~79) combining
@@ -158,7 +158,7 @@ the same idea to delay and angular spreads, where spike-plus-tail behaviour is
 even more visible.
 
 The final stage changed the role of deep learning again. Try 78 built a strong
-interpretable path-loss prior from FSPL, coherent two-ray LoS propagation, and
+interpretable path-loss prior from FSPL, enhanced two-ray LoS propagation, and
 calibrated NLoS corrections. Try 79 built log-domain ridge-calibrated priors
 for delay and angular spread. Try 80 then combined these frozen priors with a
 shared multi-task residual network.

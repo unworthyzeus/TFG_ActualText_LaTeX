@@ -3,25 +3,87 @@
 \section{Conclusions}
 
 This thesis started as a dense deep-learning surrogate for UAV radio maps and
-ended as a hybrid prior-anchored CKM prediction pipeline. The main lesson is
-that architecture alone was not enough. The decisive improvements came from
-understanding the target distributions, enforcing strict ground-only metrics,
-separating LoS and NLoS behaviour, and using physical priors where the dataset
-clearly followed physical structure.
+ended as a hybrid, prior-anchored CKM prediction pipeline. The central lesson is
+that the hardest part of the problem was not drawing plausible maps, but
+matching the physical and statistical structure of each target under a strict
+city-holdout protocol. Architecture changes helped, but the decisive progress
+came from diagnosing the target distributions, enforcing ground-only metrics,
+separating LoS and NLoS behaviour, and using calibrated priors where the data
+clearly followed a known propagation structure.
 
-The original targets were met by the finished non-DL priors for path loss,
-delay spread, and angular spread. Try 78 achieved \SI{1.9246}{dB} overall
-path-loss RMSE, with \SI{1.7516}{dB} LoS and \SI{3.3967}{dB} NLoS. Try 79
-achieved \SI{28.10}{ns} delay-spread RMSE and \SI{13.74}{\degree}
-angular-spread RMSE on the test split. The final Try 80 neural model is still
-training; its final test results must be inserted once the checkpoint is
-selected.
+The original numerical targets were met by the finished non-DL priors. Try~78
+achieved \SI{1.9246}{dB} overall path-loss RMSE, with \SI{1.7516}{dB} LoS and
+\SI{3.3967}{dB} NLoS on the held-out cities. Try~79 achieved \SI{28.10}{ns}
+delay-spread RMSE and \SI{13.74}{\degree} angular-spread RMSE on the same
+evaluation contract. The final Try~80 neural model is kept as an in-flight
+prior-anchored extension until its frozen checkpoint and final test-split
+evaluation are selected.
 
-The main contribution is the final synthesis: a CKM pipeline that combines
-calibrated propagation priors, city-holdout discipline, sinusoidal UAV-height
-conditioning, topology/regime diagnostics, and distribution-first residual
-heads. This is different from both a pure empirical propagation formula and a
-pure black-box CNN.
+\subsection{Answers to the research questions}
+
+\textbf{RQ1: dense prediction under city holdout.} The project shows that dense
+\(513\times513\) prediction is feasible under strict city-holdout evaluation,
+but the successful formulation is not a plain U-Net-style regression problem.
+Pure image-to-image models learned the smooth radial structure reasonably well
+in LoS regions but repeatedly failed on NLoS tails and spread distributions.
+The final priors satisfy the path-loss, delay-spread, and angular-spread error
+targets, while Try~80 provides the joint residual framework that can refine
+those priors without discarding their physical meaning.
+
+\textbf{RQ2: prior versus neural prediction.} The answer is target-dependent.
+For LoS path loss, the calibrated enhanced two-ray prior is strong enough to
+reach near-quantisation-scale errors, so forcing a neural model to rediscover
+the same radial ring structure is inefficient. For NLoS path loss and the two
+spread targets, distributional modelling and topology/regime information remain
+essential. The final design therefore does not choose between physics and deep
+learning: it freezes the part that is already explained by calibrated priors
+and leaves the residual, spatially local correction to the network.
+
+\textbf{RQ3: continuous UAV height.} The CKM dataset covers UAV antenna heights
+from \SI{12}{m} to \SI{478}{m}. The height-bin analysis shows that error is not
+uniform across this interval: the low-altitude, NLoS-heavy regime remains the
+hardest, while high-altitude cases are often closer to the frozen prior. This
+supports the use of explicit height conditioning and also explains why a single
+headline RMSE is not enough to validate a UAV CKM model.
+
+\subsection{Main contributions}
+
+The first contribution is a reproducible evaluation contract for this dataset:
+city-holdout splits, ground-only masking, LoS/NLoS reporting, topology
+diagnostics, and UAV-height breakdowns. This matters because weaker random
+splits or unmasked metrics can make a model look better without improving the
+deployment-relevant task.
+
+The second contribution is the distribution-first diagnosis. The post-Try~75
+histograms showed that the previous PMHHNet family was not merely underpowered;
+it was being asked to regress multi-modal and spike-plus-tail targets with
+losses that reward a single central estimate. Try~76 and Try~77 converted that
+diagnosis into GMM-based dense predictors and demonstrated why marginal target
+shape must guide the model head.
+
+The third contribution is the final prior family. Try~78 explains why the LoS
+path-loss map has a strong radial structure and why an enhanced two-ray model
+can outperform many neural attempts on that regime. Try~79 extends the same
+principle to spread statistics with log-domain ridge calibration. Together,
+these priors become interpretable anchors for the Try~80 joint residual model.
+
+\subsection{Negative results}
+
+Several abandoned directions were scientifically useful. The pix2pix-style cGAN
+line produced sharper-looking maps but did not improve the physical RMSE that
+matters for propagation. Six-way topology experts and PMHHNet variants improved
+organisation and reduced some overfitting, but they did not remove the NLoS
+mode-collapse problem. Multi-scale and quad-head attempts added supervision at
+several resolutions, yet they did not solve the deeper distribution mismatch.
+Try~71 showed that heteroscedastic uncertainty can identify hard pixels, but it
+was not enough by itself to become the final predictor.
+
+These failures are not side notes. They are the reason the thesis ends with a
+hybrid design rather than with a larger black-box CNN. Each negative result
+removed an explanation that was too simple: the problem was not only decoder
+artifacts, not only missing physical channels, not only regularisation, and not
+only lack of capacity. The final approach is more convincing because it is built
+on those rejected hypotheses.
 
 \section{Future Directions}
 
@@ -31,12 +93,14 @@ learn how path loss and spreads vary with carrier frequency, bandwidth, antenna
 pattern, and possibly polarization. A natural next dataset would therefore
 contain the same cities simulated at multiple frequencies and antenna settings.
 
-The second extension is field calibration. The priors in Try 78 and Try 79 are
-already interpretable, so a small number of real measurements could be used to
+The second extension is field calibration. The priors in Try~78 and Try~79 are
+interpretable, so a small number of real measurements could be used to
 calibrate the simulator-to-reality gap without retraining the full model from
-scratch.
+scratch. This is especially important before any operational use in emergency
+coverage or UAV network planning.
 
-Finally, the Try 80 idea can be expanded with stronger global-context
+Finally, the Try~80 idea can be expanded with stronger global-context
 backbones, transmitter-oriented mixup, full corridor losses, and test-time
 adaptation. These should be added only after preserving the current safeguards:
-strict city holdout, ground-only masking, and explicit LoS/NLoS reporting.
+strict city holdout, ground-only masking, explicit LoS/NLoS reporting, and
+separate evaluation by UAV-height bin and topology class.

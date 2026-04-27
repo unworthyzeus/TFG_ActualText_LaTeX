@@ -21,10 +21,12 @@ LoS/NLoS masks. The model input contains nine spatial channels:
 
 The scalar UAV height is not appended as a constant image channel. It is
 encoded with a sinusoidal embedding and injected into the network through FiLM
-conditioning. The default \texttt{try80\_joint\_big} configuration uses a
-shared encoder-decoder with \texttt{base\_width = 96}, three GMM components
-per task and region, \(\alpha\)-gate bias \(-2\), and fixed residual caps
-specified separately for path loss, delay spread and angular spread.
+conditioning. The final \texttt{try80\_joint\_huge\_relaxed\_residuals}
+configuration uses a shared encoder-decoder with
+\texttt{base\_width = 128}, \texttt{cond\_dim = 160}, three GMM
+components per task and region, \(\alpha\)-gate bias \(-2\), and fixed
+residual caps specified separately for path loss, delay spread and
+angular spread.
 
 Because the full \texttt{Try 80} run is still in training, this section
 documents the frozen \texttt{Try 78}/\texttt{Try 79}
@@ -174,7 +176,12 @@ Sec.~\ref{sec:try80_objective}.
 
 \subsection{Architecture: Shared UNet with FiLM}
 
-\texttt{Try 80} processes the map inputs through a shared multi-task convolutional encoder-decoder. Scalar UAV height is encoded into a condition vector $\textbf{c} \in \mathbb{R}^{128}$ and injected dynamically into the convolutional feature maps at multiple scales via \emph{Feature-wise Linear Modulation (FiLM)} layers. 
+\texttt{Try 80} processes the map inputs through a shared multi-task
+convolutional encoder-decoder. In the final \texttt{huge} configuration,
+scalar UAV height is encoded into a condition vector
+$\textbf{c} \in \mathbb{R}^{160}$ and injected dynamically into the
+convolutional feature maps at multiple scales via
+\emph{Feature-wise Linear Modulation (FiLM)} layers.
 
 For a given convolutional feature map $\textbf{X} \in \mathbb{R}^{C \times H \times W}$, a linear projection of the height condition $\textbf{c}$ outputs a scale vector $\textbf{g} \in \mathbb{R}^C$ and a shift vector $\textbf{b} \in \mathbb{R}^C$. The feature map is then modulated via an affine transformation:
 \begin{equation}
@@ -182,6 +189,10 @@ For a given convolutional feature map $\textbf{X} \in \mathbb{R}^{C \times H \ti
 \label{eq:film}
 \end{equation}
 where $\textbf{g}$ and $\textbf{b}$ are broadcasted spatially across the height and width.
+The FiLM mechanism and injection points are unchanged between the
+\texttt{big} and \texttt{huge} variants; only the width of the feature
+maps changes, so the FiLM projection emits \(2C\) parameters for the
+larger \texttt{huge} channel counts.
 
 The architecture explicitly enforces the separation of global and local effects via a dual-head design for each task:
 
@@ -208,66 +219,66 @@ The architecture explicitly enforces the separation of global and local effects 
 \node[align=center] (in_htx) at (-7.5, -4) {\textbf{UAV Height} \\ $h_{\mathrm{tx}}$ $\in \mathbb{R}^{1}$};
 
 % Height MLP
-\node[film] (h_mlp) at (-3.5, -4) {Height MLP \\ $\textbf{c} \in \mathbb{R}^{128}$};
+\node[film] (h_mlp) at (-3.5, -4) {Height MLP \\ $\textbf{c} \in \mathbb{R}^{160}$};
 \draw[->, thick] (in_htx) -- node[above, font=\scriptsize] {$\mathbb{R}^{1}$} (h_mlp);
 
 % Encoder (Left Column)
-\node[block] (e0) at (0, 0) {Stem \\ 96 ch};
-\node[block] (e1) at (0, -2) {Down 1 \\ 192 ch};
-\node[block] (e2) at (0, -4) {Down 2 \\ 192 ch};
+\node[block] (e0) at (0, 0) {Stem \\ 128 ch};
+\node[block] (e1) at (0, -2) {Down 1 \\ 256 ch};
+\node[block] (e2) at (0, -4) {Down 2 \\ 256 ch};
 \node[film] (f2) at (0, -5.5) {FiLM};
-\node[block] (e3) at (0, -7) {Down 3 \\ 384 ch};
-\node[block] (e4) at (0, -9) {Down 4 \\ 384 ch};
+\node[block] (e3) at (0, -7) {Down 3 \\ 512 ch};
+\node[block] (e4) at (0, -9) {Down 4 \\ 512 ch};
 \node[film] (f4) at (0, -10.5) {FiLM};
 
 \draw[->, thick] (in_map) -- node[right, font=\scriptsize] {$\mathbb{R}^{9 \times H \times W}$} (e0);
-\draw[->, thick] (e0) -- node[right, font=\scriptsize] {$\mathbb{R}^{96 \times H \times W}$} (e1);
-\draw[->, thick] (e1) -- node[right, font=\scriptsize] {$\mathbb{R}^{192} \times H_2 \times W_2$} (e2);
-\draw[->, thick] (e2) -- node[right, font=\scriptsize] {$\mathbb{R}^{192} \times H_4 \times W_4$} (f2);
-\draw[->, thick] (f2) -- node[right, font=\scriptsize] {$\mathbb{R}^{192} \times H_4 \times W_4$} (e3);
-\draw[->, thick] (e3) -- node[right, font=\scriptsize] {$\mathbb{R}^{384} \times H_8 \times W_8$} (e4);
-\draw[->, thick] (e4) -- node[right, font=\scriptsize] {$\mathbb{R}^{384} \times H_{16} \times W_{16}$} (f4);
+\draw[->, thick] (e0) -- node[right, font=\scriptsize] {$\mathbb{R}^{128 \times H \times W}$} (e1);
+\draw[->, thick] (e1) -- node[right, font=\scriptsize] {$\mathbb{R}^{256} \times H_2 \times W_2$} (e2);
+\draw[->, thick] (e2) -- node[right, font=\scriptsize] {$\mathbb{R}^{256} \times H_4 \times W_4$} (f2);
+\draw[->, thick] (f2) -- node[right, font=\scriptsize] {$\mathbb{R}^{256} \times H_4 \times W_4$} (e3);
+\draw[->, thick] (e3) -- node[right, font=\scriptsize] {$\mathbb{R}^{512} \times H_8 \times W_8$} (e4);
+\draw[->, thick] (e4) -- node[right, font=\scriptsize] {$\mathbb{R}^{512} \times H_{16} \times W_{16}$} (f4);
 
 % Decoder (Right Column)
-\node[block] (d3) at (5, -7) {Up 4 \\ 384 ch};
+\node[block] (d3) at (5, -7) {Up 4 \\ 512 ch};
 \node[film] (fd3) at (5, -5.5) {FiLM};
-\node[block] (d2) at (5, -4) {Up 3 \\ 192 ch};
-\node[block] (d1) at (5, -2) {Up 2 \\ 192 ch};
+\node[block] (d2) at (5, -4) {Up 3 \\ 256 ch};
+\node[block] (d1) at (5, -2) {Up 2 \\ 256 ch};
 \node[film] (fd1) at (5, -0.5) {FiLM};
-\node[block] (d0) at (5, 1) {Up 1 \\ 96 ch};
+\node[block] (d0) at (5, 1) {Up 1 \\ 128 ch};
 
-\draw[->, thick] (f4.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{384 \times H_{16} \times W_{16}}$} (5, -10.5) -- (d3.south);
-\draw[->, thick] (d3) -- node[left, font=\scriptsize] {$\mathbb{R}^{384 \times H_8 \times W_8}$} (fd3);
-\draw[->, thick] (fd3) -- node[left, font=\scriptsize] {$\mathbb{R}^{384 \times H_8 \times W_8}$} (d2);
-\draw[->, thick] (d2) -- node[left, font=\scriptsize] {$\mathbb{R}^{192} \times H_4 \times W_4$} (d1);
-\draw[->, thick] (d1) -- node[left, font=\scriptsize] {$\mathbb{R}^{192} \times H_2 \times W_2$} (fd1);
-\draw[->, thick] (fd1) -- node[left, font=\scriptsize] {$\mathbb{R}^{192} \times H_2 \times W_2$} (d0);
+\draw[->, thick] (f4.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{512 \times H_{16} \times W_{16}}$} (5, -10.5) -- (d3.south);
+\draw[->, thick] (d3) -- node[left, font=\scriptsize] {$\mathbb{R}^{512 \times H_8 \times W_8}$} (fd3);
+\draw[->, thick] (fd3) -- node[left, font=\scriptsize] {$\mathbb{R}^{512 \times H_8 \times W_8}$} (d2);
+\draw[->, thick] (d2) -- node[left, font=\scriptsize] {$\mathbb{R}^{256} \times H_4 \times W_4$} (d1);
+\draw[->, thick] (d1) -- node[left, font=\scriptsize] {$\mathbb{R}^{256} \times H_2 \times W_2$} (fd1);
+\draw[->, thick] (fd1) -- node[left, font=\scriptsize] {$\mathbb{R}^{256} \times H_2 \times W_2$} (d0);
 
 % Skip connections
-\draw[skip] (e3.east) -- node[above, font=\scriptsize] {Concat $\mathbb{R}^{384}$} (d3.west);
-\draw[skip] (e2.east) -- node[above, font=\scriptsize] {Concat $\mathbb{R}^{192}$} (d2.west);
-\draw[skip] (e1.east) -- node[above, font=\scriptsize] {Concat $\mathbb{R}^{192}$} (d1.west);
-\draw[skip] (e0.east) -- node[above, sloped, font=\scriptsize] {Concat $\mathbb{R}^{96}$} (d0.west);
+\draw[skip] (e3.east) -- node[above, font=\scriptsize] {Concat $\mathbb{R}^{512}$} (d3.west);
+\draw[skip] (e2.east) -- node[above, font=\scriptsize] {Concat $\mathbb{R}^{256}$} (d2.west);
+\draw[skip] (e1.east) -- node[above, font=\scriptsize] {Concat $\mathbb{R}^{256}$} (d1.west);
+\draw[skip] (e0.east) -- node[above, sloped, font=\scriptsize] {Concat $\mathbb{R}^{128}$} (d0.west);
 
 % FiLM routing bus (Encoder)
-\draw[->, thick, orange, dashed] (h_mlp.south) |- node[pos=0.75, above, font=\scriptsize] {$\mathbb{R}^{128}$} (f2.west);
-\draw[->, thick, orange, dashed] (h_mlp.south) |- node[pos=0.75, above, font=\scriptsize] {$\mathbb{R}^{128}$} (f4.west);
+\draw[->, thick, orange, dashed] (h_mlp.south) |- node[pos=0.75, above, font=\scriptsize] {$\mathbb{R}^{160}$} (f2.west);
+\draw[->, thick, orange, dashed] (h_mlp.south) |- node[pos=0.75, above, font=\scriptsize] {$\mathbb{R}^{160}$} (f4.west);
 
 % FiLM routing bus (Decoder)
 \draw[thick, orange, dashed] (h_mlp.south) |- (6.5, -11.5);
-\draw[->, thick, orange, dashed] (6.5, -11.5) |- node[pos=0.75, above, font=\scriptsize] {$\mathbb{R}^{128}$} (fd3.east);
-\draw[->, thick, orange, dashed] (6.5, -11.5) |- node[pos=0.75, above, font=\scriptsize] {$\mathbb{R}^{128}$} (fd1.east);
+\draw[->, thick, orange, dashed] (6.5, -11.5) |- node[pos=0.75, above, font=\scriptsize] {$\mathbb{R}^{160}$} (fd3.east);
+\draw[->, thick, orange, dashed] (6.5, -11.5) |- node[pos=0.75, above, font=\scriptsize] {$\mathbb{R}^{160}$} (fd1.east);
 
 % Global Head Branch
 \node[pool] (pool) at (0, -12.5) {Global Avg Pool};
 \node[head] (global_head) at (0, -14.5) {Global Head \\ (MLP)};
-\draw[->, thick] (f4.south) -- node[right, font=\scriptsize] {$\mathbb{R}^{384 \times H_{16} \times W_{16}}$} (pool.north);
-\draw[->, thick] (pool.south) -- node[right, font=\scriptsize] {$\mathbb{R}^{384}$} (global_head.north);
-\draw[->, thick, orange, dashed] (h_mlp.south) |- node[pos=0.85, above, font=\scriptsize] {$\mathbb{R}^{128}$} (global_head.west);
+\draw[->, thick] (f4.south) -- node[right, font=\scriptsize] {$\mathbb{R}^{512 \times H_{16} \times W_{16}}$} (pool.north);
+\draw[->, thick] (pool.south) -- node[right, font=\scriptsize] {$\mathbb{R}^{512}$} (global_head.north);
+\draw[->, thick, orange, dashed] (h_mlp.south) |- node[pos=0.85, above, font=\scriptsize] {$\mathbb{R}^{160}$} (global_head.west);
 
 % Local Head Branch
 \node[head] (local_head) at (10, 1) {Local Head \\ ($1\times1$ Conv)};
-\draw[->, thick] (d0.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{96 \times H \times W}$} (local_head.west);
+\draw[->, thick] (d0.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{128 \times H \times W}$} (local_head.west);
 
 % Prior Input
 \node[align=center, draw, thick, fill=gray!20, rectangle, minimum height=0.8cm] (prior) at (14, -3) {\textbf{Frozen Prior} \\ $y_k^{\mathrm{prior}}(x)$};
@@ -293,7 +304,7 @@ $\hat y_k = \sum p_{k,j} \mu_{k,j}$};
 
 \end{tikzpicture}
 }
-\caption{Schematic of the \texttt{Try 80} Shared UNet architecture with FiLM conditioning.}
+\caption{Schematic of the final \texttt{Try 80 huge} shared UNet architecture with FiLM conditioning.}
 \label{fig:try80_arch}
 \end{figure}
 
@@ -340,34 +351,34 @@ f_i
 
 \node[smallbox, fill=gray!15] (h) at (0,0) {Scalar height\\$h_{\mathrm{tx}} \in \mathbb{R}$};
 \node[opbox] (embed) at (4.0,0) {Sin/Cos embedding\\16 frequencies\\$\textbf{e}(h_{\mathrm{tx}})\in\mathbb{R}^{32}$};
-\node[condbox] (mlp1) at (9.0,0) {Height MLP\\Linear $32\!\to\!128$\\SiLU\\Linear $128\!\to\!128$\\$\textbf{h}_{\mathrm{cond}}$};
+\node[condbox] (mlp1) at (9.0,0) {Height MLP\\Linear $32\!\to\!160$\\SiLU\\Linear $160\!\to\!160$\\$\textbf{h}_{\mathrm{cond}}$};
 
 \draw[arr] (h) -- node[above, font=\scriptsize] {$\mathbb{R}^{1}$} (embed);
 \draw[arr] (embed) -- node[above, font=\scriptsize] {$\mathbb{R}^{32}$} (mlp1);
 
-\node[featbox] (enc2) at (4.0,-3.5) {Encoder FiLM at Down2\\feature channels $C=192$};
-\node[featbox] (enc4) at (11.5,-3.5) {Encoder FiLM at Down4\\feature channels $C=384$};
+\node[featbox] (enc2) at (4.0,-3.5) {Encoder FiLM at Down2\\feature channels $C=256$};
+\node[featbox] (enc4) at (11.5,-3.5) {Encoder FiLM at Down4\\feature channels $C=512$};
 \draw[thick, orange, dashed] (mlp1.south) -- (9.0, -1.8);
-\draw[condarr] (9.0, -1.8) -- node[above, font=\scriptsize] {$\mathbb{R}^{128}$} (4.0, -1.8) -- (enc2.north);
-\draw[condarr] (9.0, -1.8) -- node[above, font=\scriptsize] {$\mathbb{R}^{128}$} (11.5, -1.8) -- (enc4.north);
+\draw[condarr] (9.0, -1.8) -- node[above, font=\scriptsize] {$\mathbb{R}^{160}$} (4.0, -1.8) -- (enc2.north);
+\draw[condarr] (9.0, -1.8) -- node[above, font=\scriptsize] {$\mathbb{R}^{160}$} (11.5, -1.8) -- (enc4.north);
 
-\node[featbox] (pool) at (18.0,-3.5) {Global average pool\\deepest map\\$\mathbb{R}^{384\times H_{16}\times W_{16}} \to \mathbb{R}^{384}$};
-\draw[arr] (enc4.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{384\times H_{16}\times W_{16}}$} (pool.west);
+\node[featbox] (pool) at (18.0,-3.5) {Global average pool\\deepest map\\$\mathbb{R}^{512\times H_{16}\times W_{16}} \to \mathbb{R}^{512}$};
+\draw[arr] (enc4.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{512\times H_{16}\times W_{16}}$} (pool.west);
 
-\node[condbox] (fuse) at (18.0,0) {Condition fusion\\concat$\bigl[\textbf{h}_{\mathrm{cond}},\,\textbf{z}_{1:128}\bigr]$\\Linear $256\!\to\!128$\\SiLU\\Linear $128\!\to\!128$\\$\textbf{c}_{\mathrm{fused}}$};
-\draw[arr] (mlp1.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{128}$} (fuse.west);
-\draw[arr] (pool.north) -- node[right, font=\scriptsize] {$\mathbb{R}^{384}$} (fuse.south);
+\node[condbox] (fuse) at (18.0,0) {Condition fusion\\concat$\bigl[\textbf{h}_{\mathrm{cond}},\,\textbf{z}_{1:160}\bigr]$\\Linear $320\!\to\!160$\\SiLU\\Linear $160\!\to\!160$\\$\textbf{c}_{\mathrm{fused}}$};
+\draw[arr] (mlp1.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{160}$} (fuse.west);
+\draw[arr] (pool.north) -- node[right, font=\scriptsize] {$\mathbb{R}^{512}$} (fuse.south);
 
-\node[featbox] (dec3) at (25.5, 1.5) {Decoder FiLM at Dec3\\feature channels $C=384$};
-\node[featbox] (dec1) at (25.5,-1.0) {Decoder FiLM at Dec1\\feature channels $C=192$};
+\node[featbox] (dec3) at (25.5, 1.5) {Decoder FiLM at Dec3\\feature channels $C=512$};
+\node[featbox] (dec1) at (25.5,-1.0) {Decoder FiLM at Dec1\\feature channels $C=256$};
 \node[featbox] (gh) at (25.5,-3.5) {Global task heads\\PL / DS / AS};
-\draw[condarr] (fuse.east) -- node[above, sloped, font=\scriptsize] {$\mathbb{R}^{128}$} (dec3.west);
-\draw[condarr] (fuse.east) -- node[above, sloped, font=\scriptsize] {$\mathbb{R}^{128}$} (dec1.west);
-\draw[condarr] (fuse.east) -- node[above, sloped, font=\scriptsize] {$\mathbb{R}^{128}$} (gh.west);
+\draw[condarr] (fuse.east) -- node[above, sloped, font=\scriptsize] {$\mathbb{R}^{160}$} (dec3.west);
+\draw[condarr] (fuse.east) -- node[above, sloped, font=\scriptsize] {$\mathbb{R}^{160}$} (dec1.west);
+\draw[condarr] (fuse.east) -- node[above, sloped, font=\scriptsize] {$\mathbb{R}^{160}$} (gh.west);
 
-\node[opbox] (filmproj) at (31.0,0.0) {Per-FiLM projection\\Linear $128\!\to\!2C$\\split into $\textbf{g},\textbf{b} \in \mathbb{R}^{C}$};
+\node[opbox] (filmproj) at (31.0,0.0) {Per-FiLM projection\\Linear $160\!\to\!2C$\\split into $\textbf{g},\textbf{b} \in \mathbb{R}^{C}$};
 \node[smallbox, fill=purple!10] (affine) at (36.0,0.0) {$\textbf{X}'=\textbf{X}\odot(1+\textbf{g})+\textbf{b}$\\broadcast over $(H,W)$};
-\draw[arr] (dec3.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{128}$} (filmproj.west);
+\draw[arr] (dec3.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{160}$} (filmproj.west);
 \draw[arr] (filmproj.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{2C}$} (affine.west);
 
 \node[note] at (25.5,-5.5) {Encoder FiLM uses $\textbf{h}_{\mathrm{cond}}$.\\Decoder FiLM and the global heads use $\textbf{c}_{\mathrm{fused}}$.\\The affine FiLM rule is the same in all cases.};
@@ -402,16 +413,16 @@ $\tilde\sigma_{k,r}(x)$.
     arr/.style={->, thick}
 ]
 
-\node[global] (globin) at (0,3.5) {Global head input\\pooled bottleneck $+\ \textbf{c}_{\mathrm{fused}}$};
-\node[global] (globraw) at (8.0,3.5) {MLP output\\reshaped to $(2,\ 3,\ 3)$\\region / component / parameter};
+\node[global] (globin) at (0,3.5) {Global head input\\pooled bottleneck $\mathbb{R}^{512}$\\$+\ \textbf{c}_{\mathrm{fused}}\in\mathbb{R}^{160}$};
+\node[global] (globraw) at (8.0,3.5) {MLP output $\mathbb{R}^{18}$\\reshaped to $(2,\ 3,\ 3)$\\region / component / parameter};
 \node[global] (globpars) at (17.0,3.5) {Global branch after transforms\\$\pi^{(g)}_{r,j}$, $\delta^{(g)}_{r,j}$, $\sigma^{(g)}_{r,j}$};
-\draw[arr] (globin) -- node[above, font=\scriptsize] {$\mathbb{R}^{512}$} (globraw);
+\draw[arr] (globin) -- node[above, font=\scriptsize] {$\mathbb{R}^{672}$} (globraw);
 \draw[arr] (globraw) -- node[above, font=\scriptsize] {$\mathbb{R}^{2 \times 3 \times 3}$} (globpars);
 
-\node[local] (locin) at (0,0.5) {Local head input\\decoder map $\textbf{F}\in\mathbb{R}^{96\times H \times W}$};
-\node[local] (locraw) at (8.0,0.5) {ConvBlock $96\to96$\\then $1\times1$ conv\\to 12 channels};
+\node[local] (locin) at (0,0.5) {Local head input\\decoder map $\textbf{F}\in\mathbb{R}^{128\times H \times W}$};
+\node[local] (locraw) at (8.0,0.5) {ConvBlock $128\to128$\\then $1\times1$ conv\\to 12 channels};
 \node[local] (locpars) at (17.0,0.5) {Local branch after transforms\\$p_{r,j}(x)$, $\delta^{(\ell)}_{r}(x)$, $\alpha_r(x)$, $\tilde\sigma_r(x)$};
-\draw[arr] (locin) -- node[above, font=\scriptsize] {$\mathbb{R}^{96 \times H \times W}$} (locraw);
+\draw[arr] (locin) -- node[above, font=\scriptsize] {$\mathbb{R}^{128 \times H \times W}$} (locraw);
 \draw[arr] (locraw) -- node[above, font=\scriptsize] {$\mathbb{R}^{12 \times H \times W}$} (locpars);
 
 \node[mix] (delta) at (12.5,-3.0) {Residual assembly\\$\Delta_{r,j}(x)=\mathrm{clip}\!\left(\delta^{(g)}_{r,j}+\delta^{(\ell)}_{r}(x),\ \pm\delta_{\max,k,r}\right)$};
@@ -481,11 +492,15 @@ objective is:
 \label{eq:try80_total_loss}
 \end{equation}
 
-The numerical weights used in \texttt{try80\_joint\_big} are
+The numerical weights used in the larger
+\texttt{try80\_joint\_huge\_relaxed\_residuals} variant are
 \(\lambda_{\mathrm{NLL}}=1.0\), \(\lambda_{\mathrm{KL}}=0.25\),
 \(\lambda_{\mathrm{mom}}=0.10\), \(\lambda_{\mathrm{anchor}}=0.05\),
 \(\lambda_{\mathrm{guard}}=0.10\), \(\lambda_{\mathrm{out}}=0.02\),
-\(\lambda_{\mathrm{RMSE}}=0.40\), and \(\lambda_{\mathrm{MAE}}=0.10\).
+\(\lambda_{\mathrm{RMSE}}=1.50\), and \(\lambda_{\mathrm{MAE}}=0.10\).
+The base \texttt{try80\_joint\_big} configuration described earlier uses
+\(\lambda_{\mathrm{RMSE}}=0.40\); the difference is a deliberate
+relaxed-residual hyperparameter change, not a notation change.
 
 \paragraph{Map negative log-likelihood.}
 The likelihood is computed separately in LoS and NLoS regions, then averaged

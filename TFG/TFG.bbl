@@ -100,34 +100,6 @@
       \verb https://arxiv.org/abs/2501.13698
       \endverb
     \endentry
-    \entry{ippnet2025}{misc}{}{}
-      \name{author}{1}{}{%
-        {{hash=14ac04ffb0b50ce02d3ad19f4429ebe1}{%
-           family={{Bin Feng, SIA Team}},
-           familyi={B\bibinitperiod}}}%
-      }
-      \strng{namehash}{14ac04ffb0b50ce02d3ad19f4429ebe1}
-      \strng{fullhash}{14ac04ffb0b50ce02d3ad19f4429ebe1}
-      \strng{fullhashraw}{14ac04ffb0b50ce02d3ad19f4429ebe1}
-      \strng{bibnamehash}{14ac04ffb0b50ce02d3ad19f4429ebe1}
-      \strng{authorbibnamehash}{14ac04ffb0b50ce02d3ad19f4429ebe1}
-      \strng{authornamehash}{14ac04ffb0b50ce02d3ad19f4429ebe1}
-      \strng{authorfullhash}{14ac04ffb0b50ce02d3ad19f4429ebe1}
-      \strng{authorfullhashraw}{14ac04ffb0b50ce02d3ad19f4429ebe1}
-      \field{sortinit}{B}
-      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{IEEE Xplore: 10890663}
-      \field{title}{{IPP-Net}: Indoor Pathloss Prediction Network}
-      \field{year}{2025}
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/2501.06414
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/2501.06414
-      \endverb
-    \endentry
     \entry{cai2019}{misc}{}{}
       \name{author}{6}{}{%
         {{hash=89eb62d21c9a7b2dbf67b6cb00cd59a1}{%
@@ -181,6 +153,41 @@
       \endverb
       \verb{url}
       \verb https://arxiv.org/abs/1901.07930
+      \endverb
+    \endentry
+    \entry{geomDL2024}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=aa05370740807ca86eee867537985ea3}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Wangqian},
+           giveni={W\bibinitperiod}}}%
+        {{hash=2c7d1af8fbcf149b3e1ab6acb93c8009}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Junting},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{ef64bf70f0d11116367c61c505919d2b}
+      \strng{fullhash}{ef64bf70f0d11116367c61c505919d2b}
+      \strng{fullhashraw}{ef64bf70f0d11116367c61c505919d2b}
+      \strng{bibnamehash}{ef64bf70f0d11116367c61c505919d2b}
+      \strng{authorbibnamehash}{ef64bf70f0d11116367c61c505919d2b}
+      \strng{authornamehash}{ef64bf70f0d11116367c61c505919d2b}
+      \strng{authorfullhash}{ef64bf70f0d11116367c61c505919d2b}
+      \strng{authorfullhashraw}{ef64bf70f0d11116367c61c505919d2b}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Transactions on Wireless Communications}
+      \field{title}{Diffraction and Scattering Aware Radio Map and Environment Reconstruction using Geometry Model-Assisted Deep Learning}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2403.00229
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2403.00229
       \endverb
     \endentry
     \entry{cost231}{report}{}{}
@@ -252,18 +259,49 @@
       \verb https://arxiv.org/abs/2105.05233
       \endverb
     \endentry
-    \entry{geomDL2024}{article}{}{}
-      \field{sortinit}{D}
-      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+    \entry{ippnet2025}{misc}{}{}
+      \name{author}{4}{}{%
+        {{hash=2a325920e39be526f4290ba647c95e5b}{%
+           family={Feng},
+           familyi={F\bibinitperiod},
+           given={Bin},
+           giveni={B\bibinitperiod}}}%
+        {{hash=1e044fffb9d63eab5f85fcf1a8379145}{%
+           family={Zheng},
+           familyi={Z\bibinitperiod},
+           given={Meng},
+           giveni={M\bibinitperiod}}}%
+        {{hash=06a9c07831898ab47a73b063777679cd}{%
+           family={Liang},
+           familyi={L\bibinitperiod},
+           given={Wei},
+           giveni={W\bibinitperiod}}}%
+        {{hash=f4a4cbf770add19c206827116c68732e}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Lei},
+           giveni={L\bibinitperiod}}}%
+      }
+      \strng{namehash}{ae6252ffc6ef298cdeaf641eda28d674}
+      \strng{fullhash}{577b8275e0f766f68a783c84da194ac0}
+      \strng{fullhashraw}{577b8275e0f766f68a783c84da194ac0}
+      \strng{bibnamehash}{ae6252ffc6ef298cdeaf641eda28d674}
+      \strng{authorbibnamehash}{ae6252ffc6ef298cdeaf641eda28d674}
+      \strng{authornamehash}{ae6252ffc6ef298cdeaf641eda28d674}
+      \strng{authorfullhash}{577b8275e0f766f68a783c84da194ac0}
+      \strng{authorfullhashraw}{577b8275e0f766f68a783c84da194ac0}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{IEEE Transactions on Wireless Communications}
-      \field{title}{Diffraction and Scattering Aware Radio Map and Environment Reconstruction using Geometry Model-Assisted Deep Learning}
-      \field{year}{2024}
+      \field{howpublished}{IEEE Xplore: 10890663}
+      \field{title}{{IPP-Net}: A Generalizable Deep Neural Network Model for Indoor Pathloss Radio Map Prediction}
+      \field{year}{2025}
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2403.00229
+      \verb https://arxiv.org/abs/2501.06414
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2403.00229
+      \verb https://arxiv.org/abs/2501.06414
       \endverb
     \endentry
     \entry{gao2026}{misc}{}{}
@@ -885,6 +923,56 @@
       \verb https://arxiv.org/abs/2501.05190
       \endverb
     \endentry
+    \entry{radiolam2025}{misc}{}{}
+      \name{author}{5}{}{%
+        {{hash=5b9a54b9d83697231299711961622ab8}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Zhiyuan},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=3b33c28c98440f15e8640e9cc00dc4f9}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Qingyu},
+           giveni={Q\bibinitperiod}}}%
+        {{hash=c9e415f4af84ee5f5da25bf9160cb9eb}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Shuhang},
+           giveni={S\bibinitperiod}}}%
+        {{hash=b6e660c69975183054b2c0385cf52b48}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Hongliang},
+           giveni={H\bibinitperiod}}}%
+        {{hash=c388e75135696dc8dfc06d66a767963e}{%
+           family={Song},
+           familyi={S\bibinitperiod},
+           given={Lingyang},
+           giveni={L\bibinitperiod}}}%
+      }
+      \strng{namehash}{658518b3ea9d08c74f02f64a477f0465}
+      \strng{fullhash}{4ea809de9ccdc24c32e8f6c0d0a1418a}
+      \strng{fullhashraw}{4ea809de9ccdc24c32e8f6c0d0a1418a}
+      \strng{bibnamehash}{658518b3ea9d08c74f02f64a477f0465}
+      \strng{authorbibnamehash}{658518b3ea9d08c74f02f64a477f0465}
+      \strng{authornamehash}{658518b3ea9d08c74f02f64a477f0465}
+      \strng{authorfullhash}{4ea809de9ccdc24c32e8f6c0d0a1418a}
+      \strng{authorfullhashraw}{4ea809de9ccdc24c32e8f6c0d0a1418a}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{arXiv:2509.11571}
+      \field{title}{A Fine-Grained {3D} Radio Map Construction Paradigm with Ultra-Low Sampling Rates by Large Generative Models}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2509.11571
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2509.11571
+      \endverb
+    \endentry
     \entry{sip2net2025}{misc}{}{}
       \true{moreauthor}
       \true{morelabelname}
@@ -1013,90 +1101,6 @@
       \verb https://arxiv.org/abs/1709.07871
       \endverb
     \endentry
-    \entry{radiodiff2025}{misc}{}{}
-      \name{author}{1}{}{%
-        {{hash=70a7b6791947b63b69482fd1d214c2b3}{%
-           family={{RadioDiff Team}},
-           familyi={R\bibinitperiod}}}%
-      }
-      \strng{namehash}{70a7b6791947b63b69482fd1d214c2b3}
-      \strng{fullhash}{70a7b6791947b63b69482fd1d214c2b3}
-      \strng{fullhashraw}{70a7b6791947b63b69482fd1d214c2b3}
-      \strng{bibnamehash}{70a7b6791947b63b69482fd1d214c2b3}
-      \strng{authorbibnamehash}{70a7b6791947b63b69482fd1d214c2b3}
-      \strng{authornamehash}{70a7b6791947b63b69482fd1d214c2b3}
-      \strng{authorfullhash}{70a7b6791947b63b69482fd1d214c2b3}
-      \strng{authorfullhashraw}{70a7b6791947b63b69482fd1d214c2b3}
-      \field{sortinit}{R}
-      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{IEEE Transactions on Cognitive Communications and Networking}
-      \field{title}{{RadioDiff}: Conditional Denoising Diffusion for Radio Map Construction}
-      \field{year}{2025}
-      \verb{urlraw}
-      \verb https://github.com/UNIC-Lab/RadioDiff
-      \endverb
-      \verb{url}
-      \verb https://github.com/UNIC-Lab/RadioDiff
-      \endverb
-    \endentry
-    \entry{radiolam2025}{misc}{}{}
-      \name{author}{1}{}{%
-        {{hash=099d3f2253b3bfa9d46430b0fc5a2b6b}{%
-           family={{RadioLAM Team}},
-           familyi={R\bibinitperiod}}}%
-      }
-      \strng{namehash}{099d3f2253b3bfa9d46430b0fc5a2b6b}
-      \strng{fullhash}{099d3f2253b3bfa9d46430b0fc5a2b6b}
-      \strng{fullhashraw}{099d3f2253b3bfa9d46430b0fc5a2b6b}
-      \strng{bibnamehash}{099d3f2253b3bfa9d46430b0fc5a2b6b}
-      \strng{authorbibnamehash}{099d3f2253b3bfa9d46430b0fc5a2b6b}
-      \strng{authornamehash}{099d3f2253b3bfa9d46430b0fc5a2b6b}
-      \strng{authorfullhash}{099d3f2253b3bfa9d46430b0fc5a2b6b}
-      \strng{authorfullhashraw}{099d3f2253b3bfa9d46430b0fc5a2b6b}
-      \field{sortinit}{R}
-      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2509.11571}
-      \field{title}{{RadioLAM}: A Large {AI} Model for Fine-Grained {3D} Radio Map Estimation}
-      \field{year}{2025}
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/2509.11571
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/2509.11571
-      \endverb
-    \endentry
-    \entry{radiopit2025}{misc}{}{}
-      \name{author}{1}{}{%
-        {{hash=cacb7b50c785b338ce106adbdd66815a}{%
-           family={{RadioPiT Team}},
-           familyi={R\bibinitperiod}}}%
-      }
-      \strng{namehash}{cacb7b50c785b338ce106adbdd66815a}
-      \strng{fullhash}{cacb7b50c785b338ce106adbdd66815a}
-      \strng{fullhashraw}{cacb7b50c785b338ce106adbdd66815a}
-      \strng{bibnamehash}{cacb7b50c785b338ce106adbdd66815a}
-      \strng{authorbibnamehash}{cacb7b50c785b338ce106adbdd66815a}
-      \strng{authornamehash}{cacb7b50c785b338ce106adbdd66815a}
-      \strng{authorfullhash}{cacb7b50c785b338ce106adbdd66815a}
-      \strng{authorfullhashraw}{cacb7b50c785b338ce106adbdd66815a}
-      \field{sortinit}{R}
-      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2512.01451}
-      \field{title}{{RadioPiT}: Radio Map Generation with Pixel Transformer Driven by Ultra-Sparse Real-World Data}
-      \field{year}{2025}
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/2512.01451
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/2512.01451
-      \endverb
-    \endentry
     \entry{rappaport}{book}{}{}
       \name{author}{1}{}{%
         {{hash=80e9f8fd303858ab30a541b6816ddfe8}{%
@@ -1128,62 +1132,6 @@
       \endverb
       \verb{url}
       \verb https://www.pearson.com/en-us/subject-catalog/p/wireless-communications-principles-and-practice/P200000003199
-      \endverb
-    \endentry
-    \entry{reveal2025}{misc}{}{}
-      \name{author}{1}{}{%
-        {{hash=30872a492d7dd55ee95b2f676275ca41}{%
-           family={{ReVeal Team}},
-           familyi={R\bibinitperiod}}}%
-      }
-      \strng{namehash}{30872a492d7dd55ee95b2f676275ca41}
-      \strng{fullhash}{30872a492d7dd55ee95b2f676275ca41}
-      \strng{fullhashraw}{30872a492d7dd55ee95b2f676275ca41}
-      \strng{bibnamehash}{30872a492d7dd55ee95b2f676275ca41}
-      \strng{authorbibnamehash}{30872a492d7dd55ee95b2f676275ca41}
-      \strng{authornamehash}{30872a492d7dd55ee95b2f676275ca41}
-      \strng{authorfullhash}{30872a492d7dd55ee95b2f676275ca41}
-      \strng{authorfullhashraw}{30872a492d7dd55ee95b2f676275ca41}
-      \field{sortinit}{R}
-      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2502.19646}
-      \field{title}{{ReVeal}: A Physics-Informed Neural Network for High-Fidelity Radio Environment Mapping}
-      \field{year}{2025}
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/2502.19646
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/2502.19646
-      \endverb
-    \endentry
-    \entry{fmrme2026}{misc}{}{}
-      \name{author}{1}{}{%
-        {{hash=8134df94642d78680904df45cc30b3c9}{%
-           family={{FM-RME Team}},
-           familyi={F\bibinitperiod}}}%
-      }
-      \strng{namehash}{8134df94642d78680904df45cc30b3c9}
-      \strng{fullhash}{8134df94642d78680904df45cc30b3c9}
-      \strng{fullhashraw}{8134df94642d78680904df45cc30b3c9}
-      \strng{bibnamehash}{8134df94642d78680904df45cc30b3c9}
-      \strng{authorbibnamehash}{8134df94642d78680904df45cc30b3c9}
-      \strng{authornamehash}{8134df94642d78680904df45cc30b3c9}
-      \strng{authorfullhash}{8134df94642d78680904df45cc30b3c9}
-      \strng{authorfullhashraw}{8134df94642d78680904df45cc30b3c9}
-      \field{sortinit}{R}
-      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2602.22231}
-      \field{title}{{FM-RME}: Foundation Model Empowered Radio Map Estimation}
-      \field{year}{2026}
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/2602.22231
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/2602.22231
       \endverb
     \endentry
     \entry{saboor2025height}{misc}{}{}
@@ -1331,6 +1279,81 @@
       \verb https://doi.org/10.1109/VTC2021-Spring51267.2021.9448967
       \endverb
     \endentry
+    \entry{reveal2025}{misc}{}{}
+      \name{author}{10}{}{%
+        {{hash=210ab9b5099f5df35a68dc0668f9146c}{%
+           family={Shahid},
+           familyi={S\bibinitperiod},
+           given={Mukaram},
+           giveni={M\bibinitperiod}}}%
+        {{hash=96216d344c043e90f4df8bd2b9dbbc80}{%
+           family={Das},
+           familyi={D\bibinitperiod},
+           given={Kunal},
+           giveni={K\bibinitperiod}}}%
+        {{hash=e03e5e33b85d19a3e99bfc7347db0f90}{%
+           family={Ushaq},
+           familyi={U\bibinitperiod},
+           given={Hadia},
+           giveni={H\bibinitperiod}}}%
+        {{hash=30d64035effbdf40be3db162f5ad266a}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Hongwei},
+           giveni={H\bibinitperiod}}}%
+        {{hash=67d36dcf701fa8f9e6e15daa67d18ab5}{%
+           family={Song},
+           familyi={S\bibinitperiod},
+           given={Jimming},
+           giveni={J\bibinitperiod}}}%
+        {{hash=62efe1472244874071b414cdc0006b58}{%
+           family={Qiao},
+           familyi={Q\bibinitperiod},
+           given={Daji},
+           giveni={D\bibinitperiod}}}%
+        {{hash=8acbf45c977dd095d86d7d01f98f3cde}{%
+           family={Babu},
+           familyi={B\bibinitperiod},
+           given={Sarath},
+           giveni={S\bibinitperiod}}}%
+        {{hash=20201040305ab27cb2de9c7a46e3cccb}{%
+           family={Guan},
+           familyi={G\bibinitperiod},
+           given={Yong},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=2aeb5f045c5ae25a19443f0dfd87af23}{%
+           family={Zhu},
+           familyi={Z\bibinitperiod},
+           given={Zhengyuan},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=7708c72d6f4747c2d95101378f19134e}{%
+           family={Ahmed},
+           familyi={A\bibinitperiod},
+           given={Arsalan},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{655adcdfdb4839bef73d8fb0bc849505}
+      \strng{fullhash}{f42c998865e918cda149814a151170e3}
+      \strng{fullhashraw}{f42c998865e918cda149814a151170e3}
+      \strng{bibnamehash}{655adcdfdb4839bef73d8fb0bc849505}
+      \strng{authorbibnamehash}{655adcdfdb4839bef73d8fb0bc849505}
+      \strng{authornamehash}{655adcdfdb4839bef73d8fb0bc849505}
+      \strng{authorfullhash}{f42c998865e918cda149814a151170e3}
+      \strng{authorfullhashraw}{f42c998865e918cda149814a151170e3}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{arXiv:2502.19646}
+      \field{title}{{ReVeal}: A Physics-Informed Neural Network for High-Fidelity Radio Environment Mapping}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2502.19646
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2502.19646
+      \endverb
+    \endentry
     \entry{wocc2021}{inproceedings}{}{}
       \name{author}{3}{}{%
         {{hash=1d8e510e9a4188c06786e185d38d05d4}{%
@@ -1366,6 +1389,113 @@
       \field{year}{2021}
       \verb{doi}
       \verb 10.1109/WOCC53213.2021.9603250
+      \endverb
+    \endentry
+    \entry{wicopg2025}{misc}{}{}
+      \name{author}{6}{}{%
+        {{hash=3691938af5e2a7f47b3a671d4ebada7c}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Mingran},
+           giveni={M\bibinitperiod}}}%
+        {{hash=aae746328c8ba1574a36be2c133659f2}{%
+           family={Bai},
+           familyi={B\bibinitperiod},
+           given={Lu},
+           giveni={L\bibinitperiod}}}%
+        {{hash=a36ed62a36b1312f7ce4f412dc9ec8e6}{%
+           family={Huang},
+           familyi={H\bibinitperiod},
+           given={Ziwei},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=0b750ff9b4a68075c27f87258582c764}{%
+           family={Cai},
+           familyi={C\bibinitperiod},
+           given={Xuesong},
+           giveni={X\bibinitperiod}}}%
+        {{hash=8ed13a70825e42214a8cda7c6e3cd8e9}{%
+           family={Cheng},
+           familyi={C\bibinitperiod},
+           given={Xiang},
+           giveni={X\bibinitperiod}}}%
+        {{hash=cf908d960ada97c3a01c203fcfc3b015}{%
+           family={Wu},
+           familyi={W\bibinitperiod},
+           given={Jianjun},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{0b6308bbea30983dc11d5f3f45ede0f3}
+      \strng{fullhash}{83bebc5ba73cf0687643b67adeb72ca5}
+      \strng{fullhashraw}{83bebc5ba73cf0687643b67adeb72ca5}
+      \strng{bibnamehash}{0b6308bbea30983dc11d5f3f45ede0f3}
+      \strng{authorbibnamehash}{0b6308bbea30983dc11d5f3f45ede0f3}
+      \strng{authornamehash}{0b6308bbea30983dc11d5f3f45ede0f3}
+      \strng{authorfullhash}{83bebc5ba73cf0687643b67adeb72ca5}
+      \strng{authorfullhashraw}{83bebc5ba73cf0687643b67adeb72ca5}
+      \field{extraname}{1}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{arXiv:2511.15030}
+      \field{title}{{WiCo-PG}: Wireless Channel Foundation Model for Pathloss Map Generation via Synesthesia of Machines}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2511.15030
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2511.15030
+      \endverb
+    \endentry
+    \entry{radiopit2025}{misc}{}{}
+      \name{author}{5}{}{%
+        {{hash=23a6bd250d1e7fa3bfcfd32b802f9c6c}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Zeyao},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=80c27d1718f8498933c0247c2999a570}{%
+           family={Fan},
+           familyi={F\bibinitperiod},
+           given={Bohao},
+           giveni={B\bibinitperiod}}}%
+        {{hash=3b33c28c98440f15e8640e9cc00dc4f9}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Qingyu},
+           giveni={Q\bibinitperiod}}}%
+        {{hash=c9e415f4af84ee5f5da25bf9160cb9eb}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Shuhang},
+           giveni={S\bibinitperiod}}}%
+        {{hash=c388e75135696dc8dfc06d66a767963e}{%
+           family={Song},
+           familyi={S\bibinitperiod},
+           given={Lingyang},
+           giveni={L\bibinitperiod}}}%
+      }
+      \strng{namehash}{6779ff2505442953c8224896e18e8aeb}
+      \strng{fullhash}{70c5b9d0cf6ae9f349d2d611a2ee3911}
+      \strng{fullhashraw}{70c5b9d0cf6ae9f349d2d611a2ee3911}
+      \strng{bibnamehash}{6779ff2505442953c8224896e18e8aeb}
+      \strng{authorbibnamehash}{6779ff2505442953c8224896e18e8aeb}
+      \strng{authornamehash}{6779ff2505442953c8224896e18e8aeb}
+      \strng{authorfullhash}{70c5b9d0cf6ae9f349d2d611a2ee3911}
+      \strng{authorfullhashraw}{70c5b9d0cf6ae9f349d2d611a2ee3911}
+      \field{extraname}{2}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{arXiv:2512.01451}
+      \field{title}{{RadioPiT}: Radio Map Generation with Pixel Transformer Driven by Ultra-Sparse Real-World Data}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2512.01451
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2512.01451
       \endverb
     \endentry
     \entry{tarhouni2025}{misc}{}{}
@@ -1455,32 +1585,64 @@
       \verb 10.1109/ICNC68183.2026.11416865
       \endverb
     \endentry
-    \entry{wicopg2025}{misc}{}{}
-      \name{author}{1}{}{%
-        {{hash=06ae4b14a2e6521c4ca8c9fb085f191e}{%
-           family={{WiCo-PG Team}},
-           familyi={W\bibinitperiod}}}%
+    \entry{radiodiff2025}{misc}{}{}
+      \name{author}{7}{}{%
+        {{hash=4999d867ddfda996ca31014dcf22604b}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Xiucheng},
+           giveni={X\bibinitperiod}}}%
+        {{hash=27507e632ef78523a6cbf85d8146c2e4}{%
+           family={Tao},
+           familyi={T\bibinitperiod},
+           given={Keda},
+           giveni={K\bibinitperiod}}}%
+        {{hash=28a8e51797a8d75496cb5c753ba8f14c}{%
+           family={Cheng},
+           familyi={C\bibinitperiod},
+           given={Nan},
+           giveni={N\bibinitperiod}}}%
+        {{hash=dce08105233a3512d34b21a6a85fd92a}{%
+           family={Yin},
+           familyi={Y\bibinitperiod},
+           given={Zhisheng},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=23bd9f3d1fd812616c0b9298489711d7}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Zan},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=a93b8226adf7f0cb3e5e0e30fbc9c177}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Yuan},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=cada02a68f59df42ef9678d5d73027f9}{%
+           family={Shen},
+           familyi={S\bibinitperiod},
+           given={Xuemin},
+           giveni={X\bibinitperiod}}}%
       }
-      \strng{namehash}{06ae4b14a2e6521c4ca8c9fb085f191e}
-      \strng{fullhash}{06ae4b14a2e6521c4ca8c9fb085f191e}
-      \strng{fullhashraw}{06ae4b14a2e6521c4ca8c9fb085f191e}
-      \strng{bibnamehash}{06ae4b14a2e6521c4ca8c9fb085f191e}
-      \strng{authorbibnamehash}{06ae4b14a2e6521c4ca8c9fb085f191e}
-      \strng{authornamehash}{06ae4b14a2e6521c4ca8c9fb085f191e}
-      \strng{authorfullhash}{06ae4b14a2e6521c4ca8c9fb085f191e}
-      \strng{authorfullhashraw}{06ae4b14a2e6521c4ca8c9fb085f191e}
+      \strng{namehash}{a255ab4db813448807281a44cf1bca4b}
+      \strng{fullhash}{fba18d72d3def69e2fd55f01b8e40ed9}
+      \strng{fullhashraw}{fba18d72d3def69e2fd55f01b8e40ed9}
+      \strng{bibnamehash}{a255ab4db813448807281a44cf1bca4b}
+      \strng{authorbibnamehash}{a255ab4db813448807281a44cf1bca4b}
+      \strng{authornamehash}{a255ab4db813448807281a44cf1bca4b}
+      \strng{authorfullhash}{fba18d72d3def69e2fd55f01b8e40ed9}
+      \strng{authorfullhashraw}{fba18d72d3def69e2fd55f01b8e40ed9}
       \field{sortinit}{W}
       \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2511.15030}
-      \field{title}{{WiCo-PG}: Wireless Channel Foundation Model for Pathloss Map Generation via Synesthesia of Machines}
+      \field{howpublished}{IEEE Transactions on Cognitive Communications and Networking}
+      \field{title}{{RadioDiff}: An Effective Generative Diffusion Model for Sampling-Free Dynamic Radio Map Construction}
       \field{year}{2025}
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2511.15030
+      \verb https://github.com/UNIC-Lab/RadioDiff
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2511.15030
+      \verb https://github.com/UNIC-Lab/RadioDiff
       \endverb
     \endentry
     \entry{ckmimagenet2025}{misc}{}{}
@@ -1567,6 +1729,61 @@
       \range{pages}{11}
       \verb{doi}
       \verb 10.1109/TWC.2024.3397964
+      \endverb
+    \endentry
+    \entry{fmrme2026}{misc}{}{}
+      \name{author}{6}{}{%
+        {{hash=43bfecf0db835905ffe98dadaa0b057f}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Dong},
+           giveni={D\bibinitperiod}}}%
+        {{hash=471e61c37bc3e62dbe8655e02a002343}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Yue},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=d54f5efb2ce3e8147bbe60b3fa1ffce5}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Songyang},
+           giveni={S\bibinitperiod}}}%
+        {{hash=c73725e0c3dba863faf8c42972e38c89}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Yingshu},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=32887024e9e5d2743d9caf6fe9112748}{%
+           family={Cai},
+           familyi={C\bibinitperiod},
+           given={Zhipeng},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=bc421e5244d81fc563e27ed9bfb33faf}{%
+           family={Tian},
+           familyi={T\bibinitperiod},
+           given={Zhi},
+           giveni={Z\bibinitperiod}}}%
+      }
+      \strng{namehash}{993c146e980db475a24664d36a89979d}
+      \strng{fullhash}{b6275ef0063a3e4ccabc00d6d3799135}
+      \strng{fullhashraw}{b6275ef0063a3e4ccabc00d6d3799135}
+      \strng{bibnamehash}{993c146e980db475a24664d36a89979d}
+      \strng{authorbibnamehash}{993c146e980db475a24664d36a89979d}
+      \strng{authornamehash}{993c146e980db475a24664d36a89979d}
+      \strng{authorfullhash}{b6275ef0063a3e4ccabc00d6d3799135}
+      \strng{authorfullhashraw}{b6275ef0063a3e4ccabc00d6d3799135}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{arXiv:2602.22231}
+      \field{title}{{FM-RME}: Foundation Model Empowered Radio Map Estimation}
+      \field{year}{2026}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2602.22231
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2602.22231
       \endverb
     \endentry
     \entry{dataset2212}{misc}{}{}

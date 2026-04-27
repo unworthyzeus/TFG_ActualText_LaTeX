@@ -51,9 +51,9 @@ between 12 and 478 m), the project predicts path loss, delay spread, and
 angular spread under a strict city-holdout evaluation protocol, where entire
 cities are reserved for validation and test. After testing U-Nets, cGANs,
 expert models, and physical priors, the project converges on a hybrid design:
-calibrated interpretable priors from Try 78 (coherent two-ray LoS model and
+calibrated interpretable priors from Try 78 (enhanced two-ray LoS model and
 regime-wise NLoS calibration) and Try 79 (log-domain ridge regression for
 both spreads), plus a joint residual model in Try 80. The finished priors
-reach 1.92 dB path-loss RMSE, 28.10 ns delay-spread RMSE, and 13.74 degree
+reach 1.92 dB path-loss RMSE, 28.10 ns delay-spread RMSE, and 13.74-degree
 angular-spread RMSE on the held-out test cities. Try 80 is presented as an
 in-flight extension on top of these priors.

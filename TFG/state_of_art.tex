@@ -300,7 +300,7 @@ train the neural component to predict only the structured residual.  This design
 reduces the effective learning problem from the full path-loss range to a
 narrower residual distribution, improving data efficiency and interpretability.
 
-Try~78 implements this philosophy for path loss: a coherent two-ray model fitted
+Try~78 implements this philosophy for path loss: an enhanced two-ray model fitted
 per height bin provides a prior map
 $\hat{y}_{\mathrm{PL}}(\textbf{x}) = \mathrm{TwoRay}(d, h_{\mathrm{tx}})$,
 and the neural component predicts the residual
@@ -704,7 +704,7 @@ the thesis literature review addresses simultaneously:
         in a pixel-dense city-holdout setting.
 
   \item \textbf{Frozen physics anchors.}  Two independently calibrated
-        physics-based priors~--- the coherent two-ray model (Try~78) for path
+        physics-based priors~--- the enhanced two-ray model (Try~78) for path
         loss and the log-space ridge regression (Try~79) for both spreads~--- are
         pre-computed and frozen.  The neural network predicts residuals with
         respect to these anchors rather than raw targets.  This reduces the

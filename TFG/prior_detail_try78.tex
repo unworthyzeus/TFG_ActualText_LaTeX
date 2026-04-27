@@ -1,4 +1,12 @@
-\subsection{LoS branch: coherent two-ray model}
+\subsection{LoS branch: enhanced two-ray model}
+
+The LoS prior is not a pure FSPL prior. FSPL is kept because it is the
+direct-ray normalization term of the coherent two-ray model: it gives the
+path loss that would be observed if only the direct ray existed. The deployed
+Try 78 LoS branch then adds the fitted ground-reflection interference term,
+a height-dependent bias, and a smoothed radial residual profile. This differs
+from the NLoS branch, which uses a longer pixel-feature vector and a
+regime-wise linear calibration.
 
 \subsubsection{Geometry and distances}
 
@@ -65,7 +73,7 @@ reflected path (green) has the same total length as the image-source path
 \label{fig:tworay}
 \end{figure}
 
-\subsubsection{Free-space path loss}
+\subsubsection{Free-space path-loss baseline}
 
 The free-space path loss in dB is defined using the standard formula at
 frequency $f_{\mathrm{MHz}}$ (in MHz):
@@ -100,7 +108,7 @@ d^2$) and quadratically with frequency. It captures only the geometric
 spreading of the wavefront, with no ground interaction, scattering, or
 diffraction.
 
-\subsubsection{Coherent two-ray correction}
+\subsubsection{Enhanced two-ray correction}
 
 In the two-ray model, the received field is the superposition of the direct
 path and a ground-reflected path. Let $k = 2\pi f / c$ be the free-space
@@ -173,17 +181,19 @@ destructive interference around the transmitter.
 
 \subsubsection{Comparison with literature two-ray models}
 
-The coherent interference term used in \texttt{Try 78} is the standard
-\emph{exact} coherent two-ray model from the literature. In particular,
-Eq.~\eqref{eq:c2ray} has the same field-sum structure used in textbook
-derivations: a direct ray plus one reflected ray summed coherently before
-conversion to dB. The practical adaptation in this thesis is not an extra term
-inside the two-ray equation, but the way the reflection coefficient is
-parameterized and calibrated. Put differently, the core two-ray term is the
-literature two-ray model, evaluated with a fitted height-binned effective
-reflection coefficient. The coefficients are fitted independently in 5~m UAV
-height bins and then linearly interpolated across neighboring bins at
-inference time.
+The field-sum in Eq.~\eqref{eq:c2ray} is the standard \emph{exact} coherent
+two-ray equation from the literature: a direct ray plus one ground-reflected
+ray summed before conversion to dB. The practical adaptation in this thesis
+is not an extra term inside the two-ray equation, but the way the reflection
+coefficient is parameterized and calibrated. We refer to this fitted variant
+as the \emph{enhanced two-ray} model throughout this work: the underlying
+equation is the textbook coherent two-ray model, but the effective reflection
+coefficient is enhanced beyond the Fresnel range and allowed to take
+amplitudes up to $\rho \le 1.5$ in order to absorb constructive multipath
+effects from the surrounding urban scene that a single-Fresnel coefficient
+could not represent. The coefficients are fitted
+independently in 5~m UAV height bins and then linearly interpolated across
+neighboring bins at inference time.
 
 \paragraph{Physical vs.\ effective parameters.}
 In classic texts such as Rappaport \cite{rappaport} and Goldsmith
@@ -199,7 +209,8 @@ where $\theta$ is the grazing angle and $\epsilon_c = \epsilon_r - j\sigma/\omeg
 is the complex permittivity of the ground. This requires assuming physical
 constants for the ground (typically $\epsilon_r \approx 15$ for urban soil).
 
-In contrast, our implementation keeps the same coherent two-ray equation but
+In contrast, our enhanced two-ray implementation keeps the same coherent
+field-sum equation but
 replaces the angle-dependent
 $\Gamma(\theta)$ with a height-dependent effective coefficient $\Gamma(h_{\mathrm{tx}})
 = \rho e^{j\phi}$. We do not assume a flat dielectric plane; instead, $\rho$
@@ -268,6 +279,113 @@ The four terms in Eq.~\eqref{eq:pl_los} are applied sequentially:
 FSPL gives the geometric baseline; the two-ray correction adds the
 interference pattern; the bias corrects for a systematic global offset per
 height; and the radial term corrects for range-dependent systematic errors.
+
+For compact notation, the LoS branch can be summarized by the following
+deterministic diagnostic vector:
+
+{\small
+\begin{equation}
+\mathbf{x}_{78}^{\mathrm{LoS}}(x)
+=
+\begin{bmatrix}
+\mathrm{FSPL}(x)\\
+d_{\mathrm{LoS}}(x)/d_{\mathrm{ref}}(x)\\
+k\!\left(d_{\mathrm{ref}}(x)-d_{\mathrm{LoS}}(x)\right)\\
+\rho(h_{\mathrm{tx}})\\
+\phi(h_{\mathrm{tx}})\\
+C_{\mathrm{2ray}}(x)\\
+b(h_{\mathrm{tx}})\\
+r(d_{2D}(x),h_{\mathrm{tx}})
+\end{bmatrix}.
+\label{eq:x78_los_vector}
+\end{equation}
+}
+
+This vector is not multiplied by a learned coefficient vector at inference
+time. Instead, it exposes the calibrated quantities used by the nonlinear
+two-ray expression
+\(\mathrm{PL}_{\mathrm{LoS}}(x)
+=g_{\mathrm{LoS}}(\mathbf{x}_{78}^{\mathrm{LoS}}(x))
+=\mathrm{FSPL}(x)+C_{\mathrm{2ray}}(x)+b(h_{\mathrm{tx}})
++r(d_{2D}(x),h_{\mathrm{tx}})\).
+The entries are computed as follows:
+
+\begin{itemize}
+\item \(\mathrm{FSPL}(x)\) is computed from the 3D direct distance
+      \(d_{\mathrm{LoS}}(x)\) and the carrier frequency. It is the
+      direct-ray path loss, so it sets the absolute distance and frequency
+      scale before any reflected-path correction is added.
+\item \(d_{\mathrm{LoS}}(x)/d_{\mathrm{ref}}(x)\) is computed from the
+      direct-path length and the image-source reflected-path length. Since the
+      reflected path is longer, this ratio is normally below one and gives the
+      relative amplitude of the reflected field after \(1/d\) propagation loss.
+\item \(k(d_{\mathrm{ref}}(x)-d_{\mathrm{LoS}}(x))\) is the geometric phase
+      advance of the reflected ray, with \(k=2\pi f/c\). This is the term that
+      makes the correction oscillatory in space: small changes in extra path
+      length can move the direct and reflected fields from constructive to
+      destructive interference.
+\item \(\rho(h_{\mathrm{tx}})\) is the effective reflection amplitude used in
+      the coherent field sum. During calibration, each 5 m UAV-height bin is
+      fitted by grid search over \(\rho\in[0,1.5]\) and the phase grid; for
+      each candidate pair, the best constant bias is removed and the pair with
+      lowest LoS RMSE is selected. The stored \(\rho\) curve is then smoothed
+      across neighboring height bins and, at inference time, linearly
+      interpolated to the actual \(h_{\mathrm{tx}}\). Thus \(\rho\) is not a
+      Fresnel coefficient assumed from a ground material, but a CKM-calibrated
+      effective reflected-field amplitude.
+\item \(\phi(h_{\mathrm{tx}})\) is fitted in the same height-binned grid
+      search, using a uniform grid over \([-\pi,\pi)\). It absorbs the
+      effective phase shift of the reflection and any systematic phase offset
+      caused by the simplified one-reflection geometry. As with \(\rho\), the
+      stored phase curve is smoothed across height bins and linearly
+      interpolated during prediction.
+\item \(C_{\mathrm{2ray}}(x)\) is then computed by substituting
+      \(d_{\mathrm{LoS}}/d_{\mathrm{ref}}\), the geometric phase,
+      \(\rho(h_{\mathrm{tx}})\), and \(\phi(h_{\mathrm{tx}})\) into
+      Eq.~\eqref{eq:c2ray}. This is the actual coherent direct-plus-reflected
+      correction in dB. A negative value means constructive gain relative to
+      FSPL; a positive value means a fading loss.
+\item \(b(h_{\mathrm{tx}})\) is the constant dB offset fitted together with
+      \(\rho\) and \(\phi\) for each height bin. For a fixed candidate
+      \((\rho,\phi)\), the calibration computes the mean residual
+      \(y-(\mathrm{FSPL}+C_{\mathrm{2ray}})\) over the sampled LoS pixels in
+      that height bin and uses it as the optimal bias for that candidate. The
+      final stored \(b\) is smoothed over height and linearly interpolated at
+      inference time. Its role is to remove the remaining height-dependent
+      offset after the interference pattern has been fitted.
+\item \(r(d_{2D}(x),h_{\mathrm{tx}})\) is fitted after the smoothed two-ray
+      model is fixed. The residual target-minus-prediction is accumulated in
+      integer radial bins around the transmitter, separately for each
+      5 m height bin; empty bins fall back to a global radial profile, the
+      profile is smoothed, and the applied correction is clipped to
+      \(\pm2.5\) dB. This term removes range-dependent structure that remains
+      after the coherent two-ray model and the height bias.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{tabularx}{\textwidth}{p{3.2cm} X X}
+\toprule
+\textbf{Stored / computed term} & \textbf{Mathematical role} & \textbf{Interpretation} \\
+\midrule
+\(\mathrm{FSPL}(d_{\mathrm{LoS}},f)\) & Direct-ray baseline. & Gives the geometric free-space loss before any reflected path is added. It is a component of the two-ray prior, not the final LoS model by itself. \\
+\(\rho(h_{\mathrm{tx}})\) & Height-interpolated reflected-ray amplitude. & Controls how strongly the ground-reflected wave contributes relative to the direct wave. \\
+\(\phi(h_{\mathrm{tx}})\) & Height-interpolated phase offset. & Captures the effective reflection phase after fitting to CKM instead of assuming a fixed Fresnel coefficient. \\
+\(C_{\mathrm{2ray}}(x)\) & Coherent interference correction. & Converts the complex direct-plus-reflected field sum into an oscillatory dB correction around FSPL. \\
+\(b(h_{\mathrm{tx}})\) & Height-interpolated bias. & Removes a remaining per-height offset after the coherent two-ray fit. \\
+\(r(d_{2D},h_{\mathrm{tx}})\) & Smoothed radial residual profile, clipped to \(\pm2.5\) dB. & Corrects systematic distance-dependent residuals not captured by the two-ray equation. \\
+\(\mathrm{clip}_{[20,180]}\) & Output guard. & Keeps the frozen prior inside the physical path-loss range used by Try 80. \\
+\bottomrule
+\end{tabularx}
+\caption{Term-by-term inventory of the \texttt{Try 78} LoS prior used by
+\texttt{Try 80}. Unlike the NLoS branch, this is not a long pixel-feature
+regression vector; it is a height-interpolated two-ray calibration plus a
+radial residual table.}
+\label{tab:x78_los_inventory}
+\end{table}
 
 \subsection{Calibration of the LoS two-ray model}
 \label{sec:los_calibration}
@@ -478,7 +596,7 @@ where training data is sparser.}
 \addlegendentry{Two-ray (approx.)}
 \end{axis}
 \end{tikzpicture}
-\caption{Schematic comparison of FSPL and the coherent two-ray model for a
+\caption{Schematic comparison of FSPL and the enhanced two-ray model for a
 60 m UAV at 7.125 GHz ($h_{\mathrm{rx}} = 1.5$ m). The two-ray model produces
 a characteristic oscillatory pattern around the FSPL baseline, corresponding
 to alternating zones of constructive and destructive interference.}
@@ -585,7 +703,7 @@ $\tau_{\mathrm{NLoS}} = 7.52$ deg.
 \item $\lambda_0$: a free-space-like offset that scales with UAV height and
       frequency~\cite{khawaja_survey,wocc2021}. The CKM dataset uses
       $f = 7.125$ GHz (upper edge of FR1 in 3GPP NR~\cite{tr38901}); for
-      $h_{\mathrm{tx}} = 50$ m at that frequency, $\lambda_0 \approx 103$ dB.
+      $h_{\mathrm{tx}} = 50$ m at that frequency, $\lambda_0 \approx 83.5$ dB.
 \item $\beta_{\mathrm{NLoS}} = -16.16$ dB: a baseline NLoS attenuation
       offset relative to $\lambda_0$.
 \item $A_{\mathrm{NLoS}}\exp(-\ldots)$: an exponential modulation with
@@ -645,7 +763,7 @@ optimistic at constructive-interference peaks in the LoS case. Here
 $\mathrm{PL}_{\mathrm{LoS,path}}(x)$ denotes the \emph{legacy} LoS path term
 used in older formula-based variants: FSPL at short range and the classical
 asymptotic two-ray crossover law at longer range. It is not the calibrated
-coherent two-ray map of Eq.~\eqref{eq:pl_los}.
+enhanced two-ray map of Eq.~\eqref{eq:pl_los}.
 
 The full raw prior combines the LoS and NLoS estimates using the binary LoS
 mask $m_{\mathrm{LoS}}(x) \in \{0,1\}$:
@@ -664,10 +782,29 @@ it selects the LoS expression on LoS pixels and the NLoS expression on NLoS
 pixels. The auxiliary blend in Eq.~\eqref{eq:los_blend} was used in older
 \texttt{Try 78} variants to keep the LoS formula below an A2G envelope. In
 the final frozen \texttt{Try 80} path, LoS pixels come directly from the
-calibrated coherent two-ray prior, so Eq.~\eqref{eq:pl0} and
+enhanced two-ray prior $\mathrm{PL}^{(0)}$, so Eq.~\eqref{eq:pl0} and
 Eq.~\eqref{eq:los_blend} are retained only for historical completeness.
+The LoS/NLoS mask used here is the explicit CKM mask provided with the
+dataset and treated as an available side channel. A deployment version would
+need to obtain an equivalent visibility mask from deterministic geometry or
+another inexpensive pre-processing step; replacing the supplied mask is not
+evaluated in this thesis.
 
 \subsubsection{Stage 3: map-derived morphology features}
+
+The enhanced two-ray prior $\mathrm{PL}^{(0)}(x)$ defined in
+Eq.~\eqref{eq:pl0} is the only physical model in \texttt{Try 78}; it depends
+exclusively on $\{h_{\mathrm{tx}},h_{\mathrm{rx}},d,\lambda\}$ and knows
+nothing about buildings, density, obstruction, or shadowing. The feature
+vector $\mathbf{x}_{78}(x)$ defined below is \emph{not} a competing path-loss
+model and \emph{not} an alternative two-ray formulation. It is the
+per-pixel input row of a ridge regressor whose role is to take the amplified
+two-ray prediction and absorb its residual using context that the two-ray
+equation cannot see (urban morphology, NLoS visibility, shadowing,
+elevation geometry). Concretely, the enhanced two-ray prior
+$\mathrm{PL}^{(0)}(x)$ is fed in as the dominant feature, plus a quadratic of
+itself so that the linear fit can bend the prior, and every other entry adds
+a quantity that is invisible to the two-ray model.
 
 From $\mathrm{PL}^{(0)}(x)$ and the map topology, a 15-element feature
 vector is computed:
@@ -722,7 +859,8 @@ entry before the detailed definitions below.
 \(1\) & Bias term. & Lets each regime learn a constant offset after all physical terms are included. \\
 \bottomrule
 \end{tabularx}
-\caption{Term-by-term inventory of the \texttt{Try 78} calibration vector.}
+\caption{Term-by-term inventory of the \texttt{Try 78} NLoS calibration
+vector.}
 \label{tab:x78_term_inventory}
 \end{table}
 
@@ -993,7 +1131,7 @@ This gives up to $3 \times 2 \times 3 = 18$ regimes.
 The stored calibration for this legacy mixed-prior map still contains both LoS
 and NLoS regime coefficients. However, in the final frozen \texttt{Try 80}
 path-loss assembly only the NLoS pixels from this calibrated map are used,
-because LoS pixels are replaced by the separate calibrated coherent two-ray
+because LoS pixels are replaced by the separate enhanced two-ray
 prior.
 
 \paragraph{How topology class and antenna bin are computed.}
@@ -1112,6 +1250,10 @@ regime is:
 The large bias weight ($w_{15} = 48.83$) and the large negative
 shadowing-proxy weight ($w_{12} = -47.15$) partially cancel, together
 acting as a calibrated effective offset for this regime.
+This makes Try~78 an interpretable calibrated surrogate rather than a pure
+first-principles propagation formula: the two-ray and A2G terms set the
+shape, while regime-wise fitting adapts the coefficients to the CKM simulator
+and to the dataset's stored masks.
 
 \subsubsection{Stage 5: region replacement and clipping}
 
@@ -1166,71 +1308,12 @@ degrees (angular spread), all in the native non-transformed domain.
 
 \subsection{Observed Try 78 results}
 
-Table~\ref{tab:try78_rmse} summarizes the path-loss RMSE values obtained from
-the final hybrid evaluation.
-
-\begin{table}[H]
-\centering
-\caption{Try 78 pixel-weighted RMSE (dB) on the evaluation split. The
-``Role'' column indicates whether the model is used as a frozen prior in
-\texttt{Try 80}, serves only as an ablation baseline, or is an intermediate
-construction step.}
-\label{tab:try78_rmse}
-\begin{tabular}{lcc}
-\toprule
-Model & RMSE (dB) & Role in Try 80\\
-\midrule
-FSPL (LoS only)            & 3.9540 & ablation baseline (not used)\\
-FSPL + radial residual     & 3.7086 & ablation baseline (not used)\\
-Coherent two-ray (LoS)     & 1.7516 & \textbf{frozen LoS prior} (used in Try 80)\\
-Hybrid LoS                 & 1.7516 & legacy auxiliary variant (not used in final Try 80 path)\\
-Hybrid NLoS                & 3.3967 & \textbf{frozen NLoS prior} (used in Try 80)\\
-\midrule
-\textbf{Hybrid overall}    & \textbf{1.9246} & combined frozen prior (Try 80 input)\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\paragraph{Why do Coherent two-ray (LoS) and Hybrid LoS show the same RMSE?}
-This comparison is included for historical completeness. In the current
-\texttt{Try 80} implementation, the frozen LoS prior is the calibrated
-coherent two-ray map; the Hybrid LoS blend is not used in the final path-loss
-assembly. The two rows report the same value (1.7516 dB) on the
-\emph{evaluation split} because, on almost all pixels, the auxiliary A2G
-envelope does not change the underlying LoS value.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-  ybar,
-  width=11cm, height=6cm,
-  bar width=18pt,
-  ylabel={RMSE (dB)},
-  symbolic x coords={FSPL,FSPL+radial,Two-ray LoS,Hybrid LoS,Hybrid NLoS,Hybrid overall},
-  xtick=data,
-  x tick label style={rotate=25, anchor=east, font=\small},
-  ymin=0, ymax=4.5,
-  nodes near coords,
-  nodes near coords align={vertical},
-  every node near coord/.append style={font=\tiny},
-  grid=major,
-  title={Try 78 path-loss RMSE comparison}
-]
-\addplot[fill=blue!50] coordinates {
-  (FSPL,3.9540)
-  (FSPL+radial,3.7086)
-  (Two-ray LoS,1.7516)
-  (Hybrid LoS,1.7516)
-  (Hybrid NLoS,3.3967)
-  (Hybrid overall,1.9246)
-};
-\end{axis}
-\end{tikzpicture}
-\caption{Try 78 pixel-weighted RMSE values. The coherent two-ray model
-reduces LoS RMSE from 3.95 dB (FSPL) to 1.75 dB, a gain of 2.2 dB.}
-\label{fig:try78_rmse}
-\end{figure}
+The headline path-loss numbers for \texttt{Try 78} are reported in the
+results chapter (LoS waterfall in Table~\ref{tab:try78_los_waterfall}): the
+enhanced two-ray prior $\mathrm{PL}^{(0)}$ reaches \SI{1.7516}{dB}
+pixel-weighted RMSE on LoS pixels, the regime-wise OLS NLoS head reaches
+\SI{3.3967}{dB} on NLoS pixels, and the combined frozen prior that feeds
+\texttt{Try 80} reaches \SI{1.9246}{dB} overall.
 
 \begin{figure}[H]
 \centering

@@ -1,214 +1,251 @@
 {
   "split": "val",
-  "config": "C:\\TFG\\TFGpractice\\TFGEightiethTry80\\experiments\\try80_joint_big.yaml",
-  "checkpoint": "C:\\TFG\\TFGpractice\\cluster_outputs\\TFGEightiethTry80\\try80_joint_big\\best_model.pt",
-  "device": "cpu",
+  "config": "C:\\TFG\\TFGpractice\\TFGEightiethTry80\\experiments\\try80_joint_huge_pathloss_finetune.yaml",
+  "checkpoint": "C:\\TFG\\TFGpractice\\cluster_outputs\\TFGEightiethTry80\\try80_joint_huge_pathloss_finetune\\best_model.pt",
+  "device": "privateuseone:0",
+  "main_panel_layout": "6x3",
   "main_panel": "try80_main_panel.png",
   "panels": [
     {
-      "file": "try80_panel_open_low_ant_Chiang_Mai_sample_04525.png",
-      "city": "Chiang Mai",
-      "sample": "sample_04525",
-      "h_tx_m": 48.57728958129883,
-      "topology_class_6": "open_sparse_vertical",
-      "expert": "open|low_ant",
-      "score_mean_model_rmse": 18.29616153240204,
-      "metrics": {
-        "path_loss": {
-          "model_rmse": 1.276314377784729,
-          "prior_rmse": 1.4275319576263428
-        },
-        "delay_spread": {
-          "model_rmse": 43.6015739440918,
-          "prior_rmse": 41.80459213256836
-        },
-        "angular_spread": {
-          "model_rmse": 10.01059627532959,
-          "prior_rmse": 10.714754104614258
-        }
-      }
-    },
-    {
-      "file": "try80_panel_open_mid_ant_Chiang_Mai_sample_04521.png",
-      "city": "Chiang Mai",
-      "sample": "sample_04521",
-      "h_tx_m": 61.176902770996094,
-      "topology_class_6": "open_sparse_vertical",
-      "expert": "open|mid_ant",
-      "score_mean_model_rmse": 19.212419668833416,
-      "metrics": {
-        "path_loss": {
-          "model_rmse": 1.228471279144287,
-          "prior_rmse": 1.449342966079712
-        },
-        "delay_spread": {
-          "model_rmse": 46.00947189331055,
-          "prior_rmse": 45.42115783691406
-        },
-        "angular_spread": {
-          "model_rmse": 10.39931583404541,
-          "prior_rmse": 11.316640853881836
-        }
-      }
-    },
-    {
-      "file": "try80_panel_open_high_ant_Segovia_sample_13192.png",
+      "file": "try80_panel_open_low_ant_Segovia_sample_13213.png",
+      "files": {
+        "3x6": "try80_panel_open_low_ant_Segovia_sample_13213.png",
+        "6x3": "try80_panel_open_low_ant_Segovia_sample_13213_6x3.png"
+      },
       "city": "Segovia",
-      "sample": "sample_13192",
-      "h_tx_m": 144.12716674804688,
-      "topology_class_6": "open_sparse_vertical",
+      "sample": "sample_13213",
+      "h_tx_m": 55.909358978271484,
+      "topology_class_6": "open_sparse_lowrise",
+      "expert": "open|low_ant",
+      "score_mean_model_rmse": 2.1293124159177146,
+      "metrics": {
+        "path_loss": {
+          "model_rmse": 0.9636282324790955,
+          "prior_rmse": 1.0003139972686768
+        },
+        "delay_spread": {
+          "model_rmse": 2.0628817081451416,
+          "prior_rmse": 2.063931465148926
+        },
+        "angular_spread": {
+          "model_rmse": 3.3614273071289062,
+          "prior_rmse": 3.3898978233337402
+        }
+      }
+    },
+    {
+      "file": "try80_panel_open_mid_ant_Segovia_sample_13215.png",
+      "files": {
+        "3x6": "try80_panel_open_mid_ant_Segovia_sample_13215.png",
+        "6x3": "try80_panel_open_mid_ant_Segovia_sample_13215_6x3.png"
+      },
+      "city": "Segovia",
+      "sample": "sample_13215",
+      "h_tx_m": 58.12179183959961,
+      "topology_class_6": "open_sparse_lowrise",
+      "expert": "open|mid_ant",
+      "score_mean_model_rmse": 1.9686029354731243,
+      "metrics": {
+        "path_loss": {
+          "model_rmse": 0.9727528095245361,
+          "prior_rmse": 1.0096995830535889
+        },
+        "delay_spread": {
+          "model_rmse": 1.7646971940994263,
+          "prior_rmse": 1.767493486404419
+        },
+        "angular_spread": {
+          "model_rmse": 3.16835880279541,
+          "prior_rmse": 3.1831769943237305
+        }
+      }
+    },
+    {
+      "file": "try80_panel_open_high_ant_Nazareth_sample_10722.png",
+      "files": {
+        "3x6": "try80_panel_open_high_ant_Nazareth_sample_10722.png",
+        "6x3": "try80_panel_open_high_ant_Nazareth_sample_10722_6x3.png"
+      },
+      "city": "Nazareth",
+      "sample": "sample_10722",
+      "h_tx_m": 353.7660827636719,
+      "topology_class_6": "open_sparse_lowrise",
       "expert": "open|high_ant",
-      "score_mean_model_rmse": 4.428943236668904,
+      "score_mean_model_rmse": 1.0277819534142811,
       "metrics": {
         "path_loss": {
-          "model_rmse": 0.8562772274017334,
-          "prior_rmse": 1.2881057262420654
+          "model_rmse": 0.8634465336799622,
+          "prior_rmse": 1.154586911201477
         },
         "delay_spread": {
-          "model_rmse": 7.093657970428467,
-          "prior_rmse": 6.095211029052734
+          "model_rmse": 0.43622902035713196,
+          "prior_rmse": 0.49357521533966064
         },
         "angular_spread": {
-          "model_rmse": 5.336894512176514,
-          "prior_rmse": 5.9921464920043945
+          "model_rmse": 1.7836703062057495,
+          "prior_rmse": 1.8965023756027222
         }
       }
     },
     {
-      "file": "try80_panel_mixed_low_ant_Chiang_Mai_sample_04438.png",
-      "city": "Chiang Mai",
-      "sample": "sample_04438",
-      "h_tx_m": 37.06338119506836,
-      "topology_class_6": "mixed_compact_lowrise",
+      "file": "try80_panel_mixed_low_ant_Dubrovnik_sample_05288.png",
+      "files": {
+        "3x6": "try80_panel_mixed_low_ant_Dubrovnik_sample_05288.png",
+        "6x3": "try80_panel_mixed_low_ant_Dubrovnik_sample_05288_6x3.png"
+      },
+      "city": "Dubrovnik",
+      "sample": "sample_05288",
+      "h_tx_m": 33.69070053100586,
+      "topology_class_6": "mixed_compact_midrise",
       "expert": "mixed|low_ant",
-      "score_mean_model_rmse": 18.561001618703205,
+      "score_mean_model_rmse": 10.039432366689047,
       "metrics": {
         "path_loss": {
-          "model_rmse": 2.1505322456359863,
-          "prior_rmse": 2.189974546432495
+          "model_rmse": 3.252960681915283,
+          "prior_rmse": 3.252978801727295
         },
         "delay_spread": {
-          "model_rmse": 38.758331298828125,
-          "prior_rmse": 39.1040153503418
+          "model_rmse": 16.653270721435547,
+          "prior_rmse": 16.870723724365234
         },
         "angular_spread": {
-          "model_rmse": 14.774141311645508,
-          "prior_rmse": 16.415189743041992
+          "model_rmse": 10.212065696716309,
+          "prior_rmse": 11.062064170837402
         }
       }
     },
     {
-      "file": "try80_panel_mixed_mid_ant_Chiang_Mai_sample_04436.png",
-      "city": "Chiang Mai",
-      "sample": "sample_04436",
-      "h_tx_m": 60.05031204223633,
-      "topology_class_6": "mixed_compact_lowrise",
+      "file": "try80_panel_mixed_mid_ant_Nice_sample_10828.png",
+      "files": {
+        "3x6": "try80_panel_mixed_mid_ant_Nice_sample_10828.png",
+        "6x3": "try80_panel_mixed_mid_ant_Nice_sample_10828_6x3.png"
+      },
+      "city": "Nice",
+      "sample": "sample_10828",
+      "h_tx_m": 91.58625793457031,
+      "topology_class_6": "mixed_compact_midrise",
       "expert": "mixed|mid_ant",
-      "score_mean_model_rmse": 12.1356410185496,
+      "score_mean_model_rmse": 5.537787556648254,
       "metrics": {
         "path_loss": {
-          "model_rmse": 1.8514487743377686,
-          "prior_rmse": 1.9738636016845703
+          "model_rmse": 1.6367062330245972,
+          "prior_rmse": 1.6662139892578125
         },
         "delay_spread": {
-          "model_rmse": 20.12014389038086,
-          "prior_rmse": 18.215673446655273
+          "model_rmse": 6.732640743255615,
+          "prior_rmse": 6.758273124694824
         },
         "angular_spread": {
-          "model_rmse": 14.435330390930176,
-          "prior_rmse": 15.998397827148438
+          "model_rmse": 8.24401569366455,
+          "prior_rmse": 10.10634708404541
         }
       }
     },
     {
-      "file": "try80_panel_mixed_high_ant_Chiang_Mai_sample_04437.png",
-      "city": "Chiang Mai",
-      "sample": "sample_04437",
-      "h_tx_m": 247.6047821044922,
+      "file": "try80_panel_mixed_high_ant_Nice_sample_10814.png",
+      "files": {
+        "3x6": "try80_panel_mixed_high_ant_Nice_sample_10814.png",
+        "6x3": "try80_panel_mixed_high_ant_Nice_sample_10814_6x3.png"
+      },
+      "city": "Nice",
+      "sample": "sample_10814",
+      "h_tx_m": 289.7279968261719,
       "topology_class_6": "mixed_compact_lowrise",
       "expert": "mixed|high_ant",
-      "score_mean_model_rmse": 4.577615857124329,
+      "score_mean_model_rmse": 3.413020968437195,
       "metrics": {
         "path_loss": {
-          "model_rmse": 1.4161616563796997,
-          "prior_rmse": 1.6970221996307373
+          "model_rmse": 1.5588972568511963,
+          "prior_rmse": 1.6774744987487793
         },
         "delay_spread": {
-          "model_rmse": 2.8165905475616455,
-          "prior_rmse": 2.073176860809326
+          "model_rmse": 1.0707730054855347,
+          "prior_rmse": 1.1114323139190674
         },
         "angular_spread": {
-          "model_rmse": 9.50009536743164,
-          "prior_rmse": 10.588400840759277
+          "model_rmse": 7.6093926429748535,
+          "prior_rmse": 8.774626731872559
         }
       }
     },
     {
-      "file": "try80_panel_dense_low_ant_Chiang_Mai_sample_04446.png",
+      "file": "try80_panel_dense_low_ant_Chiang_Mai_sample_04519.png",
+      "files": {
+        "3x6": "try80_panel_dense_low_ant_Chiang_Mai_sample_04519.png",
+        "6x3": "try80_panel_dense_low_ant_Chiang_Mai_sample_04519_6x3.png"
+      },
       "city": "Chiang Mai",
-      "sample": "sample_04446",
-      "h_tx_m": 24.805675506591797,
-      "topology_class_6": "dense_block_midrise",
+      "sample": "sample_04519",
+      "h_tx_m": 45.923805236816406,
+      "topology_class_6": "dense_block_highrise",
       "expert": "dense|low_ant",
-      "score_mean_model_rmse": 10.036033233006796,
+      "score_mean_model_rmse": 8.228656133015951,
       "metrics": {
         "path_loss": {
-          "model_rmse": 3.560404062271118,
-          "prior_rmse": 3.5641462802886963
+          "model_rmse": 3.3151988983154297,
+          "prior_rmse": 3.3152613639831543
         },
         "delay_spread": {
-          "model_rmse": 19.094402313232422,
-          "prior_rmse": 18.444114685058594
+          "model_rmse": 12.412435531616211,
+          "prior_rmse": 12.599371910095215
         },
         "angular_spread": {
-          "model_rmse": 7.453293323516846,
-          "prior_rmse": 7.7024312019348145
+          "model_rmse": 8.958333969116211,
+          "prior_rmse": 10.08571720123291
         }
       }
     },
     {
-      "file": "try80_panel_dense_mid_ant_Chiang_Mai_sample_04448.png",
-      "city": "Chiang Mai",
-      "sample": "sample_04448",
-      "h_tx_m": 85.31753540039062,
+      "file": "try80_panel_dense_mid_ant_Tunis_sample_14651.png",
+      "files": {
+        "3x6": "try80_panel_dense_mid_ant_Tunis_sample_14651.png",
+        "6x3": "try80_panel_dense_mid_ant_Tunis_sample_14651_6x3.png"
+      },
+      "city": "Tunis",
+      "sample": "sample_14651",
+      "h_tx_m": 88.0826187133789,
       "topology_class_6": "dense_block_midrise",
       "expert": "dense|mid_ant",
-      "score_mean_model_rmse": 20.035253206888836,
+      "score_mean_model_rmse": 4.839009404182434,
       "metrics": {
         "path_loss": {
-          "model_rmse": 2.986992835998535,
-          "prior_rmse": 3.0337343215942383
+          "model_rmse": 1.6212319135665894,
+          "prior_rmse": 1.6215564012527466
         },
         "delay_spread": {
-          "model_rmse": 39.22916030883789,
-          "prior_rmse": 42.02635955810547
+          "model_rmse": 1.7460885047912598,
+          "prior_rmse": 2.077381134033203
         },
         "angular_spread": {
-          "model_rmse": 17.889606475830078,
-          "prior_rmse": 20.29041290283203
+          "model_rmse": 11.149707794189453,
+          "prior_rmse": 12.691056251525879
         }
       }
     },
     {
-      "file": "try80_panel_dense_high_ant_Chiang_Mai_sample_04447.png",
-      "city": "Chiang Mai",
-      "sample": "sample_04447",
-      "h_tx_m": 311.6376647949219,
+      "file": "try80_panel_dense_high_ant_Tunis_sample_14694.png",
+      "files": {
+        "3x6": "try80_panel_dense_high_ant_Tunis_sample_14694.png",
+        "6x3": "try80_panel_dense_high_ant_Tunis_sample_14694_6x3.png"
+      },
+      "city": "Tunis",
+      "sample": "sample_14694",
+      "h_tx_m": 376.9532775878906,
       "topology_class_6": "dense_block_midrise",
       "expert": "dense|high_ant",
-      "score_mean_model_rmse": 7.586473226547241,
+      "score_mean_model_rmse": 2.872655193010966,
       "metrics": {
         "path_loss": {
-          "model_rmse": 2.174508810043335,
-          "prior_rmse": 2.294137954711914
+          "model_rmse": 1.6453819274902344,
+          "prior_rmse": 1.6457151174545288
         },
         "delay_spread": {
-          "model_rmse": 5.86572790145874,
-          "prior_rmse": 5.078396320343018
+          "model_rmse": 0.7861336469650269,
+          "prior_rmse": 0.914858341217041
         },
         "angular_spread": {
-          "model_rmse": 14.719182968139648,
-          "prior_rmse": 16.355224609375
+          "model_rmse": 6.186450004577637,
+          "prior_rmse": 6.381015300750732
         }
       }
     }
