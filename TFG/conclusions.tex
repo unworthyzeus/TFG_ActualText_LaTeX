@@ -15,9 +15,10 @@ The original numerical targets were met by the finished non-DL priors. Try~78
 achieved \SI{1.9246}{dB} overall path-loss RMSE, with \SI{1.7516}{dB} LoS and
 \SI{3.3967}{dB} NLoS on the held-out cities. Try~79 achieved \SI{28.10}{ns}
 delay-spread RMSE and \SI{13.74}{\degree} angular-spread RMSE on the same
-evaluation contract. The final Try~80 neural model is kept as an in-flight
-prior-anchored extension until its frozen checkpoint and final test-split
-evaluation are selected.
+evaluation contract. The final Try~80 neural model then improved those frozen
+anchors on the unseen test cities, reaching \SI{1.6519}{dB} path-loss RMSE,
+\SI{26.5570}{ns} delay-spread RMSE, and \SI{11.3854}{\degree}
+angular-spread RMSE.
 
 \subsection{Answers to the research questions}
 
@@ -27,8 +28,8 @@ but the successful formulation is not a plain U-Net-style regression problem.
 Pure image-to-image models learned the smooth radial structure reasonably well
 in LoS regions but repeatedly failed on NLoS tails and spread distributions.
 The final priors satisfy the path-loss, delay-spread, and angular-spread error
-targets, while Try~80 provides the joint residual framework that can refine
-those priors without discarding their physical meaning.
+targets, while Try~80 shows that a joint residual framework can refine those
+priors without discarding their physical meaning.
 
 \textbf{RQ2: prior versus neural prediction.} The answer is target-dependent.
 For LoS path loss, the calibrated enhanced two-ray prior is strong enough to

@@ -21,17 +21,17 @@ LoS/NLoS masks. The model input contains nine spatial channels:
 
 The scalar UAV height is not appended as a constant image channel. It is
 encoded with a sinusoidal embedding and injected into the network through FiLM
-conditioning. The final \texttt{try80\_joint\_huge\_relaxed\_residuals}
+conditioning. The final \texttt{try80\_joint\_huge\_pathloss\_finetune}
 configuration uses a shared encoder-decoder with
 \texttt{base\_width = 128}, \texttt{cond\_dim = 160}, three GMM
 components per task and region, \(\alpha\)-gate bias \(-2\), and fixed
 residual caps specified separately for path loss, delay spread and
 angular spread.
 
-Because the full \texttt{Try 80} run is still in training, this section
-documents the frozen \texttt{Try 78}/\texttt{Try 79}
-priors and the calibration assets consumed by \texttt{Try 80}, not as final
-\texttt{Try 80} performance claims.
+The final \texttt{Try 80} checkpoint reported in Chapter~\ref{chap:results}
+uses these frozen \texttt{Try 78}/\texttt{Try 79} priors as anchors. This
+section therefore documents both the frozen-prior inputs and the residual
+architecture used by the final evaluation.
 
 \subsection{Prior-Anchored GMM Residual Model}
 
@@ -42,8 +42,8 @@ region \(r\in\{\mathrm{LoS},\mathrm{NLoS}\}\), component
 \(j\in\{1,2,3\}\), and valid pixel \(x\), the model predicts a mixture
 weight, a mean and a standard deviation. Path loss is modeled in native dB
 space, while delay spread and angular spread are modeled in transformed
-\(\log(1+y)\) space for the likelihood and converted back to native units for
-metrics.
+\(\log(1+y)\) space inside the probabilistic head and converted back to
+native units for deterministic metrics.
 
 The native residual caps are task- and region-dependent:
 
@@ -51,12 +51,12 @@ The native residual caps are task- and region-dependent:
 \delta_{\max,k,r}
 =
 \begin{cases}
-2~\mathrm{dB}, & k=\mathrm{PL},\ r=\mathrm{LoS},\\
-4~\mathrm{dB}, & k=\mathrm{PL},\ r=\mathrm{NLoS},\\
-30~\mathrm{ns}, & k=\mathrm{DS},\ r=\mathrm{LoS},\\
-40~\mathrm{ns}, & k=\mathrm{DS},\ r=\mathrm{NLoS},\\
-9^\circ, & k=\mathrm{AS},\ r=\mathrm{LoS},\\
-13^\circ, & k=\mathrm{AS},\ r=\mathrm{NLoS}.
+7~\mathrm{dB}, & k=\mathrm{PL},\ r=\mathrm{LoS},\\
+25~\mathrm{dB}, & k=\mathrm{PL},\ r=\mathrm{NLoS},\\
+20~\mathrm{ns}, & k=\mathrm{DS},\ r=\mathrm{LoS},\\
+20~\mathrm{ns}, & k=\mathrm{DS},\ r=\mathrm{NLoS},\\
+17^\circ, & k=\mathrm{AS},\ r=\mathrm{LoS},\\
+15^\circ, & k=\mathrm{AS},\ r=\mathrm{NLoS}.
 \end{cases}
 \label{eq:try80_residual_caps}
 \end{equation}
@@ -126,13 +126,17 @@ component variances:
 \label{eq:try80_sigma}
 \end{equation}
 Both variance terms are constrained by sigmoid transforms to lie between
-\(\sigma_{\min}=0.05\) and \(\sigma_{\max}=3.0\), preventing the NLL from
+\(\sigma_{\min}=0.05\) and \(\sigma_{\max}=3.0\). These bounds stabilize the
+probabilistic head and prevent the NLL term, when it is enabled, from
 collapsing to unrealistically tiny uncertainty or exploding to a uselessly
 flat density.
 
-The model is trained end-to-end to maximize the Negative Log Likelihood (NLL)
-of the measurements under this GMM. The deterministic point prediction used for
-RMSE evaluation is the expected value of the mixture:
+The architecture supports a full GMM Negative Log Likelihood (NLL). The final
+\texttt{try80\_joint\_huge\_pathloss\_finetune} checkpoint, however, uses the
+same head with an RMSE-dominant fine-tuning objective; its NLL, KL, moment and
+outlier-budget weights are set to zero in the resolved YAML configuration. The
+deterministic point prediction used for RMSE evaluation is the expected value
+of the mixture:
 
 \begin{equation}
 \hat z_{k,r}(x)
@@ -458,17 +462,18 @@ $\tilde\sigma_{k,r}(x)$.
 \subsection{Composite Optimization Objective}
 \label{sec:try80_objective}
 
-The implementation utilizes a robust composite loss to stabilize the GMM
-training. For each task, let \(\Omega_k\) be the valid ground-pixel set,
-let \(q_k(y\mid x)\) be the predicted mixture density, and let
-\(\hat y_k(x)\) be the native-space point prediction used for RMSE. The total
-objective is:
+The implementation defines a composite loss that can train both the
+probabilistic GMM head and the deterministic residual map. For each task, let
+\(\Omega_k\) be the valid ground-pixel set, let \(q_k(y\mid x)\) be the
+predicted mixture density, and let \(\hat y_k(x)\) be the native-space point
+prediction used for RMSE. The total objective is:
 
 \begin{equation}
 \begin{aligned}
 \mathcal{L}
 =
 \sum_{k\in\{\mathrm{PL},\mathrm{DS},\mathrm{AS}\}}
+w_k
 \Bigl[
 &\lambda_{\mathrm{NLL}}\mathcal{L}_{\mathrm{NLL},k}
 +
@@ -492,15 +497,17 @@ objective is:
 \label{eq:try80_total_loss}
 \end{equation}
 
-The numerical weights used in the larger
-\texttt{try80\_joint\_huge\_relaxed\_residuals} variant are
-\(\lambda_{\mathrm{NLL}}=1.0\), \(\lambda_{\mathrm{KL}}=0.25\),
-\(\lambda_{\mathrm{mom}}=0.10\), \(\lambda_{\mathrm{anchor}}=0.05\),
-\(\lambda_{\mathrm{guard}}=0.10\), \(\lambda_{\mathrm{out}}=0.02\),
-\(\lambda_{\mathrm{RMSE}}=1.50\), and \(\lambda_{\mathrm{MAE}}=0.10\).
-The base \texttt{try80\_joint\_big} configuration described earlier uses
-\(\lambda_{\mathrm{RMSE}}=0.40\); the difference is a deliberate
-relaxed-residual hyperparameter change, not a notation change.
+The numerical weights used by the final
+\texttt{try80\_joint\_huge\_pathloss\_finetune} checkpoint are
+\(\lambda_{\mathrm{NLL}}=0\), \(\lambda_{\mathrm{KL}}=0\),
+\(\lambda_{\mathrm{mom}}=0\), \(\lambda_{\mathrm{anchor}}=0.01\),
+\(\lambda_{\mathrm{guard}}=0.02\), \(\lambda_{\mathrm{out}}=0\),
+\(\lambda_{\mathrm{RMSE}}=1.0\), and \(\lambda_{\mathrm{MAE}}=0.05\).
+The task weights are \(w_{\mathrm{PL}}=1.0\),
+\(w_{\mathrm{DS}}=0.25\), and \(w_{\mathrm{AS}}=0.25\). The validation
+checkpoint score uses separate reporting weights
+\((1.0,\,0.30,\,0.25)\) for path loss, delay spread and angular spread,
+respectively.
 
 \paragraph{Map negative log-likelihood.}
 The likelihood is computed separately in LoS and NLoS regions, then averaged
@@ -566,8 +573,9 @@ two moments as the target map:
 \label{eq:try80_moment}
 \end{equation}
 where bars denote masked means over \(\Omega_k\) and \(s\) denotes masked
-standard deviation. This prevents a low NLL solution from matching local
-density while drifting in map-average level.
+standard deviation. When active, this term prevents a low-NLL solution from
+matching local density while drifting in map-average level. In the final
+fine-tune it is defined by the code but has zero weight.
 
 \paragraph{Anchor and guard terms.}
 The anchor penalty keeps the correction small:
@@ -589,8 +597,9 @@ the design philosophy of \texttt{Try 80}: the DNN is allowed to improve the
 prior, but it must pay a penalty for large or harmful deviations.
 
 \paragraph{Outlier budget and deterministic losses.}
-The last mixture component is treated as the broad/outlier component. If its
-mean usage exceeds \(\tau=0.60\), a hinge penalty is applied:
+The last mixture component is treated as the broad/outlier component. If the
+outlier-budget term is active and its mean usage exceeds \(\tau=0.60\), a
+hinge penalty is applied:
 \begin{equation}
 \mathcal{L}_{\mathrm{out},k}
 =
@@ -646,8 +655,10 @@ The RMSE and MAE terms are conventional masked deterministic losses:
   \draw[arr] (\n.south) -- (total.north);
 \end{tikzpicture}%
 }
-\caption{Composite \texttt{Try 80} loss. The probabilistic terms train the
-mixture density, while the anchor and guard terms enforce the prior-residual
-interpretation.}
+\caption[Composite \texttt{Try 80} loss family]{Composite \texttt{Try 80}
+loss family. In the final path-loss fine-tuning stage, the selected checkpoint
+keeps the GMM head and uses RMSE/MAE, anchor and guard penalties; NLL, KL,
+moment and outlier-budget weights are set to zero. Earlier relaxed-residual
+runs used non-zero probabilistic weights.}
 \label{fig:try80_loss_terms}
 \end{figure}

@@ -1,13 +1,13 @@
 \chapter{Results}
+\label{chap:results}
 
 This chapter reports the main quantitative and qualitative outcomes of the
-project. The headline numbers come from the frozen Try~78 and Try~79 priors,
-which are reproducible under their documented city-holdout evaluation
-contracts: Try~79 uses the final 15\% test split, while Try~78 uses the
-30\% analytic-prior evaluation holdout described below.
-Try~80 is reported as an in-flight extension built on top of those frozen
-priors: the chapter includes its current validation snapshot as a training
-diagnostic, but not as a finalised test result.
+project. The headline numbers now include the final frozen Try~80 checkpoint
+evaluated on the same city-holdout test split used by the Try~79 spread
+priors: 2590 samples from 14 unseen cities. Try~78 remains documented under
+its 30\% analytic-prior evaluation holdout, while Try~80 is reported as the
+final prior-anchored residual model over the three outputs: path loss, delay
+spread, and angular spread.
 
 \section{Experiments and Tests}
 
@@ -30,7 +30,7 @@ Try 66      & PMHHNet synthesis with six experts and physical channels. & \SI{9.
 Try 76      & Distribution-first path-loss modelling. & NLoS pixel-weighted RMSE $\approx$\,\SI{3.34}{dB}. \\
 Try 78      & Non-DL calibrated path-loss prior. & \SI{1.92}{dB} overall, \SI{1.75}{dB} LoS, \SI{3.40}{dB} NLoS. \\
 Try 79      & Non-DL calibrated spread priors. & \SI{28.10}{ns} delay; \SI{13.74}{\degree} angular. \\
-Try 80      & Joint prior-anchored model. & Validation snapshot: \SI{1.77}{dB} path loss; final test pending. \\
+Try 80      & Joint prior-anchored model. & Final test: \SI{1.65}{dB} path loss, \SI{26.56}{ns} delay spread, \SI{11.39}{\degree} angular spread; RMSE improves over the frozen priors on all three outputs. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -94,7 +94,13 @@ under their own experiment contract and are used to show trend and diagnosis,
 not to claim every row is directly comparable.}
 \label{tab:rmse_evolution}
 \small
-\begin{tabularx}{\textwidth}{l l l X}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{@{}
+  >{\raggedright\arraybackslash}p{1.9cm}
+  >{\raggedright\arraybackslash}p{2.6cm}
+  >{\raggedright\arraybackslash}p{3.0cm}
+  >{\raggedright\arraybackslash}X
+@{}}
 \toprule
 Attempt & Target / region & RMSE & Interpretation \\
 \midrule
@@ -111,7 +117,7 @@ Try 76 & Path loss NLoS & \(\approx 3.34\) dB & Distribution-first modelling dir
 Try 78 & Path loss overall & 1.9246 dB & Calibrated non-DL prior became the strongest path-loss baseline. \\
 Try 79 & Delay spread overall & 28.10 ns & Log-domain ridge calibration met the original 50 ns project target. \\
 Try 79 & Angular spread overall & \(13.74^\circ\) & Regime-wise calibration met the original 20 degree target. \\
-Try 80 validation & Path loss overall & 1.7692 dB & Non-final snapshot; final test result still pending. \\
+Try 80 final test & Joint outputs & 1.6519 dB PL; 26.5570 ns DS; \(11.3854^\circ\) AS & Final frozen checkpoint on 14 unseen test cities; model RMSE improves over every frozen prior. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -383,12 +389,26 @@ all ground pixels (the Stage-A GMM components recover the
 spike-plus-tail shape themselves; see the histogram study in
 \texttt{docs/distribution\_classes.md}).
 
+\paragraph{Expert nomenclature.}
+In this chapter, ``six experts'' denotes the legacy Try 76/77
+topology taxonomy:
+\emph{open sparse lowrise}, \emph{open sparse vertical},
+\emph{mixed compact lowrise}, \emph{mixed compact midrise},
+\emph{dense block midrise}, and \emph{dense block highrise}.
+The analytic priors then refine this routing internally: Try 78 uses
+coarse topology, LoS/NLoS state and antenna-height bin, while Try 79
+also keys the regime by spread metric. Try 80 reports a simpler final
+subexpert grid: three morphology groups (\texttt{open}, \texttt{mixed},
+\texttt{dense}) crossed with three antenna-height bins
+(\texttt{low\_ant}, \texttt{mid\_ant}, \texttt{high\_ant}), giving the
+nine subexperts used in the final breakdowns.
+
 A sequential DirectML pass over the 12 mirrored checkpoints now gives
 test metrics on the same 2590-sample holdout used by Try 76 and Try 80.
 Table~\ref{tab:try77_per_expert} reports both sample-mean and
 pixel-weighted RMSE. The distinction matters for spread targets because
 large maps with broad valid ground support can dominate the pixel-weighted
-aggregate.
+aggregate and there are more outliers.
 
 \begin{table}[H]
 \centering
@@ -621,27 +641,263 @@ to deployability rather than accuracy.}
 \label{fig:try78_by_topology}
 \end{figure}
 
-For Try 80, the current validation snapshot over 2750 samples is useful as a
-training diagnostic but is not the final thesis claim. It shows that the joint
-model can already improve some prior metrics while remaining close to the
-anchors. These values must be replaced by final test numbers after checkpoint
-selection.
+\subsection{Final Try 80 joint prior-anchored test results}
+
+Try 80 freezes the Try 78/79 priors and learns a bounded residual correction
+for the three radio maps. The final checkpoint evaluated here is
+\texttt{best\_model.pt} from
+\texttt{try80\_joint\_huge\_pathloss\_finetune}; it is tested on the
+city-holdout test split with 2590 samples from 14 cities that were not seen in
+training. For a target \(t\), group \(G\), and valid pixel set
+\(\Omega_{G,t}\), the reported model RMSE is
+
+\begin{equation}
+  \mathrm{RMSE}_{\mathrm{model}}(G,t) =
+  \sqrt{\frac{1}{|\Omega_{G,t}|}
+  \sum_{(i,p)\in\Omega_{G,t}}
+  \left(\hat{y}_{i,p,t} - y_{i,p,t}\right)^2}.
+  \label{eq:try80_model_rmse}
+\end{equation}
+
+The prior RMSE uses the same formula with the frozen-prior prediction
+\(y^{\mathrm{prior}}_{i,p,t}\) in place of \(\hat{y}_{i,p,t}\). Therefore
+\texttt{model\_rmse} in the evaluation JSON is target-specific: it is the RMSE
+for path loss, delay spread, or angular spread individually, not a sum of the
+three RMSE values. The three targets are kept separate because their units are
+incompatible.
 
 \begin{table}[H]
 \centering
-\caption{Try 80 current validation snapshot. These are placeholders, not final
-test results.}
-\label{tab:try80_placeholder}
-\begin{tabular}{lccc}
+\caption{Final Try 80 test results on unseen cities, compared with the frozen
+Try 78/79 priors. Negative \(\Delta\) means that Try 80 improves the prior.}
+\label{tab:try80_final_test_overall}
+\scriptsize
+\begin{tabular}{lrrrrrrl}
 \toprule
-Target & Model overall & Frozen prior overall & Unit \\
+Target & Model RMSE & Prior RMSE & \(\Delta\) RMSE & Model MAE & Prior MAE & \(\Delta\) MAE & Unit \\
 \midrule
-Path loss & 1.7692 & 1.8916 & dB \\
-Delay spread & 23.0810 & 23.4494 & ns \\
-Angular spread & 12.5762 & 13.8178 & $^\circ$ \\
+Path loss & 1.6519 & 1.9383 & -0.2865 & 0.9298 & 1.2319 & -0.3020 & dB \\
+Delay spread & 26.5570 & 28.1023 & -1.5453 & 7.9897 & 7.3033 & +0.6864 & ns \\
+Angular spread & 11.3854 & 13.7416 & -2.3562 & 5.0088 & 4.9890 & +0.0198 & \(^{\circ}\) \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{table}[H]
+\centering
+\caption{Final Try 80 test RMSE separated by LoS and NLoS pixels. The test
+cities are unseen during training.}
+\label{tab:try80_final_test_los_nlos}
+\scriptsize
+\begin{tabular}{llrrr}
+\toprule
+Target & Scope & Model RMSE & Prior RMSE & \(\Delta\) RMSE \\
+\midrule
+Path loss & LoS & 1.4675 & 1.7519 & -0.2844 \\
+Path loss & NLoS & 3.1482 & 3.5143 & -0.3661 \\
+Delay spread & LoS & 25.4419 & 27.4851 & -2.0432 \\
+Delay spread & NLoS & 29.2045 & 29.6157 & -0.4112 \\
+Angular spread & LoS & 12.3510 & 15.2818 & -2.9308 \\
+Angular spread & NLoS & 8.4424 & 8.6614 & -0.2191 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The key point is generalisation: the test cities are completely unseen, yet
+the residual model reduces RMSE for path loss, delay spread, and angular spread
+simultaneously. Path loss is the cleanest case because both RMSE and MAE improve
+in train, validation, test, and all-city reporting. Angular spread improves
+RMSE strongly, while MAE is practically neutral overall; on the unseen test
+split the MAE change is only \(+0.02^\circ\), and the LoS MAE even improves.
+
+The validation metrics stored inside \texttt{best\_model.pt} are not the final
+test claim. They are the checkpoint-selection metrics computed during training
+on the validation cities. As a sanity check, re-running the external evaluator
+on the validation split reproduces the stored checkpoint values up to numerical
+rounding; the same checkpoint is then evaluated on the separate test cities.
+Table~\ref{tab:try80_val_test_sanity} reports the two scopes side by side.
+
+\begin{table}[H]
+\centering
+\caption{Try 80 validation-versus-test sanity check for the same
+\texttt{best\_model.pt} checkpoint. The validation row matches the metrics
+stored in the checkpoint history; the test row is the final unseen-city
+generalisation result.}
+\label{tab:try80_val_test_sanity}
+\scriptsize
+\begin{tabularx}{\textwidth}{lrrrrr>{\raggedright\arraybackslash}X}
+\toprule
+Split & Samples & PL RMSE & DS RMSE & DS prior RMSE & AS RMSE & Meaning \\
+\midrule
+Validation & 2750 & 1.6157 & 22.1061 & 23.4494 & 11.3782 & Stored in the checkpoint history and used to select \texttt{best\_model.pt}. \\
+Test & 2590 & 1.6519 & 26.5570 & 28.1023 & 11.3854 & Separate 14-city holdout; this is the thesis generalisation number. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Try 80 pixel-weighted RMSE by split, compared with the frozen
+Try 78/79 priors. The test split is the unseen-city generalisation claim;
+the all row aggregates train, validation, and test together.}
+\label{tab:try80_split_absolute}
+\scriptsize
+\begin{tabular}{lrrrrrrr}
+\toprule
+Split & Samples & PL model & PL prior & DS model & DS prior & AS model & AS prior \\
+\midrule
+Train & 10840 & 1.7111 & 2.0006 & 28.7929 & 30.8086 & 11.5975 & 13.9553 \\
+Validation & 2750 & 1.6157 & 1.8916 & 22.1061 & 23.4494 & 11.3782 & 13.8178 \\
+Test & 2590 & 1.6519 & 1.9383 & 26.5570 & 28.1023 & 11.3854 & 13.7416 \\
+All & 16180 & 1.6845 & 1.9711 & 27.4121 & 29.2527 & 11.5256 & 13.8966 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The larger delay-spread gap between validation and test is mainly a city-mix
+effect, not a change of model or metric. The frozen Try~79 delay-spread prior
+also worsens from \SI{23.45}{ns} RMSE on validation to \SI{28.10}{ns} on test,
+so the test cities contain harder delay-spread distributions before the neural
+residual is applied. In particular, Kuala Lumpur contributes only 13.2\% of
+the valid delay-spread test pixels but 36.2\% of the test delay-spread squared
+error, with \SI{44.00}{ns} model RMSE and \SI{46.93}{ns} prior RMSE. This is
+why the final test delay-spread RMSE is higher than the value visible in the
+checkpoint validation summary, while still improving over the prior.
+
+Delay spread is the only output where RMSE and MAE move in opposite directions.
+This is not a contradiction. RMSE weights large high-delay errors
+quadratically, so removing sparse high-delay hallucinations in the frozen prior
+and in the quantised target maps can improve RMSE while many small pixel-level
+shifts slightly increase MAE. The test MAE change is \(+0.69\) ns, and the
+all-city change is \(+0.62\) ns; at this scale it does not change the practical
+interpretation of the maps, whereas the RMSE reduction shows that the large
+delay-spread artefacts are less severe.
+
+\begin{table}[H]
+\centering
+\caption{Try 80 improvement over the frozen priors by split. Values are
+pixel-weighted \(\Delta=\mathrm{model}-\mathrm{prior}\); negative values are
+better.}
+\label{tab:try80_split_delta}
+\scriptsize
+\begin{tabular}{lrrrrrrr}
+\toprule
+Split & Samples & PL \(\Delta\)RMSE & PL \(\Delta\)MAE & DS \(\Delta\)RMSE & DS \(\Delta\)MAE & AS \(\Delta\)RMSE & AS \(\Delta\)MAE \\
+\midrule
+Train & 10840 & -0.2895 & -0.3030 & -2.0157 & +0.6135 & -2.3578 & +0.0108 \\
+Validation & 2750 & -0.2758 & -0.2865 & -1.3433 & +0.5869 & -2.4396 & -0.0413 \\
+Test & 2590 & -0.2865 & -0.3020 & -1.5453 & +0.6864 & -2.3562 & +0.0198 \\
+All & 16180 & -0.2867 & -0.3000 & -1.8406 & +0.6214 & -2.3710 & +0.0036 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Try 80 LoS/NLoS RMSE improvement by split. Values are
+pixel-weighted \(\Delta=\mathrm{model}-\mathrm{prior}\); negative values are
+better.}
+\label{tab:try80_los_nlos_split_delta}
+\scriptsize
+\begin{tabular}{llrrr}
+\toprule
+Split & Scope & PL \(\Delta\)RMSE & DS \(\Delta\)RMSE & AS \(\Delta\)RMSE \\
+\midrule
+Train & LoS & -0.2880 & -2.7919 & -3.0669 \\
+Train & NLoS & -0.3640 & -0.4813 & -0.2537 \\
+Validation & LoS & -0.2781 & -1.7935 & -3.0430 \\
+Validation & NLoS & -0.3103 & -0.3452 & -0.1880 \\
+Test & LoS & -0.2844 & -2.0432 & -2.9308 \\
+Test & NLoS & -0.3661 & -0.4112 & -0.2191 \\
+All & LoS & -0.2856 & -2.5127 & -3.0385 \\
+All & NLoS & -0.3565 & -0.4525 & -0.2388 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{All-city Try 80 deltas by prior subexpert. Each city contributes to
+one of the nine morphology--antenna prior experts, and the table shows that
+the improvement is not concentrated in a single easy subexpert.}
+\label{tab:try80_subexpert_delta}
+\scriptsize
+\begin{tabular}{lrrrrrrr}
+\toprule
+Subexpert & Samples & PL \(\Delta\)RMSE & PL \(\Delta\)MAE & DS \(\Delta\)RMSE & DS \(\Delta\)MAE & AS \(\Delta\)RMSE & AS \(\Delta\)MAE \\
+\midrule
+\texttt{dense|high\_ant} & 1957 & -0.3602 & -0.3674 & -0.6473 & +0.0638 & -2.6405 & -0.0905 \\
+\texttt{dense|low\_ant} & 2018 & -0.3359 & -0.3303 & -1.5779 & +0.5463 & -2.3994 & -0.1867 \\
+\texttt{dense|mid\_ant} & 2055 & -0.3288 & -0.3223 & -1.4074 & +0.6147 & -2.8587 & -0.2663 \\
+\texttt{mixed|high\_ant} & 2156 & -0.2931 & -0.3308 & -0.6794 & +0.2382 & -2.3186 & +0.0025 \\
+\texttt{mixed|low\_ant} & 2060 & -0.2745 & -0.2514 & -2.8379 & +0.8299 & -2.5845 & -0.0666 \\
+\texttt{mixed|mid\_ant} & 2094 & -0.2781 & -0.2824 & -2.0522 & +0.9436 & -2.8200 & -0.0366 \\
+\texttt{open|high\_ant} & 1272 & -0.2721 & -0.3278 & -0.5428 & +0.1224 & -1.2874 & +0.0567 \\
+\texttt{open|low\_ant} & 1269 & -0.2363 & -0.2094 & -3.1170 & +1.2934 & -2.0271 & +0.4146 \\
+\texttt{open|mid\_ant} & 1299 & -0.2941 & -0.3062 & -1.5789 & +0.8869 & -1.7804 & +0.2568 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection*{Target vs final Try 80 result}
+
+The final checkpoint clears the original numerical targets on the unseen-city
+test split. Figure~\ref{fig:try80_test_objectives} compares those targets with
+the global pixel-weighted Try~80 test scores: \SI{1.65}{dB} for path loss,
+\SI{26.56}{ns} for delay spread, and \(11.39^\circ\) for angular spread. The
+same target check also holds on validation and on the all-city aggregation.
+Even taking the worst subexpert separately for each output, the test result is
+still better than required: \SI{2.66}{dB}, \SI{36.89}{ns}, and \(14.06^\circ\).
+
+\begin{figure}[H]
+\centering
+\pgfplotsset{
+  targetcompare/.style={
+    ybar, width=\linewidth, height=5.4cm, ymin=0,
+    bar width=18pt,
+    symbolic x coords={Target,Try 80},
+    xtick={Target,Try 80},
+    xticklabel style={font=\small},
+    tick label style={font=\small},
+    title style={font=\bfseries\small},
+    enlarge x limits=0.35,
+    ymajorgrids=true,
+    nodes near coords,
+    every node near coord/.append style={font=\scriptsize},
+  }
+}
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[targetcompare, title={Path loss}, ylabel={RMSE (dB)}, ymax=5.6]
+\addplot[fill=gray!25, draw=black, bar shift=0pt] coordinates {(Target,5.00)};
+\addplot[fill=blue!55, draw=black, bar shift=0pt] coordinates {(Try 80,1.65)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[targetcompare, title={Delay spread}, ylabel={RMSE (ns)}, ymax=55]
+\addplot[fill=gray!25, draw=black, bar shift=0pt] coordinates {(Target,50.00)};
+\addplot[fill=orange!70, draw=black, bar shift=0pt] coordinates {(Try 80,26.56)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[targetcompare, title={Angular spread}, ylabel={RMSE ($^\circ$)}, ymax=22]
+\addplot[fill=gray!25, draw=black, bar shift=0pt] coordinates {(Target,20.00)};
+\addplot[fill=green!60, draw=black, bar shift=0pt] coordinates {(Try 80,11.39)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\caption{\textbf{TARGET vs Final Result.} Try 80 global test check using
+pixel-weighted RMSE only. The final-result bar is the held-out city test result,
+which remains below the original targets: \SI{5}{dB} for path loss, \SI{50}{ns}
+for delay spread, and \(20^\circ\) for angular spread.}
+\label{fig:try80_test_objectives}
+\end{figure}
 
 \section{Data Visualization}
 
@@ -650,6 +906,118 @@ maps and failed NLoS tails. Early CNN outputs often followed the central radial
 trend but underestimated shadowed regions. Histogram analysis after Try 75 made
 this visible: the model behaved like a single-mode regressor even when the
 target distribution was multi-modal.
+
+\begin{figure}[H]
+\centering
+\pgfplotsset{
+  stagebar/.style={
+    ybar, width=4.2cm, height=5.3cm, ymin=0,
+    enlarge x limits=0.55,
+    bar width=14pt,
+    nodes near coords,
+    nodes near coords style={font=\scriptsize},
+    xticklabel style={rotate=35,anchor=east,font=\scriptsize},
+    title style={font=\small},
+    grid=major,
+  }
+}
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[
+  stagebar,
+  title={Path loss (dB)},
+  ymax=5.0,
+  symbolic x coords={Try76,Try80,Prior},
+  xtick=data,
+  xticklabels={Try\,76,Try\,80,Prior},
+]
+\addplot[fill=blue!55] coordinates {(Try76,4.36) (Try80,1.65) (Prior,1.94)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[
+  stagebar,
+  title={Delay spread (ns)},
+  ymax=34,
+  symbolic x coords={Try77,Try80,Prior},
+  xtick=data,
+  xticklabels={Try\,77,Try\,80,Prior},
+]
+\addplot[fill=orange!70] coordinates {(Try77,30.96) (Try80,26.56) (Prior,28.10)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[
+  stagebar,
+  title={Angular spread ($^\circ$)},
+  ymax=16,
+  symbolic x coords={Try77,Try80,Prior},
+  xtick=data,
+  xticklabels={Try\,77,Try\,80,Prior},
+]
+\addplot[fill=green!60] coordinates {(Try77,11.78) (Try80,11.39) (Prior,13.74)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\caption{Test-set comparison between the distribution-first neural references
+and the final prior-anchored Try 80 checkpoint. The path-loss panel uses global
+pixel-weighted RMSE; Try 77 is shown for the two spread targets.}
+\label{fig:try76_77_80_prior_comparison}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+{\scriptsize Coloured bars are Try 80 and grey bars are the frozen prior.\par}
+\vspace{0.2em}
+\pgfplotsset{
+  splitbar/.style={
+    ybar, width=4.2cm, height=5.3cm, ymin=0,
+    bar width=5pt,
+    enlarge x limits=0.18,
+    symbolic x coords={Train,Val,Test,All},
+    xtick=data,
+    xticklabel style={rotate=35,anchor=east,font=\scriptsize},
+    title style={font=\small},
+    grid=major,
+  }
+}
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[splitbar, title={Path loss (dB)}, ymax=2.3]
+\addplot[fill=blue!55] coordinates {(Train,1.71) (Val,1.62) (Test,1.65) (All,1.68)};
+\addplot[fill=gray!45] coordinates {(Train,2.00) (Val,1.89) (Test,1.94) (All,1.97)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[splitbar, title={Delay spread (ns)}, ymax=34]
+\addplot[fill=orange!70] coordinates {(Train,28.79) (Val,22.11) (Test,26.56) (All,27.41)};
+\addplot[fill=gray!45] coordinates {(Train,30.81) (Val,23.45) (Test,28.10) (All,29.25)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[splitbar, title={Angular spread ($^\circ$)}, ymax=16]
+\addplot[fill=green!60] coordinates {(Train,11.60) (Val,11.38) (Test,11.39) (All,11.53)};
+\addplot[fill=gray!45] coordinates {(Train,13.96) (Val,13.82) (Test,13.74) (All,13.90)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\caption{Try 80 versus the frozen prior across train, validation, unseen test,
+and all-city aggregation. Validation is the checkpoint-selection split; test
+contains cities not seen during training.}
+\label{fig:try80_split_rmse}
+\end{figure}
 
 \begin{figure}[ht]
 \centering
@@ -669,15 +1037,15 @@ target distribution was multi-modal.
 \begin{minipage}{0.31\textwidth}\centering
 \begin{tikzpicture}
 \begin{axis}[barplot, title={Path loss (dB)}, ymax=2.4]
-\addplot[fill=blue!50] coordinates {(model,1.77) (prior,1.89)};
+\addplot[fill=blue!50] coordinates {(model,1.65) (prior,1.94)};
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
 \hfill
 \begin{minipage}{0.31\textwidth}\centering
 \begin{tikzpicture}
-\begin{axis}[barplot, title={Delay spread (ns)}, ymax=27]
-\addplot[fill=orange!70] coordinates {(model,23.08) (prior,23.45)};
+\begin{axis}[barplot, title={Delay spread (ns)}, ymax=32]
+\addplot[fill=orange!70] coordinates {(model,26.56) (prior,28.10)};
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
@@ -685,13 +1053,117 @@ target distribution was multi-modal.
 \begin{minipage}{0.31\textwidth}\centering
 \begin{tikzpicture}
 \begin{axis}[barplot, title={Angular spread ($^\circ$)}, ymax=17]
-\addplot[fill=green!60] coordinates {(model,12.58) (prior,13.82)};
+\addplot[fill=green!60] coordinates {(model,11.39) (prior,13.74)};
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{Current Try 80 validation snapshot against its frozen priors. This
-figure is a placeholder until final test evaluation is complete.}
-\label{fig:try80_val_placeholder}
+\caption{Final Try 80 test RMSE on unseen cities against the frozen priors for
+path loss, delay spread, and angular spread.}
+\label{fig:try80_test_final}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+{\scriptsize Coloured bars are Try 80 and grey bars are the frozen prior.\par}
+\vspace{0.2em}
+\pgfplotsset{
+  regimebar/.style={
+    ybar, width=4.2cm, height=5.2cm, ymin=0,
+    bar width=9pt,
+    enlarge x limits=0.45,
+    symbolic x coords={LoS,NLoS},
+    xtick=data,
+    title style={font=\small},
+    grid=major,
+  }
+}
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[regimebar, title={Path loss (dB)}, ymax=3.9]
+\addplot[fill=blue!55] coordinates {(LoS,1.47) (NLoS,3.15)};
+\addplot[fill=gray!45] coordinates {(LoS,1.75) (NLoS,3.51)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[regimebar, title={Delay spread (ns)}, ymax=32]
+\addplot[fill=orange!70] coordinates {(LoS,25.44) (NLoS,29.20)};
+\addplot[fill=gray!45] coordinates {(LoS,27.49) (NLoS,29.62)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[regimebar, title={Angular spread ($^\circ$)}, ymax=17]
+\addplot[fill=green!60] coordinates {(LoS,12.35) (NLoS,8.44)};
+\addplot[fill=gray!45] coordinates {(LoS,15.28) (NLoS,8.66)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\caption{Final Try 80 test RMSE separated by LoS and NLoS pixels. The model
+improves the frozen prior in both regimes for all three outputs.}
+\label{fig:try80_test_los_nlos}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\pgfplotsset{
+  subexpertdelta/.style={
+    ybar, width=\linewidth, height=5.1cm,
+    bar width=5pt,
+    symbolic x coords={DH,DM,DL,MH,MM,ML,OH,OM,OL},
+    xtick=data,
+    xticklabel style={rotate=55,anchor=east,font=\tiny},
+    tick label style={font=\tiny},
+    title style={font=\small},
+    enlarge x limits=0.08,
+    ymajorgrids=true,
+    ylabel={$\Delta$RMSE},
+  }
+}
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[subexpertdelta, title={Path loss}, ymin=-0.40, ymax=0.05]
+\addplot[fill=blue!55] coordinates {
+  (DH,-0.3602) (DM,-0.3288) (DL,-0.3359)
+  (MH,-0.2931) (MM,-0.2781) (ML,-0.2745)
+  (OH,-0.2721) (OM,-0.2941) (OL,-0.2363)
+};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[subexpertdelta, title={Delay spread}, ymin=-3.4, ymax=0.2]
+\addplot[fill=orange!70] coordinates {
+  (DH,-0.6473) (DM,-1.4074) (DL,-1.5779)
+  (MH,-0.6794) (MM,-2.0522) (ML,-2.8379)
+  (OH,-0.5428) (OM,-1.5789) (OL,-3.1170)
+};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[subexpertdelta, title={Angular spread}, ymin=-3.2, ymax=0.2]
+\addplot[fill=green!60] coordinates {
+  (DH,-2.6405) (DM,-2.8587) (DL,-2.3994)
+  (MH,-2.3186) (MM,-2.8200) (ML,-2.5845)
+  (OH,-1.2874) (OM,-1.7804) (OL,-2.0271)
+};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\caption{All-city Try 80 RMSE deltas by prior subexpert. Negative values mean
+that Try 80 improves the frozen prior. The first letter denotes the morphology
+expert (dense, mixed, open) and the second letter the antenna-height expert
+(high, low, mid).}
+\label{fig:try80_subexpert_delta}
 \end{figure}
 
 Figure~\ref{fig:try80_panel} shows a representative Try 80 validation
@@ -708,24 +1180,12 @@ prior-error row.
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_main_panel.png}
 \caption{Representative Try 80 \(6\times3\) inspection panel for a validation
-sample from the near-final huge checkpoint. Columns: path loss, delay spread,
+diagnostic sample from the final checkpoint. Columns: path loss, delay spread,
 angular spread. Rows: ground truth, frozen prior (Try 78/79), Try 80
 prediction, context / support mask, prior error
 ($\mathrm{Prior}-\mathrm{GT}$), and model correction
 ($\mathrm{Try\,80}-\mathrm{Prior}$).}
 \label{fig:try80_panel}
-\end{figure}
-
-The ongoing Try 80 run also produces a history plot comparing model metrics
-against the frozen priors. It is included only as a training diagnostic until
-the final checkpoint and test split evaluation are frozen.
-
-\begin{figure}[ht]
-\centering
-\includegraphics[width=\textwidth]{img/thesis_figures/try80_history_metrics_vs_prior.png}
-\caption{Try 80 validation history against frozen priors. Placeholder
-diagnostic, not a final test result.}
-\label{fig:try80_history}
 \end{figure}
 
 The qualitative lesson from Try 78 is equally important: LoS path loss in this
@@ -804,16 +1264,13 @@ can be derived by line-of-sight tracing through the building topology. It is
 therefore a deterministic geometric feature and branch key, not extra measured
 radio information unavailable at deployment.
 
-The final Try 80 model also still requires a frozen checkpoint and final test
-evaluation. The values in Table~\ref{tab:try80_placeholder} are validation
-placeholders. They are useful for checking that the joint model is behaving
-reasonably, but the final thesis version should replace them with the completed
-test split report and the corresponding plots.
+The final Try 80 checkpoint is evaluated on one city-holdout split and one
+training seed. This demonstrates generalisation to unseen cities, but not full
+robustness: future work should repeat selection across seeds and add field
+measurements, especially for delay-spread tails where quantised labels make
+sparse high-delay artefacts difficult to interpret.
 
-Finally, the current dataset fixes frequency and simulator assumptions. A
-general outdoor CKM model for deployment would need explicit conditioning on
-carrier frequency, bandwidth, antenna pattern, and possibly environment class.
-The city-holdout protocol already tests extrapolation across urban layouts, but
-a deployable model should also learn controlled adaptation to new environments
-from their geometry instead of relying only on similarity to the training
-cities.
+Finally, the dataset fixes frequency and simulator assumptions. Deployment
+would need conditioning on carrier frequency, bandwidth, antenna pattern, and
+environment class; the city-holdout protocol tests urban layouts, not this
+broader domain adaptation.

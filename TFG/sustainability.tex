@@ -155,8 +155,11 @@ regime-level errors.
 
 The main ethical obligation is honesty about validity. The dataset is simulated
 through ray tracing, so the thesis must not claim real-world deployment
-performance without field measurements. The final Try 80 results are also left
-as placeholders until training finishes and a frozen checkpoint is selected.
+performance without field measurements. The final Try 80 results are reported
+from a single frozen checkpoint on the city-holdout protocol, so the relevant
+caveat is no longer incompleteness but scope: the results show simulator-level
+generalisation to unseen cities, not certified real-world deployment
+performance.
 
 The project aligns with professional engineering ethics by documenting
 assumptions, avoiding data leakage between cities, reporting limitations, and

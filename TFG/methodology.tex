@@ -23,6 +23,32 @@ The training cities are therefore identical to those of the deep-learning
 models; the 30\% test holdout of Try 78/79 corresponds to the union of the
 15\% validation and 15\% test cities used by Try 76, 77, and 80.
 
+\begin{table}[ht]
+\centering
+\scriptsize
+\caption{City-holdout assignment used by Try 76, Try 77, and Try 80.}
+\label{tab:split_city_assignment}
+\begin{tabularx}{\textwidth}{lrrX}
+\toprule
+Split & Samples & Cities & City names \\
+\midrule
+Train & 10840 & 37 & Abidjan, Abu Dhabi, Alexandria, Antigua Guatemala,
+Athens, Bangalore, Bangkok, Bath, Berlin, Bratislava, Brugge, Buenos Aires,
+Canberra, Chefchaouen, Dalian, Hanoi, Ho Chi Minh City, Hyderabad, Kinshasa,
+Leuven, Ljubljana, Luanda, Lyon, Manaus, Minsk, Nagpur, Paris,
+Rio de Janeiro, Santiago, Shanghai, Siem Reap, St.~Louis, Thane, Toledo,
+Valparaiso, Venice, Vienna. \\
+Validation & 2750 & 15 & Bilbao, Chiang Mai, Cleveland, Dhaka, Dubrovnik,
+Fortaleza, Marrakesh, Mexico City, Munich, Nazareth, Nice, Salvador, Segovia,
+Tunis, Victoria. \\
+Test & 2590 & 14 & Barcelona, Beijing, Carcassonne, Copenhagen, Halifax,
+Jaipur, Johannesburg, Key West, Kuala Lumpur, Osaka, Phuket, Pune, Surat,
+Vancouver. \\
+\bottomrule
+\end{tabularx}
+\normalsize
+\end{table}
+
 The receiver mask is:
 \begin{equation}
   m_{\mathrm{ground}}(i,j) =
@@ -156,8 +182,8 @@ Frozen non-DL priors for path loss and spreads, then a joint prior-anchored
 residual model. &
 Try 78 reached \SI{1.9246}{dB} overall path-loss RMSE; Try 79 reached
 \SI{28.10}{ns} and \SI{13.74}{\degree}; Try 80 unifies all three targets. &
-Try 80 still requires a frozen final checkpoint before its test result can be
-reported as the final thesis claim. \\
+The final Try 80 checkpoint improves the frozen priors on the 14-city unseen
+test split for path loss, delay spread, and angular spread. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -809,25 +835,25 @@ loss is a weighted combination of eight terms
  + \lambda_{\mathrm{m}}\mathcal{L}_{\mathrm{mae}},
 \label{eq:try80_total}
 \end{equation}
-with the canonical weights used in the base
-\texttt{try80\_joint\_big.yaml} configuration:
+with task weights applied in the training loop. For the final
+path-loss-finetuned Try~80 checkpoint, the active weights are:
 \[
 \begin{aligned}
 (\lambda_{\mathrm{nll}}, \lambda_{\mathrm{kl}},
  \lambda_{\mathrm{mm}}, \lambda_{\mathrm{a}})
-  &= (1.00, 0.25, 0.10, 0.05),\\
+  &= (0, 0, 0, 0.01),\\
 (\lambda_{\mathrm{g}}, \lambda_{\mathrm{o}},
  \lambda_{\mathrm{r}}, \lambda_{\mathrm{m}})
-  &= (0.10, 0.02, 0.40, 0.10).
+  &= (0.02, 0, 1.00, 0.05),\\
+(w_{\mathrm{PL}}, w_{\mathrm{DS}}, w_{\mathrm{AS}})
+  &= (1.00, 0.25, 0.25).
 \end{aligned}
 \]
 The total loss is
-\(\mathcal{L} = \sum_{t\in\mathcal{T}}\mathcal{L}_t\).
-This is the base \texttt{try80\_joint\_big} setting. The later
-\texttt{try80\_joint\_huge\_relaxed\_residuals} run keeps the same loss
-families but raises the RMSE weight to \(\lambda_{\mathrm{r}}=1.50\), as
-reported in the detailed Try~80 subsection; the two values therefore refer to
-different YAML variants.
+\(\mathcal{L} = \sum_{t\in\mathcal{T}}w_t\mathcal{L}_t\). The implementation
+still defines the NLL, KL, moment and outlier-budget terms, but the final
+fine-tune sets their weights to zero and relies on RMSE/MAE plus the small
+anchor and prior-guard regularisers.
 
 Below, \(y_i\) is the ground-truth pixel value, \(\hat{y}_i\) is the model
 prediction in native units, \(\hat{y}^{(0)}_i\) is the frozen prior
@@ -835,10 +861,10 @@ prediction, \(\mu_k, \sigma_k, \pi_k\) are the \(k\)-th Stage-A GMM
 parameters, \(p_{k,i}\) is the Stage-B soft component assignment at pixel
 \(i\), and the sums run only over valid pixels.
 
-\paragraph{Per-pixel negative log-likelihood.} The main likelihood term.
+\paragraph{Per-pixel negative log-likelihood.} The available likelihood term.
 Stage B predicts a local mean-residual \(\mu_i\) and log-variance
 \(\log\sigma_i^2\) inside a frozen Stage-A mixture, and the loss is the
-Gaussian NLL in the target's transformed space:
+Gaussian NLL in the target's transformed space when its weight is non-zero:
 \begin{equation}
 \mathcal{L}_{\mathrm{nll}} =
  \frac{1}{|M_t|}\sum_{i\in M_t}\left[
@@ -847,7 +873,7 @@ Gaussian NLL in the target's transformed space:
 \label{eq:try80_nll_summary}
 \end{equation}
 
-\paragraph{Stage-A distribution KL.} Keeps the per-sample GMM predicted by
+\paragraph{Stage-A distribution KL.} When active, keeps the per-sample GMM predicted by
 Stage A close to the empirical target histogram inside the same sample. Let
 \(p_k\) be the Stage-A mixture weights, \(\bar\pi_k\) be the empirical soft
 assignment of target pixels to each component, and \(\bar\delta_k\) be the
@@ -864,7 +890,7 @@ per-component mean shift; the loss is
 with \(\varepsilon=10^{-6}\) and a small weight \(\beta\) that penalises
 unrealistic per-component shifts.
 
-\paragraph{Moment matching.} Prevents the backbone from drifting to the right
+\paragraph{Moment matching.} When active, prevents the backbone from drifting to the right
 mean but wrong variance:
 \begin{equation}
 \mathcal{L}_{\mathrm{mm}} =
@@ -889,11 +915,11 @@ model from being systematically worse than the frozen prior:
 \label{eq:try80_guard}
 \end{equation}
 
-\paragraph{Outlier budget.} Caps the total probability mass assigned to the
+\paragraph{Outlier budget.} When active, caps the total probability mass assigned to the
 tail component above a soft-assignment threshold \(\tau = 0.60\):
 \begin{equation}
 \mathcal{L}_{\mathrm{out}} =
- \left(\frac{1}{|M_t|}\sum_{i\in M_t}\mathbb{1}\!\left[p_{K,i}>\tau\right]
+ \left(\frac{1}{|M_t|}\sum_{i\in M_t}\mathbf{1}\!\left[p_{K,i}>\tau\right]
  - \beta_{\mathrm{out}}\right)_+^2,
 \label{eq:try80_out}
 \end{equation}
@@ -910,16 +936,17 @@ output to the ground truth:
  \frac{1}{|M_t|}\sum_{i\in M_t}|\hat{y}_i - y_i|.
 \label{eq:try80_rmse_mae_summary}
 \end{equation}
-\(\mathcal{L}_{\mathrm{rmse}}\) is the dominant supervised term in the base
-\texttt{try80\_joint\_big} configuration, where
-\(\lambda_{\mathrm{r}}=0.40\), consistent with the thesis performance targets.
+\(\mathcal{L}_{\mathrm{rmse}}\) is the dominant supervised term in the final
+path-loss-finetuned configuration, where
+\(\lambda_{\mathrm{r}}=1.00\).
 
 Tries 67--71 used a different loss bundle centred on a main masked MSE, a
 multi-scale path-loss auxiliary, a masked Laplacian ``PDE'' residual, and an
 NLoS focus term. The distribution-first tries (\texttt{Try 76},
-\texttt{Try 77}) drop the multi-scale auxiliary and the Laplacian residual in
-favour of the GMM NLL and KL terms above, because the main failure they
-address is distributional rather than structural.
+\texttt{Try 77}) drop the multi-scale auxiliary and the Laplacian residual
+because the main failure they address is distributional rather than
+structural. Try~80 keeps the GMM residual head, but the final fine-tuned
+checkpoint is selected with a deterministic, RMSE-dominant objective.
 
 \section{Training hyperparameters}
 \label{sec:hyperparams}
@@ -934,9 +961,8 @@ lessons from them, not the training stack.
 \begin{table}[H]
 \centering
 \caption{Training configuration of the final pipeline. Unless otherwise
-stated, all runs use AdamW, \texttt{ReduceLROnPlateau} with patience 15--20,
-image size $513\times513$, batch size 1 per GPU, and gradient accumulation
-over 8 steps.}
+stated, all runs use AdamW, image size $513\times513$, batch size 1 per GPU,
+and gradient accumulation over 8 steps.}
 \label{tab:hyperparams}
 \scriptsize
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.17\textwidth}
@@ -948,19 +974,19 @@ Config & Try 76 / 77 experts & Try 80 joint & Try 67--71 (historical) \\
 \midrule
 Input channels   & topology, LoS, NLoS, ground mask (4 + scalar height) & topology + Try 78/79 priors + masks (9) & topology, LoS, distance, formula prior, knife-edge (5--6) \\
 Optimizer        & AdamW ($\beta_1{=}0.9, \beta_2{=}0.999$) & AdamW & AdamW \\
-Learning rate    & \num{3e-4} & \num{2e-4} & \num{1e-3} to \num{3e-4} (cosine or plateau) \\
+Learning rate    & \num{3e-4} & \num{5e-5} & \num{1e-3} to \num{3e-4} (cosine or plateau) \\
 Weight decay     & 0.01 & 0.01 & 0.015--0.030 \\
 Batch size       & 1 & 1 & 1 \\
 Grad accumulation & 8 & 8 & 16 (68) / 8 (69) \\
-Warmup epochs    & 2 & 2 & 2--5 \\
-Epochs           & 80--120 & 120 & 80--150 \\
-Scheduler        & ReduceLROnPlateau, patience 15 & ReduceLROnPlateau, patience 20 & ReduceLROnPlateau (post-April~2025 patch) \\
+Warmup epochs    & 2 & 1 & 2--5 \\
+Epochs           & 80--120 & 40 fine-tune epochs & 80--150 \\
+Scheduler        & ReduceLROnPlateau, patience 15 & cosine \texttt{LambdaLR} after warmup & ReduceLROnPlateau (post-April~2025 patch) \\
 SWA              & Off & Off & On, start fraction 0.60 \\
 Label noise      & Off & Off & On, $\sigma_{\mathrm{dB}}=0.5$ \\
 CutMix           & Off & Off (D4 augmentation only) & On, $p=0.25$--$0.45$, FiLM-safe \\
 EMA weights      & Off & Off & On, decay 0.9975 \\
 Dropout          & 0.10 (decoder only) & 0.10 (decoder only) & 0.12 (69) -- 0.20 (67) \\
-Height encoding  & Sinusoidal FiLM, 16 log-freqs over $[12,478]$ m & Sinusoidal FiLM, 2 depths & Sinusoidal FiLM, 8 injection points \\
+Height encoding  & Sinusoidal FiLM, 16 log-freqs over $[12,478]$ m & Sinusoidal FiLM at encoder and decoder scales & Sinusoidal FiLM, 8 injection points \\
 GMM components $K$ & 5 (Stage A, path/delay), spike+exp (angular) & 3 (residual head on anchored output) & --- (MSE/Huber heads) \\
 \bottomrule
 \end{tabularx}
@@ -973,7 +999,7 @@ becomes a plain AdamW + ReduceLROnPlateau loop. This is consistent with the
 distribution-first philosophy: once the output head and target distribution
 are correct, the classical training-stabilisation tricks become unnecessary.
 Second, Try~80 uses a smaller learning rate than the Try~76/Try~77 experts
-(\num{2e-4} vs \num{3e-4}) because it is fine-tuning a residual head whose
+(\num{5e-5} vs \num{3e-4}) because it is fine-tuning a residual head whose
 inputs already include the strong Try~78/Try~79 priors; pushing the learning
 rate higher pulls the residual head away from the anchors faster than
 \texttt{prior\_guard} can catch it.
@@ -986,11 +1012,9 @@ runs are logged as JSON under each try's \texttt{outputs/} directory and can
 be plotted by running \texttt{scripts/plot\_history.py} inside the
 corresponding try folder. The repository also contains pre-rendered panels
 with the Stage-A distribution diagnostics for the Try~76 experts under
-\texttt{TFGSeventySixthTry76/docs/}, and the main Try~80 history plot is
-reproduced in the results chapter as
-Figure~\ref{fig:try80_history}. Because the final Try~80 checkpoint is not
-yet frozen, curves are included only as training diagnostics and not as
-finalised loss plots.
+\texttt{TFGSeventySixthTry76/docs/}. The Try~80 final claim is reported from
+the frozen checkpoint on the city-holdout validation and test splits rather
+than from the raw training-curve panels.
 
 
 

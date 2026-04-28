@@ -142,14 +142,17 @@ Input channels & 9: topology, LoS mask, NLoS mask, ground mask, combined
 path-loss prior, LoS path-loss prior, NLoS path-loss prior, delay-spread prior,
 angular-spread prior. \\
 Height conditioning & Sinusoidal embedding with FiLM modulation. \\
-Backbone & Four-scale GroupNorm encoder-decoder, base width 96. \\
+Backbone & Four-scale GroupNorm encoder-decoder, base width 128 and
+condition dimension 160. \\
 Residual distribution & Three mixture components per task/region head. \\
-Residual limits & Path loss: 2 dB LoS and 4 dB NLoS; delay spread: 30 ns LoS
-and 40 ns NLoS; angular spread: 9 degrees LoS and 13 degrees NLoS. \\
-Main losses & Map NLL, distribution KL, moment matching, anchor,
-prior-guard, outlier budget, RMSE, and MAE. \\
-Training & AdamW, learning rate \(2\times10^{-4}\), weight decay 0.01,
-120 epochs, batch size 1, gradient accumulation 8. \\
+Residual limits & Path loss: 7 dB LoS and 25 dB NLoS; delay spread: 20 ns LoS
+and 20 ns NLoS; angular spread: 17 degrees LoS and 15 degrees NLoS. \\
+Main losses & Final fine-tune weights: RMSE 1.0, MAE 0.05, anchor 0.01,
+prior-guard 0.02; NLL, KL, moment matching, and outlier budget are present in
+the implementation but have zero weight in the final resolved configuration. \\
+Training & AdamW, learning rate \(5\times10^{-5}\), weight decay 0.01,
+40 fine-tune epochs, batch size 1, gradient accumulation 8, cosine
+\texttt{LambdaLR} after one warmup epoch. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -209,7 +212,7 @@ the chronological and reproducibility context behind those choices.
 The qualitative appendix is generated with
 \texttt{TFGpractice/TFGEightiethTry80/scripts/}\newline
 \texttt{generate\_try80\_appendix\_panels.py}. It uses the validation split,
-the near-final huge path-loss-finetuned checkpoint, DirectML inference, and
+the final huge path-loss-finetuned checkpoint, DirectML inference, and
 the frozen Try 78/79 priors. The script selects one validation
 sample for each macro expert
 \((\mathrm{open},\mathrm{mixed},\mathrm{dense})\times
@@ -253,7 +256,7 @@ model-correction map is the direct qualitative evidence for that claim.
 \begin{table}[H]
 \centering
 \caption{Try 80 appendix panels generated from validation samples with the
-near-final huge checkpoint.}
+final huge checkpoint.}
 \label{tab:try80_appendix_panels}
 \footnotesize
 \begin{tabular}{llll}
@@ -699,7 +702,7 @@ After resampling, the array is fitted to the \(513\times513\) model grid:
 The receiver-valid ground mask is derived after this fitting step:
 \[
   m_{\mathrm{ground}}(x) =
-  \mathbb{1}\{h_{\mathrm{topology}}(x) \le 10^{-6}\}.
+  \mathbf{1}\{h_{\mathrm{topology}}(x) \le 10^{-6}\}.
 \]
 Only zero-height pixels are treated as receiver locations. Building pixels and
 padded outside pixels are excluded from both LoS and NLoS support.
@@ -844,11 +847,3 @@ For batch export, disabling \texttt{Save visual map PNGs} avoids Matplotlib
 rendering and keeps only numeric arrays, masks, and metadata. Disabling
 \texttt{Run Try 80 model} is useful when the goal is only to validate
 topologies, masks, and prior generation.
-
-\chapter{Final-Result Placeholder}
-
-The final Try 80 checkpoint is not yet frozen. Therefore, the validation values
-reported in the main chapters must be replaced by final test-split results
-before submission. The thesis should keep the current wording until that
-evaluation is complete: Try 80 validation results are training diagnostics, not
-final scientific claims.
