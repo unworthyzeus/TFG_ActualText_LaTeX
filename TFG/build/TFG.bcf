@@ -2453,39 +2453,30 @@
     <bcf:citekey order="96" intorder="1">perez2018film</bcf:citekey>
     <bcf:citekey order="97" intorder="1">dhariwal2021diffusion</bcf:citekey>
     <bcf:citekey order="98" intorder="1">rappaport</bcf:citekey>
-    <bcf:citekey order="99" intorder="1">rappaport</bcf:citekey>
-    <bcf:citekey order="100" intorder="1">tr38901</bcf:citekey>
-    <bcf:citekey order="101" intorder="1">rappaport</bcf:citekey>
-    <bcf:citekey order="102" intorder="1">tr38901</bcf:citekey>
-    <bcf:citekey order="103" intorder="1">tr38901</bcf:citekey>
-    <bcf:citekey order="104" intorder="1">winner2</bcf:citekey>
-    <bcf:citekey order="105" intorder="1">cai2019</bcf:citekey>
-    <bcf:citekey order="105" intorder="2">izydorczyk2019</bcf:citekey>
-    <bcf:citekey order="106" intorder="1">rappaport</bcf:citekey>
-    <bcf:citekey order="107" intorder="1">goldsmith</bcf:citekey>
-    <bcf:citekey order="108" intorder="1">rappaport</bcf:citekey>
-    <bcf:citekey order="108" intorder="2">goldsmith</bcf:citekey>
-    <bcf:citekey order="109" intorder="1">cost231</bcf:citekey>
-    <bcf:citekey order="110" intorder="1">cost231</bcf:citekey>
+    <bcf:citekey order="99" intorder="1">goldsmith</bcf:citekey>
+    <bcf:citekey order="100" intorder="1">rappaport</bcf:citekey>
+    <bcf:citekey order="100" intorder="2">goldsmith</bcf:citekey>
+    <bcf:citekey order="101" intorder="1">cost231</bcf:citekey>
+    <bcf:citekey order="102" intorder="1">cost231</bcf:citekey>
+    <bcf:citekey order="103" intorder="1">khawaja_survey</bcf:citekey>
+    <bcf:citekey order="103" intorder="2">tr38901</bcf:citekey>
+    <bcf:citekey order="104" intorder="1">khawaja_survey</bcf:citekey>
+    <bcf:citekey order="104" intorder="2">wocc2021</bcf:citekey>
+    <bcf:citekey order="105" intorder="1">tr38901</bcf:citekey>
+    <bcf:citekey order="110" intorder="1">rappaport</bcf:citekey>
+    <bcf:citekey order="110" intorder="2">cost231</bcf:citekey>
     <bcf:citekey order="111" intorder="1">khawaja_survey</bcf:citekey>
     <bcf:citekey order="111" intorder="2">tr38901</bcf:citekey>
-    <bcf:citekey order="112" intorder="1">khawaja_survey</bcf:citekey>
-    <bcf:citekey order="112" intorder="2">wocc2021</bcf:citekey>
+    <bcf:citekey order="112" intorder="1">rappaport</bcf:citekey>
+    <bcf:citekey order="112" intorder="2">cost231</bcf:citekey>
     <bcf:citekey order="113" intorder="1">tr38901</bcf:citekey>
-    <bcf:citekey order="118" intorder="1">rappaport</bcf:citekey>
-    <bcf:citekey order="118" intorder="2">cost231</bcf:citekey>
-    <bcf:citekey order="119" intorder="1">khawaja_survey</bcf:citekey>
-    <bcf:citekey order="119" intorder="2">tr38901</bcf:citekey>
-    <bcf:citekey order="120" intorder="1">rappaport</bcf:citekey>
-    <bcf:citekey order="120" intorder="2">cost231</bcf:citekey>
-    <bcf:citekey order="121" intorder="1">tr38901</bcf:citekey>
-    <bcf:citekey order="121" intorder="2">winner2</bcf:citekey>
-    <bcf:citekey order="122" intorder="1">tr38901</bcf:citekey>
-    <bcf:citekey order="122" intorder="2">winner2</bcf:citekey>
-    <bcf:citekey order="123" intorder="1">cai2019</bcf:citekey>
-    <bcf:citekey order="123" intorder="2">izydorczyk2019</bcf:citekey>
-    <bcf:citekey order="126" intorder="1">khawaja_survey</bcf:citekey>
-    <bcf:citekey order="126" intorder="2">tr38901</bcf:citekey>
+    <bcf:citekey order="113" intorder="2">winner2</bcf:citekey>
+    <bcf:citekey order="114" intorder="1">tr38901</bcf:citekey>
+    <bcf:citekey order="114" intorder="2">winner2</bcf:citekey>
+    <bcf:citekey order="115" intorder="1">cai2019</bcf:citekey>
+    <bcf:citekey order="115" intorder="2">izydorczyk2019</bcf:citekey>
+    <bcf:citekey order="118" intorder="1">khawaja_survey</bcf:citekey>
+    <bcf:citekey order="118" intorder="2">tr38901</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nyt">

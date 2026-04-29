@@ -2,11 +2,12 @@
 \label{chap:results}
 
 This chapter reports the main quantitative and qualitative outcomes of the
-project. The headline numbers now include the final frozen Try~80 checkpoint
-evaluated on the same city-holdout test split used by the Try~79 spread
-priors: 2590 samples from 14 unseen cities. Try~78 remains documented under
-its 30\% analytic-prior evaluation holdout, while Try~80 is reported as the
-final prior-anchored residual model over the three outputs: path loss, delay
+project. The headline numbers now include the final frozen residual GMM-head
+checkpoint evaluated on the same city-holdout test split used by the calibrated
+spread priors: 2590 samples from 14 unseen cities. The path-loss prior remains
+documented under its 30\% analytic-prior evaluation holdout, while the final
+model is reported as the
+final prior-anchored residual GMM-head model over the three outputs: path loss, delay
 spread, and angular spread.
 
 \section{Experiments and Tests}
@@ -19,37 +20,42 @@ changed during the project; they document why the next stage was necessary.
 \centering
 \caption{Representative experimental milestones.}
 \label{tab:timeline_results}
-\begin{tabularx}{\textwidth}{p{2.2cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
+\begingroup
+\footnotesize
+\renewcommand{\arraystretch}{1.05}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.65cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
 \toprule
-Attempt family & Main lesson & Representative result \\
+Experiment family & Main lesson & Representative result \\
 \midrule
-Try 1--22   & U-Net/cGAN and decoder fixes; cGAN did not solve physical error. & Try 22 became the clean pre-prior baseline. \\
-Try 33--40  & Ground-only masking became mandatory. & Building pixels excluded from loss and metrics. \\
-Try 41--50  & Prior plus residual helped LoS but NLoS remained dominant. & Try 42: \SI{19.78}{dB} overall, \SI{3.86}{dB} LoS, \SI{34.47}{dB} NLoS. \\
-Try 66      & PMHHNet synthesis with six experts and physical channels. & \SI{9.41}{dB} overall, \SI{3.75}{dB} LoS, \SI{31.48}{dB} NLoS. \\
-Try 76      & Distribution-first path-loss modelling. & NLoS pixel-weighted RMSE $\approx$\,\SI{3.34}{dB}. \\
-Try 78      & Non-DL calibrated path-loss prior. & \SI{1.92}{dB} overall, \SI{1.75}{dB} LoS, \SI{3.40}{dB} NLoS. \\
-Try 79      & Non-DL calibrated spread priors. & \SI{28.10}{ns} delay; \SI{13.74}{\degree} angular. \\
-Try 80      & Joint prior-anchored model. & Final test: \SI{1.65}{dB} path loss, \SI{26.56}{ns} delay spread, \SI{11.39}{\degree} angular spread; RMSE improves over the frozen priors on all three outputs. \\
+Early U-Net family   & U-Net/cGAN and decoder fixes; cGAN did not solve physical error. & The combined decoder/multiscale run became the clean pre-prior baseline. \\
+Masked-evaluation reset  & Ground-only masking became mandatory. & Building pixels excluded from loss and metrics. \\
+Prior-residual phase  & Prior plus residual helped LoS but NLoS remained dominant. & PMNet residual branch: \SI{19.78}{dB} overall, \SI{3.86}{dB} LoS, \SI{34.47}{dB} NLoS. \\
+PMHHNet reference      & PMHHNet synthesis with six experts and physical channels. & \SI{9.41}{dB} overall, \SI{3.75}{dB} LoS, \SI{31.48}{dB} NLoS. \\
+Distribution-first GMM      & Distribution-first path-loss modelling. & NLoS pixel-weighted RMSE $\approx$\,\SI{3.34}{dB}. \\
+Final path-loss prior      & ML-calibrated path-loss prior. & \SI{1.92}{dB} overall, \SI{1.75}{dB} LoS, \SI{3.40}{dB} NLoS. \\
+Final spread priors      & ML-calibrated spread priors. & \SI{28.10}{ns} delay; \SI{13.74}{\degree} angular. \\
+Final residual GMM-head model      & Joint prior-anchored residual GMM-head model. & Final test: \SI{1.65}{dB} path loss, \SI{26.56}{ns} delay spread, \SI{11.39}{\degree} angular spread; RMSE improves over the frozen priors on all three outputs. \\
 \bottomrule
 \end{tabularx}
+\endgroup
 \end{table}
 
-Try 78 is the clearest path-loss breakthrough. The enhanced two-ray LoS model
+The final path-loss prior is the clearest path-loss breakthrough. The enhanced two-ray LoS model
 reduced LoS RMSE from roughly \SI{3.95}{dB} with FSPL to
 \SI{1.75}{dB}. The final hybrid prior reached \SI{1.9246}{dB} overall under the
 pixel-weighted metric.
 
-\subsection{Try 78 LoS prior progression}
+\subsection{LoS path-loss prior progression}
 
-The LoS branch of Try 78 was developed as a short waterfall of three
+The LoS branch of the final path-loss prior was developed as a short waterfall of three
 increasingly physical models fitted on the same city-holdout split, so the gain
 from each modelling choice can be isolated
 (Table~\ref{tab:try78_los_waterfall}).
 
 \begin{table}[H]
 \centering
-\caption{Try 78 LoS path-loss progression: three priors evaluated on the same
+\caption{LoS path-loss prior progression: three priors evaluated on the same
 30\% city-holdout evaluation set (pixel-weighted RMSE).}
 \label{tab:try78_los_waterfall}
 \begin{tabular}{lcc}
@@ -73,7 +79,7 @@ dataset contains a visible ground-reflection interference pattern, because the
 radial-residual model cannot reproduce the oscillatory ring structure with a
 purely monotonic function of distance. The two-ray model is therefore not just
 a better fit numerically; it is a physically motivated explanation of the
-dominant LoS residual shape in CKM, and it is why Try 80 uses the two-ray
+dominant LoS residual shape in CKM, and it is why the final model uses the two-ray
 output directly as a frozen anchor rather than re-learning it from pixels.
 
 \section{RMSE evolution and interpretation}
@@ -81,11 +87,11 @@ output directly as a frozen anchor rather than re-learning it from pixels.
 The RMSE history should be read as a sequence of increasingly strict
 experiments, not as a perfectly homogeneous leaderboard. The dataset changed,
 the building-mask rule became stricter after the early experiments, and later
-tries used city-holdout discipline more consistently. Nevertheless, the
+runs used city-holdout discipline more consistently. Nevertheless, the
 representative values in Table~\ref{tab:rmse_evolution} show the real
 direction of the project: from direct image regression, to prior-guided
-residual learning, to frozen calibrated priors and finally to the joint Try 80
-model.
+residual learning, to frozen calibrated priors and finally to the joint final
+residual GMM-head model.
 
 \begin{table}[H]
 \centering
@@ -96,45 +102,45 @@ not to claim every row is directly comparable.}
 \small
 \setlength{\tabcolsep}{3pt}
 \begin{tabularx}{\textwidth}{@{}
-  >{\raggedright\arraybackslash}p{1.9cm}
+  >{\raggedright\arraybackslash}p{2.2cm}
   >{\raggedright\arraybackslash}p{2.6cm}
   >{\raggedright\arraybackslash}p{3.0cm}
   >{\raggedright\arraybackslash}X
 @{}}
 \toprule
-Attempt & Target / region & RMSE & Interpretation \\
+Milestone & Target / region & RMSE & Interpretation \\
 \midrule
-Try 20 & Path loss & \(\approx 17.40\) dB & Bilinear decoder alone reduced artifacts but did not solve global propagation. \\
-Try 21 & Path loss & \(\approx 17.06\) dB & Multiscale supervision helped the large-scale field. \\
-Try 22 & Path loss & \(\approx 16.72\) dB & Best clean pre-prior baseline in the early U-Net family. \\
-Try 41 prior & Path loss & \(\approx 67.23\) dB & Raw physical prior was far too crude without calibration. \\
-Try 41 calibrated prior & Path loss & \(\approx 24.16\) dB & Regime-aware train-only calibration made the prior useful but incomplete. \\
-Try 42 & Path loss & \(\approx 19.78\) dB & PMNet-style residual learning improved over prior-only calibration. \\
-Try 49 stage 1 & Path loss & \(\approx 18.87\) dB & Prior-confidence and robust loss helped, but tail errors persisted. \\
-Try 66 & Path loss overall & 9.41 dB & PMHHNet consolidated the physical-channel and expert approach. \\
-Try 66 & Path loss NLoS & 31.48 dB & The headline bottleneck was no longer global; it was NLoS tail failure. \\
-Try 76 & Path loss NLoS & \(\approx 3.34\) dB & Distribution-first modelling directly attacked NLoS multi-modality. \\
-Try 78 & Path loss overall & 1.9246 dB & Calibrated non-DL prior became the strongest path-loss baseline. \\
-Try 79 & Delay spread overall & 28.10 ns & Log-domain ridge calibration met the original 50 ns project target. \\
-Try 79 & Angular spread overall & \(13.74^\circ\) & Regime-wise calibration met the original 20 degree target. \\
-Try 80 final test & Joint outputs & 1.6519 dB PL; 26.5570 ns DS; \(11.3854^\circ\) AS & Final frozen checkpoint on 14 unseen test cities; model RMSE improves over every frozen prior. \\
+Bilinear decoder & Path loss & \(\approx 17.40\) dB & Bilinear decoder alone reduced artifacts but did not solve global propagation. \\
+Multiscale supervision & Path loss & \(\approx 17.06\) dB & Multiscale supervision helped the large-scale field. \\
+Decoder + multiscale & Path loss & \(\approx 16.72\) dB & Best clean pre-prior baseline in the early U-Net family. \\
+Raw physical prior & Path loss & \(\approx 67.23\) dB & Raw physical prior was far too crude without calibration. \\
+Calibrated physical prior & Path loss & \(\approx 24.16\) dB & Regime-aware train-only calibration made the prior useful but incomplete. \\
+PMNet residual branch & Path loss & \(\approx 19.78\) dB & PMNet-style residual learning improved over prior-only calibration. \\
+Prior-confidence stage & Path loss & \(\approx 18.87\) dB & Prior-confidence and robust loss helped, but tail errors persisted. \\
+PMHHNet reference & Path loss overall & 9.41 dB & PMHHNet consolidated the physical-channel and expert approach. \\
+PMHHNet reference & Path loss NLoS & 31.48 dB & The headline bottleneck was no longer global; it was NLoS tail failure. \\
+Dist.-first GMM & Path loss NLoS & \(\approx 3.34\) dB & Distribution-first modelling directly attacked NLoS multi-modality. \\
+Final path-loss prior & Path loss overall & 1.9246 dB & ML-calibrated prior became the strongest path-loss baseline. \\
+Final DS prior & Delay spread overall & 28.10 ns & Log-domain ridge calibration met the original 50 ns project target. \\
+Final AS prior & Angular spread overall & \(13.74^\circ\) & Regime-wise calibration met the original 20 degree target. \\
+Final GMM test & Joint outputs & 1.6519 dB PL; 26.5570 ns DS; \(11.3854^\circ\) AS & Final frozen checkpoint on 14 unseen test cities; model RMSE improves over every frozen prior. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \paragraph{Split-comparability note.}
-Tries 76, 77, 79, and 80 use the same \texttt{city\_holdout}
+The distribution-first predecessors, spread priors, and final residual model use the same \texttt{city\_holdout}
 split contract with \texttt{val\_ratio = 0.15}, \texttt{test\_ratio =
 0.15}, and \texttt{split\_seed = 42}. The resulting test set is the same
 14-city, 2590-sample holdout for these runs. The diagnostic grouping is
-different: Try 76 and Try 77 report the six topology classes directly,
-whereas Try 80 groups them into three two-class morphology families
+different: the distribution-first predecessors report the six topology classes directly,
+whereas the final residual model groups them into three two-class morphology families
 (\texttt{open}, \texttt{mixed}, \texttt{dense}) and then separates each
 family again by low/mid/high UAV antenna bin. That changes the reporting
-grid, not the test samples. Try 78 is the exception: its final hybrid
+grid, not the test samples. The path-loss prior is the exception: its final hybrid
 evaluation used a 30\% evaluation holdout for fitting-versus-evaluation
-of the analytic prior. This holdout contains the same Try 76/77/80 test
-cities, but also contains additional validation-side cities, so Try 78
+of the analytic prior. This holdout contains the same final test
+cities, but also contains additional validation-side cities, so the path-loss prior
 is grouped in the same results chapter for continuity rather than as a
 bitwise-identical split.
 
@@ -146,19 +152,19 @@ receiver pixels, separating regimes, injecting priors, and eventually making
 the prior itself strong enough to be a useful baseline.
 
 Second, RMSE and MAE told different stories during the middle of the project.
-For example, Try 49 had moderate average absolute error on many samples, but
+For example, the prior-confidence stage had moderate average absolute error on many samples, but
 RMSE remained high because a smaller number of hard NLoS cases produced very
 large misses. This is why the later work moved toward tail-aware and
 distribution-aware methods rather than only lowering the mean error.
 
-Third, LoS and NLoS must be reported separately. Try 66 already had LoS error
+Third, LoS and NLoS must be reported separately. The PMHHNet reference already had LoS error
 near \SI{3.75}{dB}, while NLoS error remained above \SI{30}{dB}. A single
 overall number would hide the fact that the LoS branch was nearly solved for
 that stage while the NLoS branch was still structurally wrong.
 
 \begin{table}[H]
 \centering
-\caption{Try 78 final hybrid path-loss prior, pixel-weighted RMSE on the
+\caption{Final hybrid path-loss prior, pixel-weighted RMSE on the
 30\% city-holdout evaluation split.}
 \label{tab:try78_results}
 \begin{tabular}{lcc}
@@ -172,7 +178,7 @@ Overall & 1.9246 & dB \\
 \end{tabular}
 \end{table}
 
-Try 79 showed that a large part of the spread targets can also be explained by
+The final spread priors showed that a large part of the spread targets can also be explained by
 geometry, morphology, and calibration without a neural network. The fitted
 calibration dictionary contains \(114\) regime keys. This is \(57\) keys per
 spread metric: \(36\) exact topology--LoS/NLoS--antenna keys, \(12\)
@@ -185,7 +191,7 @@ regimes used when an exact key is too sparse.
 
 \begin{table}[H]
 \centering
-\caption{Try 79 calibrated test results, pixel-weighted RMSE.}
+\caption{Calibrated spread-prior test results, pixel-weighted RMSE.}
 \label{tab:try79_results}
 \begin{tabular}{lccc}
 \toprule
@@ -197,26 +203,26 @@ Angular spread ($^\circ$) & 13.74 & 15.28 & 8.66 \\
 \end{tabular}
 \end{table}
 
-\subsection{Try 76 as a distribution-first reference}
+\subsection{Distribution-first path-loss reference}
 
-Try 76 is not the final model of this thesis, but its result is quoted here
+The distribution-first path-loss predecessor is not the final model of this thesis, but its result is quoted here
 because it is the piece of evidence that motivated the final path-loss design.
 Trained with no physical prior of any kind, no COST-231 formula, no knife-edge
-channel, and no residual-over-prior structure, the distribution-first Try 76
+channel, and no residual-over-prior structure, the distribution-first
 family reached a pixel-weighted NLoS path-loss RMSE of approximately
 \SI{3.34}{dB} on its own city-holdout test split. The two lessons it provided
 were (i) a plain MSE/Huber regressor with a single Gaussian-shaped output head
 cannot represent the NLoS path-loss target because that marginal is strongly
 multi-modal, and (ii) once the output head is a Gaussian mixture conditioned
 on the UAV height, the NLoS mode-collapse that dominated the error budget of
-Tries 66--69 disappears. This is a small RMSE difference compared to the
-Try 78 non-DL prior (\SI{3.40}{dB} NLoS), but it is a qualitatively different
+the PMHHNet diagnostic phase disappears. This is a small RMSE difference compared to the
+ML-calibrated path-loss prior (\SI{3.40}{dB} NLoS), but it is a qualitatively different
 result because it is obtained without injecting any physics.
 
 \subsubsection*{Per-expert breakdown (12 experts: 6 topology classes
 $\times$ LoS / NLoS)}
 
-Try 76 trains twelve specialised GMM experts. A sequential DirectML
+The distribution-first path-loss predecessor trains twelve specialised GMM experts. A sequential DirectML
 evaluation of the 6 LoS and 6 NLoS checkpoints on the shared test split
 gives an aggregated NLoS metric of \SI{3.34}{dB} pixel-weighted and
 \SI{2.64}{dB} sample-weighted; the matching LoS aggregate is
@@ -229,7 +235,7 @@ interpretable.
 
 \begin{table}[H]
 \centering
-\caption{Try 76 DirectML test RMSE per expert on the shared
+\caption{Distribution-first path-loss DirectML test RMSE per expert on the shared
 city-holdout test split, together with the standard deviation of the
 corresponding target histogram. RMSE values are pixel-weighted over
 valid ground pixels. Source:
@@ -254,18 +260,18 @@ dense\_block\_highrise  & 4.79 & 4.18 & 5.91 & 4.67 \\
 \end{table}
 
 The headline finding here is counter-intuitive at first sight:
-\textbf{LoS path loss is consistently harder for Try 76 than NLoS path
+\textbf{LoS path loss is consistently harder for the distribution-first path-loss model than NLoS path
 loss}, by roughly \SI{1.5}{}--\SI{2}{dB} of RMSE in every topology
 class. The same pattern survives any choice of aggregation, and it
-contradicts the intuition built up during Tries 66--69 where NLoS was
+contradicts the intuition built up during the PMHHNet diagnostic phase, where NLoS was
 the dominant source of error and also what made the most physical sense.
-This reversal motivated the later return to explicit priors in Try 78 and
-Try 79.
+This reversal motivated the later return to explicit priors for both path loss
+and spread.
 
 \subsubsection*{Why LoS is harder than NLoS in the GMM regime}
 
 The explanation is a property of the marginal target distributions, not
-of the model. The Try~76 histogram study reports the following global
+of the model. The histogram study reports the following global
 sanity-check statistics over all CKM ground pixels:
 
 \begin{itemize}
@@ -284,23 +290,23 @@ sanity-check statistics over all CKM ground pixels:
 \end{itemize}
 
 Two consequences follow. First, \emph{the absolute RMSE floor is
-larger for LoS}: Try 76 only sees $\sigma \approx \SI{5.3}{dB}$ of useful
+larger for LoS}: the distribution-first model only sees $\sigma \approx \SI{5.3}{dB}$ of useful
 LoS variability and predicting near the conditional mean already implies
 errors of several dB. Second, \emph{the right object is the per-expert
 GMM, not a single Gaussian summary}: each topology/regime expert sees a
 different mixture of central mass, shoulders, tails and outliers.
 NLoS is where this pays back most visibly: the heavy-tailed mass near
 \SI{107}{dB} plus obstruction-driven tail components is precisely the
-shape that mode collapse damaged in Tries 66--69, and Try 76's GMM head
+shape that mode collapse damaged in the PMHHNet diagnostic phase, and the GMM head
 captures it cleanly. LoS is also not Gaussian, but its broader spread
 makes the remaining RMSE budget harder to collapse into a few dominant
 components.
 
-The global comparison is only a first-order diagnostic: Try~76 does not
+The global comparison is only a first-order diagnostic: the distribution-first path-loss model does not
 train one collapsed LoS model and one collapsed NLoS model. It trains
 one LoS and one NLoS GMM expert per topology class. Figure~\ref{fig:try76_los_vs_nlos_distribution}
 therefore redraws the same mixture analysis with a five-component GMM,
-matching the default Stage-A mixture size used by Try~76, for each
+matching the default Stage-A mixture size used by the distribution-first predecessor, for each
 expert and regime. This also explains the topology ranking
 inside each regime. The LoS target standard deviation grows
 monotonically from \SI{5.22}{dB} in
@@ -318,7 +324,7 @@ target variability the model fails to explain.
 Figure~\ref{fig:try76_los_vs_nlos} (right panel) plots this skill
 metric per expert: \textbf{LoS} sits in the
 \(0.79\)--\(0.87\) range, while \textbf{NLoS} is consistently lower at
-\(0.71\)--\(0.90\). In other words, Try 76 usually explains a larger fraction
+\(0.71\)--\(0.90\). In other words, the distribution-first predecessor usually explains a larger fraction
 of the NLoS variance even though its absolute NLoS RMSE is also lower.
 The model is doing harder statistical work on NLoS and reaping a larger
 absolute benefit at the same time.
@@ -326,7 +332,7 @@ absolute benefit at the same time.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try76_los_vs_nlos.png}
-\caption{Try 76 DirectML test RMSE per expert. \emph{Left}: bars are
+\caption{Distribution-first path-loss DirectML test RMSE per expert. \emph{Left}: bars are
 RMSE for LoS (orange) and NLoS (green); diamond markers report the
 standard deviation of the underlying target histogram. \emph{Right}:
 the same data normalised as RMSE / target $\sigma$. LoS is harder in
@@ -341,7 +347,7 @@ distribution that the GMM head can attack directly.}
 \centering
 \includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png}
 \caption{Five-component Gaussian-mixture fits of the LoS and NLoS
-path-loss targets, shown separately for the six Try~76 topology
+path-loss targets, shown separately for the six topology
 experts. This is the distribution actually seen by the specialised
 checkpoints, and is therefore more faithful than a single collapsed
 global curve. Per expert, the target is treated as a GMM rather than as
@@ -353,14 +359,14 @@ components. The dashed line marks the per-expert marginal mean.}
 \label{fig:try76_los_vs_nlos_distribution}
 \end{figure}
 
-\subsection{Try 76 to Try 78: why priors came back}
+\subsection{Why priors came back after distribution-first modelling}
 
-Reading the project in chronological order, the move from Try 76 to Try 78 can
+Reading the project in chronological order, the move from distribution-first path-loss modelling to the final path-loss prior can
 look contradictory: the first demonstrates that a distribution-aware neural
 head does not need a physical prior to solve NLoS path loss, and the second
 goes back to an explicit analytic prior. The sequence is consistent once the
-order in which the evidence arrived is spelled out. Try 76 came
-\emph{immediately after} the post-Try-75 histogram diagnosis. That diagnosis
+order in which the evidence arrived is spelled out. The distribution-first model came
+\emph{immediately after} the histogram diagnosis. That diagnosis
 showed that the main deficit of the PMHHNet family was not a missing physical
 channel, but an output-distribution mismatch. The first response was therefore
 to fix the deep-learning side: change the objective, change the output head,
@@ -369,41 +375,41 @@ Once that point was made, the question changed. Given that the full target
 distribution is tractable, which part of the prediction pipeline is the
 cheapest and most auditable? For LoS path loss the answer turned out to be a
 \SI{100}{\mathrm{-}}line analytic model with a handful of fitted constants
-(Try 78), not a neural residual head. For delay and angular spread the answer
-was a log-domain ridge regression over geometry and morphology features
-(Try 79). Try 80 then keeps the Try 76/77 distribution-aware philosophy but
-anchors the neural residual head to the Try 78/79 priors rather than forcing
+(the final path-loss prior), not a neural residual head. For delay and angular spread the answer
+was a log-domain ridge regression over geometry and morphology features.
+The final residual GMM-head model keeps the distribution-aware philosophy but
+anchors the neural residual head to the frozen priors rather than forcing
 the network to rediscover them from pixels. The priors in the final pipeline
-are an efficiency and stability device, not a contradiction of the Try 76
+are an efficiency and stability device, not a contradiction of the distribution-first
 result.
 
-\subsection{Try 77: GMM experts for delay and angular spread}
+\subsection{Distribution-first spread experts}
 
-Try 77 applies the Try 76 distribution-first recipe to delay spread and
+The distribution-first spread predecessor applies the path-loss mixture recipe to delay spread and
 angular spread. It partitions the dataset into the same six topology
 classes and trains two GMM experts per class (one per spread target),
-for a total of twelve experts. Unlike Try 76, the LoS / NLoS split is
-not enforced inside Try 77 because the spread targets are defined over
+for a total of twelve experts. Unlike the path-loss predecessor, the LoS / NLoS split is
+not enforced inside this spread model because the spread targets are defined over
 all ground pixels (the Stage-A GMM components recover the
 spike-plus-tail shape themselves, as shown by the distribution-class
 histogram study).
 
 \paragraph{Expert nomenclature.}
-In this chapter, ``six experts'' denotes the legacy Try 76/77
+In this chapter, ``six experts'' denotes the legacy distribution-first
 topology taxonomy:
 \emph{open sparse lowrise}, \emph{open sparse vertical},
 \emph{mixed compact lowrise}, \emph{mixed compact midrise},
 \emph{dense block midrise}, and \emph{dense block highrise}.
-The analytic priors then refine this routing internally: Try 78 uses
-coarse topology, LoS/NLoS state and antenna-height bin, while Try 79
-also keys the regime by spread metric. Try 80 reports a simpler final
+The analytic priors then refine this routing internally: the path-loss prior uses
+coarse topology, LoS/NLoS state and antenna-height bin, while the spread prior
+also keys the regime by spread metric. The final residual model reports a simpler final
 subexpert grid: three morphology groups (\texttt{open}, \texttt{mixed},
 \texttt{dense}) crossed with three antenna-height bins
 (\texttt{low\_ant}, \texttt{mid\_ant}, \texttt{high\_ant}), giving the
 nine subexperts used in the final breakdowns.
 
 A sequential DirectML pass over the 12 mirrored checkpoints now gives
-test metrics on the same 2590-sample holdout used by Try 76 and Try 80.
+test metrics on the same 2590-sample holdout used by the distribution-first path-loss predecessor and the final model.
 Table~\ref{tab:try77_per_expert} reports both sample-mean and
 pixel-weighted RMSE. The distinction matters for spread targets because
 large maps with broad valid ground support can dominate the pixel-weighted
@@ -411,7 +417,7 @@ aggregate and there are more outliers.
 
 \begin{table}[H]
 \centering
-\caption{Try 77 DirectML test RMSE per expert on the shared
+\caption{Distribution-first spread DirectML test RMSE per expert on the shared
 city-holdout test split. Sample columns average per-map RMSE; pixel
 columns aggregate squared error over all valid ground pixels. Source:
 \texttt{tmp\_try77\_directml\_test\_metrics.json}.}
@@ -435,19 +441,19 @@ dense\_block\_highrise  & 35.27 & 45.31 & 13.45 & 14.35 \\
 \end{tabular}
 \end{table}
 
-The angular-spread side of Try 77 is the cleanest neural result in this
+The angular-spread side of the distribution-first spread predecessor is the cleanest neural result in this
 family: every topology class remains below the original \(20^\circ\)
 target under both sample-mean and pixel-weighted aggregation, and the
 global pixel-weighted RMSE is \(11.78^\circ\). Delay spread is also
 below the original \SI{50}{ns} target, with a \SI{30.96}{ns}
 pixel-weighted aggregate, but it is less competitive with the later
-non-DL Try 79 prior (\SI{28.10}{ns}). The gap between sample-mean and
+ML-calibrated spread prior (\SI{28.10}{ns}). The gap between sample-mean and
 pixel-weighted delay RMSE also shows that the difficult cases are not
 only rare maps; they occupy large valid-pixel supports in the open
-vertical, mixed midrise and dense highrise classes. For this reason Try
-77 remains a useful distribution-first diagnostic and architectural
-precursor, while Try 79 is the deployed spread baseline used to anchor
-Try 80.
+vertical, mixed midrise and dense highrise classes. For this reason the spread
+predecessor remains a useful distribution-first diagnostic and architectural
+precursor, while the calibrated spread prior is the deployed spread baseline used to anchor
+the final model.
 
 The spread RMSE should also be read with one important visual caveat:
 the CKM delay- and angular-spread targets are heavily quantised. In many
@@ -466,7 +472,7 @@ the target map has lost fine detail through quantisation.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try79_quantized_spread_example.png}
-\caption{Example of spread-target quantisation on a Try~79 test sample
+\caption{Example of spread-target quantisation on a calibrated-prior test sample
 (Jaipur, \texttt{sample\_07308}). The ground-truth delay-spread map
 contains broad staircase-like bands and isolated quantised pixels, while
 the height-aware calibrated prediction is smoother and more continuous.
@@ -480,14 +486,14 @@ map, whose target is dominated by sparse high-valued quantised pixels.}
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try77_per_expert.png}
-\caption{Try 77 DirectML test RMSE per expert, separated by spread
+\caption{Distribution-first spread DirectML test RMSE per expert, separated by spread
 target. For each topology class, paired bars show sample-mean and
 pixel-weighted aggregation. Dashed grey lines mark the original project targets
 (\SI{50}{ns} for delay spread, \(20^\circ\) for angular spread). The
 angular-spread experts beat the target across all topology classes; the
 delay-spread experts also remain below \SI{50}{ns}, but their
 pixel-weighted errors are larger and less competitive with the later
-Try 79 ridge calibration.}
+the final ridge calibration.}
 \label{fig:try77_per_expert}
 \end{figure}
 
@@ -496,13 +502,13 @@ Try 79 ridge calibration.}
 The CKM dataset covers UAV heights from about \SI{12}{m} to almost
 \SI{478}{m}, so the conditional error at a single aggregate RMSE can hide
 strong altitude-dependent structure. Tables~\ref{tab:try78_by_height} and
-\ref{tab:try79_by_height} therefore break the Try 78 path loss and the Try 79
+\ref{tab:try79_by_height} therefore break the path-loss prior and the spread-prior
 delay-spread and angular-spread priors into four UAV-height bins, using the
 same pixel-weighted aggregation as the headline tables.
 
 \begin{table}[H]
 \centering
-\caption{Try 78 path-loss pixel-weighted RMSE by UAV transmitter height, on
+\caption{Path-loss prior pixel-weighted RMSE by UAV transmitter height, on
 the 30\% city-holdout evaluation split.}
 \label{tab:try78_by_height}
 \small
@@ -520,7 +526,7 @@ UAV height bin & Overall & LoS & NLoS & Samples \\
 
 \begin{table}[H]
 \centering
-\caption{Try 79 delay spread and angular spread calibrated pixel-weighted RMSE
+\caption{Delay-spread and angular-spread calibrated pixel-weighted RMSE
 by UAV transmitter height, on the city-holdout test split.}
 \label{tab:try79_by_height}
 \small
@@ -550,18 +556,18 @@ shrink. Path-loss NLoS RMSE drops from \SI{3.76}{dB} at low altitudes to
 for the absolute number of samples: the dataset is dominated by the
 \SI{50}{\mathrm{-}}\SI{150}{m} band, so the global aggregate RMSE reflects that
 regime more than the higher-altitude extremes. A practical consequence for
-Try 80 is that the neural residual head has less to correct at high altitudes,
-where the Try 78 prior is already close to the quantisation floor. The
+the final residual model is that the neural residual head has less to correct at high altitudes,
+where the path-loss prior is already close to the quantisation floor. The
 remaining headroom lives in the low-altitude, NLoS-heavy bin, which is exactly
 where a distribution-aware residual can matter.
 
-\subsection{Try 78 path-loss prior by topology class}
+\subsection{Path-loss prior by topology class}
 
-The headline Try 78 number (\SI{1.92}{dB} overall RMSE on its
+The headline path-loss-prior number (\SI{1.92}{dB} overall RMSE on its
 30\% city-holdout evaluation split, see Table~\ref{tab:try78_results}) hides the
-same morphological structure that Try 76 surfaced. The per-sample evaluation
+same morphological structure that the distribution-first path-loss predecessor surfaced. The per-sample evaluation
 records were re-aggregated by classifying each evaluated sample into the six
-Try~76 topology classes with the same routing rule used by the
+six topology classes with the same routing rule used by the
 distribution-first experiments. The pixel-weighted RMSE per topology class is
 reported in
 Table~\ref{tab:try78_by_topology} and visualised in
@@ -569,8 +575,8 @@ Figure~\ref{fig:try78_by_topology}.
 
 \begin{table}[H]
 \centering
-\caption{Try 78 hybrid path-loss prior, pixel-weighted RMSE on the
-30\% city-holdout evaluation split, broken down by Try 76 topology class. The
+\caption{Hybrid path-loss prior, pixel-weighted RMSE on the
+30\% city-holdout evaluation split, broken down by topology class. The
 overall row reproduces Table~\ref{tab:try78_results}.}
 \label{tab:try78_by_topology}
 \footnotesize
@@ -591,7 +597,7 @@ dense block highrise  & 2.44 & 4.09 & 2.97 &  104 \\
 \end{table}
 
 The dependency on morphology is monotonic and matches the LoS variance
-pattern observed in Try 76. The two-ray prior fits its own ground
+pattern observed in the distribution-first path-loss predecessor. The two-ray prior fits its own ground
 reflection ring against an LoS marginal whose width grows with city
 density and building height (see the LoS standard-deviation column of
 Table~\ref{tab:try76_per_expert}), so the LoS RMSE of the analytic
@@ -599,7 +605,7 @@ model rises from \SI{1.39}{dB} in the open sparse lowrise class to
 \SI{2.44}{dB} in the dense block highrise class. The NLoS branch
 mirrors the same ranking, with the worst topology class
 (\emph{dense block highrise}) almost exactly twice as large as the
-best (\SI{4.09}{dB} versus \SI{2.81}{dB} for Try 76 NLoS in
+best (\SI{4.09}{dB} versus \SI{2.81}{dB} for the distribution-first NLoS model in
 \emph{mixed compact lowrise}). The dataset is also unbalanced in
 this respect: dense block highrise contributes only 104 of
 the 4994 test samples, so its high RMSE has a relatively small impact
@@ -608,38 +614,38 @@ to limit deployment in dense urban environments.
 
 This per-topology view also makes the central methodological claim of
 the thesis quantitative. The right panel of
-Figure~\ref{fig:try78_by_topology} compares Try 76 (DL, GMM, no
-physics) against Try 78 (analytic two-ray prior, no neural network) on
+Figure~\ref{fig:try78_by_topology} compares the distribution-first DL model
+against the analytic two-ray prior on
 the same six topology classes for the NLoS regime. Both methods agree
-within about \SI{1}{dB} on most topology classes, and Try 76 is in fact
+within about \SI{1}{dB} on most topology classes, and the distribution-first model is in fact
 \emph{slightly better} on the four most populated classes. The aggregate
-gap quoted earlier (\SI{3.34}{dB} for Try 76 NLoS versus \SI{3.40}{dB}
-for Try 78 NLoS) is therefore not an artefact of one easy class
+gap quoted earlier (\SI{3.34}{dB} for the distribution-first NLoS model versus \SI{3.40}{dB}
+for the path-loss prior NLoS) is therefore not an artefact of one easy class
 dominating the average; it is genuinely a per-class equivalence. This
 is what justifies the chronology of the project: once the GMM head
 shows that the NLoS marginal is reachable without physics, the choice
-between a DL and a non-DL NLoS model becomes a question of cost, not
+between a deep GMM and an ML-calibrated NLoS prior becomes a question of cost, not
 of accuracy, and the cheap, auditable analytic prior wins on
 deployability.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try78_by_topology.png}
-\caption{Try 78 path-loss prior by topology class. \emph{Left}: LoS,
-NLoS and overall pixel-weighted RMSE for each of the six Try 76
+\caption{Path-loss prior by topology class. \emph{Left}: LoS,
+NLoS and overall pixel-weighted RMSE for each of the six
 topology classes. The LoS RMSE grows monotonically with morphological
 density, mirroring the growth of the LoS target standard deviation
-reported for Try 76 in Table~\ref{tab:try76_per_expert}. \emph{Right}:
-NLoS RMSE side by side with Try 76 (DL, GMM, no physics) on the same
+reported for the distribution-first model in Table~\ref{tab:try76_per_expert}. \emph{Right}:
+NLoS RMSE side by side with the distribution-first DL model on the same
 six topology classes. The two methods agree within roughly \SI{1}{dB}
 per class, which is what reduces the choice between the two pipelines
 to deployability rather than accuracy.}
 \label{fig:try78_by_topology}
 \end{figure}
 
-\subsection{Final Try 80 joint prior-anchored test results}
+\subsection{Final joint prior-anchored residual GMM-head model test results}
 
-Try 80 freezes the Try 78/79 priors and learns a bounded residual correction
+The final residual GMM-head model freezes the path-loss and spread priors and learns a bounded residual correction
 for the three radio maps. The final checkpoint evaluated here is
 \texttt{best\_model.pt} from
 \texttt{try80\_joint\_huge\_pathloss\_finetune}; it is tested on the
@@ -664,8 +670,8 @@ incompatible.
 
 \begin{table}[H]
 \centering
-\caption{Final Try 80 test results on unseen cities, compared with the frozen
-Try 78/79 priors. Negative \(\Delta\) means that Try 80 improves the prior.}
+\caption{Final residual GMM-head model test results on unseen cities, compared with the frozen
+priors. Negative \(\Delta\) means that the model improves the prior.}
 \label{tab:try80_final_test_overall}
 \scriptsize
 \begin{tabular}{lrrrrrrl}
@@ -681,7 +687,7 @@ Angular spread & 11.3854 & 13.7416 & -2.3562 & 5.0088 & 4.9890 & +0.0198 & \(^{\
 
 \begin{table}[H]
 \centering
-\caption{Final Try 80 test RMSE separated by LoS and NLoS pixels. The test
+\caption{Final residual GMM-head model test RMSE separated by LoS and NLoS pixels. The test
 cities are unseen during training.}
 \label{tab:try80_final_test_los_nlos}
 \scriptsize
@@ -715,7 +721,7 @@ Table~\ref{tab:try80_val_test_sanity} reports the two scopes side by side.
 
 \begin{table}[H]
 \centering
-\caption{Try 80 validation-versus-test sanity check for the same
+\caption{Validation-versus-test sanity check for the same
 \texttt{best\_model.pt} checkpoint. The validation row matches the metrics
 stored in the checkpoint history; the test row is the final unseen-city
 generalisation result.}
@@ -733,8 +739,8 @@ Test & 2590 & 1.6519 & 26.5570 & 28.1023 & 11.3854 & Separate 14-city holdout; t
 
 \begin{table}[H]
 \centering
-\caption{Try 80 pixel-weighted RMSE by split, compared with the frozen
-Try 78/79 priors. The test split is the unseen-city generalisation claim;
+\caption{Final-model pixel-weighted RMSE by split, compared with the frozen
+priors. The test split is the unseen-city generalisation claim;
 the all row aggregates train, validation, and test together.}
 \label{tab:try80_split_absolute}
 \scriptsize
@@ -751,7 +757,7 @@ All & 16180 & 1.6845 & 1.9711 & 27.4121 & 29.2527 & 11.5256 & 13.8966 \\
 \end{table}
 
 The larger delay-spread gap between validation and test is mainly a city-mix
-effect, not a change of model or metric. The frozen Try~79 delay-spread prior
+effect, not a change of model or metric. The frozen delay-spread prior
 also worsens from \SI{23.45}{ns} RMSE on validation to \SI{28.10}{ns} on test,
 so the test cities contain harder delay-spread distributions before the neural
 residual is applied. In particular, Kuala Lumpur contributes only 13.2\% of
@@ -771,7 +777,7 @@ delay-spread artefacts are less severe.
 
 \begin{table}[H]
 \centering
-\caption{Try 80 improvement over the frozen priors by split. Values are
+\caption{Final-model improvement over the frozen priors by split. Values are
 pixel-weighted \(\Delta=\mathrm{model}-\mathrm{prior}\); negative values are
 better.}
 \label{tab:try80_split_delta}
@@ -790,7 +796,7 @@ All & 16180 & -0.2867 & -0.3000 & -1.8406 & +0.6214 & -2.3710 & +0.0036 \\
 
 \begin{table}[H]
 \centering
-\caption{Try 80 LoS/NLoS RMSE improvement by split. Values are
+\caption{Final-model LoS/NLoS RMSE improvement by split. Values are
 pixel-weighted \(\Delta=\mathrm{model}-\mathrm{prior}\); negative values are
 better.}
 \label{tab:try80_los_nlos_split_delta}
@@ -813,7 +819,7 @@ All & NLoS & -0.3565 & -0.4525 & -0.2388 \\
 
 \begin{table}[H]
 \centering
-\caption{All-city Try 80 deltas by prior subexpert. Each city contributes to
+\caption{All-city final-model deltas by prior subexpert. Each city contributes to
 one of the nine morphology--antenna prior experts, and the table shows that
 the improvement is not concentrated in a single easy subexpert.}
 \label{tab:try80_subexpert_delta}
@@ -835,11 +841,11 @@ Subexpert & Samples & PL \(\Delta\)RMSE & PL \(\Delta\)MAE & DS \(\Delta\)RMSE &
 \end{tabular}
 \end{table}
 
-\subsubsection*{Target vs final Try 80 result}
+\subsubsection*{Target vs final result}
 
 The final checkpoint clears the original numerical targets on the unseen-city
 test split. Figure~\ref{fig:try80_test_objectives} compares those targets with
-the global pixel-weighted Try~80 test scores: \SI{1.65}{dB} for path loss,
+the global pixel-weighted final test scores: \SI{1.65}{dB} for path loss,
 \SI{26.56}{ns} for delay spread, and \(11.39^\circ\) for angular spread. The
 same target check also holds on validation and on the all-city aggregation.
 Even taking the worst subexpert separately for each output, the test result is
@@ -851,8 +857,8 @@ still better than required: \SI{2.66}{dB}, \SI{36.89}{ns}, and \(14.06^\circ\).
   targetcompare/.style={
     ybar, width=\linewidth, height=5.4cm, ymin=0,
     bar width=18pt,
-    symbolic x coords={Target,Try 80},
-    xtick={Target,Try 80},
+    symbolic x coords={Target,Final},
+    xtick={Target,Final},
     xticklabel style={font=\small},
     tick label style={font=\small},
     title style={font=\bfseries\small},
@@ -866,7 +872,7 @@ still better than required: \SI{2.66}{dB}, \SI{36.89}{ns}, and \(14.06^\circ\).
 \begin{tikzpicture}
 \begin{axis}[targetcompare, title={Path loss}, ylabel={RMSE (dB)}, ymax=5.6]
 \addplot[fill=gray!25, draw=black, bar shift=0pt] coordinates {(Target,5.00)};
-\addplot[fill=blue!55, draw=black, bar shift=0pt] coordinates {(Try 80,1.65)};
+\addplot[fill=blue!55, draw=black, bar shift=0pt] coordinates {(Final,1.65)};
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
@@ -875,7 +881,7 @@ still better than required: \SI{2.66}{dB}, \SI{36.89}{ns}, and \(14.06^\circ\).
 \begin{tikzpicture}
 \begin{axis}[targetcompare, title={Delay spread}, ylabel={RMSE (ns)}, ymax=55]
 \addplot[fill=gray!25, draw=black, bar shift=0pt] coordinates {(Target,50.00)};
-\addplot[fill=orange!70, draw=black, bar shift=0pt] coordinates {(Try 80,26.56)};
+\addplot[fill=orange!70, draw=black, bar shift=0pt] coordinates {(Final,26.56)};
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
@@ -884,11 +890,11 @@ still better than required: \SI{2.66}{dB}, \SI{36.89}{ns}, and \(14.06^\circ\).
 \begin{tikzpicture}
 \begin{axis}[targetcompare, title={Angular spread}, ylabel={RMSE ($^\circ$)}, ymax=22]
 \addplot[fill=gray!25, draw=black, bar shift=0pt] coordinates {(Target,20.00)};
-\addplot[fill=green!60, draw=black, bar shift=0pt] coordinates {(Try 80,11.39)};
+\addplot[fill=green!60, draw=black, bar shift=0pt] coordinates {(Final,11.39)};
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{\textbf{TARGET vs Final Result.} Try 80 global test check using
+\caption{\textbf{TARGET vs Final Result.} Final global test check using
 pixel-weighted RMSE only. The final-result bar is the held-out city test result,
 which remains below the original targets: \SI{5}{dB} for path loss, \SI{50}{ns}
 for delay spread, and \(20^\circ\) for angular spread.}
@@ -899,7 +905,7 @@ for delay spread, and \(20^\circ\) for angular spread.}
 
 The most important visual diagnosis was the contrast between plausible LoS
 maps and failed NLoS tails. Early CNN outputs often followed the central radial
-trend but underestimated shadowed regions. Histogram analysis after Try 75 made
+trend but underestimated shadowed regions. The later histogram analysis made
 this visible: the model behaved like a single-mode regressor even when the
 target distribution was multi-modal.
 
@@ -923,11 +929,11 @@ target distribution was multi-modal.
   stagebar,
   title={Path loss (dB)},
   ymax=5.0,
-  symbolic x coords={Try76,Try80,Prior},
+  symbolic x coords={GMM,Final,Prior},
   xtick=data,
-  xticklabels={Try\,76,Try\,80,Prior},
+  xticklabels={GMM,Final,Prior},
 ]
-\addplot[fill=blue!55] coordinates {(Try76,4.36) (Try80,1.65) (Prior,1.94)};
+\addplot[fill=blue!55] coordinates {(GMM,4.36) (Final,1.65) (Prior,1.94)};
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
@@ -938,11 +944,11 @@ target distribution was multi-modal.
   stagebar,
   title={Delay spread (ns)},
   ymax=34,
-  symbolic x coords={Try77,Try80,Prior},
+  symbolic x coords={GMM,Final,Prior},
   xtick=data,
-  xticklabels={Try\,77,Try\,80,Prior},
+  xticklabels={GMM,Final,Prior},
 ]
-\addplot[fill=orange!70] coordinates {(Try77,30.96) (Try80,26.56) (Prior,28.10)};
+\addplot[fill=orange!70] coordinates {(GMM,30.96) (Final,26.56) (Prior,28.10)};
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
@@ -953,23 +959,23 @@ target distribution was multi-modal.
   stagebar,
   title={Angular spread ($^\circ$)},
   ymax=16,
-  symbolic x coords={Try77,Try80,Prior},
+  symbolic x coords={GMM,Final,Prior},
   xtick=data,
-  xticklabels={Try\,77,Try\,80,Prior},
+  xticklabels={GMM,Final,Prior},
 ]
-\addplot[fill=green!60] coordinates {(Try77,11.78) (Try80,11.39) (Prior,13.74)};
+\addplot[fill=green!60] coordinates {(GMM,11.78) (Final,11.39) (Prior,13.74)};
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
 \caption{Test-set comparison between the distribution-first neural references
-and the final prior-anchored Try 80 checkpoint. The path-loss panel uses global
-pixel-weighted RMSE; Try 77 is shown for the two spread targets.}
+and the final prior-anchored residual GMM-head checkpoint. The path-loss panel uses global
+pixel-weighted RMSE; the spread GMM reference is shown for the two spread targets.}
 \label{fig:try76_77_80_prior_comparison}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-{\scriptsize Coloured bars are Try 80 and grey bars are the frozen prior.\par}
+{\scriptsize Coloured bars are the final model and grey bars are the frozen prior.\par}
 \vspace{0.2em}
 \pgfplotsset{
   splitbar/.style={
@@ -1009,7 +1015,7 @@ pixel-weighted RMSE; Try 77 is shown for the two spread targets.}
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{Try 80 versus the frozen prior across train, validation, unseen test,
+\caption{Final model versus the frozen prior across train, validation, unseen test,
 and all-city aggregation. Validation is the checkpoint-selection split; test
 contains cities not seen during training.}
 \label{fig:try80_split_rmse}
@@ -1023,7 +1029,7 @@ contains cities not seen during training.}
     enlarge x limits=0.6,
     symbolic x coords={model,prior},
     xtick=data,
-    xticklabels={Try\,80, Prior},
+    xticklabels={Final, Prior},
     nodes near coords,
     nodes near coords style={font=\footnotesize},
     nodes near coords align={vertical},
@@ -1053,14 +1059,14 @@ contains cities not seen during training.}
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{Final Try 80 test RMSE on unseen cities against the frozen priors for
+\caption{Final test RMSE on unseen cities against the frozen priors for
 path loss, delay spread, and angular spread.}
 \label{fig:try80_test_final}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-{\scriptsize Coloured bars are Try 80 and grey bars are the frozen prior.\par}
+{\scriptsize Coloured bars are the final model and grey bars are the frozen prior.\par}
 \vspace{0.2em}
 \pgfplotsset{
   regimebar/.style={
@@ -1099,7 +1105,7 @@ path loss, delay spread, and angular spread.}
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{Final Try 80 test RMSE separated by LoS and NLoS pixels. The model
+\caption{Final test RMSE separated by LoS and NLoS pixels. The model
 improves the frozen prior in both regimes for all three outputs.}
 \label{fig:try80_test_los_nlos}
 \end{figure}
@@ -1155,19 +1161,19 @@ improves the frozen prior in both regimes for all three outputs.}
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{All-city Try 80 RMSE deltas by prior subexpert. Negative values mean
-that Try 80 improves the frozen prior. The first letter denotes the morphology
+\caption{All-city RMSE deltas by prior subexpert. Negative values mean
+that the final model improves the frozen prior. The first letter denotes the morphology
 expert (dense, mixed, open) and the second letter the antenna-height expert
 (high, low, mid).}
 \label{fig:try80_subexpert_delta}
 \end{figure}
 
-Figure~\ref{fig:try80_panel} shows a representative Try 80 validation
+Figure~\ref{fig:try80_panel} shows a representative final-model validation
 inspection panel. The same plotting script is used for all appendix panels:
 the three columns are path loss, delay spread, and angular spread, while the
-six rows are the ground truth, frozen Try 78/79 prior, Try 80 prediction,
+six rows are the ground truth, frozen prior, final prediction,
 context or support map, prior error \(\mathrm{Prior}-\mathrm{GT}\), and
-model correction \(\mathrm{Try\,80}-\mathrm{Prior}\). The last two rows are
+model correction \(\mathrm{Model}-\mathrm{Prior}\). The last two rows are
 the main diagnostic: if the residual head is doing its job, the sign and
 location of the correction row should mirror the sign and location of the
 prior-error row.
@@ -1175,16 +1181,16 @@ prior-error row.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_main_panel.png}
-\caption{Representative Try 80 \(6\times3\) inspection panel for a validation
+\caption{Representative final-model \(6\times3\) inspection panel for a validation
 diagnostic sample from the final checkpoint. Columns: path loss, delay spread,
-angular spread. Rows: ground truth, frozen prior (Try 78/79), Try 80
+angular spread. Rows: ground truth, frozen prior, final
 prediction, context / support mask, prior error
 ($\mathrm{Prior}-\mathrm{GT}$), and model correction
-($\mathrm{Try\,80}-\mathrm{Prior}$).}
+($\mathrm{Model}-\mathrm{Prior}$).}
 \label{fig:try80_panel}
 \end{figure}
 
-The qualitative lesson from Try 78 is equally important: LoS path loss in this
+The qualitative lesson from the path-loss prior is equally important: LoS path loss in this
 dataset has a strong radial ring structure. Buildings explain visibility and
 NLoS morphology, but in LoS they are not the main generator of the residual
 shape. This is why a calibrated two-ray model could outperform many neural
@@ -1214,7 +1220,7 @@ so
 With \(\Delta=1\) in the physical units used here, the hidden uncertainty is
 \(0.289\,\mathrm{dB}\) for path loss, \(0.289\,\mathrm{ns}\) for delay spread,
 and \(0.289^\circ\) for angular spread. This is not the dominant error in the
-current Try~80 snapshot, but it is an irreducible resolution limit of the saved
+current final-model snapshot, but it is an irreducible resolution limit of the saved
 labels and becomes important once residual errors approach the sub-unit regime.
 
 \begin{table}[H]
@@ -1260,7 +1266,7 @@ can be derived by line-of-sight tracing through the building topology. It is
 therefore a deterministic geometric feature and branch key, not extra measured
 radio information unavailable at deployment.
 
-The final Try 80 checkpoint is evaluated on one city-holdout split and one
+The final checkpoint is evaluated on one city-holdout split and one
 training seed. This demonstrates generalisation to unseen cities, but not full
 robustness: future work should repeat selection across seeds and add field
 measurements, especially for delay-spread tails where quantised labels make

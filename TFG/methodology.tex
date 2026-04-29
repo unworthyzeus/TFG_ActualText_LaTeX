@@ -1,7 +1,7 @@
 \chapter{Methodology / project development}
 
 This chapter describes the dataset protocol, the evolution of the modelling
-approach, and the final Try 80 architecture. The emphasis is on decisions that
+approach, and the final residual GMM-head model architecture. The emphasis is on decisions that
 affect reproducibility: masking, splitting, conditioning, and the distinction
 between raw deep prediction and prior-anchored residual prediction.
 
@@ -9,24 +9,23 @@ between raw deep prediction and prior-anchored residual prediction.
 
 Each sample is a complete $513\times513$ pixel CKM. The model never receives a
 random crop as an independent training city. Instead, the split is performed at
-city level. For the final Try 76, Try 77, and Try 80 family the split uses
+city level. For the distribution-first and final neural models the split uses
 \texttt{split\_seed = 42}, with 15\% validation and 15\% test samples after
 city assignment. This avoids the most common optimistic error in spatial radio
 prediction: training on one part of a city and testing on another visually
 similar part of the same city.
 
-The non-deep-learning baselines Try 78 (path-loss prior) and Try 79 (spread
-prior) do not require a validation set for early stopping or hyperparameter
+The ML-calibrated path-loss and spread priors do not require a validation set for early stopping or hyperparameter
 selection, so they use a two-way split: 70\% train and 30\% test, with the
 same \texttt{split\_seed = 42} and the same city-holdout assignment logic.
 The training cities are therefore identical to those of the deep-learning
-models; the 30\% test holdout of Try 78/79 corresponds to the union of the
-15\% validation and 15\% test cities used by Try 76, 77, and 80.
+models; the 30\% prior-evaluation holdout corresponds to the union of the
+15\% validation and 15\% test cities used by the neural models.
 
 \begin{table}[ht]
 \centering
 \scriptsize
-\caption{City-holdout assignment used by Try 76, Try 77, and Try 80.}
+\caption{City-holdout assignment used by the distribution-first and final neural models.}
 \label{tab:split_city_assignment}
 \begin{tabularx}{\textwidth}{lrrX}
 \toprule
@@ -83,113 +82,20 @@ made diagnosis harder.
 The next phase focused on controlled engineering changes. Transposed
 convolutions were replaced by bilinear upsampling and projection to reduce
 checkerboard artifacts. Multi-scale supervision was added so that the model
-could learn both global radial structure and local map details. Try 22 became
+could learn both global radial structure and local map details. The combined
+decoder/multiscale run became
 the strongest clean pre-prior path-loss baseline in this family.
 
-After Try 33, building pixels were excluded from both training loss and
+After the masking correction, building pixels were excluded from both training loss and
 validation metrics. This changed the interpretation of earlier numbers: any
 method that implicitly benefited from easy building pixels was no longer
-acceptable. The ground-only rule became an invariant for later tries.
+acceptable. The ground-only rule became an invariant for later models.
 
-\section{Chronological attempt analysis}
+\section{Development lessons used by the methodology}
 
-The work was not a single clean jump from U-Net to the final Try 80 model. It
-was closer to an engineering search in which each group of attempts tested one
-hypothesis and either kept it, rejected it, or transformed it into a stricter
-version. Table~\ref{tab:attempt_evolution} summarizes the most important
-steps. Values are included only when the metric contract is sufficiently clear;
-otherwise the row records the technical lesson rather than forcing an
-unreliable comparison.
-
-\begin{table}[H]
-\centering
-\caption{Evolution of modelling techniques and lessons across the attempt
-history.}
-\label{tab:attempt_evolution}
-\scriptsize
-\begin{tabularx}{\textwidth}{p{1.8cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
-\toprule
-Attempts & Main technique tested & What worked & What did not work and why \\
-\midrule
-1--8 &
-U-Net and pix2pix-style cGAN for aligned image-to-image regression. &
-Established the full CKM pipeline and showed that dense convolutional
-prediction was feasible at map level. &
-Adversarial realism was not aligned with RMSE. It could create plausible local
-texture while leaving the physical propagation error unresolved. \\
-9--14 &
-Explicit UAV height, LoS/NLoS splits, non-finite masking, normalized height
-conditioning. &
-Made height and propagation regime visible to the model instead of hidden in
-the sample identity. &
-The network still had to rediscover the radial propagation law from pixels,
-which was inefficient and unstable across cities. \\
-15--19 &
-GroupNorm, distance-map channel, weaker or zero GAN pressure, controlled
-smoothing. &
-GroupNorm was better suited to small batches; explicit distance helped the
-large-scale attenuation trend. &
-GAN pressure mostly attacked appearance artifacts, not the hard physical
-errors. Too much smoothing erased real transitions. \\
-20--22 &
-Bilinear decoder and multiscale path-loss loss. &
-Try 22 became the strongest clean pre-prior path-loss baseline, with observed
-validation RMSE around \SI{16.72}{dB} in that early contract. &
-The model was cleaner but still missed global radial structure and NLoS tails. \\
-23--32 &
-Spread-branch revisits, radial losses, support-amplitude decomposition, first
-prior-plus-residual ideas. &
-The experiments identified two separate problems: path loss needed radial
-physics, while spreads needed support and amplitude protection. &
-Attention or extra capacity alone did not solve the propagation structure.
-The first residual priors were conceptually promising but not yet strong. \\
-33--40 &
-Building-mask exclusion and restart on the newer dataset. &
-Established the modern evaluation rule: building pixels are invalid receiver
-locations and must be excluded from loss, metrics, and error maps. &
-Older scores became non-comparable. Some apparent progress vanished under the
-stricter ground-only contract. \\
-41--50 &
-Physical prior plus learned residual, PMNet-style backbone, prior confidence,
-and NLoS-tail refiner ideas. &
-Train-only calibration reduced a raw prior from about \SI{67.23}{dB} to about
-\SI{24.16}{dB}; Try 49 stage 1 reached about \SI{18.87}{dB} against a
-\SI{23.57}{dB} prior. &
-NLoS remained heavy-tailed. Several richer NLoS priors did not beat the older
-calibration; the best Try 50 NLoS sandbox remained around \SI{41}{dB}. \\
-51--66 &
-PMHHNet consolidation with experts, high-frequency path, physical channels,
-and strict city-holdout reporting. &
-Try 66 reached \SI{9.41}{dB} overall, with LoS already near
-\SI{3.75}{dB}. &
-The remaining error was not uniform; it concentrated in NLoS regions
-(\SI{31.48}{dB}), especially low-altitude and obstructed cases. \\
-67--75 &
-Anti-overfitting, multi-expert variants, dual heads, heteroscedastic outputs,
-SWA/EMA-style training refinements. &
-These runs improved training discipline and made uncertainty and regime
-reporting more explicit. &
-Some configurations over-regularized the model or anchored predictions too
-close to the prior, so validation stalled despite more sophisticated losses. \\
-76--77 &
-Distribution-first GMM modelling for path loss and then spreads. &
-Try 76 showed that NLoS can be treated as a distributional problem; the
-DirectML NLoS summary reached about \SI{3.34}{dB} pixel-weighted RMSE. &
-The method was powerful but task-specific; Try 77 provided a spread design,
-while final spread claims later came from the calibrated Try 79 prior. \\
-78--80 &
-Frozen non-DL priors for path loss and spreads, then a joint prior-anchored
-residual model. &
-Try 78 reached \SI{1.9246}{dB} overall path-loss RMSE; Try 79 reached
-\SI{28.10}{ns} and \SI{13.74}{\degree}; Try 80 unifies all three targets. &
-The final Try 80 checkpoint improves the frozen priors on the 14-city unseen
-test split for path loss, delay spread, and angular spread. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-\normalsize
-This history changed the interpretation of the project. The final model is not
-only the largest or latest network. It is the result of four negative lessons:
+The work was not a single clean jump from U-Net to the final residual GMM-head model. The detailed numbering is kept in Appendix~A; the methodology only
+retains the lessons that affect the final design. The final model is not only
+the largest or latest network. It is the result of four negative lessons:
 GANs were not reliable RMSE optimizers for this physical target; building
 pixels had to be removed from the metric; pure CNNs underlearned radial LoS
 structure; and NLoS errors were heavy-tailed enough to require regime-aware
@@ -198,7 +104,7 @@ prior-anchored formulation.
 
 \section{Physical priors and PMHHNet}
 
-Attempts 41 to 75 moved from direct map prediction to residual learning, as
+The middle development phase moved from direct map prediction to residual learning, as
 formulated in Eq.~\ref{eq:prior_residual}. This phase was heavily influenced by
 the \texttt{PMNet} architecture \cite{pmnet2023}, which established the
 viability of using U-Net-like backbones for path-loss map prediction in
@@ -266,13 +172,13 @@ altitude.
 \subsection{Limitations and Legacy}
 
 Despite these improvements, the early residual phase plateaued at about
-\SI{9.4}{dB} (Try 66). The primary bottleneck was the "soft" nature of the
+\SI{9.4}{dB}. The primary bottleneck was the "soft" nature of the
 residual learning; the network often under-compensated for the physical
 propagation law in NLoS regions.
 
 \begin{quote}
 \textit{Legacy of PMHHNet:} While the full architecture was eventually superseded
-by the prior-anchored GMM approach of \texttt{Try 80}, its core components---the
+by the final prior-anchored GMM approach, its core components---the
 HF stem and sinusoidal FiLM---remain highly effective for point-prediction
 tasks or real-time implementations where the distributional complexity of a GMM
 is not required.
@@ -281,13 +187,14 @@ is not required.
 \section{Distribution-first modelling}
 \label{sec:dist_first}
 
-The decisive diagnosis after Try 75 was that NLoS path loss was not merely a
+The decisive late-stage diagnosis was that NLoS path loss was not merely a
 harder regression target; it possessed a fundamentally different error
 distribution.  This diagnosis came from comparing predicted and ground-truth
 histograms: the maps showed where the model was wrong, but the histograms
 showed \emph{what} the model had misunderstood.  The central idea of the late
 pipeline was therefore to identify the target distribution before asking a
-network to perform pixel-by-pixel prediction.  Try 76 addressed this by
+network to perform pixel-by-pixel prediction. The distribution-first path-loss
+model addressed this by
 predicting the parameters of a Gaussian Mixture Model (GMM) rather than a
 simple point estimate.
 
@@ -381,14 +288,14 @@ simple point estimate.
 
 \end{tikzpicture}%
 }
-\caption{Try 76 distribution-first path-loss system. Stage~A learns global
+\caption{Distribution-first path-loss system. Stage~A learns global
 GMM parameters $(\pi_k,\mu_k,\sigma_k)$ from pooled features conditioned on
 UAV height; Stage~B produces per-pixel soft assignments and
 within-component offsets anchored to those parameters.}
 \label{fig:try76_system}
 \end{figure}
 
-Try 77 applied the same idea to delay spread and angular spread. These targets
+The distribution-first spread model applied the same idea to delay spread and angular spread. These targets
 are closer to a "spike-plus-tail" distribution (a spike near zero for LoS, and
 a heavy tail for NLoS).
 
@@ -487,14 +394,14 @@ a heavy tail for NLoS).
 
 \end{tikzpicture}%
 }
-\caption{Try 77 spread-prediction system. The Stage~A mixture head
+\caption{Distribution-first spread-prediction system. The Stage~A mixture head
 separately models the near-zero spike (LoS direct path) and the
 heavy-tailed components (NLoS scattering). Stage~B decodes these into
 spatially varying per-pixel predictions.}
 \label{fig:try77_system}
 \end{figure}
 
-For path loss, Try 76 utilized 12 specialized experts: six topology classes partitioned by LoS
+For path loss, the distribution-first model utilized 12 specialized experts: six topology classes partitioned by LoS
 and NLoS regions. As shown in Figure~\ref{fig:try76_system}, Stage A acts as a distribution head, predicting the global GMM parameters
 $(\pi_k,\mu_k,\sigma_k)$ from map features and altitude conditioning.
 Stage B then decodes these priors spatially, predicting per-pixel soft component assignments and within-component
@@ -507,7 +414,7 @@ offsets. The final map reconstruction can be written as:
   \label{eq:gmm_reconstruction}
 \end{equation}
 
-Try 77 extended this distribution-first philosophy to delay spread and angular spread. As illustrated in Figure~\ref{fig:try77_system}, these targets
+The spread counterpart extended this distribution-first philosophy to delay spread and angular spread. As illustrated in Figure~\ref{fig:try77_system}, these targets
 are not cleanly Gaussian; their empirical distributions resemble a near-zero spike (representing the LoS direct path) combined with a
 heavy tail (representing NLoS scattering). Standard Mean Squared Error (MSE) objectives tend to underrepresent these rare
 but physically significant heavy-tail spread values, necessitating a dedicated mixture head.
@@ -515,7 +422,7 @@ but physically significant heavy-tail spread values, necessitating a dedicated m
 \subsection{How to construct a good deep-learning model for radio maps}
 \label{sec:good_dl_model_design}
 
-The main lesson from the deep-learning attempts is that the architecture is
+The main lesson from the deep-learning experiments is that the architecture is
 secondary to the question: \emph{what statistical object is the network being
 asked to predict?} Path loss, delay spread, and angular spread are all dense
 radio maps, but they are not the same kind of target. Treating them as three
@@ -532,29 +439,30 @@ prediction remains an innovative contribution of this thesis.
 \subsubsection{A prior is useful, but not the core requirement}
 
 The project initially made the physical prior look indispensable because the
-best mid-project models were residual-over-prior systems. However,
-\texttt{Try 76} showed that the prior was not the essential ingredient. It
+best mid-project models were residual-over-prior systems. However, the
+distribution-first path-loss model showed that the prior was not the essential
+ingredient. It
 used no COST-231 prior, no enhanced two-ray prior, no knife-edge channel, and
 no residual-over-prior decomposition. It still obtained NLoS path-loss results
 close to the final prior family because it modelled the NLoS distribution
-directly. This changes the interpretation of the final \texttt{Try 78},
-\texttt{Try 79}, and \texttt{Try 80} designs. The priors are not magic
+directly. This changes the interpretation of the final path-loss prior,
+spread prior, and residual GMM-head designs. The priors are not magic
 external knowledge. They are convenient, stable ways of estimating the same
 large-scale statistics that a distribution-aware neural model can also learn
 if it is given the right objective and enough evidence.
 
 This is also why the final pipeline reintroduces priors without contradicting
-the \texttt{Try 76} lesson. The order in which the evidence arrived matters:
-\texttt{Try 76} came immediately after the post-\texttt{Try 75} histogram
+the distribution-first lesson. The order in which the evidence arrived matters:
+the distribution-first model came immediately after the histogram
 diagnosis, which showed that the dominant failure mode was an
 output-distribution mismatch rather than a missing physical channel. The
 first response was to fix the deep-learning side and prove that NLoS path
 loss can be modelled without extra physics. Once that point was made, the
 question became which part of the pipeline is cheapest and most auditable.
 For LoS path loss the answer turned out to be a short analytic model with a
-handful of fitted constants (\texttt{Try 78}); for delay and angular spread
+handful of fitted constants; for delay and angular spread
 the answer was a log-domain ridge regression over geometry and morphology
-features (\texttt{Try 79}); \texttt{Try 80} then anchors a shared neural
+features; the final residual GMM-head model then anchors a shared neural
 residual head to both. The priors in the final pipeline are therefore an
 efficiency and stability device, not a substitute for distribution-aware
 modelling.
@@ -598,7 +506,7 @@ against target means around \SI{107.1}{dB}. The issue was not that NLoS was
 impossible; it was that the network and loss were representing it as an
 ordinary residual image.
 
-This explains the \texttt{Try 76} design. Stage A estimates the per-sample
+This explains the distribution-first design. Stage A estimates the per-sample
 target distribution through a GMM, while Stage B predicts the spatial
 assignment of pixels to mixture components. The first part answers
 ``what values should this map contain?'' The second answers ``where should
@@ -620,7 +528,7 @@ angular spread is not merely an error-prone outlier; it is the physical signal
 that multipath has become important.
 
 The histogram study makes this visible. Figure~\ref{fig:target_prediction_histograms}
-aggregates the validation histograms used in the Try 76/77 diagnosis. Path-loss
+aggregates the validation histograms used in the distribution-first diagnosis. Path-loss
 NLoS shows the old mode-collapse failure: the target NLoS mass sits around
 \SI{107}{dB}, while the old prediction histogram puts too much mass at much
 smaller values. The spread targets are different. Their targets contain a
@@ -634,7 +542,7 @@ about \(74^\circ\), while the prediction \(p_{99}\) is about \(43^\circ\).
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{img/thesis_figures/distribution_histograms/target_prediction_histograms.png}
-\caption{Aggregated target and prediction histograms from the Try 74/75
+\caption{Aggregated target and prediction histograms from the late diagnostic
 histogram study. The vertical scale is logarithmic to show the rare tail mass:
 path-loss NLoS suffers from mode collapse, while delay and angular spreads
 learn the bulk but miss part of the high-value tail.}
@@ -651,8 +559,8 @@ geometry-driven signals, while the LoS distribution is dominated by a
 near-zero spike plus quantisation and simulator noise. A model that only
 optimizes global RMSE may overfit the spike and underrepresent the physically
 important tail. The correct approach is to model the spike and the tail
-separately, as in the \texttt{Try 77} spike-plus-tail design and the
-\texttt{Try 79} log-domain regime-wise calibration.
+separately, as in the distribution-first spike-plus-tail design and the
+final log-domain regime-wise calibration.
 
 The radio-map images show the same phenomenon spatially. For spread targets,
 the model often captures the low-frequency image structure: broad regions of
@@ -672,7 +580,7 @@ avoiding every false alarm.
 
 \subsubsection{Why the cGAN line failed}
 
-The cGAN attempts failed because adversarial image realism was the wrong
+The cGAN experiments failed because adversarial image realism was the wrong
 pressure for this problem. A radio map is not judged by whether it looks like
 a plausible texture; it is judged by physically calibrated errors under a
 ground mask, separated by LoS/NLoS, topology, and antenna height. The
@@ -753,7 +661,7 @@ following.
 \section{GMM component count and distribution choice}
 \label{sec:gmm_k_choice}
 
-The Stage-A distribution heads in \texttt{Try 76} and \texttt{Try 77}
+The Stage-A distribution heads in the distribution-first models
 represent each per-sample target marginal as a parametric family. Choosing
 the family and its number of components $K$ is not a free hyperparameter; it
 is constrained by the empirical shape of the CKM histograms. A dedicated
@@ -803,25 +711,25 @@ exactly the regime in which the earlier PMHHNet family produced mode collapse
 with a single-output MSE head. Second, the number of components that wins is
 consistently $K\in\{4, 5\}$ for the raw path-loss and spread targets, not
 $K=3$. The Stage-A heads in this thesis therefore use $K=5$ by default on
-the Try~76/77 target-distribution experts, even though the code supports
-$K\in\{2,\dots,5\}$. The \texttt{num\_components} field in the \texttt{Try 80}
+the target-distribution experts, even though the code supports
+$K\in\{2,\dots,5\}$. The final \texttt{num\_components} field
 configuration (\(K=3\)) controls a different quantity: the shared backbone's
-residual distribution head after the frozen Try~78/Try~79 priors have already
+residual distribution head after the frozen priors have already
 explained the main LoS, NLoS, delay-spread, and angular-spread structure. In
 that residual space, three modes are sufficient to model negative correction,
 near-zero correction, and positive correction, while avoiding a larger mixture
 that would be harder to stabilize during the final multi-task training. Third, the
 angular-spread target is better served by a native spike-plus-exponential
 head than by a GMM, because its marginal is effectively degenerate at
-\ang{0}; this is implemented directly in the \texttt{Try 77} angular-spread
+\ang{0}; this is implemented directly in the distribution-first angular-spread
 experts.
 
 \section{Loss functions of the final pipeline}
 \label{sec:loss_functions}
 
-The detailed definitions of the Try~80 objective are given in
+The detailed definitions of the final objective are given in
 Sec.~\ref{sec:try80_objective}. This section keeps only the training contract
-needed to compare the attempt families. For each target
+needed to compare the model families. For each target
 \(t\in\{\mathrm{PL},\mathrm{DS},\mathrm{AS}\}\), the implementation defines a
 composite masked loss
 \begin{equation}
@@ -850,38 +758,44 @@ All sums are restricted to valid receiver pixels.
 
 \begin{table}[H]
 \centering
-\caption{Active loss settings in the final path-loss-finetuned Try~80 checkpoint.}
+\caption{Active loss settings in the final residual GMM-head model stages.}
 \label{tab:try80_loss_settings}
-\small
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.27\textwidth}
+\scriptsize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.22\textwidth}
+>{\raggedright\arraybackslash}p{0.19\textwidth}
 >{\raggedright\arraybackslash}p{0.19\textwidth}
 >{\raggedright\arraybackslash}X}
 \toprule
-Term group & Final weight & Interpretation \\
+Term group & Huge relaxed residuals & Path-loss fine-tune & Interpretation \\
 \midrule
 NLL, KL, moment and outlier budget &
-0 &
-Defined by the architecture but inactive in the selected deterministic
-fine-tune. \\
+1.00 / 0.25 / 0.10 / 0.02 &
+0 / 0 / 0 / 0 &
+Active in the final non-path-loss-finetuned stage, then disabled in the
+selected deterministic fine-tune. \\
 RMSE / MAE &
+1.50 / 0.10 &
 1.00 / 0.05 &
-Primary supervised pixel losses in native output units. \\
+Supervised pixel losses in native output units; the fine-tune makes them the
+dominant active terms. \\
 Anchor / prior guard &
+0.05 / 0.10 &
 0.01 / 0.02 &
-Keep residual corrections small and penalize checkpoints that become worse
-than the frozen priors. \\
+Keep residual corrections small and penalize checkpoints that become worse than
+the frozen priors, with lighter regularization in the fine-tune. \\
 Task weights &
+PL 1.00, DS 1.00, AS 1.00 &
 PL 1.00, DS 0.25, AS 0.25 &
-Make path loss the main optimization target while retaining spread supervision
-in the joint model. \\
+Equal target weighting before the fine-tune; then path loss becomes the main
+optimization target while spread supervision remains in the joint model. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-This is a deliberate simplification relative to the earlier branches. Tries
-67--71 used masked MSE with multi-scale and Laplacian-style auxiliaries; the
-distribution-first tries removed those structural losses and focused on target
-shape. Try~80 keeps the residual GMM machinery available, but the selected
+This is a deliberate simplification relative to the earlier branches. The
+PMHHNet diagnostic runs used masked MSE with multi-scale and Laplacian-style auxiliaries; the
+distribution-first models removed those structural losses and focused on target
+shape. The final model keeps the residual GMM-head machinery available, but the selected
 checkpoint is chosen with an RMSE-dominant objective because the frozen priors
 already explain the main large-scale structure.
 
@@ -889,9 +803,9 @@ already explain the main large-scale structure.
 \label{sec:hyperparams}
 
 Table~\ref{tab:hyperparams} summarises the training configuration of the
-final prior-anchored pipeline. The values for \texttt{Try 76},
-\texttt{Try 77}, and \texttt{Try 80} are reported as methodological settings
-rather than as file-path artifacts. Older tries are reported more compactly
+final prior-anchored pipeline. The values for the distribution-first predecessors
+and the final residual GMM-head model are reported as methodological settings
+rather than as file-path artifacts. Older runs are reported more compactly
 because the final thesis line inherits only the architectural lessons from
 them, not the training stack.
 
@@ -907,9 +821,9 @@ and gradient accumulation over 8 steps.}
                             >{\raggedright\arraybackslash}X
                             >{\raggedright\arraybackslash}X}
 \toprule
-Config & Try 76 / 77 experts & Try 80 joint & Try 67--71 (historical) \\
+Config & Distribution-first experts & Final joint GMM & PMHHNet diagnostics \\
 \midrule
-Input channels   & topology, LoS, NLoS, ground mask (4 + scalar height) & topology + Try 78/79 priors + masks (9) & topology, LoS, distance, formula prior, knife-edge (5--6) \\
+Input channels   & topology, LoS, NLoS, ground mask (4 + scalar height) & topology + frozen priors + masks (9) & topology, LoS, distance, formula prior, knife-edge (5--6) \\
 Optimizer        & AdamW ($\beta_1{=}0.9, \beta_2{=}0.999$) & AdamW & AdamW \\
 Learning rate    & \num{3e-4} & \num{5e-5} & \num{1e-3} to \num{3e-4} (cosine or plateau) \\
 Weight decay     & 0.01 & 0.01 & 0.015--0.030 \\
@@ -929,24 +843,24 @@ GMM components $K$ & 5 (Stage A, path/delay), spike+exp (angular) & 3 (residual 
 \end{tabularx}
 \end{table}
 
-Two patterns deserve emphasis. First, the move from Tries~67--71 to Try~76
+Two patterns deserve emphasis. First, the move from PMHHNet diagnostics to distribution-first modelling
 onward is a simplification, not a complication: SWA, EMA, CutMix, label noise,
 and the multi-auxiliary losses are all turned off, and the training stack
 becomes a plain AdamW + ReduceLROnPlateau loop. This is consistent with the
 distribution-first philosophy: once the output head and target distribution
 are correct, the classical training-stabilisation tricks become unnecessary.
-Second, Try~80 uses a smaller learning rate than the Try~76/Try~77 experts
+Second, the final model uses a smaller learning rate than the distribution-first experts
 (\num{5e-5} vs \num{3e-4}) because it is fine-tuning a residual head whose
-inputs already include the strong Try~78/Try~79 priors; pushing the learning
+inputs already include the strong frozen priors; pushing the learning
 rate higher pulls the residual head away from the anchors faster than
 \texttt{prior\_guard} can catch it.
 
-\section{Try 80 training progression}
+\section{Final residual GMM-head model training progression}
 \label{sec:try80_training_progression}
 
-The final Try~80 model was not obtained in a single run. Training began with
+The final residual GMM-head model was not obtained in a single run. Training began with
 the joint prior-anchored residual design, but the first complete runs produced
-only small improvements over the frozen Try~78/Try~79 priors. As a diagnostic,
+only small improvements over the frozen priors. As a diagnostic,
 this showed that the priors were already strong, but also that the residual
 model was initially too constrained to correct the remaining errors, especially
 for path loss.
@@ -954,7 +868,7 @@ for path loss.
 The training path then followed four stages:
 
 \begin{enumerate}
-\item \textbf{Big.} The first full Try~80 version used a shared multi-task
+\item \textbf{Big.} The first full version used a shared multi-task
 U-Net with \(96\) base channels and a \(128\)-dimensional FiLM condition
 vector. Its residual caps were conservative, especially for path loss
 (\(\pm2\) dB in LoS and \(\pm4\) dB in NLoS), and the objective retained the
@@ -993,17 +907,17 @@ deciding which stage should be continued or replaced.
 
 
 
-\section{Try 78 and Try 79 priors: overview and literature basis}
+\section{Final priors: overview and literature basis}
 \label{sec:priors_overview}
 
 \input{prior_detail_overview}
 
-\section{Try 78: Path Loss Prior}
+\section{Path Loss Prior}
 \label{sec:try78_detail}
 
 \subsection*{Reader map}
 
-The Try~78 section is intentionally detailed because it is the mathematical
+This section is intentionally detailed because it is the mathematical
 core of the final path-loss result.  A reader only interested in the modelling
 logic can follow it in four passes.  First, the LoS branch starts from FSPL and
 adds an enhanced two-ray field sum, which explains the radial ring structure
@@ -1012,7 +926,7 @@ regime-wise model over topology and obstruction features, because a LoS-shaped
 formula cannot explain blocked streets by itself.  Third, both branches are
 fitted only on the training split and then evaluated with the same
 pixel-weighted ground-mask RMSE used elsewhere in the thesis.  Finally, the
-Try~78 output becomes the frozen path-loss anchor consumed by Try~80.
+prior output becomes the frozen path-loss anchor consumed by the final residual GMM-head model.
 
 The most important results to retain while reading the details are the LoS
 waterfall in Table~\ref{tab:try78_los_waterfall} and the final path-loss
@@ -1022,12 +936,12 @@ LoS error to about \SI{1.75}{dB}, and the full hybrid prior reaches about
 
 \input{prior_detail_try78}
 
-\section{Try 79: Delay and Angular Spread Priors}
+\section{Delay and Angular Spread Priors}
 \label{sec:try79_detail}
 
 \input{prior_detail_try79}
 
-\section{Try 80: Joint Prior-Anchored Residual Model}
+\section{Joint Prior-Anchored Residual GMM-Head Model}
 \label{sec:try80_detail}
 
 \input{prior_detail_try80}

@@ -21,7 +21,7 @@ multiplicative error in \(1+y\). This is more appropriate than native-space
 least squares for spreads because large NLoS tails would otherwise dominate
 the fit and the near-zero LoS mass would be ignored.
 
-\subsection{Pixel-wise notation for the Try 79 fit}
+\subsection{Pixel-wise notation for the spread-prior fit}
 
 Let \(n\) index a valid ground pixel from a training map. For a selected
 metric \(m \in \{\mathrm{DS},\mathrm{AS}\}\), define the native target
@@ -39,7 +39,7 @@ raw log-prior value \(z^{(0)}_{m,n}\). The calibrated prior is linear in a
 \label{eq:try79_pixel_linear}
 \end{equation}
 The regime \(r(n)\) is a discrete key containing the metric, topology class,
-LoS/NLoS state and UAV-height bin. In other words, Try 79 does not fit one
+LoS/NLoS state and UAV-height bin. In other words, the spread prior does not fit one
 global line through all pixels. It fits a family of small linear models, each
 one specialized to a propagation regime.
 
@@ -110,7 +110,7 @@ block handles range and height. The morphology block measures whether there
 are nearby scatterers. The interaction block allows the model to express
 statements such as ``density matters more at low elevation'' or ``being below
 nearby rooftops matters most when NLoS support is already high''.
-As in the Try 78 path-loss vector, some of these terms are not independent.
+As in the path-loss-prior vector, some of these terms are not independent.
 For instance, \(z^{(0)}(x)^2\) is determined by \(z^{(0)}(x)\), and
 \(t_{41}(x)n_{41}(x)\) is tied to both the taller-building and NLoS-support
 features. This cross-correlation means individual fitted coefficients should
@@ -142,7 +142,7 @@ higher-order subsets.
 \(t_{41}\) & Taller-building fraction. & Counts nearby buildings whose height exceeds the UAV height. \\
 \bottomrule
 \end{tabularx}
-\caption{Term-by-term inventory of the direct terms in the \texttt{Try 79} spread calibration vector.}
+\caption{Term-by-term inventory of the direct terms in the spread calibration vector.}
 \label{tab:x79_term_inventory}
 \end{table}
 
@@ -161,7 +161,7 @@ higher-order subsets.
 \(t_{41}n_{41}\) & Tall-building-NLoS interaction. & Activates in blocked regions where buildings are also taller than the transmitter. \\
 \bottomrule
 \end{tabularx}
-\caption{Interaction terms in the \texttt{Try 79} spread calibration vector.}
+\caption{Interaction terms in the spread calibration vector.}
 \label{tab:x79_interaction_inventory}
 \end{table}
 
@@ -189,7 +189,7 @@ higher-order subsets.
 \draw[arr] (vec) -- (ridge);
 \draw[arr] (ridge) -- (native);
 \end{tikzpicture}
-\caption{Feature grouping used by the \texttt{Try 79} calibrated spread prior.
+\caption{Feature grouping used by the calibrated spread prior.
 The calibrated model is linear in \(\textbf{x}_{79}\), but the features include
 nonlinear transforms and interactions selected from propagation intuition.}
 \label{fig:try79_feature_groups}
@@ -240,7 +240,7 @@ for distinguishing dense but low-rise zones from dense high-rise zones.
 
 \subsubsection{Stage 3: regime-wise ridge regression}
 
-The regime $r$ for Try 79 is keyed by: metric (DS or AS), topology class (6 classes), propagation state (LoS or NLoS), antenna-height bin, giving up to $2 \times 6 \times 2 \times 3 = 72$ regimes.
+The regime $r$ for the spread prior is keyed by: metric (DS or AS), topology class (6 classes), propagation state (LoS or NLoS), antenna-height bin, giving up to $2 \times 6 \times 2 \times 3 = 72$ regimes.
 
 Valid pixels are subsampled at rate $p = 0.02$ (2\%). The ridge regression:
 \begin{equation}
@@ -288,8 +288,8 @@ Sufficient statistics are accumulated incrementally:
 \end{align}
 so the full design matrix is never materialised in memory.
 This is important in practice because the calibration artifacts are already
-large even after compression into fitted coefficients and profiles. The Try 78
-LoS calibration JSON reused by Try 80 is approximately 200\,000 lines, and the
+large even after compression into fitted coefficients and profiles. The path-loss
+LoS calibration JSON reused by the final model is approximately 200\,000 lines, and the
 spread calibration must be rerun separately for delay spread and angular
 spread whenever the feature set changes.
 
@@ -325,7 +325,7 @@ limit is deliberate: LoS angular spread is dominated by the direct path and is
 physically closer to a near-zero spike plus small reflections, whereas NLoS
 angular spread can occupy a much wider support.
 
-\subsection{Try 79 results}
+\subsection{Spread-prior results}
 
 \begin{table}[H]
 \centering
@@ -390,6 +390,6 @@ dense\_block\_highrise  & 14.64 & 21.33 & 9.78 \\
 \draw[->, thick, dashed] (inputs.east) -| ++(1.5,-1.5) |- (features.east);
 \node[draw, dashed, fill=yellow!10, right=1.5cm of ridge, align=left, font=\footnotesize] {Regime $r$ keys:\\1. Metric (DS/AS)\\2. Topology Class\\3. LoS / NLoS\\4. Antenna Bin};
 \end{tikzpicture}
-\caption{Pipeline for the \texttt{Try 79} delay and angular spread priors. Both spread modalities share this identical linear architecture, predicting expected spread in the log domain via regime-wise ridge regression over 23 spatial and geometric features.}
+\caption{Pipeline for the delay and angular spread priors. Both spread modalities share this identical linear architecture, predicting expected spread in the log domain via regime-wise ridge regression over 23 spatial and geometric features.}
 \label{fig:try79_pipeline}
 \end{figure}

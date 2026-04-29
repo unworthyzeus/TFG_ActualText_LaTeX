@@ -11,21 +11,21 @@ came from diagnosing the target distributions, enforcing ground-only metrics,
 separating LoS and NLoS behaviour, and using calibrated priors where the data
 clearly followed a known propagation structure.
 
-The original numerical targets were met by the finished non-DL priors. Try~78
+The original numerical targets were met by the finished ML-calibrated priors. The path-loss prior
 achieved \SI{1.9246}{dB} overall path-loss RMSE, with \SI{1.7516}{dB} LoS and
-\SI{3.3967}{dB} NLoS on the held-out cities. Try~79 achieved \SI{28.10}{ns}
+\SI{3.3967}{dB} NLoS on the held-out cities. The spread priors achieved \SI{28.10}{ns}
 delay-spread RMSE and \SI{13.74}{\degree} angular-spread RMSE on the same
-evaluation contract. The final Try~80 neural model then improved those frozen
+evaluation contract. The final residual GMM-head model then improved those frozen
 anchors on the unseen test cities, reaching \SI{1.6519}{dB} path-loss RMSE,
 \SI{26.5570}{ns} delay-spread RMSE, and \SI{11.3854}{\degree}
 angular-spread RMSE.
 
 \subsection{What the final result means}
 
-The path-loss result is the clearest success case. Try~78 already reached
+The path-loss result is the clearest success case. The path-loss prior already reached
 \SI{1.9246}{dB} overall RMSE without a neural correction, which shows that a
 large part of the CKM path-loss field is governed by stable radial and
-visibility-dependent structure. Try~80 reduced this to \SI{1.6519}{dB}. This
+visibility-dependent structure. The final model reduced this to \SI{1.6519}{dB}. This
 improvement is numerically smaller than the early jumps between failed neural
 models, but it matters more because it is obtained after the strong prior has
 already removed the easy component of the task. The remaining error is mostly
@@ -35,7 +35,7 @@ geometry-to-radio alignment.
 The spread targets should be interpreted differently. Delay spread and angular
 spread are not smooth deterministic surfaces in the same way as LoS path loss:
 they contain spike-like regimes, long tails, and topology-dependent mixtures.
-For that reason, the Try~80 gains from \SI{28.10}{ns} to \SI{26.5570}{ns} in
+For that reason, the final-model gains from \SI{28.10}{ns} to \SI{26.5570}{ns} in
 delay spread and from \SI{13.74}{\degree} to \SI{11.3854}{\degree} in angular
 spread are meaningful even though they are modest in absolute terms. They show
 that the neural residual can add spatial context on top of the calibrated
@@ -58,7 +58,7 @@ but the successful formulation is not a plain U-Net-style regression problem.
 Pure image-to-image models learned the smooth radial structure reasonably well
 in LoS regions but repeatedly failed on NLoS tails and spread distributions.
 The final priors satisfy the path-loss, delay-spread, and angular-spread error
-targets, while Try~80 shows that a joint residual framework can refine those
+targets, while the final model shows that a joint residual GMM-head framework can refine those
 priors without discarding their physical meaning.
 
 \textbf{RQ2: prior versus neural prediction.} The answer is target-dependent.
@@ -85,18 +85,18 @@ diagnostics, and UAV-height breakdowns. This matters because weaker random
 splits or unmasked metrics can make a model look better without improving the
 deployment-relevant task.
 
-The second contribution is the distribution-first diagnosis. The post-Try~75
+The second contribution is the distribution-first diagnosis. The late-stage
 histograms showed that the previous PMHHNet family was not merely underpowered;
 it was being asked to regress multi-modal and spike-plus-tail targets with
-losses that reward a single central estimate. Try~76 and Try~77 converted that
+losses that reward a single central estimate. The distribution-first predecessors converted that
 diagnosis into GMM-based dense predictors and demonstrated why marginal target
 shape must guide the model head.
 
-The third contribution is the final prior family. Try~78 explains why the LoS
+The third contribution is the final prior family. The path-loss prior explains why the LoS
 path-loss map has a strong radial structure and why an enhanced two-ray model
-can outperform many neural attempts on that regime. Try~79 extends the same
+can outperform many neural experiments on that regime. The spread prior extends the same
 principle to spread statistics with log-domain ridge calibration. Together,
-these priors become interpretable anchors for the Try~80 joint residual model.
+these priors become interpretable anchors for the final joint residual GMM-head model.
 
 \subsection{Practical implications and scope}
 
@@ -138,9 +138,9 @@ Several abandoned directions were scientifically useful. The pix2pix-style cGAN
 line produced sharper-looking maps but did not improve the physical RMSE that
 matters for propagation. Six-way topology experts and PMHHNet variants improved
 organisation and reduced some overfitting, but they did not remove the NLoS
-mode-collapse problem. Multi-scale and quad-head attempts added supervision at
+mode-collapse problem. Multi-scale and quad-head experiments added supervision at
 several resolutions, yet they did not solve the deeper distribution mismatch.
-Try~71 showed that heteroscedastic uncertainty can identify hard pixels, but it
+The heteroscedastic uncertainty diagnostic showed that hard pixels can be identified, but it
 was not enough by itself to become the final predictor.
 
 These failures are not side notes. They are the reason the thesis ends with a
@@ -188,12 +188,12 @@ GMM and heteroscedastic heads exposed spike-plus-tail behaviour and hard-pixel
 uncertainty. &
 The spread targets were treated as distributional, not simply as smooth scalar
 regression maps. \\
-Try~78 and Try~79 priors &
-Calibrated physical and statistical priors could beat many neural attempts on
+Final priors &
+Calibrated physical and statistical priors could beat many neural experiments on
 their intended regimes. &
 The final system used priors as frozen anchors rather than as optional
 features. \\
-Try~80 &
+Final residual GMM-head model &
 Residual learning improved the frozen anchors without erasing their
 interpretability. &
 The final claim became a hybrid one: calibrated priors plus bounded neural
@@ -205,7 +205,7 @@ correction under strict city holdout. \\
 \section{Future Directions}
 
 \paragraph{Short-term.}
-The immediate extension is to strengthen the current Try~80 residual pipeline
+The immediate extension is to strengthen the current residual pipeline
 without changing the evaluation contract. The most useful additions are
 transmitter-oriented mixup, more explicit corridor losses, and a controlled
 ablation of each residual head and loss weight. These experiments would test
@@ -221,7 +221,7 @@ this stage would simulate the same cities across several radio configurations
 so that the model can separate geometry effects from configuration effects.
 
 \paragraph{Long-term.}
-The final extension is field calibration. The Try~78 and Try~79 priors are
+The final extension is field calibration. The path-loss and spread priors are
 interpretable, which makes them suitable for simulator-to-reality correction
 using a limited number of real measurements. In the long term, this could lead
 to a CKM predictor that starts from ray-traced or prior-generated maps, adapts

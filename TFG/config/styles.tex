@@ -30,9 +30,9 @@
 \newgeometry{%
   headheight=30pt,
   headsep=1cm,
-  top=3.5cm,
-  bottom=3.5cm,
-  footskip=1.5cm,
+  top=3.1cm,
+  bottom=3.1cm,
+  footskip=1.2cm,
   left=3cm,
   right=3cm,
   marginparwidth=20pt,
@@ -114,10 +114,15 @@
 {5 pt}% Vertical separator between the label and the title body
 {\flushright\bfseries\LARGE}% Code preceding title body (title is LARGE bold and raggedleft)
 []% Code after the title body.
+\titlespacing*{\chapter}{0pt}{-8pt}{20pt}
+\titlespacing*{\section}{0pt}{1.6ex plus .4ex minus .2ex}{0.9ex plus .2ex}
+\titlespacing*{\subsection}{0pt}{1.4ex plus .3ex minus .2ex}{0.7ex plus .2ex}
+\titlespacing*{\subsubsection}{0pt}{1.2ex plus .3ex minus .2ex}{0.6ex plus .2ex}
 
 %%% STYLE FOR TABLES %%%
 % Increase spacing between cell content and borders
-\renewcommand{\arraystretch}{1.3}
+\renewcommand{\arraystretch}{1.18}
+\setlength{\tabcolsep}{5pt}
 
 % Keep equations and floats from opening large vertical gaps. The template
 % defaults are generous; these values are still readable but avoid half-empty
@@ -126,9 +131,9 @@
 \setlength{\belowdisplayskip}{8pt plus 2pt minus 2pt}
 \setlength{\abovedisplayshortskip}{5pt plus 2pt minus 1pt}
 \setlength{\belowdisplayshortskip}{5pt plus 2pt minus 1pt}
-\setlength{\textfloatsep}{12pt plus 2pt minus 2pt}
-\setlength{\floatsep}{10pt plus 2pt minus 2pt}
-\setlength{\intextsep}{10pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
 \setlength{\emergencystretch}{2em}
 
 %%% BIBLIOGRAPHY STYLE %%%
@@ -145,6 +150,7 @@
   textfont={it,small},
   justification=justified,
   singlelinecheck=false,
+  skip=4pt,
 }
 
 %%% TIKZ/PGF DRAWING GLOBAL STYLES %%%

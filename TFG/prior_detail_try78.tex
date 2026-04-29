@@ -3,7 +3,7 @@
 The LoS prior is not a pure FSPL prior. FSPL is kept because it is the
 direct-ray normalization term of the coherent two-ray model: it gives the
 path loss that would be observed if only the direct ray existed. The deployed
-Try 78 LoS branch then adds the fitted ground-reflection interference term,
+The LoS branch then adds the fitted ground-reflection interference term,
 a height-dependent bias, and a smoothed radial residual profile. This differs
 from the NLoS branch, which uses a longer pixel-feature vector and a
 regime-wise linear calibration.
@@ -377,11 +377,11 @@ The entries are computed as follows:
 \(C_{\mathrm{2ray}}(x)\) & Coherent interference correction. & Converts the complex direct-plus-reflected field sum into an oscillatory dB correction around FSPL. \\
 \(b(h_{\mathrm{tx}})\) & Height-interpolated bias. & Removes a remaining per-height offset after the coherent two-ray fit. \\
 \(r(d_{2D},h_{\mathrm{tx}})\) & Smoothed radial residual profile, clipped to \(\pm2.5\) dB. & Corrects systematic distance-dependent residuals not captured by the two-ray equation. \\
-\(\mathrm{clip}_{[20,180]}\) & Output guard. & Keeps the frozen prior inside the physical path-loss range used by Try 80. \\
+\(\mathrm{clip}_{[20,180]}\) & Output guard. & Keeps the frozen prior inside the physical path-loss range used by the final model. \\
 \bottomrule
 \end{tabularx}
-\caption{Term-by-term inventory of the \texttt{Try 78} LoS prior used by
-\texttt{Try 80}. Unlike the NLoS branch, this is not a long pixel-feature
+\caption{Term-by-term inventory of the LoS prior used by
+the final model. Unlike the NLoS branch, this is not a long pixel-feature
 regression vector; it is a height-interpolated two-ray calibration plus a
 radial residual table.}
 \label{tab:x78_los_inventory}
@@ -606,7 +606,7 @@ to alternating zones of constructive and destructive interference.}
 \subsection{NLoS branch}
 \label{sec:nlos_branch}
 
-The NLoS path-loss branch used in \texttt{Try 80} is not a pure literature
+The NLoS path-loss branch used in the final model is not a pure literature
 formula. It is a hybrid engineering model built in four stages.
 
 \subsubsection{Stage 1: raw NLoS propagation prior}
@@ -780,8 +780,8 @@ m_{\mathrm{LoS}}(x)\,\mathrm{PL}_{\mathrm{LoS,blend}}(x)
 Since $m_{\mathrm{LoS}}(x)$ is binary, Eq.~\eqref{eq:pl0} is a hard switch:
 it selects the LoS expression on LoS pixels and the NLoS expression on NLoS
 pixels. The auxiliary blend in Eq.~\eqref{eq:los_blend} was used in older
-\texttt{Try 78} variants to keep the LoS formula below an A2G envelope. In
-the final frozen \texttt{Try 80} path, LoS pixels come directly from the
+earlier variants to keep the LoS formula below an A2G envelope. In
+the final frozen path, LoS pixels come directly from the
 enhanced two-ray prior $\mathrm{PL}^{(0)}$, so Eq.~\eqref{eq:pl0} and
 Eq.~\eqref{eq:los_blend} are retained only for historical completeness.
 The LoS/NLoS mask used here is the explicit CKM mask provided with the
@@ -793,7 +793,7 @@ evaluated in this thesis.
 \subsubsection{Stage 3: map-derived morphology features}
 
 The enhanced two-ray prior $\mathrm{PL}^{(0)}(x)$ defined in
-Eq.~\eqref{eq:pl0} is the only physical model in \texttt{Try 78}; it depends
+Eq.~\eqref{eq:pl0} is the only physical model in the path-loss prior; it depends
 exclusively on $\{h_{\mathrm{tx}},h_{\mathrm{rx}},d,\lambda\}$ and knows
 nothing about buildings, density, obstruction, or shadowing. The feature
 vector $\mathbf{x}_{78}(x)$ defined below is \emph{not} a competing path-loss
@@ -859,7 +859,7 @@ entry before the detailed definitions below.
 \(1\) & Bias term. & Lets each regime learn a constant offset after all physical terms are included. \\
 \bottomrule
 \end{tabularx}
-\caption{Term-by-term inventory of the \texttt{Try 78} NLoS calibration
+\caption{Term-by-term inventory of the NLoS calibration
 vector.}
 \label{tab:x78_term_inventory}
 \end{table}
@@ -1111,7 +1111,7 @@ streets''. Determining exactly which terms are dispensable would require a
 large ablation sweep over pairs or subsets of features. Even a pairwise
 screening would scale as $O(n^2)$ runs for a vector with $n$ terms, and each
 run would have to regenerate and inspect large calibration artifacts. The LoS
-two-ray calibration JSON used by \texttt{Try 80}, for example, is about
+two-ray calibration JSON used by the final model, for example, is about
 200\,000 lines long, mostly because it stores height-dependent radial residual
 profiles. For this reason the final vector keeps some correlated terms when
 they improved validation behavior.
@@ -1129,7 +1129,7 @@ The regime $r$ is identified by three keys:
 This gives up to $3 \times 2 \times 3 = 18$ regimes.
 
 The stored calibration for this legacy mixed-prior map still contains both LoS
-and NLoS regime coefficients. However, in the final frozen \texttt{Try 80}
+and NLoS regime coefficients. However, in the final frozen
 path-loss assembly only the NLoS pixels from this calibrated map are used,
 because LoS pixels are replaced by the separate enhanced two-ray
 prior.
@@ -1175,7 +1175,7 @@ The six topology classes are assigned by thresholding both quantities:
 with thresholds $d_1 = 0.12$, $d_2 = 0.28$ (density fractions),
 $h_1 = 12$ m, $h_2 = 28$ m. The three-class label
 (\texttt{open}/\texttt{mixed}/\texttt{dense}) is the prefix of
-$\mathrm{class}_6$ and is used in \texttt{Try 80} reporting.
+$\mathrm{class}_6$ and is used in final-model reporting.
 
 The antenna-height bin is assigned by UAV height tertiles:
 
@@ -1225,7 +1225,7 @@ form solution:
 where $\textbf{X}_r$ stacks the feature vectors and $\textbf{y}_r$ stacks
 the measured path-loss values. In practice, if the matrix is near-singular
 (sparse regime), a fallback to a less specific regime key is used (see
-the fallback chain in the Try 79 section, which uses the same strategy).
+the fallback chain in the spread-prior section, which uses the same strategy).
 
 The terms in Eq.~\eqref{eq:ols_closed} are standard linear least-squares
 quantities. The matrix \(\textbf{X}_r^\top\textbf{X}_r\) is the
@@ -1250,7 +1250,7 @@ regime is:
 The large bias weight ($w_{15} = 48.83$) and the large negative
 shadowing-proxy weight ($w_{12} = -47.15$) partially cancel, together
 acting as a calibrated effective offset for this regime.
-This makes Try~78 an interpretable calibrated surrogate rather than a pure
+This makes the path-loss prior an interpretable calibrated surrogate rather than a pure
 first-principles propagation formula: the two-ray and A2G terms set the
 shape, while regime-wise fitting adapts the coefficients to the CKM simulator
 and to the dataset's stored masks.
@@ -1306,14 +1306,14 @@ This is a single square root over all pooled valid pixels, not an average of
 per-sample RMSEs. Units are dB (path loss), ns (delay spread), and
 degrees (angular spread), all in the native non-transformed domain.
 
-\subsection{Observed Try 78 results}
+\subsection{Observed path-loss-prior results}
 
-The headline path-loss numbers for \texttt{Try 78} are reported in the
+The headline path-loss numbers for the calibrated prior are reported in the
 results chapter (LoS waterfall in Table~\ref{tab:try78_los_waterfall}): the
 enhanced two-ray prior $\mathrm{PL}^{(0)}$ reaches \SI{1.7516}{dB}
 pixel-weighted RMSE on LoS pixels, the regime-wise OLS NLoS head reaches
 \SI{3.3967}{dB} on NLoS pixels, and the combined frozen prior that feeds
-\texttt{Try 80} reaches \SI{1.9246}{dB} overall.
+the final-model comparison reaches \SI{1.9246}{dB} overall.
 
 \begin{figure}[H]
 \centering
@@ -1362,6 +1362,6 @@ pixel-weighted RMSE on LoS pixels, the regime-wise OLS NLoS head reaches
 \draw[->, thick] (blend) -- node[right, font=\scriptsize] {$\mathbb{R}^{H \times W}$} (final);
 
 \end{tikzpicture}
-\caption{Pipeline for the \texttt{Try 78} hybrid path loss prior. The LoS branch relies on an explicit two-ray interference model, while the NLoS branch calibrates a raw prior against map-derived morphology features using regime-wise OLS. The two branches are hard-switched based on the LoS mask to produce the final frozen prior.}
+\caption{Pipeline for the hybrid path loss prior. The LoS branch relies on an explicit two-ray interference model, while the NLoS branch calibrates a raw prior against map-derived morphology features using regime-wise OLS. The two branches are hard-switched based on the LoS mask to produce the final frozen prior.}
 \label{fig:try78_pipeline}
 \end{figure}

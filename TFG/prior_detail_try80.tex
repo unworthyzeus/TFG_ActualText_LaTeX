@@ -1,7 +1,7 @@
 \subsection{Experimental protocol and reporting status}
 
-\texttt{Try 80} follows the same strict split philosophy as the recent
-distribution-first tries. The split is a city-holdout split with
+The final residual GMM-head model follows the same strict split philosophy as the recent
+distribution-first models. The split is a city-holdout split with
 \texttt{split\_seed = 42}, \texttt{val\_ratio = 0.15}, and
 \texttt{test\_ratio = 0.15}. Metrics and losses are computed only on valid
 ground pixels, using the target-specific no-data masks and the explicit
@@ -28,16 +28,16 @@ components per task and region, \(\alpha\)-gate bias \(-2\), and fixed
 residual caps specified separately for path loss, delay spread and
 angular spread.
 
-The final \texttt{Try 80} checkpoint reported in Chapter~\ref{chap:results}
-uses these frozen \texttt{Try 78}/\texttt{Try 79} priors as anchors. This
+The final checkpoint reported in Chapter~\ref{chap:results}
+uses these frozen path-loss and spread priors as anchors. This
 section therefore documents both the frozen-prior inputs and the residual
 architecture used by the final evaluation.
 
 \subsection{Prior-Anchored GMM Residual Model}
 
-\texttt{Try 80} introduces a joint multi-task architecture that predicts a
-\emph{Gaussian Mixture Model (GMM)} at each pixel, rather than a simple point
-estimate. For each task \(k \in \{\mathrm{PL},\, \mathrm{DS},\, \mathrm{AS}\}\),
+The final model introduces a joint multi-task residual GMM-head architecture that
+predicts a \emph{Gaussian Mixture Model (GMM)} at each pixel, rather than a
+simple point estimate. For each task \(k \in \{\mathrm{PL},\, \mathrm{DS},\, \mathrm{AS}\}\),
 region \(r\in\{\mathrm{LoS},\mathrm{NLoS}\}\), component
 \(j\in\{1,2,3\}\), and valid pixel \(x\), the model predicts a mixture
 weight, a mean and a standard deviation. Path loss is modeled in native dB
@@ -89,7 +89,7 @@ y^{\mathrm{prior}}_{k,r}(x)
 where:
 \begin{itemize}
 \item \(y^{\mathrm{prior}}_{k,r}(x)\) is the frozen regional prior from
-      \texttt{Try 78} or \texttt{Try 79},
+      the path-loss or spread prior,
 \item \(\delta^{(g)}_{k,r,j}\) is a map-level residual offset for component
       \(j\),
 \item \(\delta^{(\ell)}_{k,r}(x)\) is a per-pixel residual refinement shared
@@ -180,7 +180,7 @@ Sec.~\ref{sec:try80_objective}.
 
 \subsection{Architecture: Shared UNet with FiLM}
 
-\texttt{Try 80} processes the map inputs through a shared multi-task
+The final model processes the map inputs through a shared multi-task
 convolutional encoder-decoder. In the final \texttt{huge} configuration,
 scalar UAV height is encoded into a condition vector
 $\textbf{c} \in \mathbb{R}^{160}$ and injected dynamically into the
@@ -308,7 +308,7 @@ $\hat y_k = \sum p_{k,j} \mu_{k,j}$};
 
 \end{tikzpicture}
 }
-\caption{Schematic of the final \texttt{Try 80 huge} shared UNet architecture with FiLM conditioning.}
+\caption{Schematic of the final huge shared UNet architecture with FiLM conditioning.}
 \label{fig:try80_arch}
 \end{figure}
 
@@ -389,7 +389,7 @@ f_i
 
 \end{tikzpicture}%
 }
-\caption{Detailed \texttt{Try 80} sinusoidal height-conditioning path.}
+\caption{Detailed sinusoidal height-conditioning path.}
 \label{fig:try80_film_detail}
 \end{figure}
 
@@ -455,12 +455,17 @@ $\tilde\sigma_{k,r}(x)$.
 
 \end{tikzpicture}%
 }
-\caption{Detailed prior-anchored GMM head used by \texttt{Try 80}.}
+\caption{Detailed prior-anchored GMM head used by the final model.}
 \label{fig:try80_gmm_detail}
 \end{figure}
 
 \subsection{Composite Optimization Objective}
 \label{sec:try80_objective}
+\begingroup
+\setlength{\abovedisplayskip}{5pt plus 1pt minus 1pt}
+\setlength{\belowdisplayskip}{5pt plus 1pt minus 1pt}
+\setlength{\abovedisplayshortskip}{3pt plus 1pt minus 1pt}
+\setlength{\belowdisplayshortskip}{3pt plus 1pt minus 1pt}
 
 The implementation defines a composite loss that can train both the
 probabilistic GMM head and the deterministic residual map. For each task, let
@@ -497,17 +502,9 @@ w_k
 \label{eq:try80_total_loss}
 \end{equation}
 
-The numerical weights used by the final
-\texttt{try80\_joint\_huge\_pathloss\_finetune} checkpoint are
-\(\lambda_{\mathrm{NLL}}=0\), \(\lambda_{\mathrm{KL}}=0\),
-\(\lambda_{\mathrm{mom}}=0\), \(\lambda_{\mathrm{anchor}}=0.01\),
-\(\lambda_{\mathrm{guard}}=0.02\), \(\lambda_{\mathrm{out}}=0\),
-\(\lambda_{\mathrm{RMSE}}=1.0\), and \(\lambda_{\mathrm{MAE}}=0.05\).
-The task weights are \(w_{\mathrm{PL}}=1.0\),
-\(w_{\mathrm{DS}}=0.25\), and \(w_{\mathrm{AS}}=0.25\). The validation
-checkpoint score uses separate reporting weights
-\((1.0,\,0.30,\,0.25)\) for path loss, delay spread and angular spread,
-respectively.
+Table~\ref{tab:try80_loss_settings} gives the resolved weights for both the
+huge relaxed-residual stage and the final path-loss fine-tune; the equations
+below define the terms used in that table.
 
 \paragraph{Map negative log-likelihood.}
 The likelihood is computed separately in LoS and NLoS regions, then averaged
@@ -593,7 +590,7 @@ The anchor penalty keeps the correction small:
 \label{eq:try80_anchor}
 \end{equation}
 The guard term is Eq.~\eqref{eq:try80_loss}. Together, these two terms encode
-the design philosophy of \texttt{Try 80}: the DNN is allowed to improve the
+the final design philosophy: the DNN is allowed to improve the
 prior, but it must pay a penalty for large or harmful deviations.
 
 \paragraph{Outlier budget and deterministic losses.}
@@ -655,10 +652,11 @@ The RMSE and MAE terms are conventional masked deterministic losses:
   \draw[arr] (\n.south) -- (total.north);
 \end{tikzpicture}%
 }
-\caption[Composite \texttt{Try 80} loss family]{Composite \texttt{Try 80}
+\caption[Composite final loss family]{Composite final
 loss family. In the final path-loss fine-tuning stage, the selected checkpoint
 keeps the GMM head and uses RMSE/MAE, anchor and guard penalties; NLL, KL,
 moment and outlier-budget weights are set to zero. Earlier relaxed-residual
 runs used non-zero probabilistic weights.}
 \label{fig:try80_loss_terms}
 \end{figure}
+\endgroup

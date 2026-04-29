@@ -17,7 +17,7 @@ The project is formulated as dense image-to-image regression on
 $513\times513$ pixel city maps. The input is primarily a building-height
 topology map, a LoS/NLoS mask, and the UAV antenna height. The outputs studied
 through the project are path loss, delay spread, and angular spread. The final
-line of work combines interpretable non-deep-learning priors with deep residual
+line of work combines interpretable ML-calibrated priors with deep residual
 models, so the neural network learns corrections around a strong physical
 anchor instead of rediscovering the whole propagation law from scratch.
 
@@ -75,20 +75,20 @@ The main contributions corresponding to these questions are:
   \item A reproducible pipeline for dense \(513\times513\) CKM prediction on
         the FR3 UAV dataset, with ground-only masking, city-holdout splits,
         and sinusoidal FiLM conditioning on continuous UAV altitude.
-  \item A calibrated non-deep-learning path-loss prior (Try~78) based on an
+  \item An ML-calibrated path-loss prior based on an
         enhanced two-ray LoS model and a regime-wise OLS NLoS head,
         achieving \SI{1.75}{dB} LoS and \SI{3.40}{dB} NLoS RMSE under
         city-holdout evaluation.
-  \item A calibrated non-deep-learning spread prior (Try~79) combining
+  \item An ML-calibrated spread prior combining
         log-domain ridge regression with geometry and morphology features,
         reaching \SI{28.10}{ns} delay-spread RMSE and
         \ang{13.74} angular-spread RMSE on the same split.
-  \item A prior-anchored joint neural residual model (Try~80) that shares a
-        single backbone across the three targets, conditioned on the frozen
-        Try~78 and Try~79 priors.
+  \item A prior-anchored joint neural residual GMM-head model that shares
+        a single backbone across the three targets, conditioned on the frozen
+        the frozen path-loss and spread priors.
   \item A distribution-first diagnosis of the previous PMHHNet family
-        (Tries~66--75) that identifies NLoS mode collapse and motivates the
-        Try~76 GMM architecture. The distribution analysis is released as
+        that identifies NLoS mode collapse and motivates the
+        distribution-first GMM architecture. The distribution analysis is released as
         supporting documentation alongside the code.
 \end{itemize}
 
@@ -98,14 +98,14 @@ The state-of-the-art chapter surveys cGAN and U-Net image-to-image baselines,
 the PMNet and RMTransformer families on the ICASSP~2023 challenge,
 physics-hybrid and PINN approaches, AIRMap, Gao et al., PathFinder, and
 distribution-aware and heteroscedastic methods; it closes with the fairness
-axes along which Try~80 is positioned. The methodology chapter describes the
-CKM dataset, the ground-mask protocol, the attempt-evolution table, the shared
+axes along which the final model is positioned. The methodology chapter describes the
+CKM dataset, the ground-mask protocol, the shared
 PMHHNet architecture with sinusoidal height conditioning, and the four
-prior-detail subsections for Tries~78, 79 and 80. The results chapter reports
-the quantitative outcomes: the Try~78 LoS waterfall, per-expert and per-height
-breakdowns, Try~79 spread results, and the final Try~80 test evaluation on
+prior-detail subsections for the path-loss prior, spread priors, and residual
+GMM. The results chapter reports the quantitative outcomes: the LoS waterfall,
+per-expert and per-height breakdowns, spread-prior results, and the final test evaluation on
 unseen cities. The sustainability and conclusions chapters close the thesis,
-followed by the appendices with the representative validation panels and the Try~80
+followed by the appendices with the representative validation panels and the final
 configuration summary.
 
 \section{Requirements and specifications}
@@ -145,23 +145,23 @@ continuously across the dataset.
 The work started from a U-Net and pix2pix-style cGAN baseline
 \cite{isola2017pix2pix}. This was a natural first approach because the task is
 dense map prediction, but the adversarial component did not solve the physical
-errors that mattered most. Later attempts changed decoder upsampling, added
+errors that mattered most. Later experiments changed decoder upsampling, added
 multi-scale supervision, separated metrics and regimes, introduced physical
 prior channels, and finally moved to topology-partitioned experts.
 
 The largest methodological change came after the models repeatedly failed on
 NLoS tails. Histogram analysis showed that the path-loss distribution in NLoS
 regions is not well described by a single Gaussian-like target. This motivated
-Try 76: a distribution-first architecture with a sample-level GMM head followed
-by a map head that assigns pixels to distribution components. Try 77 applied
+the distribution-first architecture: a sample-level GMM head followed
+by a map head that assigns pixels to distribution components. The same idea was applied
 the same idea to delay and angular spreads, where spike-plus-tail behaviour is
 even more visible.
 
-The final stage changed the role of deep learning again. Try 78 built a strong
+The final stage changed the role of deep learning again. The path-loss prior built a strong
 interpretable path-loss prior from FSPL, enhanced two-ray LoS propagation, and
-calibrated NLoS corrections. Try 79 built log-domain ridge-calibrated priors
-for delay and angular spread. Try 80 then combined these frozen priors with a
-shared multi-task residual network.
+calibrated NLoS corrections. The spread-prior module built log-domain ridge-calibrated priors
+for delay and angular spread. The final residual GMM-head model then combined these frozen priors with a
+shared multi-task residual GMM-head network.
 
 \section{Work plan}
 \label{sec:workplan}
@@ -170,13 +170,13 @@ The original work plan assumed a mostly linear path: literature review, dataset
 preparation, baseline U-Net/cGAN training, model improvement, evaluation, and
 writing. The actual project became more experimental because each stage exposed
 a different limitation. Figure~\ref{fig:gantt} therefore shows the plan as the
-major technical phases rather than as all 80 individual attempts.
+major technical phases rather than as all 80 individual experiments.
 
 \begin{figure}[ht]
   \centering
   \input{img/gantt_diagrama}
   \caption[Project's Gantt diagram]{Gantt diagram of the project, grouped by
-  the main architectural phases rather than by individual attempts.}
+  the main architectural phases rather than by individual experiments.}
   \label{fig:gantt}
 \end{figure}
 

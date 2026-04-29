@@ -1,9 +1,9 @@
-This section provides the technical documentation for the non-DL physical
-priors (\texttt{Try 78} and \texttt{Try 79}) and the final joint architecture
-(\texttt{Try 80}). It serves as a bridge between the high-level attempt history
+This section provides the technical documentation for the ML-calibrated physical
+path-loss and spread priors and the final joint residual GMM-head model
+architecture. It serves as a bridge between the high-level development history
 and the numerical results, explaining the exact mathematical transformations,
 how every parameter was fitted in practice, and what is genuinely new in the
-final \texttt{Try 80} approach.
+final residual GMM-head model approach.
 
 \begin{table}[H]
 \centering
@@ -11,7 +11,7 @@ final \texttt{Try 80} approach.
 \begin{tabularx}{\textwidth}{p{2.2cm} p{3.1cm} p{4.0cm} X}
 \toprule
 \textbf{Block} & \textbf{Literature basis} & \textbf{CKM adaptation} &
-\textbf{Role in \texttt{Try 80}} \\
+\textbf{Role in the final model} \\
 \midrule
 Path-loss LoS & FSPL and enhanced two-ray propagation &
 Effective height-dependent reflection parameters and radial residuals fitted
@@ -30,7 +30,7 @@ Regime-wise ridge regression in \(\log(1+y)\) space using multiscale
 morphology and obstruction features &
 Frozen spread priors used as anchors for the multi-task residual model. \\
 \addlinespace
-\texttt{Try 80} residual model & Probabilistic regression and mixture-density
+Final residual GMM-head model & Probabilistic regression and mixture-density
 ideas &
 Prior-anchored per-pixel GMM with residual caps, anchor gates, explicit
 region masks and shared multi-task trunk &
@@ -39,20 +39,21 @@ interpretable priors. \\
 \bottomrule
 \end{tabularx}
 \caption{One-page summary of what is inherited from the literature, what is
-adapted to CKM, and what is reused or newly assembled in \texttt{Try 80}.}
+adapted to CKM, and what is reused or newly assembled in the final
+residual GMM-head model.}
 \label{tab:executive_summary}
 \end{table}
 
 \subsection{High-level architecture}
 
-The central design decision in \texttt{Try 80} is \emph{not} to learn path
+The central design decision in the final model is \emph{not} to learn path
 loss, delay spread, and angular spread from scratch. Instead:
 
 \begin{itemize}
-\item \texttt{Try 78} provides a frozen prior for \texttt{path\_loss},
-\item \texttt{Try 79} provides frozen priors for \texttt{delay\_spread} and
+\item the path-loss prior provides a frozen prior for \texttt{path\_loss},
+\item the spread-prior module provides frozen priors for \texttt{delay\_spread} and
       \texttt{angular\_spread},
-\item \texttt{Try 80} learns bounded residual corrections around those priors.
+\item the final residual GMM-head model learns bounded corrections around those priors.
 \end{itemize}
 
 The deterministic or interpretable structure is kept in the prior, and the deep
@@ -67,8 +68,8 @@ Figure~\ref{fig:pipeline} illustrates the overall pipeline.
   arr/.style={-{Stealth[length=5pt]}, thick},
   node distance=0.5cm and 1.1cm
 ]
-\node[box, fill=blue!15]  (t78) {Try 78\\(path loss)};
-\node[box, fill=green!15, below=of t78] (t79) {Try 79\\(spreads)};
+\node[box, fill=blue!15]  (t78) {Path-loss\\prior};
+\node[box, fill=green!15, below=of t78] (t79) {Spread\\priors};
 \node[box, fill=orange!15, right=1.2cm of t78, yshift=-0.62cm] (inject)
       {Prior injection\\(input channels)};
 \node[box, fill=red!15, right=1.2cm of inject] (dnn)
@@ -84,7 +85,7 @@ Figure~\ref{fig:pipeline} illustrates the overall pipeline.
 \node[below=0.25cm of dnn, font=\scriptsize, text width=2.4cm, align=center]
       {$\delta \in [-\delta_{\max}, +\delta_{\max}]$};
 \end{tikzpicture}
-\caption{Overall \texttt{Try 80} pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta$ around them.}
+\caption{Overall prior-anchored pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta$ around them.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -94,9 +95,9 @@ Figure~\ref{fig:pipeline} illustrates the overall pipeline.
 The main lesson from the prior phase is that a useful prior is not just a
 physical-looking equation. It is a complete estimator: the formula, fitted
 calibration, feature units, LoS/NLoS mask, topology features, and evaluation
-mask must be identical between fitting and inference. Earlier prior attempts
-used many of the same physical ingredients as \texttt{Try 78}, but they did
-not always keep those pieces aligned. \texttt{Try 78} became strong because it
+mask must be identical between fitting and inference. Earlier prior experiments
+used many of the same physical ingredients as the final path-loss prior, but they did
+not always keep those pieces aligned. The final prior became strong because it
 made the prior self-contained and auditable under the same city-holdout
 contract used for the final model.
 
@@ -105,20 +106,20 @@ formula cannot reliably correct another; local height and density features
 must have the same units when fitted and when applied; and regime assignment
 should come from the sample geometry rather than only from a broad city label.
 Once those constraints were enforced, the prior could separate deterministic
-large-scale structure from the genuinely local residual that Try~80 later
+large-scale structure from the genuinely local residual that the final model later
 learned.
 
 This does not mean that all earlier NLoS failures were only implementation
 mismatches. The no-prior and weak-prior neural branches also failed because
 single-output point regression was a poor match for blocked, multi-modal,
 heavy-tailed NLoS and spread targets. That is why the thesis keeps both
-lessons: \texttt{Try 78}/\texttt{Try 79} fix the prior-estimator problem, while
-\texttt{Try 76}/\texttt{Try 77} motivate distribution-aware heads and residual
+lessons: the final priors fix the prior-estimator problem, while
+the distribution-first predecessors motivate distribution-aware heads and residual
 uncertainty.
 
 \begin{table}[H]
 \centering
-\caption{Compact design rules extracted from the prior attempts.}
+\caption{Compact design rules extracted from the prior experiments.}
 \label{tab:prior_design_rules}
 \small
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.28\textwidth}
@@ -141,7 +142,7 @@ Let literature define axes, not all coefficients &
 Distance, height, frequency, and elevation come from propagation theory;
 effective reflection and local morphology corrections are fitted from CKM. \\
 Learn bounded residuals after the prior &
-Try~80 is allowed to correct local errors without overwriting the calibrated
+The final model is allowed to correct local errors without overwriting the calibrated
 large-scale structure. \\
 \bottomrule
 \end{tabularx}
@@ -152,8 +153,7 @@ large-scale structure. \\
 The final pipeline is a hybrid between classical propagation models,
 distribution-aware regression, and dataset-specific calibration. Table
 ~\ref{tab:prior_literature_mapping} keeps the mapping explicit; the detailed
-equations and fitting procedures follow in the dedicated \texttt{Try 78},
-\texttt{Try 79}, and \texttt{Try 80} subsections.
+equations and fitting procedures follow in the dedicated prior and residual-model subsections.
 
 \begin{table}[H]
 \centering
@@ -168,26 +168,26 @@ equations and fitting procedures follow in the dedicated \texttt{Try 78},
 \toprule
 Block & Literature basis & CKM adaptation & New role in this thesis \\
 \midrule
-Try~78 LoS path loss &
+LoS path loss prior &
 FSPL and coherent two-ray propagation. &
 Effective complex reflection, height-bin interpolation, and radial residual
 fitting on CKM LoS pixels. &
 Reconstructs the radial interference pattern and supplies the frozen LoS
 anchor. \\
-Try~78 NLoS path loss &
+NLoS path loss calibration &
 COST-231/Hata-style attenuation, A2G elevation envelopes, and LoS/NLoS
 separation. &
 Map-derived density, height, NLoS-support, elevation, and shadowing features
 with regime-wise calibration. &
 Turns a broad empirical curve into a local, topology-aware NLoS prior. \\
-Try~79 delay and angular spread &
+Delay and angular spread priors &
 Log-normal spread statistics from 3GPP/WINNER-style channel models and UAV
 elevation trends. &
 Log-domain ridge regression with local morphology features and a sparse-regime
 fallback hierarchy. &
 Provides stable spread anchors without pretending that spreads are smooth
 deterministic path-loss maps. \\
-Try~80 residual model &
+Final residual model &
 U-Net-style dense prediction, FiLM conditioning, probabilistic regression, and
 mixture-density ideas. &
 Prior channels, explicit masks, residual caps, anchor gates, and a shared

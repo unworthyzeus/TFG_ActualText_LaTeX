@@ -3,10 +3,10 @@
 Radio-map prediction sits at the intersection of classical wireless propagation
 modelling, statistical channel analysis, and dense computer-vision regression.
 This chapter surveys the relevant state of the art across four axes that jointly
-motivate the design choices in Try~80: (i)~classical and empirical propagation
+motivate the design choices in the final residual GMM-head model: (i)~classical and empirical propagation
 models, (ii)~deep learning for radio-map estimation, (iii)~physics-informed and
 hybrid neural approaches, and (iv)~distributional and multi-target channel
-modelling. A final section frames fair-comparison criteria and positions Try~80
+modelling. A final section frames fair-comparison criteria and positions the final model
 within the literature.
 
 %---------------------------------------------------------------------
@@ -69,7 +69,7 @@ adding the direct and reflected fields before converting to dB
 \end{equation}
 where $\Gamma$ is the reflection coefficient and $\Delta\phi$ is the phase
 difference determined by the path-length difference.  A calibrated two-ray model
-fitted to the CKM dataset (Try~78 of this thesis) achieves approximately
+fitted to the CKM dataset achieves approximately
 $1.75\,\mathrm{dB}$ RMSE on line-of-sight (LoS) pixels~--- the deterministic
 radial structure explains most LoS variance without any neural network.
 
@@ -117,7 +117,7 @@ A key finding from the CKM dataset is that LoS path-loss residuals after
 two-ray subtraction form almost perfect radial rings around the transmitter.
 This confirms that buildings act primarily as a \emph{visibility mask} in LoS
 conditions rather than as the main source of residual path-loss variance,
-validating the prior-subtraction philosophy of Try~78.
+validating the prior-subtraction philosophy of the final path-loss prior.
 
 \subsection{Delay spread and angular spread in standard channel models}
 
@@ -131,12 +131,13 @@ at the receiver quantifies the spatial diversity of arriving paths.
 variables conditioned on the LoS/NLoS state and distance.  The WINNER~II and
 COST~2100 models adopt the same convention.  In practice, the distributions of
 delay spread and angular spread are right-skewed with a heavy exponential tail
-and often include a spike near zero representing the dominant LoS path.  Try~79
-of this thesis empirically confirms this \emph{spike-plus-exponential} shape for
+and often include a spike near zero representing the dominant LoS path. The
+calibrated spread-prior analysis in this thesis empirically confirms this
+\emph{spike-plus-exponential} shape for
 all topology classes in the CKM dataset, with skewness exceeding~5 and kurtosis
 exceeding~40 in several morphology classes.  A Gaussian model cannot represent
-this shape faithfully, motivating the mixture and distributional approaches of
-Tries~77 and~80.
+this shape faithfully, motivating the mixture and distributional approach used
+by the final residual GMM-head model.
 
 %---------------------------------------------------------------------
 \section{Deep learning for radio-map estimation}
@@ -202,12 +203,12 @@ height-conditioning challenge; (ii)~same-distribution train/test scenes allow
 implicit generator-pattern memorisation; (iii)~the 36~dB window is much narrower
 than CKM's effective 65--130~dB range, intrinsically compressing RMSE values.
 The table is therefore useful as a scale reference for modern image-to-image
-radio-map predictors, not as evidence that the Try~80 task is solved by those
-architectures.  In particular, Try~80 must predict over unseen real-city
+radio-map predictors, not as evidence that the final CKM task is solved by those
+architectures. In particular, the final model must predict over unseen real-city
 geometries, at native \(513\times513\) resolution, with a continuously varying
 UAV altitude and with metrics computed only over valid ground receiver pixels.
 
-A separate transfer test performed in this thesis (the ``weird tries'' baseline)
+A separate transfer test performed in this thesis with official PMNet checkpoints
 placed official PMNet checkpoints on CKM samples.  The best zero-shot result was
 approximately $84\,\mathrm{dB}$ RMSE, with most models collapsing to a nearly
 constant prediction.  After oracle linear calibration from test data the minimum
@@ -275,9 +276,8 @@ to single-edge scattering based on ITU-R~P.526 geometry.  For each pixel, the
 first Fresnel zone obstruction height is computed from the 2D building
 silhouette and converted to a diffraction gain.  This is a classical way of
 injecting a physically meaningful NLoS cue into the input of a
-geometry-assisted CNN.  Try~67 of this thesis implements this channel through
-the \texttt{knife\_edge.py} module, feeding it into the PMHHNet encoder
-alongside the topology map; the effect on the final Try~78--80 pipeline is
+geometry-assisted CNN. This thesis tested this channel through
+a PMHHNet-style encoder alongside the topology map; the effect on the final pipeline is
 covered by the stronger calibrated NLoS prior rather than by a standalone
 knife-edge ablation.
 
@@ -289,7 +289,7 @@ This penalises predictions that violate the wave equation, constraining the
 network to produce physically smooth field maps and reducing corner-transition
 artefacts.  ReVeal achieves~$1.95\,\mathrm{dB}$ RMSE in rural scenarios using
 only 30 training points by leveraging the physical constraint as a strong
-regulariser.  Tries~67--69 of this thesis implement a lightweight analogue:
+regulariser. The PMHHNet diagnostic phase in this thesis implemented a lightweight analogue:
 a masked Laplacian penalty on the residual prediction, which penalises locally
 non-smooth outputs without solving the full Helmholtz operator.
 
@@ -300,15 +300,15 @@ train the neural component to predict only the structured residual.  This design
 reduces the effective learning problem from the full path-loss range to a
 narrower residual distribution, improving data efficiency and interpretability.
 
-Try~78 implements this philosophy for path loss: an enhanced two-ray model fitted
+The final path-loss prior implements this philosophy: an enhanced two-ray model fitted
 per height bin provides a prior map
 $\hat{y}_{\mathrm{PL}}(\textbf{x}) = \mathrm{TwoRay}(d, h_{\mathrm{tx}})$,
 and the neural component predicts the residual
-$\epsilon = y - \hat{y}_{\mathrm{PL}}$.  Try~79 extends the idea to delay spread
+$\epsilon = y - \hat{y}_{\mathrm{PL}}$. The final spread prior extends the idea to delay spread
 and angular spread by using a ridge-regression model in log space with
-TX-centred geometric features and local morphology statistics.  Try~80 unifies
-all three targets under a single shared network anchored to both Try~78 and
-Try~79 priors.
+TX-centred geometric features and local morphology statistics. The final
+residual GMM-head model unifies all three targets under a single shared network anchored
+to both priors.
 
 %---------------------------------------------------------------------
 \section{Channel statistics prediction: delay spread and angular spread}
@@ -326,14 +326,14 @@ frequency band of the underlying measurement campaigns.
 
 Log-domain modelling is physically motivated: spread parameters are
 multiplicative quantities in physical space, so their logarithm is more
-Gaussian-like and additive-noise assumptions are better justified.  Try~79 adopts
+Gaussian-like and additive-noise assumptions are better justified. The calibrated spread prior adopts
 this convention by working in $\log(1+y)$ space throughout, consistent with the
 3GPP empirical modelling framework.
 
 \subsection{Deep learning for wideband channel statistics}
 
 Work on deep learning for delay and angular spread is sparser than for path
-loss.  Most attempts either predict spread globally per sample (a single scalar)
+loss. Most published methods either predict spread globally per sample (a single scalar)
 rather than per pixel, or treat it as an ancillary output of a multitask
 path-loss model.  Per-pixel dense prediction of delay spread and angular spread
 over $513 \times 513$ maps is, to the best of the author's knowledge, not
@@ -342,10 +342,10 @@ addressed by published methods at the time of writing.
 The main challenge is the spike-plus-exponential distribution shape of spread
 targets.  A model trained only with mean-squared error (MSE) collapses to the
 conditional mean, which lies in the interior of the spike and the exponential
-tail and is therefore a poor representative of either regime.  Try~77 addresses
-this with a Gaussian mixture model (GMM) distribution head, and Try~80
-incorporates the Try~79 log-domain ridge prior as an anchor before training the
-residual neural head.
+tail and is therefore a poor representative of either regime. The
+distribution-first spread predecessor addressed this with a Gaussian mixture
+model (GMM) distribution head, and the final residual GMM-head model incorporates the
+log-domain ridge prior as an anchor before training the residual neural head.
 
 \subsection{Distributional mismatch and the spike-plus-exponential problem}
 
@@ -356,17 +356,17 @@ exceeds~40 for both delay and angular spread in several topology classes.  A
 single Gaussian or even a symmetric loss function does not fit this family.
 
 Mixture models are the natural solution, but the required number of components
-depends on what is being modelled.  The Try~76 histogram study selected the
+depends on what is being modelled. The histogram study selected the
 best family for the raw target distributions, where path loss and the spread
 targets often needed four or five components to match the full marginal shape.
-Try~80 uses three components for a different object: the residual distribution
-after the frozen Try~78/Try~79 priors have already explained the dominant LoS,
+The final model uses three components for a different object: the residual distribution
+after the frozen priors have already explained the dominant LoS,
 NLoS, delay-spread, and angular-spread structure.  This is a small design
 change rather than a contradiction: the prior removes much of the target-side
 multi-modality, so the residual head only needs a compact mixture to represent
 under-correction, near-zero correction, and over-correction modes.  This
-motivates the Stage-A distribution head in Try~76 (for path loss), Try~77 (for
-spreads), and the lighter GMM-3 residual head carried into Try~80.
+motivates the Stage-A distribution head in the path-loss and spread
+predecessors, and the lighter GMM-3 residual head carried into the final model.
 
 %---------------------------------------------------------------------
 \section{Distribution-aware and multi-target modelling}
@@ -384,7 +384,7 @@ log-likelihood (NLL)
 \end{equation}
 Pixels with high aleatoric uncertainty (deep NLoS shadows, building edges)
 receive lower effective weight, while the network is penalised for
-overestimating uncertainty everywhere.  Try~71 of this thesis applies this
+overestimating uncertainty everywhere. A PMHHNet uncertainty diagnostic applied this
 loss to path-loss prediction, with $\sigma^2$ predicted as a second output
 channel of PMHHNet.
 
@@ -401,7 +401,7 @@ works support the use of mixture outputs for wireless propagation, but they
 operate at the level of scalar or channel-sample distributions rather than
 dense radio-map generation.
 
-Try~76 implements a two-stage architecture: Stage~A produces per-sample GMM
+The distribution-first path-loss predecessor implements a two-stage architecture: Stage~A produces per-sample GMM
 parameters $\{\pi_k, \mu_k, \sigma_k\}_{k=1}^{K}$ via a shallow convolutional
 encoder with sinusoidal FiLM conditioning on UAV height; Stage~B is a small
 U-Net that produces per-pixel component assignments $p_k(i,j)$ and
@@ -411,7 +411,7 @@ within-component deviations $z(i,j)$.  The final prediction is
 \end{equation}
 This formulation avoids the mode-collapse failure of MSE regression while
 maintaining a compact architecture.  The same two-stage GMM design is used in
-Try~77 for delay and angular spread, with modified parameters for the
+the spread predecessor for delay and angular spread, with modified parameters for the
 spike-plus-exponential prior structure.  The innovative aspect is therefore
 not the isolated use of a Gaussian mixture, but its role as a global
 distribution head that tells the dense decoder what value distribution the map
@@ -438,7 +438,7 @@ delay spread and potentially wide angular spread from diffracted paths.  A joint
 model can therefore use the intermediate feature maps learned for path loss to
 partially explain spread patterns, reducing the effective learning problem.
 
-Try~80 instantiates this idea explicitly: one shared encoder processes the
+The final residual GMM-head model instantiates this idea explicitly: one shared encoder processes the
 topology map and UAV height, and three parallel decoder heads predict path-loss
 residual, delay-spread residual, and angular-spread residual respectively, all
 anchored to their corresponding physical priors.  The multi-task loss is a
@@ -454,9 +454,9 @@ weighted sum of per-target NLL terms, with weights tuned on the validation set.
 Stochastic weight averaging (SWA) \cite{izmailov2018swa} averages model weights
 along the training trajectory at a low, approximately constant learning rate.
 This finds wider optima in the loss landscape that generalise better to
-unseen data.  The CKM city-holdout evaluation makes generalisation particularly
+unseen data. The CKM city-holdout evaluation makes generalisation particularly
 important since validation and test cities are never seen during training.
-Tries~67--71 incorporate SWA starting from 60\,\% of the training budget.
+The PMHHNet diagnostic phase incorporated SWA starting from 60\,\% of the training budget.
 
 \subsection{Exponential moving average weights}
 
@@ -502,33 +502,39 @@ valid comparison:
         power, delay spread, angular spread.
   \item \textbf{Dynamic range and clipping:} determines the RMSE floor and
         ceiling independently of model quality.
-  \item \textbf{Inference extras:} test-time augmentation (TTA), calibration,
-        SWA, EMA weights; must be declared for both systems compared.
+  \item \textbf{Inference extras and calibration source:} test-time
+        augmentation (TTA), SWA, EMA weights, and whether calibration is
+        train-only, validation-based, or fitted from test/field measurements.
 \end{enumerate}
 
 This thesis uses a strict city-holdout split, continuous UAV height, ground-only
 metrics (building pixels excluded from loss and metrics), native
-$513 \times 513$ pixel maps, and no post-training calibration.  Table~\ref{tab:fairness}
-summarises how published methods compare along these axes.
+$513 \times 513$ pixel maps, and no test-data or field calibration after the
+train-calibrated priors and final checkpoint are frozen. Calibration is
+therefore not shown as a binary column in Table~\ref{tab:fairness}: the relevant
+question is not whether a method has fitted parameters, but whether it adapts
+to the evaluation scene using validation, test, or field measurements.
+Table~\ref{tab:fairness} summarises the structural axes that can be compared
+compactly.
 
 \begin{table}[ht]
 \centering
 \caption{Evaluation condition comparison across representative methods.}
 \label{tab:fairness}
 \small
-\begin{tabularx}{\textwidth}{Xccccc}
+\begin{tabularx}{\textwidth}{Xcccc}
 \toprule
 \textbf{Method} & \textbf{Unseen city} & \textbf{Cont.\ UAV height}
-  & \textbf{$\ge$512\,px} & \textbf{Zero calib.} & \textbf{Comparable?} \\
+  & \textbf{$\ge$512\,px} & \textbf{Comparable?} \\
 \midrule
-PMNet / ICASSP~2023 \cite{pmnet2023} & No & No & No & Yes & No \\
-RMTransformer \cite{rmtransformer2025} & No & No & No & Yes & No \\
-Gao et al.\ \cite{gao2026} & No & No & No & Yes & No \\
-AIRMap \cite{airmap2025} & Partial & No & Yes & No & Partial \\
-Tarhouni et al.\ \cite{tarhouni2025} & No & No & No & Yes & Physical ref. \\
-PathFinder \cite{pathfinder2025} & Partial & No & No & Yes & Partial \\
-\textbf{Try~80 (this thesis)} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes}
-  & \textbf{Yes} & \textbf{Reference} \\
+PMNet / ICASSP~2023 \cite{pmnet2023} & No & No & No & No \\
+RMTransformer \cite{rmtransformer2025} & No & No & No & No \\
+Gao et al.\ \cite{gao2026} & No & No & No & No \\
+AIRMap \cite{airmap2025} & Partial & No & Yes & Partial \\
+Tarhouni et al.\ \cite{tarhouni2025} & No & No & No & Physical ref. \\
+PathFinder \cite{pathfinder2025} & Partial & No & No & Partial \\
+\textbf{Final model (this thesis)} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes}
+  & \textbf{Reference} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -563,11 +569,11 @@ angular-spread targets.  This thesis therefore uses it as an outdoor path-loss
 reference for the approximate difficulty of real-environment generalisation,
 while keeping the final comparison qualitative.
 
-The key lesson for Try~80 is not that the numerical RMSE should match
+The key lesson for the final model is not that the numerical RMSE should match
 Tarhouni's setting, but that outdoor path-loss predictors evaluated outside
 their training distribution tend to move back toward multi-dB errors even when
 the same model family looks much better under in-distribution challenge
-conditions.  This supports the decision to report Try~80 under a strict
+conditions. This supports the decision to report the final model under a strict
 city-holdout protocol.
 
 \subsection{AIRMap --- adaptive digital-twin radio maps}
@@ -587,7 +593,7 @@ that elevation-only deep surrogates can replace repeated ray tracing for
 digital-twin style workloads.  Its reported inference time of about
 \SI{4}{ms} on an NVIDIA L40S highlights the practical reason for the whole CKM
 surrogate direction: the value of the model is not only lower RMSE, but the
-ability to produce dense radio maps fast enough for planning loops.  Try~80 is
+ability to produce dense radio maps fast enough for planning loops. The final model is
 less mature than AIRMap as a deployable digital-twin system, but it attacks a
 harder multi-target UAV setting and keeps physical priors visible instead of
 using only a black-box elevation-to-path-gain network.
@@ -603,13 +609,13 @@ twelve-layer Vision Transformer baseline; Table~II reports \SI{12.19}{dB}
 RMSE on the ITU Challenge 2024 large-area subset, also ahead of the same
 baselines, with roughly 60\% fewer FLOPs.  This is highly relevant to the
 CKM work because it formalises a point
-that appeared repeatedly in the internal tries: the physically important region
+that appeared repeatedly in the internal experiments: the physically important region
 is not the whole topology image uniformly, but the subset of geometry that lies
 on or near the propagation corridor.
 
-Try~66 through Try~70 implement only a weaker Tx-centred radial proxy of that
-idea.  Try~78 then solves the LoS part more cleanly with a two-ray radial prior,
-while Try~80 uses the calibrated prior as an input channel.  A full Gao-style
+The PMHHNet diagnostic phase implemented only a weaker Tx-centred radial proxy of that
+idea. The final path-loss prior then solves the LoS part more cleanly with a two-ray radial prior,
+while the final residual model uses the calibrated prior as an input channel. A full Gao-style
 per-Rx corridor map remains future work because generating one for every
 receiver pixel at \(513\times513\) resolution is substantially more expensive
 than using the current Tx-centred distance and obstruction features.
@@ -628,7 +634,7 @@ This citation matters because it separates two issues that are often mixed in
 radio-map papers: prediction accuracy under the training distribution and
 robustness under distribution shift.  PathFinder explicitly argues that many
 methods over-focus on single-transmitter, in-distribution settings and
-under-test multi-transmitter or shifted building-density regimes.  Try~80 is
+under-test multi-transmitter or shifted building-density regimes. The final model is
 not a multi-transmitter model, but its city-holdout split is motivated by the
 same concern: a CKM surrogate is only useful if it works on new urban layouts,
 not only on shuffled samples from the same city.
@@ -647,10 +653,10 @@ not outdoor UAV results, but they show that when NLoS physics becomes harder
 and less directly observable from the input map, modern neural architectures
 again hit a roughly \SIrange{9}{10}{dB} error band.
 
-The comparison to Try~66 should therefore be read as diagnostic rather than
-competitive.  Try~66's \SI{9.41}{dB} path-loss result is not claimed to beat
+The comparison to the PMHHNet reference should therefore be read as diagnostic rather than
+competitive. Its \SI{9.41}{dB} path-loss result is not claimed to beat
 indoor methods; it is used to argue that the earlier CKM direct-regression
-family had reached the same type of NLoS-dominated wall.  Try~78 and Try~80 were
+family had reached the same type of NLoS-dominated wall. The final priors and residual GMM-head model were
 developed precisely because improving that wall required a different
 formulation: strong priors, regime separation, and residual distribution
 modelling.
@@ -680,7 +686,7 @@ city-holdout protocol to be quantified.}
 \midrule
 1 & Knife-edge diffraction prior channel & \cite{geomDL2024} & Medium \\
 2 & PINN Helmholtz residual loss & ReVeal \cite{reveal2025} & High \\
-3 & Dual LoS/NLoS residual heads & Tries~69, 71 & Low \\
+3 & Dual LoS/NLoS residual heads & PMHHNet diagnostics & Low \\
 4 & Test-time adaptation on target city & RadioPiT \cite{radiopit2025} & Low--Med \\
 5 & Diffusion-based residual refinement & RadioDiff \cite{radiodiff2025} & High \\
 6 & Foundation-model pre-training & FM-RME \cite{fmrme2026} & Very high \\
@@ -688,7 +694,7 @@ city-holdout protocol to be quantified.}
 \end{tabularx}
 \end{table}
 
-Items~1--3 already exist in partial form inside the PMHHNet tries. Items~4--6
+Items~1--3 already exist in partial form inside the PMHHNet diagnostics. Items~4--6
 are roadmap items requiring additional data, compute, or infrastructure beyond
 the scope of a single-GPU training setup.
 
@@ -730,17 +736,17 @@ choosing the final residual model. \\
 Classical propagation and two-ray models &
 Strong LoS path-loss structure. &
 Weak for blocked urban NLoS and for spread targets. &
-Use the Try~78 LoS prior plus a calibrated NLoS morphology model. \\
+Use the final LoS prior plus a calibrated NLoS morphology model. \\
 
 Empirical spread models &
 Log-domain and regime-dependent spread statistics. &
 Usually not dense pixel maps with building morphology. &
-Use Try~79 log-domain ridge priors with topology, height, and LoS/NLoS regimes. \\
+Use log-domain ridge priors with topology, height, and LoS/NLoS regimes. \\
 
 Heteroscedastic, GMM, and uncertainty heads &
 Multi-modal or heavy-tailed targets can be represented directly. &
 Often not anchored to physical priors. &
-Use a Try~80 prior-anchored residual GMM. \\
+Use a prior-anchored residual GMM-head model. \\
 
 AIRMap, PathFinder, and adaptive methods &
 Fast inference, calibration, or domain-shift awareness. &
@@ -756,18 +762,18 @@ model would reuse the dense prediction machinery but ignore the strong LoS
 structure. A pure propagation model would explain the radial path-loss field
 but miss blocked streets and spread tails. A pure uncertainty head would model
 the heavy-tailed targets but would still have to rediscover the easy physics.
-Try~80 combines the pieces that survived those comparisons: calibrated priors,
+The final model combines the pieces that survived those comparisons: calibrated priors,
 explicit regimes, distribution-aware residuals, and a city-holdout evaluation
 contract.
 
 %---------------------------------------------------------------------
-\section{Position of Try 80 in the literature}
+\section{Position of the Final Model in the Literature}
 \label{sec:soa_position}
 %---------------------------------------------------------------------
 
-\subsection{What is novel about Try 80}
+\subsection{What is novel about the final model}
 
-Try~80 occupies a distinct and innovative position in the radio-map literature
+The final model occupies a distinct and innovative position in the radio-map literature
 through the combination of four features that no published method located in
 the thesis literature review addresses simultaneously:
 
@@ -775,21 +781,21 @@ the thesis literature review addresses simultaneously:
   \item \textbf{Distribution-first dense prediction.}  Prior MDN and GMM
         channel models predict scalar or low-dimensional propagation
         distributions \cite{saleh2021probabilistic,garciamarti2020mixture,lee2024timevarying}.
-        Try~80 transfers that principle to dense radio maps: the model first
+        The final residual GMM-head model transfers that principle to dense radio maps: the model first
         estimates a compact sample-level distribution and then uses the
         decoder to place the corresponding modes spatially.  This directly
         follows the empirical observation that the predicted-vs-ground-truth
         histograms revealed the failure before the per-pixel maps alone did.
 
-  \item \textbf{Three simultaneous dense targets.}  Try~80 jointly predicts
+  \item \textbf{Three simultaneous dense targets.} The final model jointly predicts
         per-pixel path loss, delay spread, and angular spread over
         $513 \times 513$ maps with a single shared backbone.  Published radio-map
         work addresses either path loss or spread statistics, but not all three
         in a pixel-dense city-holdout setting.
 
   \item \textbf{Frozen physics anchors.}  Two independently calibrated
-        physics-based priors~--- the enhanced two-ray model (Try~78) for path
-        loss and the log-space ridge regression (Try~79) for both spreads~--- are
+        physics-based priors~--- the enhanced two-ray model for path
+        loss and the log-space ridge regression for both spreads~--- are
         pre-computed and frozen.  The neural network predicts residuals with
         respect to these anchors rather than raw targets.  This reduces the
         effective learning range, improves interpretability, and allows the
@@ -804,9 +810,9 @@ the thesis literature review addresses simultaneously:
         time of writing.
 \end{itemize}
 
-\subsection{What Try 80 does not claim}
+\subsection{What the final model does not claim}
 
-Try~80 does not claim to replace full ray-tracing in arbitrary scenarios.  The
+The final model does not claim to replace full ray-tracing in arbitrary scenarios. The
 CKM dataset is a ray-traced simulation, and the thesis target is to reproduce
 its outputs as accurately as possible under a strict generalisation protocol.
 Physical effects that are not represented in the 2D topology inputs~--- such as
@@ -817,9 +823,9 @@ The thesis also does not claim parity with RadioMap3DSeer challenge numbers.
 As discussed in Section~\ref{sec:soa_benchmarks}, those numbers apply to a
 structurally easier evaluation contract (fixed height, same-distribution cities,
 narrower dynamic range) and cannot be compared to CKM city-holdout RMSE without
-systematic correction of all five axes listed in that section.
+systematic correction of the protocol axes listed in that section.
 
-Try~80 is also not presented as a universal radio-map foundation model. It is a
+The final model is also not presented as a universal radio-map foundation model. It is a
 surrogate for a specific CKM dataset contract: fixed output definitions, a
 known simulator family, a \(513\times513\) spatial grid, explicit masks, and
 continuous UAV height within the dataset range. Generalising beyond this scope
@@ -836,13 +842,13 @@ radio-map benchmark.
 
 \subsection{Summary of position}
 
-Table~\ref{tab:position} provides a compact summary of how Try~80 compares to
+Table~\ref{tab:position} provides a compact summary of how the final model compares to
 the most relevant published work across the evaluation dimensions introduced in
 this chapter.
 
 \begin{table}[ht]
 \centering
-\caption{Positioning of Try~80 against the most relevant published methods.}
+\caption{Positioning of the final model against the most relevant published methods.}
 \label{tab:position}
 \scriptsize
 \renewcommand{\arraystretch}{1.12}
@@ -857,16 +863,16 @@ ICASSP~2023 best \cite{rmtransformer2025} & 0.97\,dB & No & Different target sca
 AIRMap \cite{airmap2025} (calibrated) & $<5$\,dB after calibration from 20\% of test measurements & Partial & Different protocol and path-gain target. \\
 Gao et al.\ \cite{gao2026} (multi-layer) & 5.59\,dB on ICASSP~2023 data & No & Relevant corridor-weighting baseline, different protocol. \\
 Tarhouni et al.\ \cite{tarhouni2025} & multi-dB, sub-\SI{6}{GHz} & No & Physical outdoor reference, not dense UAV CKM. \\
-Try~66 (this thesis, single expert) & 9.41\,dB & Yes & Internal direct-regression baseline. \\
-Try~78 non-DL prior & 1.92\,dB overall; 1.75\,dB LoS & Yes & Frozen path-loss prior used by the final pipeline. \\
-\textbf{Try~80 (this thesis)} & \textbf{1.65\,dB on unseen test cities} & \textbf{Yes} & \textbf{Final prior-anchored residual model; also improves delay-spread and angular-spread RMSE over the frozen priors.} \\
+PMHHNet reference (this thesis) & 9.41\,dB & Yes & Internal direct-regression baseline. \\
+ML-calibrated path-loss prior & 1.92\,dB overall; 1.75\,dB LoS & Yes & Frozen path-loss prior used by the final pipeline. \\
+\textbf{Final model (this thesis)} & \textbf{1.65\,dB on unseen test cities} & \textbf{Yes} & \textbf{Final prior-anchored residual GMM-head model; also improves delay-spread and angular-spread RMSE over the frozen priors.} \\
 \bottomrule
 \end{tabularx}
 \end{table}
 \normalsize
-The Try~80 number in Table~\ref{tab:position} is the final frozen-checkpoint
+The final-model number in Table~\ref{tab:position} is the final frozen-checkpoint
 test result on the held-out city split. The prior-anchored design lets the
 neural residual head converge to a narrower error floor than the
-direct-regression family of Tries~66--71, particularly in LoS-dominated
+direct-regression PMHHNet family, particularly in LoS-dominated
 morphology classes where the physics anchor already achieves sub-2\,dB error,
 while still preserving a strict city-holdout evaluation contract.
