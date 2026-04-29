@@ -204,26 +204,22 @@ correction under strict city holdout. \\
 
 \section{Future Directions}
 
-\paragraph{Short-term.}
-The immediate extension is to strengthen the current residual pipeline
-without changing the evaluation contract. The most useful additions are
-transmitter-oriented mixup, more explicit corridor losses, and a controlled
-ablation of each residual head and loss weight. These experiments would test
-whether the remaining errors are caused by missing spatial context or by limits
-in the frozen priors themselves.
-
-\paragraph{Medium-term.}
-The next step is frequency and radio-configuration conditioning. The current
+\paragraph{Short-medium term.}
+The next step is to strengthen the current residual pipeline without changing
+the evaluation contract, then extend it toward frequency and radio-configuration
+conditioning. Useful additions include transmitter-oriented mixup, explicit
+corridor losses, and controlled ablations of each residual head and loss
+weight. The current
 dataset fixes the carrier and antenna assumptions, while a more general outdoor
 CKM model should learn how path loss and spreads vary with frequency,
 bandwidth, antenna pattern, and possibly polarization. A natural dataset for
 this stage would simulate the same cities across several radio configurations
 so that the model can separate geometry effects from configuration effects.
 
-\paragraph{Long-term.}
+\paragraph{Medium-long term.}
 The final extension is field calibration. The path-loss and spread priors are
 interpretable, which makes them suitable for simulator-to-reality correction
-using a limited number of real measurements. In the long term, this could lead
+using a limited number of real measurements. In the medium-long term, this could lead
 to a CKM predictor that starts from ray-traced or prior-generated maps, adapts
 to a new city with sparse measurements, and still reports uncertainty by
 LoS/NLoS regime, UAV-height bin, and topology class. Those safeguards should

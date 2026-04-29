@@ -277,8 +277,8 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.4.2}Limitations and Legacy}{42}{subsection.3.4.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3.5}Distribution-first modelling}{42}{section.3.5}\protected@file@percent }
 \newlabel{sec:dist_first}{{3.5}{42}{Distribution-first modelling}{section.3.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Distribution-first path-loss system. Stage~A learns global GMM parameters $(\pi _k,\mu _k,\sigma _k)$ from pooled features conditioned on UAV height; Stage~B produces per-pixel soft assignments and within-component offsets anchored to those parameters.}}{43}{figure.caption.24}\protected@file@percent }
-\newlabel{fig:try76_system}{{3.1}{43}{Distribution-first path-loss system. Stage~A learns global GMM parameters $(\pi _k,\mu _k,\sigma _k)$ from pooled features conditioned on UAV height; Stage~B produces per-pixel soft assignments and within-component offsets anchored to those parameters}{figure.caption.24}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Distribution-first path-loss system. Stage A learns global GMM parameters from pooled features and Stage B predicts per-pixel assignments.}}{43}{figure.caption.24}\protected@file@percent }
+\newlabel{fig:try76_system}{{3.1}{43}{Distribution-first path-loss system. Stage A learns global GMM parameters from pooled features and Stage B predicts per-pixel assignments}{figure.caption.24}{}}
 \newlabel{eq:gmm_reconstruction}{{3.7}{43}{Distribution-first modelling}{equation.3.7}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.5.1}How to construct a good deep-learning model for radio maps}{43}{subsection.3.5.1}\protected@file@percent }
 \newlabel{sec:good_dl_model_design}{{3.5.1}{43}{How to construct a good deep-learning model for radio maps}{subsection.3.5.1}{}}
@@ -312,8 +312,8 @@
 \@writefile{lot}{\contentsline {table}{\numberline {3.5}{\ignorespaces One-page summary of what is inherited from the literature, what is adapted to CKM, and what is reused or newly assembled in the final residual GMM-head model.}}{53}{table.caption.36}\protected@file@percent }
 \newlabel{tab:executive_summary}{{3.5}{53}{One-page summary of what is inherited from the literature, what is adapted to CKM, and what is reused or newly assembled in the final residual GMM-head model}{table.caption.36}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.10.1}High-level architecture}{53}{subsection.3.10.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Overall prior-anchored pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta $ around them.}}{53}{figure.caption.37}\protected@file@percent }
-\newlabel{fig:pipeline}{{3.4}{53}{Overall prior-anchored pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta $ around them}{figure.caption.37}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Overall prior-anchored pipeline with bounded DNN corrections.}}{53}{figure.caption.37}\protected@file@percent }
+\newlabel{fig:pipeline}{{3.4}{53}{Overall prior-anchored pipeline with bounded DNN corrections}{figure.caption.37}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.10.2}Prior design rules}{54}{subsection.3.10.2}\protected@file@percent }
 \newlabel{sec:good_prior_design}{{3.10.2}{54}{Prior design rules}{subsection.3.10.2}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {3.6}{\ignorespaces Compact design rules extracted from the prior experiments.}}{54}{table.caption.38}\protected@file@percent }
@@ -372,8 +372,8 @@
 \newlabel{tab:los_params}{{3.9}{63}{Representative fitted LoS two-ray parameters by height bin}{table.caption.59}{}}
 \abx@aux@cite{0}{cost231}
 \abx@aux@segm{0}{0}{cost231}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Effective ground-reflection amplitude $\rho ^*$ as a function of UAV height, fitted independently per 5 m height bin. Values are stable in the range $0.47$--$0.56$ for 10--130 m, then rise slightly at higher altitudes where training data is sparser.}}{64}{figure.caption.60}\protected@file@percent }
-\newlabel{fig:rho_vs_h}{{3.6}{64}{Effective ground-reflection amplitude $\rho ^*$ as a function of UAV height, fitted independently per 5 m height bin. Values are stable in the range $0.47$--$0.56$ for 10--130 m, then rise slightly at higher altitudes where training data is sparser}{figure.caption.60}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Effective ground-reflection amplitude as a function of UAV height.}}{64}{figure.caption.60}\protected@file@percent }
+\newlabel{fig:rho_vs_h}{{3.6}{64}{Effective ground-reflection amplitude as a function of UAV height}{figure.caption.60}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Schematic comparison of FSPL and the enhanced two-ray model for a 60 m UAV at 7.125 GHz ($h_{\mathrm  {rx}} = 1.5$ m). The two-ray model produces a characteristic oscillatory pattern around the FSPL baseline, corresponding to alternating zones of constructive and destructive interference.}}{64}{figure.caption.61}\protected@file@percent }
 \newlabel{fig:tworay_pl}{{3.7}{64}{Schematic comparison of FSPL and the enhanced two-ray model for a 60 m UAV at 7.125 GHz ($h_{\mathrm {rx}} = 1.5$ m). The two-ray model produces a characteristic oscillatory pattern around the FSPL baseline, corresponding to alternating zones of constructive and destructive interference}{figure.caption.61}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.11.3}NLoS branch}{64}{subsection.3.11.3}\protected@file@percent }
@@ -581,8 +581,8 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Distribution-first path-loss reference}{94}{subsection.4.2.1}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {4.6}{\ignorespaces Distribution-first path-loss DirectML test RMSE per expert on the shared city-holdout test split, together with the standard deviation of the corresponding target histogram. RMSE values are pixel-weighted over valid ground pixels. Source: \texttt  {tmp\_try76\_directml\_test\_metrics.json}.}}{94}{table.caption.116}\protected@file@percent }
 \newlabel{tab:try76_per_expert}{{4.6}{94}{Distribution-first path-loss DirectML test RMSE per expert on the shared city-holdout test split, together with the standard deviation of the corresponding target histogram. RMSE values are pixel-weighted over valid ground pixels. Source: \texttt {tmp\_try76\_directml\_test\_metrics.json}}{table.caption.116}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Distribution-first path-loss DirectML test RMSE per expert. \emph  {Left}: bars are RMSE for LoS (orange) and NLoS (green); diamond markers report the standard deviation of the underlying target histogram. \emph  {Right}: the same data normalised as RMSE / target $\sigma $. LoS is harder in absolute dB \emph  {and} less well explained relative to its own variability, both consistent with the LoS marginal being a single broad bell, while the NLoS marginal is a peaked, heavy-tailed distribution that the GMM head can attack directly.}}{96}{figure.caption.117}\protected@file@percent }
-\newlabel{fig:try76_los_vs_nlos}{{4.1}{96}{Distribution-first path-loss DirectML test RMSE per expert. \emph {Left}: bars are RMSE for LoS (orange) and NLoS (green); diamond markers report the standard deviation of the underlying target histogram. \emph {Right}: the same data normalised as RMSE / target $\sigma $. LoS is harder in absolute dB \emph {and} less well explained relative to its own variability, both consistent with the LoS marginal being a single broad bell, while the NLoS marginal is a peaked, heavy-tailed distribution that the GMM head can attack directly}{figure.caption.117}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Distribution-first path-loss DirectML test RMSE per expert.}}{96}{figure.caption.117}\protected@file@percent }
+\newlabel{fig:try76_los_vs_nlos}{{4.1}{96}{Distribution-first path-loss DirectML test RMSE per expert}{figure.caption.117}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Five-component Gaussian-mixture fits of the LoS and NLoS path-loss targets, shown separately for the six topology experts. This is the distribution actually seen by the specialised checkpoints, and is therefore more faithful than a single collapsed global curve. Per expert, the target is treated as a GMM rather than as a perfect Gaussian: the LoS and NLoS marginals contain asymmetric shoulders, tails and rare outliers, including values outside the visible \SIrange {72}{128}{dB} plotting window. The solid curves show the total mixture density and the faint dotted curves show the individual Gaussian components. The dashed line marks the per-expert marginal mean.}}{96}{figure.caption.118}\protected@file@percent }
 \newlabel{fig:try76_los_vs_nlos_distribution}{{4.2}{96}{Five-component Gaussian-mixture fits of the LoS and NLoS path-loss targets, shown separately for the six topology experts. This is the distribution actually seen by the specialised checkpoints, and is therefore more faithful than a single collapsed global curve. Per expert, the target is treated as a GMM rather than as a perfect Gaussian: the LoS and NLoS marginals contain asymmetric shoulders, tails and rare outliers, including values outside the visible \SIrange {72}{128}{dB} plotting window. The solid curves show the total mixture density and the faint dotted curves show the individual Gaussian components. The dashed line marks the per-expert marginal mean}{figure.caption.118}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Why priors came back after distribution-first modelling}{97}{subsection.4.2.2}\protected@file@percent }
@@ -606,8 +606,8 @@
 \newlabel{fig:try78_by_topology}{{4.5}{102}{Path-loss prior by topology class. \emph {Left}: LoS, NLoS and overall pixel-weighted RMSE for each of the six topology classes. The LoS RMSE grows monotonically with morphological density, mirroring the growth of the LoS target standard deviation reported for the distribution-first model in Table~\ref {tab:try76_per_expert}. \emph {Right}: NLoS RMSE side by side with the distribution-first DL model on the same six topology classes. The two methods agree within roughly \SI {1}{dB} per class, which is what reduces the choice between the two pipelines to deployability rather than accuracy}{figure.caption.126}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2.6}Final joint prior-anchored residual GMM-head model test results}{102}{subsection.4.2.6}\protected@file@percent }
 \newlabel{eq:try80_model_rmse}{{4.1}{102}{Final joint prior-anchored residual GMM-head model test results}{equation.4.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4.11}{\ignorespaces Final residual GMM-head model test results on unseen cities, compared with the frozen priors. Negative \(\Delta \) means that the model improves the prior.}}{102}{table.caption.127}\protected@file@percent }
-\newlabel{tab:try80_final_test_overall}{{4.11}{102}{Final residual GMM-head model test results on unseen cities, compared with the frozen priors. Negative \(\Delta \) means that the model improves the prior}{table.caption.127}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.11}{\ignorespaces Final residual GMM-head model test results on unseen cities.}}{102}{table.caption.127}\protected@file@percent }
+\newlabel{tab:try80_final_test_overall}{{4.11}{102}{Final residual GMM-head model test results on unseen cities}{table.caption.127}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {4.12}{\ignorespaces Final residual GMM-head model test RMSE separated by LoS and NLoS pixels. The test cities are unseen during training.}}{103}{table.caption.128}\protected@file@percent }
 \newlabel{tab:try80_final_test_los_nlos}{{4.12}{103}{Final residual GMM-head model test RMSE separated by LoS and NLoS pixels. The test cities are unseen during training}{table.caption.128}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {4.13}{\ignorespaces Validation-versus-test sanity check for the same \texttt  {best\_model.pt} checkpoint. The validation row matches the metrics stored in the checkpoint history; the test row is the final unseen-city generalisation result.}}{103}{table.caption.129}\protected@file@percent }
@@ -647,8 +647,8 @@
 \newlabel{tab:sustainability_matrix}{{5.1}{110}{Sustainability matrix summary for the thesis}{table.caption.142}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}Environmental impact}{110}{subsection.5.1.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}Economic impact}{111}{subsection.5.1.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Indicative economic cost of the TFG development.}}{112}{table.caption.143}\protected@file@percent }
-\newlabel{tab:sustainability_budget}{{5.2}{112}{Indicative economic cost of the TFG development}{table.caption.143}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Indicative economic cost of the BT development.}}{112}{table.caption.143}\protected@file@percent }
+\newlabel{tab:sustainability_budget}{{5.2}{112}{Indicative economic cost of the BT development}{table.caption.143}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1.3}Social impact}{112}{subsection.5.1.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {5.2}Ethical implications}{112}{section.5.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {5.3}Relationship with the Sustainable Development Goals}{113}{section.5.3}\protected@file@percent }
@@ -665,25 +665,24 @@
 \@writefile{lot}{\contentsline {table}{\numberline {6.1}{\ignorespaces Main lessons learned across the development path.}}{117}{table.caption.144}\protected@file@percent }
 \newlabel{tab:conclusion_lessons}{{6.1}{117}{Main lessons learned across the development path}{table.caption.144}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {6.2}Future Directions}{117}{section.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Short-term.}{117}{paragraph*.145}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Medium-term.}{117}{paragraph*.146}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Long-term.}{117}{paragraph*.147}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{Bibliography}{118}{chapter*.148}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Short-medium term.}{117}{paragraph*.145}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Medium-long term.}{117}{paragraph*.146}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{118}{chapter*.147}\protected@file@percent }
 \@writefile{toc}{\contentsline {chapter}{\numberline {A}Detailed Attempt Log}{122}{appendix.A}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{toc}{\contentsline {section}{\numberline {A.1}How to read the attempt numbers}{122}{section.A.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {A.2}Try-number map}{123}{section.A.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {A.1}{\ignorespaces Try-number map, early image-regression phase.}}{123}{table.caption.149}\protected@file@percent }
-\newlabel{tab:try_map_early}{{A.1}{123}{Try-number map, early image-regression phase}{table.caption.149}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {A.2}{\ignorespaces Try-number map, spread branches, masks, and first priors.}}{124}{table.caption.150}\protected@file@percent }
-\newlabel{tab:try_map_masks_priors}{{A.2}{124}{Try-number map, spread branches, masks, and first priors}{table.caption.150}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {A.3}{\ignorespaces Try-number map, prior-residual and PMNet-style phase.}}{124}{table.caption.151}\protected@file@percent }
-\newlabel{tab:try_map_pmnet}{{A.3}{124}{Try-number map, prior-residual and PMNet-style phase}{table.caption.151}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {A.4}{\ignorespaces Try-number map, PMHHNet, regularization, and distribution diagnosis.}}{125}{table.caption.152}\protected@file@percent }
-\newlabel{tab:try_map_pmhhnet}{{A.4}{125}{Try-number map, PMHHNet, regularization, and distribution diagnosis}{table.caption.152}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {A.5}{\ignorespaces Try-number map, final distribution, prior, and joint model phase.}}{125}{table.caption.153}\protected@file@percent }
-\newlabel{tab:try_map_final}{{A.5}{125}{Try-number map, final distribution, prior, and joint model phase}{table.caption.153}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.1}{\ignorespaces Try-number map, early image-regression phase.}}{123}{table.caption.148}\protected@file@percent }
+\newlabel{tab:try_map_early}{{A.1}{123}{Try-number map, early image-regression phase}{table.caption.148}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.2}{\ignorespaces Try-number map, spread branches, masks, and first priors.}}{124}{table.caption.149}\protected@file@percent }
+\newlabel{tab:try_map_masks_priors}{{A.2}{124}{Try-number map, spread branches, masks, and first priors}{table.caption.149}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.3}{\ignorespaces Try-number map, prior-residual and PMNet-style phase.}}{124}{table.caption.150}\protected@file@percent }
+\newlabel{tab:try_map_pmnet}{{A.3}{124}{Try-number map, prior-residual and PMNet-style phase}{table.caption.150}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.4}{\ignorespaces Try-number map, PMHHNet, regularization, and distribution diagnosis.}}{125}{table.caption.151}\protected@file@percent }
+\newlabel{tab:try_map_pmhhnet}{{A.4}{125}{Try-number map, PMHHNet, regularization, and distribution diagnosis}{table.caption.151}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.5}{\ignorespaces Try-number map, final distribution, prior, and joint model phase.}}{125}{table.caption.152}\protected@file@percent }
+\newlabel{tab:try_map_final}{{A.5}{125}{Try-number map, final distribution, prior, and joint model phase}{table.caption.152}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {A.3}Expanded chronological timeline}{126}{section.A.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.3.1}Early image-to-image baselines}{126}{subsection.A.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.3.2}Geometry conditioning and artifact control}{126}{subsection.A.3.2}\protected@file@percent }
@@ -697,36 +696,36 @@
 \@writefile{toc}{\contentsline {chapter}{\numberline {B}Final Residual GMM-Head Model Configuration Summary}{129}{appendix.B}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{lot}{\contentsline {table}{\numberline {B.1}{\ignorespaces Main final residual GMM-head model configuration values.}}{129}{table.caption.154}\protected@file@percent }
-\newlabel{tab:try80_config_appendix}{{B.1}{129}{Main final residual GMM-head model configuration values}{table.caption.154}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {B.1}{\ignorespaces Main final residual GMM-head model configuration values.}}{129}{table.caption.153}\protected@file@percent }
+\newlabel{tab:try80_config_appendix}{{B.1}{129}{Main final residual GMM-head model configuration values}{table.caption.153}{}}
 \@writefile{toc}{\contentsline {chapter}{\numberline {C}Formula Placement}{130}{appendix.C}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{lot}{\contentsline {table}{\numberline {C.1}{\ignorespaces Location of the main mathematical definitions.}}{130}{table.caption.155}\protected@file@percent }
-\newlabel{tab:formula_location_appendix}{{C.1}{130}{Location of the main mathematical definitions}{table.caption.155}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {C.1}{\ignorespaces Location of the main mathematical definitions.}}{130}{table.caption.154}\protected@file@percent }
+\newlabel{tab:formula_location_appendix}{{C.1}{130}{Location of the main mathematical definitions}{table.caption.154}{}}
 \@writefile{toc}{\contentsline {chapter}{\numberline {D}Representative Final Residual GMM-Head Model Inspection Panels}{131}{appendix.D}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{lot}{\contentsline {table}{\numberline {D.1}{\ignorespaces Final residual GMM-head model appendix panels generated from validation samples with the final huge checkpoint.}}{132}{table.caption.156}\protected@file@percent }
-\newlabel{tab:try80_appendix_panels}{{D.1}{132}{Final residual GMM-head model appendix panels generated from validation samples with the final huge checkpoint}{table.caption.156}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.1}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, low-antenna validation sample in Segovia.}}{133}{figure.caption.157}\protected@file@percent }
-\newlabel{fig:appendix_try80_open_low}{{D.1}{133}{Final residual GMM-head model \(6\times 3\) inspection panel for an open, low-antenna validation sample in Segovia}{figure.caption.157}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.2}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, mid-antenna validation sample in Segovia.}}{134}{figure.caption.158}\protected@file@percent }
-\newlabel{fig:appendix_try80_open_mid}{{D.2}{134}{Final residual GMM-head model \(6\times 3\) inspection panel for an open, mid-antenna validation sample in Segovia}{figure.caption.158}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.3}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, high-antenna validation sample in Nazareth.}}{135}{figure.caption.159}\protected@file@percent }
-\newlabel{fig:appendix_try80_open_high}{{D.3}{135}{Final residual GMM-head model \(6\times 3\) inspection panel for an open, high-antenna validation sample in Nazareth}{figure.caption.159}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.4}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, low-antenna validation sample in Dubrovnik.}}{136}{figure.caption.160}\protected@file@percent }
-\newlabel{fig:appendix_try80_mixed_low}{{D.4}{136}{Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, low-antenna validation sample in Dubrovnik}{figure.caption.160}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.5}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, mid-antenna validation sample in Nice.}}{137}{figure.caption.161}\protected@file@percent }
-\newlabel{fig:appendix_try80_mixed_mid}{{D.5}{137}{Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, mid-antenna validation sample in Nice}{figure.caption.161}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.6}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, high-antenna validation sample in Nice.}}{138}{figure.caption.162}\protected@file@percent }
-\newlabel{fig:appendix_try80_mixed_high}{{D.6}{138}{Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, high-antenna validation sample in Nice}{figure.caption.162}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.7}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, low-antenna validation sample in Chiang Mai.}}{139}{figure.caption.163}\protected@file@percent }
-\newlabel{fig:appendix_try80_dense_low}{{D.7}{139}{Final residual GMM-head model \(6\times 3\) inspection panel for a dense, low-antenna validation sample in Chiang Mai}{figure.caption.163}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.8}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, mid-antenna validation sample in Tunis.}}{140}{figure.caption.164}\protected@file@percent }
-\newlabel{fig:appendix_try80_dense_mid}{{D.8}{140}{Final residual GMM-head model \(6\times 3\) inspection panel for a dense, mid-antenna validation sample in Tunis}{figure.caption.164}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.9}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, high-antenna validation sample in Tunis.}}{141}{figure.caption.165}\protected@file@percent }
-\newlabel{fig:appendix_try80_dense_high}{{D.9}{141}{Final residual GMM-head model \(6\times 3\) inspection panel for a dense, high-antenna validation sample in Tunis}{figure.caption.165}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {D.1}{\ignorespaces Final residual GMM-head model appendix panels generated from validation samples with the final huge checkpoint.}}{132}{table.caption.155}\protected@file@percent }
+\newlabel{tab:try80_appendix_panels}{{D.1}{132}{Final residual GMM-head model appendix panels generated from validation samples with the final huge checkpoint}{table.caption.155}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.1}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, low-antenna validation sample in Segovia.}}{133}{figure.caption.156}\protected@file@percent }
+\newlabel{fig:appendix_try80_open_low}{{D.1}{133}{Final residual GMM-head model \(6\times 3\) inspection panel for an open, low-antenna validation sample in Segovia}{figure.caption.156}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.2}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, mid-antenna validation sample in Segovia.}}{134}{figure.caption.157}\protected@file@percent }
+\newlabel{fig:appendix_try80_open_mid}{{D.2}{134}{Final residual GMM-head model \(6\times 3\) inspection panel for an open, mid-antenna validation sample in Segovia}{figure.caption.157}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.3}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, high-antenna validation sample in Nazareth.}}{135}{figure.caption.158}\protected@file@percent }
+\newlabel{fig:appendix_try80_open_high}{{D.3}{135}{Final residual GMM-head model \(6\times 3\) inspection panel for an open, high-antenna validation sample in Nazareth}{figure.caption.158}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.4}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, low-antenna validation sample in Dubrovnik.}}{136}{figure.caption.159}\protected@file@percent }
+\newlabel{fig:appendix_try80_mixed_low}{{D.4}{136}{Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, low-antenna validation sample in Dubrovnik}{figure.caption.159}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.5}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, mid-antenna validation sample in Nice.}}{137}{figure.caption.160}\protected@file@percent }
+\newlabel{fig:appendix_try80_mixed_mid}{{D.5}{137}{Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, mid-antenna validation sample in Nice}{figure.caption.160}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.6}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, high-antenna validation sample in Nice.}}{138}{figure.caption.161}\protected@file@percent }
+\newlabel{fig:appendix_try80_mixed_high}{{D.6}{138}{Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, high-antenna validation sample in Nice}{figure.caption.161}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.7}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, low-antenna validation sample in Chiang Mai.}}{139}{figure.caption.162}\protected@file@percent }
+\newlabel{fig:appendix_try80_dense_low}{{D.7}{139}{Final residual GMM-head model \(6\times 3\) inspection panel for a dense, low-antenna validation sample in Chiang Mai}{figure.caption.162}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.8}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, mid-antenna validation sample in Tunis.}}{140}{figure.caption.163}\protected@file@percent }
+\newlabel{fig:appendix_try80_dense_mid}{{D.8}{140}{Final residual GMM-head model \(6\times 3\) inspection panel for a dense, mid-antenna validation sample in Tunis}{figure.caption.163}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.9}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, high-antenna validation sample in Tunis.}}{141}{figure.caption.164}\protected@file@percent }
+\newlabel{fig:appendix_try80_dense_high}{{D.9}{141}{Final residual GMM-head model \(6\times 3\) inspection panel for a dense, high-antenna validation sample in Tunis}{figure.caption.164}{}}
 \@writefile{toc}{\contentsline {chapter}{\numberline {E}Implementation Snippets}{142}{appendix.E}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
@@ -738,12 +737,12 @@
 \@writefile{lot}{\addvspace {10\p@ }}
 \newlabel{app:ckm_generator}{{F}{144}{CKM Generator Interface and Reproducibility Tool}{appendix.F}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {F.1}Interface overview}{144}{section.F.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {F.1}{\ignorespaces CKM Generator Streamlit interface. The sidebar exposes the same settings that are available through the command-line interface.}}{145}{figure.caption.166}\protected@file@percent }
-\newlabel{fig:ckm_generator_controls}{{F.1}{145}{CKM Generator Streamlit interface. The sidebar exposes the same settings that are available through the command-line interface}{figure.caption.166}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {F.2}{\ignorespaces Generated topology and masks for an HDF5 sample. The view reports the resolved mask source and displays topology, LoS mask, and NLoS mask side by side.}}{145}{figure.caption.167}\protected@file@percent }
-\newlabel{fig:ckm_generator_masks}{{F.2}{145}{Generated topology and masks for an HDF5 sample. The view reports the resolved mask source and displays topology, LoS mask, and NLoS mask side by side}{figure.caption.167}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {F.3}{\ignorespaces Joint prediction figure exported by the CKM Generator, with path loss in dB, delay spread in ns, and angular spread in degrees.}}{146}{figure.caption.168}\protected@file@percent }
-\newlabel{fig:ckm_generator_prediction}{{F.3}{146}{Joint prediction figure exported by the CKM Generator, with path loss in dB, delay spread in ns, and angular spread in degrees}{figure.caption.168}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {F.1}{\ignorespaces CKM Generator Streamlit interface. The sidebar exposes the same settings that are available through the command-line interface.}}{145}{figure.caption.165}\protected@file@percent }
+\newlabel{fig:ckm_generator_controls}{{F.1}{145}{CKM Generator Streamlit interface. The sidebar exposes the same settings that are available through the command-line interface}{figure.caption.165}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {F.2}{\ignorespaces Generated topology and masks for an HDF5 sample. The view reports the resolved mask source and displays topology, LoS mask, and NLoS mask side by side.}}{145}{figure.caption.166}\protected@file@percent }
+\newlabel{fig:ckm_generator_masks}{{F.2}{145}{Generated topology and masks for an HDF5 sample. The view reports the resolved mask source and displays topology, LoS mask, and NLoS mask side by side}{figure.caption.166}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {F.3}{\ignorespaces Joint prediction figure exported by the CKM Generator, with path loss in dB, delay spread in ns, and angular spread in degrees.}}{146}{figure.caption.167}\protected@file@percent }
+\newlabel{fig:ckm_generator_prediction}{{F.3}{146}{Joint prediction figure exported by the CKM Generator, with path loss in dB, delay spread in ns, and angular spread in degrees}{figure.caption.167}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {F.2}How the tool is run}{146}{section.F.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {F.3}Accepted inputs}{146}{section.F.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {F.4}Configurable controls}{147}{section.F.4}\protected@file@percent }
@@ -751,12 +750,12 @@
 \@writefile{toc}{\contentsline {section}{\numberline {F.6}Model-grid fitting and interpolation}{148}{section.F.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {F.7}Mask policies}{149}{section.F.7}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {F.8}Outputs}{149}{section.F.8}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {F.4}{\ignorespaces Generated output folder for one CKM Generator run. The run contains binary masks, prior maps, prediction maps, a compressed numerical archive, and a JSON metadata file.}}{150}{figure.caption.169}\protected@file@percent }
-\newlabel{fig:ckm_generator_output_tree}{{F.4}{150}{Generated output folder for one CKM Generator run. The run contains binary masks, prior maps, prediction maps, a compressed numerical archive, and a JSON metadata file}{figure.caption.169}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {F.5}{\ignorespaces Visual outputs generated for the same sample: LoS/NLoS masks and the three final-model prediction products, together with the saved joint prediction panel.}}{151}{figure.caption.170}\protected@file@percent }
-\newlabel{fig:ckm_generator_output_visuals}{{F.5}{151}{Visual outputs generated for the same sample: LoS/NLoS masks and the three final-model prediction products, together with the saved joint prediction panel}{figure.caption.170}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {F.6}{\ignorespaces Example metadata and numerical-array contents for a generated sample. The metadata records provenance and the resolved mask policy, while the \texttt  {.npz} archive keeps the actual \(513\times 513\) numeric maps.}}{151}{figure.caption.171}\protected@file@percent }
-\newlabel{fig:ckm_generator_output_metadata}{{F.6}{151}{Example metadata and numerical-array contents for a generated sample. The metadata records provenance and the resolved mask policy, while the \texttt {.npz} archive keeps the actual \(513\times 513\) numeric maps}{figure.caption.171}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {F.4}{\ignorespaces Generated output folder for one CKM Generator run. The run contains binary masks, prior maps, prediction maps, a compressed numerical archive, and a JSON metadata file.}}{150}{figure.caption.168}\protected@file@percent }
+\newlabel{fig:ckm_generator_output_tree}{{F.4}{150}{Generated output folder for one CKM Generator run. The run contains binary masks, prior maps, prediction maps, a compressed numerical archive, and a JSON metadata file}{figure.caption.168}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {F.5}{\ignorespaces Visual outputs generated for the same sample: LoS/NLoS masks and the three final-model prediction products, together with the saved joint prediction panel.}}{151}{figure.caption.169}\protected@file@percent }
+\newlabel{fig:ckm_generator_output_visuals}{{F.5}{151}{Visual outputs generated for the same sample: LoS/NLoS masks and the three final-model prediction products, together with the saved joint prediction panel}{figure.caption.169}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {F.6}{\ignorespaces Example metadata and numerical-array contents for a generated sample. The metadata records provenance and the resolved mask policy, while the \texttt  {.npz} archive keeps the actual \(513\times 513\) numeric maps.}}{151}{figure.caption.170}\protected@file@percent }
+\newlabel{fig:ckm_generator_output_metadata}{{F.6}{151}{Example metadata and numerical-array contents for a generated sample. The metadata records provenance and the resolved mask policy, while the \texttt {.npz} archive keeps the actual \(513\times 513\) numeric maps}{figure.caption.170}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {F.9}Performance controls}{152}{section.F.9}\protected@file@percent }
 \ACRO{total-barriers}{1}
 \ACRO{usage}{EU=={0}}

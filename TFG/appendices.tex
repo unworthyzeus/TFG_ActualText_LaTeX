@@ -1034,7 +1034,7 @@ or DirectML. The model batch size can increase throughput on GPUs with enough
 VRAM, while keeping batch size 1 remains the safest option on smaller cards.
 
 CUDA mixed precision uses PyTorch autocast. On ten exported HDF5 samples,
-timing only model inference on the local RTX 3050 Ti Laptop GPU, full fp32 took
+timing only model inference on an RTX 3050 Ti Laptop GPU, full fp32 took
 approximately \SIrange{6.94}{6.99}{s}, while mixed precision took
 \SIrange{5.46}{5.61}{s}. The speedup was about \(1.25\times\). The RMSE
 between mixed precision and fp32 predictions was \SI{0.0016}{dB} for path loss,

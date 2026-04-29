@@ -35,7 +35,7 @@
 \contentsline {table}{\numberline {4.8}{\ignorespaces Path-loss prior pixel-weighted RMSE by UAV transmitter height, on the 30\% city-holdout evaluation split.}}{100}{table.caption.123}%
 \contentsline {table}{\numberline {4.9}{\ignorespaces Delay-spread and angular-spread calibrated pixel-weighted RMSE by UAV transmitter height, on the city-holdout test split.}}{100}{table.caption.124}%
 \contentsline {table}{\numberline {4.10}{\ignorespaces Hybrid path-loss prior, pixel-weighted RMSE on the 30\% city-holdout evaluation split, broken down by topology class. The overall row reproduces Table~\ref {tab:try78_results}.}}{101}{table.caption.125}%
-\contentsline {table}{\numberline {4.11}{\ignorespaces Final residual GMM-head model test results on unseen cities, compared with the frozen priors. Negative \(\Delta \) means that the model improves the prior.}}{102}{table.caption.127}%
+\contentsline {table}{\numberline {4.11}{\ignorespaces Final residual GMM-head model test results on unseen cities.}}{102}{table.caption.127}%
 \contentsline {table}{\numberline {4.12}{\ignorespaces Final residual GMM-head model test RMSE separated by LoS and NLoS pixels. The test cities are unseen during training.}}{103}{table.caption.128}%
 \contentsline {table}{\numberline {4.13}{\ignorespaces Validation-versus-test sanity check for the same \texttt {best\_model.pt} checkpoint. The validation row matches the metrics stored in the checkpoint history; the test row is the final unseen-city generalisation result.}}{103}{table.caption.129}%
 \contentsline {table}{\numberline {4.14}{\ignorespaces Final-model pixel-weighted RMSE by split, compared with the frozen priors. The test split is the unseen-city generalisation claim; the all row aggregates train, validation, and test together.}}{103}{table.caption.130}%
@@ -45,20 +45,20 @@
 \contentsline {table}{\numberline {4.18}{\ignorespaces Approximate quantisation RMSE implied by the stored integer target precision in the current CKM HDF5 file. The table reports the actual storage used in this thesis.}}{108}{table.caption.141}%
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {5.1}{\ignorespaces Sustainability matrix summary for the thesis.}}{110}{table.caption.142}%
-\contentsline {table}{\numberline {5.2}{\ignorespaces Indicative economic cost of the TFG development.}}{112}{table.caption.143}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Indicative economic cost of the BT development.}}{112}{table.caption.143}%
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {6.1}{\ignorespaces Main lessons learned across the development path.}}{117}{table.caption.144}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces Try-number map, early image-regression phase.}}{123}{table.caption.149}%
-\contentsline {table}{\numberline {A.2}{\ignorespaces Try-number map, spread branches, masks, and first priors.}}{124}{table.caption.150}%
-\contentsline {table}{\numberline {A.3}{\ignorespaces Try-number map, prior-residual and PMNet-style phase.}}{124}{table.caption.151}%
-\contentsline {table}{\numberline {A.4}{\ignorespaces Try-number map, PMHHNet, regularization, and distribution diagnosis.}}{125}{table.caption.152}%
-\contentsline {table}{\numberline {A.5}{\ignorespaces Try-number map, final distribution, prior, and joint model phase.}}{125}{table.caption.153}%
+\contentsline {table}{\numberline {A.1}{\ignorespaces Try-number map, early image-regression phase.}}{123}{table.caption.148}%
+\contentsline {table}{\numberline {A.2}{\ignorespaces Try-number map, spread branches, masks, and first priors.}}{124}{table.caption.149}%
+\contentsline {table}{\numberline {A.3}{\ignorespaces Try-number map, prior-residual and PMNet-style phase.}}{124}{table.caption.150}%
+\contentsline {table}{\numberline {A.4}{\ignorespaces Try-number map, PMHHNet, regularization, and distribution diagnosis.}}{125}{table.caption.151}%
+\contentsline {table}{\numberline {A.5}{\ignorespaces Try-number map, final distribution, prior, and joint model phase.}}{125}{table.caption.152}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {B.1}{\ignorespaces Main final residual GMM-head model configuration values.}}{129}{table.caption.154}%
+\contentsline {table}{\numberline {B.1}{\ignorespaces Main final residual GMM-head model configuration values.}}{129}{table.caption.153}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {C.1}{\ignorespaces Location of the main mathematical definitions.}}{130}{table.caption.155}%
+\contentsline {table}{\numberline {C.1}{\ignorespaces Location of the main mathematical definitions.}}{130}{table.caption.154}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {D.1}{\ignorespaces Final residual GMM-head model appendix panels generated from validation samples with the final huge checkpoint.}}{132}{table.caption.156}%
+\contentsline {table}{\numberline {D.1}{\ignorespaces Final residual GMM-head model appendix panels generated from validation samples with the final huge checkpoint.}}{132}{table.caption.155}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }

@@ -85,7 +85,8 @@ Figure~\ref{fig:pipeline} illustrates the overall pipeline.
 \node[below=0.25cm of dnn, font=\scriptsize, text width=2.4cm, align=center]
       {$\delta \in [-\delta_{\max}, +\delta_{\max}]$};
 \end{tikzpicture}
-\caption{Overall prior-anchored pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta$ around them.}
+\caption[Overall prior-anchored pipeline with bounded DNN corrections.]
+{Overall prior-anchored pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta$ around them.}
 \label{fig:pipeline}
 \end{figure}
 

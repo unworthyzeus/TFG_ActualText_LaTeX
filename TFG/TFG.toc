@@ -182,10 +182,9 @@
 \contentsline {subsection}{\numberline {6.1.5}Negative results}{116}{subsection.6.1.5}%
 \contentsline {subsection}{\numberline {6.1.6}Lessons learned across the development path}{116}{subsection.6.1.6}%
 \contentsline {section}{\numberline {6.2}Future Directions}{117}{section.6.2}%
-\contentsline {paragraph}{Short-term.}{117}{paragraph*.145}%
-\contentsline {paragraph}{Medium-term.}{117}{paragraph*.146}%
-\contentsline {paragraph}{Long-term.}{117}{paragraph*.147}%
-\contentsline {chapter}{Bibliography}{118}{chapter*.148}%
+\contentsline {paragraph}{Short-medium term.}{117}{paragraph*.145}%
+\contentsline {paragraph}{Medium-long term.}{117}{paragraph*.146}%
+\contentsline {chapter}{Bibliography}{118}{chapter*.147}%
 \contentsline {chapter}{\numberline {A}Detailed Attempt Log}{122}{appendix.A}%
 \contentsline {section}{\numberline {A.1}How to read the attempt numbers}{122}{section.A.1}%
 \contentsline {section}{\numberline {A.2}Try-number map}{123}{section.A.2}%

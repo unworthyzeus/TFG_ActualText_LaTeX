@@ -288,7 +288,9 @@ simple point estimate.
 
 \end{tikzpicture}%
 }
-\caption{Distribution-first path-loss system. Stage~A learns global
+\caption[Distribution-first path-loss system. Stage A learns global GMM
+parameters from pooled features and Stage B predicts per-pixel assignments.]%
+{Distribution-first path-loss system. Stage~A learns global
 GMM parameters $(\pi_k,\mu_k,\sigma_k)$ from pooled features conditioned on
 UAV height; Stage~B produces per-pixel soft assignments and
 within-component offsets anchored to those parameters.}
@@ -830,7 +832,7 @@ Weight decay     & 0.01 & 0.01 & 0.015--0.030 \\
 Batch size       & 1 & 1 & 1 \\
 Grad accumulation & 8 & 8 & 16 (68) / 8 (69) \\
 Warmup epochs    & 2 & 1 & 2--5 \\
-Epochs           & 80--120 & 40 fine-tune epochs & 80--150 \\
+Epochs           & 120 & 40 fine-tune epochs & 80 \\
 Scheduler        & ReduceLROnPlateau, patience 15 & cosine \texttt{LambdaLR} after warmup & ReduceLROnPlateau (post-April~2025 patch) \\
 SWA              & Off & Off & On, start fraction 0.60 \\
 Label noise      & Off & Off & On, $\sigma_{\mathrm{dB}}=0.5$ \\
