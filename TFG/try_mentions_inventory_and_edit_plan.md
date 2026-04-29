@@ -2,7 +2,7 @@
 
 > **Goal:** list every current thesis-source line that names a numbered Try, then decide how each cluster should be kept, shortened, moved, or rewritten.
 >
-> **Scope:** `.tex` sources in `C:\TFG\FINAL_THESIS\TFG`; LaTeX build artifacts such as `.aux`, `.log`, `.toc`, and the compiled PDF are excluded. The scan includes `Try 80`, `Try~80`, `Try\,80`, `try80`, `Tries~66--75`, and similar TeX/source variants.
+> **Scope:** `.tex` sources in `C:\TFG\FINAL_THESIS\TFG`; LaTeX build artifacts such as `.aux`, `.log`, `.toc`, and the compiled PDF are excluded. The first scan covered top-level `.tex` sources; the Gantt include file `img/gantt_diagrama.tex` was checked separately below because it is pulled into `introduction.tex`.
 >
 > **Snapshot:** generated 2026-04-29 before any thesis edits from this inventory.
 
@@ -10,6 +10,7 @@
 
 - Keep Try numbers in the main text only when they carry a scientific role: milestone, method, final baseline, or final model.
 - Move operational detail, long attempt history, script names, and implementation snippets to the appendix or remove them from the main narrative.
+- Rephrase the Gantt diagram too: its bars should describe phases, not raw internal attempt numbers, because the figure appears in the Introduction and should read as a public project plan.
 - Keep the final public story simple: old direct-regression attempts -> distribution-first diagnosis in Try 76/77 -> calibrated priors in Try 78/79 -> Try 80 residual refinement.
 - Standardize wording: `Try 78` is the path-loss prior, `Try 79` is the spread-prior calibration, and `Try 80` is the joint prior-anchored residual model.
 - Do not mix taxonomy counts: Try 78 uses 18 path-loss calibration regimes in the final artifacts; Try 79 uses 36 exact regimes per metric, 72 exact total, and 114 keys including fallbacks.
@@ -34,6 +35,7 @@
 | File | Try lines | Try-style occurrences | Handling |
 | --- | ---: | ---: | --- |
 | `appendices.tex` | 86 | 101 | Keep as audit trail, but remove/soften repo-path wording if it reads like source-control notes rather than reproducibility. |
+| `img/gantt_diagrama.tex` | 12 | 12 | Rephrase all raw `Attempts ...` / `Try ...` bars into phase names. This figure is in the Introduction, so it should not expose the internal numbering system unless the caption explains that numbering is historical. |
 | `conclusions.tex` | 17 | 20 | Keep only final thesis lessons, negative results, and future work. Avoid re-running the full chronology. |
 | `introduction.tex` | 16 | 18 | Keep high-level contributions and outline. Avoid adding old Try details here. |
 | `methodology.tex` | 80 | 102 | Primary reduction target. Keep one chronology table, final training progression, and prior derivations; remove duplicate old-try narration if Results/Appendix already cover it. |
@@ -45,6 +47,27 @@
 | `state_of_art.tex` | 63 | 67 | Keep Try mentions only when positioning thesis ideas against literature. Internal old-run names should be minimized here. |
 | `summary.tex` | 15 | 15 | Keep final Try 78/79/80 story in Catalan, Spanish, and English. No old tries. |
 | `sustainability.tex` | 7 | 9 | Keep compute-cost mentions only. Avoid methodological detail. |
+
+## Gantt Rephrase Plan
+
+The Gantt is inserted from `img/gantt_diagrama.tex` into `introduction.tex` lines 175--180. The surrounding paragraph already says the figure is grouped by major phases rather than all individual attempts, so the bar labels should match that promise.
+
+| Current Gantt label | Proposed label |
+| --- | --- |
+| `Attempts 23--32: Spread-branch & first priors` | `Spread-target branch and first prior tests` |
+| `Attempts 33--40: Building-mask exclusion` | `Ground-mask evaluation protocol` |
+| `Attempts 41--50: Physical prior & PMNet backbone` | `Physical-prior residual baselines` |
+| `Try 78--79: Frozen non-DL priors` | `Frozen calibrated path-loss and spread priors` |
+| `Attempts 1--8: U-Net and pix2pix cGAN` | `Initial U-Net and cGAN baseline` |
+| `Attempts 9--14: Height & LoS/NLoS splits` | `Height conditioning and visibility-aware splits` |
+| `Attempts 15--19: GroupNorm & distance-map` | `Stabilized CNN inputs and distance features` |
+| `Attempts 20--22: Bilinear decoder & multiscale` | `Artifact reduction and multiscale supervision` |
+| `Attempts 51--66: PMHHNet consolidation` | `PMHHNet and topology-expert consolidation` |
+| `Attempts 67--75: Anti-overfitting & multi-expert` | `Regularization and multi-expert diagnostics` |
+| `Attempts 76--77: Distribution-first GMM` | `Distribution-first GMM modelling` |
+| `Try 80: Joint prior-anchored residual model` | `Joint prior-anchored residual model` |
+
+Handling: rephrase the Gantt labels when editing the thesis, but leave the chronological mapping in this inventory and in the detailed appendix. If a reader wants the internal numbering, it should be discoverable in Results/Appendix, not front-loaded in the project-plan figure.
 
 ## Compact Per-Try Locations And Handling
 
