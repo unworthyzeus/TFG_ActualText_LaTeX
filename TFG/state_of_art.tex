@@ -533,6 +533,22 @@ PathFinder \cite{pathfinder2025} & Partial & No & No & Yes & Partial \\
 \end{tabularx}
 \end{table}
 
+Two consequences follow from this checklist. First, method rankings can change
+substantially when the split changes from random maps to unseen cities. A model
+that has learned the texture, street orientation, and height statistics of a
+known city may still fail when the same transmitter-height range is evaluated
+on a new morphology. For this reason, this thesis treats city holdout as a
+core part of the task definition rather than as an optional robustness test.
+
+Second, path loss, delay spread, and angular spread should not be treated as
+three copies of the same regression problem. LoS path loss often contains a
+strong deterministic radial component, whereas NLoS path loss depends on
+blocked-link geometry and local morphology. Delay and angular spreads are even
+more distributional: many pixels are near zero, but physically important tails
+remain. A fair comparison therefore has to report the target, regime, masking
+policy, and split together; otherwise an apparently lower RMSE can simply mean
+that an easier quantity was measured.
+
 \subsection{Tarhouni et al.\ --- measured suburban path-loss prediction}
 
 Tarhouni et al.\ \cite{tarhouni2025} study machine-learning-based path-loss
@@ -676,6 +692,74 @@ Items~1--3 already exist in partial form inside the PMHHNet tries. Items~4--6
 are roadmap items requiring additional data, compute, or infrastructure beyond
 the scope of a single-GPU training setup.
 
+\subsection{Synthesis: literature gaps mapped to thesis decisions}
+
+The reviewed literature does not point to a single method that can simply be
+copied for the CKM task. Instead, each family contributes one useful ingredient
+and leaves one gap that shaped the thesis design. Table~\ref{tab:soa_gap_synthesis}
+summarises this mapping.
+
+\begin{table}[ht]
+\centering
+\caption{Synthesis of literature families and the corresponding thesis design
+response. The table is not a ranking; it identifies which limitation each
+method family exposed for the CKM setting.}
+\label{tab:soa_gap_synthesis}
+\scriptsize
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.22\textwidth}
+                            >{\raggedright\arraybackslash}p{0.22\textwidth}
+                            >{\raggedright\arraybackslash}p{0.27\textwidth}
+                            >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Literature family} & \textbf{Contribution} & \textbf{Remaining gap for this thesis} & \textbf{Thesis response} \\
+\midrule
+U-Net, pix2pix, and cGAN radio-map predictors &
+Dense image-to-image mapping. &
+Visual plausibility can hide physical RMSE and NLoS tail errors. &
+Use ground-only physical metrics, LoS/NLoS reporting, and reject visual realism
+as the primary objective. \\
+
+PMNet and PMHHNet-style backbones &
+Good spatial inductive bias and multi-scale context. &
+Mostly single-target or benchmark-specific; does not solve target-distribution
+mismatch. &
+Use distribution-first heads, GMM marginals, and regime diagnostics before
+choosing the final residual model. \\
+
+Classical propagation and two-ray models &
+Strong LoS path-loss structure. &
+Weak for blocked urban NLoS and for spread targets. &
+Use the Try~78 LoS prior plus a calibrated NLoS morphology model. \\
+
+Empirical spread models &
+Log-domain and regime-dependent spread statistics. &
+Usually not dense pixel maps with building morphology. &
+Use Try~79 log-domain ridge priors with topology, height, and LoS/NLoS regimes. \\
+
+Heteroscedastic, GMM, and uncertainty heads &
+Multi-modal or heavy-tailed targets can be represented directly. &
+Often not anchored to physical priors. &
+Use a Try~80 prior-anchored residual GMM. \\
+
+AIRMap, PathFinder, and adaptive methods &
+Fast inference, calibration, or domain-shift awareness. &
+Different task assumptions and benchmark contracts. &
+Use an explicit fair-comparison protocol and strict city-holdout interpretation. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\normalsize
+
+This synthesis is the main reason the final system is hybrid. A pure neural
+model would reuse the dense prediction machinery but ignore the strong LoS
+structure. A pure propagation model would explain the radial path-loss field
+but miss blocked streets and spread tails. A pure uncertainty head would model
+the heavy-tailed targets but would still have to rediscover the easy physics.
+Try~80 combines the pieces that survived those comparisons: calibrated priors,
+explicit regimes, distribution-aware residuals, and a city-holdout evaluation
+contract.
+
 %---------------------------------------------------------------------
 \section{Position of Try 80 in the literature}
 \label{sec:soa_position}
@@ -734,6 +818,21 @@ As discussed in Section~\ref{sec:soa_benchmarks}, those numbers apply to a
 structurally easier evaluation contract (fixed height, same-distribution cities,
 narrower dynamic range) and cannot be compared to CKM city-holdout RMSE without
 systematic correction of all five axes listed in that section.
+
+Try~80 is also not presented as a universal radio-map foundation model. It is a
+surrogate for a specific CKM dataset contract: fixed output definitions, a
+known simulator family, a \(513\times513\) spatial grid, explicit masks, and
+continuous UAV height within the dataset range. Generalising beyond this scope
+would require additional conditioning variables such as carrier frequency,
+bandwidth, antenna pattern, material information, and field measurements.
+
+This limitation is also what makes the result interpretable: the thesis does
+not claim a universal surrogate for all propagation environments, but a
+carefully audited CKM predictor under a known dataset contract. The comparison
+is therefore intentionally narrower and more honest. It asks whether the model
+can reproduce unseen-city CKM maps under the same physical-unit evaluation used
+throughout the project, not whether it can replace every ray tracer or every
+radio-map benchmark.
 
 \subsection{Summary of position}
 

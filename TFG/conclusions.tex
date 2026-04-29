@@ -20,6 +20,36 @@ anchors on the unseen test cities, reaching \SI{1.6519}{dB} path-loss RMSE,
 \SI{26.5570}{ns} delay-spread RMSE, and \SI{11.3854}{\degree}
 angular-spread RMSE.
 
+\subsection{What the final result means}
+
+The path-loss result is the clearest success case. Try~78 already reached
+\SI{1.9246}{dB} overall RMSE without a neural correction, which shows that a
+large part of the CKM path-loss field is governed by stable radial and
+visibility-dependent structure. Try~80 reduced this to \SI{1.6519}{dB}. This
+improvement is numerically smaller than the early jumps between failed neural
+models, but it matters more because it is obtained after the strong prior has
+already removed the easy component of the task. The remaining error is mostly
+the hard local residual: blocked streets, transition zones, and imperfect
+geometry-to-radio alignment.
+
+The spread targets should be interpreted differently. Delay spread and angular
+spread are not smooth deterministic surfaces in the same way as LoS path loss:
+they contain spike-like regimes, long tails, and topology-dependent mixtures.
+For that reason, the Try~80 gains from \SI{28.10}{ns} to \SI{26.5570}{ns} in
+delay spread and from \SI{13.74}{\degree} to \SI{11.3854}{\degree} in angular
+spread are meaningful even though they are modest in absolute terms. They show
+that the neural residual can add spatial context on top of the calibrated
+distributional priors, but they also confirm that these targets remain less
+deterministic than path loss.
+
+The final model is therefore not a pure neural victory. It is a division of
+labour. Calibrated priors explain the part of the signal that is stable,
+low-variance, and physically structured; the neural model is used where the
+prior is expected to be incomplete. This is the main methodological result of
+the thesis: performance improved when the model stopped trying to learn every
+effect from pixels alone and instead learned bounded residuals around
+interpretable anchors.
+
 \subsection{Answers to the research questions}
 
 \textbf{RQ1: dense prediction under city holdout.} The project shows that dense
@@ -68,6 +98,40 @@ can outperform many neural attempts on that regime. Try~79 extends the same
 principle to spread statistics with log-domain ridge calibration. Together,
 these priors become interpretable anchors for the Try~80 joint residual model.
 
+\subsection{Practical implications and scope}
+
+The practical implication is that CKM prediction should be treated as a
+model-selection problem, not only as a neural-architecture problem. The final
+pipeline is useful because it identifies which part of the map can be predicted
+with a stable prior and which part still needs learned spatial context. For
+path loss, especially in LoS, the physically calibrated component is already
+strong enough that a large CNN should not be asked to relearn it from scratch.
+For delay spread, angular spread, and NLoS-heavy regions, the map is less
+deterministic and the residual learner has a clearer role.
+
+This also changes how future experiments should be judged. A new backbone is
+only useful if it improves the held-out city metrics after the same masking,
+height conditioning, and prior baselines are applied. Otherwise it may be
+solving an easier problem or moving error between regimes. The thesis therefore
+argues for reporting not only a single overall RMSE, but also LoS/NLoS splits,
+height-bin behaviour, and topology-specific failures. These diagnostics made
+the development path longer, but they prevented false progress.
+
+The result is strongest as a reproducible surrogate for the CKM simulation
+contract used in this work. It should not be read as a replacement for
+ray-tracing in arbitrary cities, frequencies, or antenna configurations.
+Instead, it is evidence that a simulation-derived CKM can be compressed into a
+fast predictor when the dataset contract is fixed and the predictor is anchored
+to interpretable propagation structure. This is a narrower claim, but it is a
+more defensible one.
+
+For deployment-oriented work, the main value of the pipeline is transparency.
+The priors expose the physical assumptions, the residual caps bound how much
+the network can override them, and the evaluation protocol reveals where the
+model remains weak. That combination is more useful for UAV network planning
+than a black-box map generator with a slightly lower aggregate error but no
+clear indication of when it is extrapolating.
+
 \subsection{Negative results}
 
 Several abandoned directions were scientifically useful. The pix2pix-style cGAN
@@ -86,22 +150,82 @@ artifacts, not only missing physical channels, not only regularisation, and not
 only lack of capacity. The final approach is more convincing because it is built
 on those rejected hypotheses.
 
+\subsection{Lessons learned across the development path}
+
+Table~\ref{tab:conclusion_lessons} summarises the main lesson from each branch
+of the project. The sequence matters because the final pipeline is not an
+isolated model choice; it is the result of progressively narrowing down what
+the dataset would and would not reward.
+
+\begin{table}[htbp]
+\centering
+\caption{Main lessons learned across the development path.}
+\label{tab:conclusion_lessons}
+\scriptsize
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.20\textwidth}
+>{\raggedright\arraybackslash}X
+>{\raggedright\arraybackslash}X}
+\toprule
+Development branch & What it showed & Consequence for the final thesis \\
+\midrule
+U-Net and cGAN baselines &
+Dense image-to-image models can reproduce smooth map structure, but visual
+sharpness is not the same as propagation accuracy. &
+The thesis kept dense prediction, but stopped treating perceptual map quality
+as the main objective. \\
+Masked baselines &
+Building pixels can distort both loss and metrics if they are treated as normal
+prediction targets. &
+Ground-only training and reporting became part of the evaluation contract. \\
+PMNet and PMHHNet variants &
+More specialised CNN structure improved organisation but did not solve the
+multi-modal NLoS and spread-target errors. &
+The project shifted from architecture search toward target-distribution
+diagnosis. \\
+Distribution-first models &
+GMM and heteroscedastic heads exposed spike-plus-tail behaviour and hard-pixel
+uncertainty. &
+The spread targets were treated as distributional, not simply as smooth scalar
+regression maps. \\
+Try~78 and Try~79 priors &
+Calibrated physical and statistical priors could beat many neural attempts on
+their intended regimes. &
+The final system used priors as frozen anchors rather than as optional
+features. \\
+Try~80 &
+Residual learning improved the frozen anchors without erasing their
+interpretability. &
+The final claim became a hybrid one: calibrated priors plus bounded neural
+correction under strict city holdout. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
 \section{Future Directions}
 
-The most important future extension is frequency conditioning. The current
-dataset fixes the radio configuration, while a general outdoor CKM model should
-learn how path loss and spreads vary with carrier frequency, bandwidth, antenna
-pattern, and possibly polarization. A natural next dataset would therefore
-contain the same cities simulated at multiple frequencies and antenna settings.
+\paragraph{Short-term.}
+The immediate extension is to strengthen the current Try~80 residual pipeline
+without changing the evaluation contract. The most useful additions are
+transmitter-oriented mixup, more explicit corridor losses, and a controlled
+ablation of each residual head and loss weight. These experiments would test
+whether the remaining errors are caused by missing spatial context or by limits
+in the frozen priors themselves.
 
-The second extension is field calibration. The priors in Try~78 and Try~79 are
-interpretable, so a small number of real measurements could be used to
-calibrate the simulator-to-reality gap without retraining the full model from
-scratch. This is especially important before any operational use in emergency
-coverage or UAV network planning.
+\paragraph{Medium-term.}
+The next step is frequency and radio-configuration conditioning. The current
+dataset fixes the carrier and antenna assumptions, while a more general outdoor
+CKM model should learn how path loss and spreads vary with frequency,
+bandwidth, antenna pattern, and possibly polarization. A natural dataset for
+this stage would simulate the same cities across several radio configurations
+so that the model can separate geometry effects from configuration effects.
 
-Finally, the Try~80 idea can be expanded with stronger global-context
-backbones, transmitter-oriented mixup, full corridor losses, and test-time
-adaptation. These should be added only after preserving the current safeguards:
-strict city holdout, ground-only masking, explicit LoS/NLoS reporting, and
-separate evaluation by UAV-height bin and topology class.
+\paragraph{Long-term.}
+The final extension is field calibration. The Try~78 and Try~79 priors are
+interpretable, which makes them suitable for simulator-to-reality correction
+using a limited number of real measurements. In the long term, this could lead
+to a CKM predictor that starts from ray-traced or prior-generated maps, adapts
+to a new city with sparse measurements, and still reports uncertainty by
+LoS/NLoS regime, UAV-height bin, and topology class. Those safeguards should
+remain part of the method before considering operational use in emergency
+coverage, UAV network planning, or rapid deployment studies.

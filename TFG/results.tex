@@ -265,9 +265,8 @@ Try 79.
 \subsubsection*{Why LoS is harder than NLoS in the GMM regime}
 
 The explanation is a property of the marginal target distributions, not
-of the model. The histogram study shipped with Try 76
-(\texttt{TFGSeventySixthTry76/docs/histogram\_study.json}) reports the
-following global sanity-check statistics over all CKM ground pixels:
+of the model. The Try~76 histogram study reports the following global
+sanity-check statistics over all CKM ground pixels:
 
 \begin{itemize}
   \item \textbf{LoS path-loss target}: $\mu \approx \SI{96.95}{dB}$,
@@ -386,8 +385,8 @@ classes and trains two GMM experts per class (one per spread target),
 for a total of twelve experts. Unlike Try 76, the LoS / NLoS split is
 not enforced inside Try 77 because the spread targets are defined over
 all ground pixels (the Stage-A GMM components recover the
-spike-plus-tail shape themselves; see the histogram study in
-\texttt{docs/distribution\_classes.md}).
+spike-plus-tail shape themselves, as shown by the distribution-class
+histogram study).
 
 \paragraph{Expert nomenclature.}
 In this chapter, ``six experts'' denotes the legacy Try 76/77
@@ -561,13 +560,10 @@ where a distribution-aware residual can matter.
 The headline Try 78 number (\SI{1.92}{dB} overall RMSE on its
 30\% city-holdout evaluation split, see Table~\ref{tab:try78_results}) hides the
 same morphological structure that Try 76 surfaced. The per-sample evaluation
-records in
-\texttt{TFGSeventyEighthTry78/hybrid\_out\_final\_dml/} were
-re-aggregated by classifying each evaluated sample into the six Try 76
-topology classes with the routing function
-\texttt{classify\_topology()} from
-\texttt{TFGSeventySixthTry76/src/data\_utils.py}. The pixel-weighted
-RMSE per topology class is reported in
+records were re-aggregated by classifying each evaluated sample into the six
+Try~76 topology classes with the same routing rule used by the
+distribution-first experiments. The pixel-weighted RMSE per topology class is
+reported in
 Table~\ref{tab:try78_by_topology} and visualised in
 Figure~\ref{fig:try78_by_topology}.
 

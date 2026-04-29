@@ -1,15 +1,15 @@
 [0] Config.pm:328> INFO - This is Biber 2.21
 [0] Config.pm:331> INFO - Logfile is 'TFG.blg'
-[153] biber-MSWIN64:342> INFO - === 
-[194] Biber.pm:421> INFO - Reading 'TFG.bcf'
-[333] Biber.pm:1002> INFO - Found 45 citekeys in bib section 0
-[353] Biber.pm:4487> INFO - Processing section 0
-[365] Biber.pm:4678> INFO - Looking for bibtex file 'TFG.bib' for section 0
-[413] bibtex.pm:1713> INFO - LaTeX decoding ...
-[476] bibtex.pm:1519> INFO - Found BibTeX data source 'TFG.bib'
-[970] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[970] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[970] Biber.pm:4307> INFO - Sorting list 'nyt/global//global/global/global' of type 'entry' with template 'nyt' and locale 'en-US'
-[971] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
-[1043] bbl.pm:676> INFO - Writing 'TFG.bbl' with encoding 'UTF-8'
-[1085] bbl.pm:779> INFO - Output to TFG.bbl
+[241] biber-MSWIN64:342> INFO - === 
+[333] Biber.pm:421> INFO - Reading 'TFG.bcf'
+[446] Biber.pm:1002> INFO - Found 45 citekeys in bib section 0
+[462] Biber.pm:4487> INFO - Processing section 0
+[486] Biber.pm:4678> INFO - Looking for bibtex file 'TFG.bib' for section 0
+[541] bibtex.pm:1713> INFO - LaTeX decoding ...
+[586] bibtex.pm:1519> INFO - Found BibTeX data source 'TFG.bib'
+[917] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[917] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[917] Biber.pm:4307> INFO - Sorting list 'nyt/global//global/global/global' of type 'entry' with template 'nyt' and locale 'en-US'
+[917] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
+[1000] bbl.pm:676> INFO - Writing 'TFG.bbl' with encoding 'UTF-8'
+[1027] bbl.pm:779> INFO - Output to TFG.bbl

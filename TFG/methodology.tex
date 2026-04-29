@@ -819,133 +819,71 @@ experts.
 \section{Loss functions of the final pipeline}
 \label{sec:loss_functions}
 
-The final Try~80 joint objective sums a per-task composite loss over the
-three targets \(\mathcal{T} = \{\mathrm{PL}, \mathrm{DS}, \mathrm{AS}\}\).
-For a target \(t\in\mathcal{T}\) with valid-pixel mask \(M_t\), the per-task
-loss is a weighted combination of eight terms
+The detailed definitions of the Try~80 objective are given in
+Sec.~\ref{sec:try80_objective}. This section keeps only the training contract
+needed to compare the attempt families. For each target
+\(t\in\{\mathrm{PL},\mathrm{DS},\mathrm{AS}\}\), the implementation defines a
+composite masked loss
 \begin{equation}
-\mathcal{L}_t = \lambda_{\mathrm{nll}}\mathcal{L}_{\mathrm{nll}}
- + \lambda_{\mathrm{kl}}\mathcal{L}_{\mathrm{kl}}
- + \lambda_{\mathrm{mm}}\mathcal{L}_{\mathrm{mm}}
- + \lambda_{\mathrm{a}}\mathcal{L}_{\mathrm{anchor}}
- + \lambda_{\mathrm{g}}\mathcal{L}_{\mathrm{guard}}
- + \lambda_{\mathrm{o}}\mathcal{L}_{\mathrm{out}}
- + \lambda_{\mathrm{r}}\mathcal{L}_{\mathrm{rmse}}
- + \lambda_{\mathrm{m}}\mathcal{L}_{\mathrm{mae}},
+\begin{aligned}
+\mathcal{L}
+&=
+\sum_t w_t
+\left(
+\lambda_{\mathrm{NLL}}\mathcal{L}_{\mathrm{NLL},t}
++\lambda_{\mathrm{KL}}\mathcal{L}_{\mathrm{KL},t}
++\lambda_{\mathrm{mom}}\mathcal{L}_{\mathrm{mom},t}
+\right.\\
+&\hspace{2.5cm}\left.
++\lambda_{\mathrm{anchor}}\mathcal{L}_{\mathrm{anchor},t}
++\lambda_{\mathrm{guard}}\mathcal{L}_{\mathrm{guard},t}
++\lambda_{\mathrm{out}}\mathcal{L}_{\mathrm{out},t}
+\right.\\
+&\hspace{2.5cm}\left.
++\lambda_{\mathrm{RMSE}}\mathcal{L}_{\mathrm{RMSE},t}
++\lambda_{\mathrm{MAE}}\mathcal{L}_{\mathrm{MAE},t}
+\right).
+\end{aligned}
 \label{eq:try80_total}
 \end{equation}
-with task weights applied in the training loop. For the final
-path-loss-finetuned Try~80 checkpoint, the active weights are:
-\[
-\begin{aligned}
-(\lambda_{\mathrm{nll}}, \lambda_{\mathrm{kl}},
- \lambda_{\mathrm{mm}}, \lambda_{\mathrm{a}})
-  &= (0, 0, 0, 0.01),\\
-(\lambda_{\mathrm{g}}, \lambda_{\mathrm{o}},
- \lambda_{\mathrm{r}}, \lambda_{\mathrm{m}})
-  &= (0.02, 0, 1.00, 0.05),\\
-(w_{\mathrm{PL}}, w_{\mathrm{DS}}, w_{\mathrm{AS}})
-  &= (1.00, 0.25, 0.25).
-\end{aligned}
-\]
-The total loss is
-\(\mathcal{L} = \sum_{t\in\mathcal{T}}w_t\mathcal{L}_t\). The implementation
-still defines the NLL, KL, moment and outlier-budget terms, but the final
-fine-tune sets their weights to zero and relies on RMSE/MAE plus the small
-anchor and prior-guard regularisers.
+All sums are restricted to valid receiver pixels.
 
-Below, \(y_i\) is the ground-truth pixel value, \(\hat{y}_i\) is the model
-prediction in native units, \(\hat{y}^{(0)}_i\) is the frozen prior
-prediction, \(\mu_k, \sigma_k, \pi_k\) are the \(k\)-th Stage-A GMM
-parameters, \(p_{k,i}\) is the Stage-B soft component assignment at pixel
-\(i\), and the sums run only over valid pixels.
+\begin{table}[H]
+\centering
+\caption{Active loss settings in the final path-loss-finetuned Try~80 checkpoint.}
+\label{tab:try80_loss_settings}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.27\textwidth}
+>{\raggedright\arraybackslash}p{0.19\textwidth}
+>{\raggedright\arraybackslash}X}
+\toprule
+Term group & Final weight & Interpretation \\
+\midrule
+NLL, KL, moment and outlier budget &
+0 &
+Defined by the architecture but inactive in the selected deterministic
+fine-tune. \\
+RMSE / MAE &
+1.00 / 0.05 &
+Primary supervised pixel losses in native output units. \\
+Anchor / prior guard &
+0.01 / 0.02 &
+Keep residual corrections small and penalize checkpoints that become worse
+than the frozen priors. \\
+Task weights &
+PL 1.00, DS 0.25, AS 0.25 &
+Make path loss the main optimization target while retaining spread supervision
+in the joint model. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
-\paragraph{Per-pixel negative log-likelihood.} The available likelihood term.
-Stage B predicts a local mean-residual \(\mu_i\) and log-variance
-\(\log\sigma_i^2\) inside a frozen Stage-A mixture, and the loss is the
-Gaussian NLL in the target's transformed space when its weight is non-zero:
-\begin{equation}
-\mathcal{L}_{\mathrm{nll}} =
- \frac{1}{|M_t|}\sum_{i\in M_t}\left[
- \frac{(\mu_i - y_i)^2}{2\,\sigma_i^2} + \frac{1}{2}\log\sigma_i^2
- \right].
-\label{eq:try80_nll_summary}
-\end{equation}
-
-\paragraph{Stage-A distribution KL.} When active, keeps the per-sample GMM predicted by
-Stage A close to the empirical target histogram inside the same sample. Let
-\(p_k\) be the Stage-A mixture weights, \(\bar\pi_k\) be the empirical soft
-assignment of target pixels to each component, and \(\bar\delta_k\) be the
-per-component mean shift; the loss is
-\begin{equation}
-\mathcal{L}_{\mathrm{kl}} =
- \sum_{k=1}^{K}\left[
- \bar\pi_k\,
- \log\!\left(\frac{\bar\pi_k + \varepsilon}{p_k + \varepsilon}\right)
- + \beta\,\bar\pi_k\|\bar\delta_k\|_2^2
- \right],
-\label{eq:try80_kl_summary}
-\end{equation}
-with \(\varepsilon=10^{-6}\) and a small weight \(\beta\) that penalises
-unrealistic per-component shifts.
-
-\paragraph{Moment matching.} When active, prevents the backbone from drifting to the right
-mean but wrong variance:
-\begin{equation}
-\mathcal{L}_{\mathrm{mm}} =
- \bigl(\overline{\hat{y}}-\overline{y}\bigr)^2
- + \bigl(\sigma_{\hat{y}} - \sigma_{y}\bigr)^2,
-\label{eq:try80_mm}
-\end{equation}
-where the means and standard deviations are taken over valid pixels.
-
-\paragraph{Anchor and prior-guard.} Two light regularisers that keep the
-residual head honest. Anchor penalises unused head capacity
-\(\mathcal{L}_{\mathrm{anchor}} = \tfrac{1}{|M_t|}\sum_i \alpha_i^2 +
-\|\delta^{\mathrm{global}}\|_2^2 + \tfrac{1}{|M_t|}\sum_i
-\|\delta^{\mathrm{local}}_i\|_2^2\), where \(\alpha\), \(\delta^{\mathrm{global}}\),
-and \(\delta^{\mathrm{local}}\) are the scalar blend, per-sample mean shift,
-and per-pixel residual produced by the Stage-B head. Prior-guard forbids the
-model from being systematically worse than the frozen prior:
-\begin{equation}
-\mathcal{L}_{\mathrm{guard}} =
- \max\!\left(0,\,
- \mathrm{RMSE}(\hat{y},y) - \mathrm{RMSE}(\hat{y}^{(0)},y)\right)^2.
-\label{eq:try80_guard}
-\end{equation}
-
-\paragraph{Outlier budget.} When active, caps the total probability mass assigned to the
-tail component above a soft-assignment threshold \(\tau = 0.60\):
-\begin{equation}
-\mathcal{L}_{\mathrm{out}} =
- \left(\frac{1}{|M_t|}\sum_{i\in M_t}\mathbf{1}\!\left[p_{K,i}>\tau\right]
- - \beta_{\mathrm{out}}\right)_+^2,
-\label{eq:try80_out}
-\end{equation}
-with a small target budget \(\beta_{\mathrm{out}}\), so the tail component
-does not silently absorb the whole image.
-
-\paragraph{Supervised pixel losses.} Two standard terms anchor the native
-output to the ground truth:
-\begin{equation}
-\mathcal{L}_{\mathrm{rmse}} = \sqrt{
- \frac{1}{|M_t|}\sum_{i\in M_t}(\hat{y}_i - y_i)^2},
-\qquad
-\mathcal{L}_{\mathrm{mae}} =
- \frac{1}{|M_t|}\sum_{i\in M_t}|\hat{y}_i - y_i|.
-\label{eq:try80_rmse_mae_summary}
-\end{equation}
-\(\mathcal{L}_{\mathrm{rmse}}\) is the dominant supervised term in the final
-path-loss-finetuned configuration, where
-\(\lambda_{\mathrm{r}}=1.00\).
-
-Tries 67--71 used a different loss bundle centred on a main masked MSE, a
-multi-scale path-loss auxiliary, a masked Laplacian ``PDE'' residual, and an
-NLoS focus term. The distribution-first tries (\texttt{Try 76},
-\texttt{Try 77}) drop the multi-scale auxiliary and the Laplacian residual
-because the main failure they address is distributional rather than
-structural. Try~80 keeps the GMM residual head, but the final fine-tuned
-checkpoint is selected with a deterministic, RMSE-dominant objective.
+This is a deliberate simplification relative to the earlier branches. Tries
+67--71 used masked MSE with multi-scale and Laplacian-style auxiliaries; the
+distribution-first tries removed those structural losses and focused on target
+shape. Try~80 keeps the residual GMM machinery available, but the selected
+checkpoint is chosen with an RMSE-dominant objective because the frozen priors
+already explain the main large-scale structure.
 
 \section{Training hyperparameters}
 \label{sec:hyperparams}
