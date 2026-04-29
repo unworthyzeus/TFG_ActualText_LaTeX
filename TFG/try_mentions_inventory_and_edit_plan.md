@@ -28,7 +28,7 @@
 | Try 77 | Distribution-first spread reference. | Keep as a spread-specific predecessor and diagnostic; results can compare it to Try 79, but methodology should stay compact. |
 | Try 78 | Final non-DL path-loss prior. | Keep and polish. It is core methodology/results material. Fix any taxonomy ambiguity: final calibration has 18 regimes. Remove repo-style artifacts from main text. |
 | Try 79 | Final non-DL spread priors. | Keep and polish. State 36 exact keys per metric, 72 exact total, 114 with fallbacks. Keep result tables in Results, derivation in Methodology. |
-| Try 80 | Final joint model. | Keep as the final claim. Methodology should explain Big -> Big relaxed residuals -> Huge -> Huge path-loss fine-tune; Results should carry final metrics and deltas; appendix can carry panels/config. |
+| Try 80 | Final joint prior-anchored residual model with a GMM head. | Keep as the final claim. Methodology should explain Big -> Big relaxed residuals -> Huge -> Huge path-loss fine-tune; Results should carry final metrics, GMM-head interpretation, and deltas; appendix can carry panels/config. |
 
 ## File-Level Handling
 
@@ -65,7 +65,7 @@ The Gantt is inserted from `img/gantt_diagrama.tex` into `introduction.tex` line
 | `Attempts 51--66: PMHHNet consolidation` | `PMHHNet and topology-expert consolidation` |
 | `Attempts 67--75: Anti-overfitting & multi-expert` | `Regularization and multi-expert diagnostics` |
 | `Attempts 76--77: Distribution-first GMM` | `Distribution-first GMM modelling` |
-| `Try 80: Joint prior-anchored residual model` | `Joint prior-anchored residual model` |
+| `Try 80: Joint prior-anchored residual model` | `Joint prior-anchored residual GMM model` |
 
 Handling: rephrase the Gantt labels when editing the thesis, but leave the chronological mapping in this inventory and in the detailed appendix. If a reader wants the internal numbering, it should be discoverable in Results/Appendix, not front-loaded in the project-plan figure.
 
@@ -326,7 +326,7 @@ Locations:
 - `summary.tex`: 19-20, 25, 42-43, 48, 64-65, 70
 - `sustainability.tex`: 39, 57, 103, 158
 
-Handling: Keep as final model. Methodology should explain the staged training path; Results should carry the final test metrics and deltas; appendix can carry config/panels/snippets.
+Handling: Keep as final model. Methodology should explain the staged training path and the residual GMM head; Results should carry the final test metrics and deltas; appendix can carry config/panels/snippets.
 
 ## Detailed Source Line Index
 
