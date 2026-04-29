@@ -293,8 +293,8 @@
 \@writefile{toc}{\contentsline {subsubsection}{Design rules that survived}{50}{subsubsection*.32}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3.6}GMM component count and distribution choice}{50}{section.3.6}\protected@file@percent }
 \newlabel{sec:gmm_k_choice}{{3.6}{50}{GMM component count and distribution choice}{section.3.6}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3.3}{\ignorespaces Best-fit parametric family for each target distribution on the CKM validation histograms, across all cities. Based on the KL-ranking study in \texttt  {TFGpractice/TFGSeventySixthTry76/docs/distribution\_classes.md}.}}{51}{table.caption.33}\protected@file@percent }
-\newlabel{tab:gmm_k_choice}{{3.3}{51}{Best-fit parametric family for each target distribution on the CKM validation histograms, across all cities. Based on the KL-ranking study in \texttt {TFGpractice/TFGSeventySixthTry76/docs/distribution\_classes.md}}{table.caption.33}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3.3}{\ignorespaces Best-fit parametric family for each target distribution on the CKM validation histograms, across all cities. Based on the validation KL-ranking study.}}{51}{table.caption.33}\protected@file@percent }
+\newlabel{tab:gmm_k_choice}{{3.3}{51}{Best-fit parametric family for each target distribution on the CKM validation histograms, across all cities. Based on the validation KL-ranking study}{table.caption.33}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3.7}Loss functions of the final pipeline}{52}{section.3.7}\protected@file@percent }
 \newlabel{sec:loss_functions}{{3.7}{52}{Loss functions of the final pipeline}{section.3.7}{}}
 \newlabel{eq:try80_total}{{3.8}{52}{Loss functions of the final pipeline}{equation.3.8}{}}
@@ -314,39 +314,41 @@
 \newlabel{sec:hyperparams}{{3.8}{53}{Training hyperparameters}{section.3.8}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {3.4}{\ignorespaces Training configuration of the final pipeline. Unless otherwise stated, all runs use AdamW, image size $513\times 513$, batch size 1 per GPU, and gradient accumulation over 8 steps.}}{54}{table.caption.40}\protected@file@percent }
 \newlabel{tab:hyperparams}{{3.4}{54}{Training configuration of the final pipeline. Unless otherwise stated, all runs use AdamW, image size $513\times 513$, batch size 1 per GPU, and gradient accumulation over 8 steps}{table.caption.40}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.9}Training diagnostics and curves}{54}{section.3.9}\protected@file@percent }
-\newlabel{sec:train_curves}{{3.9}{54}{Training diagnostics and curves}{section.3.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.9}Try 80 training progression}{54}{section.3.9}\protected@file@percent }
+\newlabel{sec:try80_training_progression}{{3.9}{54}{Try 80 training progression}{section.3.9}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3.10}Try 78 and Try 79 priors: overview and literature basis}{55}{section.3.10}\protected@file@percent }
 \newlabel{sec:priors_overview}{{3.10}{55}{Try 78 and Try 79 priors: overview and literature basis}{section.3.10}{}}
 \@writefile{toc}{\contentsline {paragraph}{Notation convention.}{55}{paragraph*.41}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3.5}{\ignorespaces One-page summary of what is inherited from the literature, what is adapted to CKM, and what is reused or newly assembled in \texttt  {Try 80}.}}{55}{table.caption.42}\protected@file@percent }
-\newlabel{tab:executive_summary}{{3.5}{55}{One-page summary of what is inherited from the literature, what is adapted to CKM, and what is reused or newly assembled in \texttt {Try 80}}{table.caption.42}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3.5}{\ignorespaces One-page summary of what is inherited from the literature, what is adapted to CKM, and what is reused or newly assembled in \texttt  {Try 80}.}}{56}{table.caption.42}\protected@file@percent }
+\newlabel{tab:executive_summary}{{3.5}{56}{One-page summary of what is inherited from the literature, what is adapted to CKM, and what is reused or newly assembled in \texttt {Try 80}}{table.caption.42}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.10.1}High-level architecture}{56}{subsection.3.10.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Overall \texttt  {Try 80} pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta $ around them.}}{56}{figure.caption.43}\protected@file@percent }
-\newlabel{fig:pipeline}{{3.4}{56}{Overall \texttt {Try 80} pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta $ around them}{figure.caption.43}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.10.2}How to construct a good prior}{56}{subsection.3.10.2}\protected@file@percent }
-\newlabel{sec:good_prior_design}{{3.10.2}{56}{How to construct a good prior}{subsection.3.10.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{A prior is more than an analytical equation}{56}{subsubsection*.44}\protected@file@percent }
-\newlabel{eq:good_prior_residual}{{3.15}{56}{A prior is more than an analytical equation}{equation.3.15}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Overall \texttt  {Try 80} pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta $ around them.}}{57}{figure.caption.43}\protected@file@percent }
+\newlabel{fig:pipeline}{{3.4}{57}{Overall \texttt {Try 80} pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta $ around them}{figure.caption.43}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.10.2}How to construct a good prior}{57}{subsection.3.10.2}\protected@file@percent }
+\newlabel{sec:good_prior_design}{{3.10.2}{57}{How to construct a good prior}{subsection.3.10.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{A prior is more than an analytical equation}{57}{subsubsection*.44}\protected@file@percent }
+\newlabel{eq:good_prior_residual}{{3.15}{57}{A prior is more than an analytical equation}{equation.3.15}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Why the old prior and \texttt  {Try 78} were not equivalent}{57}{subsubsection*.45}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Scope of this mismatch}{58}{subsubsection*.46}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{What changed in the LoS branch}{59}{subsubsection*.47}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{What changed in the NLoS branch}{59}{subsubsection*.48}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{What was improved relative to the literature}{60}{subsubsection*.49}\protected@file@percent }
-\abx@aux@cite{0}{rappaport}
-\abx@aux@segm{0}{0}{rappaport}
-\abx@aux@cite{0}{rappaport}
-\abx@aux@segm{0}{0}{rappaport}
-\abx@aux@cite{0}{tr38901}
-\abx@aux@segm{0}{0}{tr38901}
-\abx@aux@cite{0}{rappaport}
-\abx@aux@segm{0}{0}{rappaport}
-\abx@aux@cite{0}{tr38901}
-\abx@aux@segm{0}{0}{tr38901}
+\@writefile{toc}{\contentsline {subsubsection}{What changed in the NLoS branch}{60}{subsubsection*.48}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{What was improved relative to the literature}{61}{subsubsection*.49}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Resulting design rules}{61}{subsubsection*.50}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.10.3}What was reused from the literature, what was changed, and what is new}{61}{subsection.3.10.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Try 78: path loss}{61}{subsubsection*.51}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{What the literature provides.}{61}{paragraph*.52}\protected@file@percent }
+\abx@aux@cite{0}{rappaport}
+\abx@aux@segm{0}{0}{rappaport}
+\abx@aux@cite{0}{rappaport}
+\abx@aux@segm{0}{0}{rappaport}
+\abx@aux@cite{0}{tr38901}
+\abx@aux@segm{0}{0}{tr38901}
+\abx@aux@cite{0}{rappaport}
+\abx@aux@segm{0}{0}{rappaport}
+\abx@aux@cite{0}{tr38901}
+\abx@aux@segm{0}{0}{tr38901}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.10.3}What was reused from the literature, what was changed, and what is new}{62}{subsection.3.10.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Try 78: path loss}{62}{subsubsection*.51}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{What the literature provides.}{62}{paragraph*.52}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{What we took exactly from the literature.}{62}{paragraph*.53}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{What we changed or did not take.}{62}{paragraph*.54}\protected@file@percent }
 \abx@aux@cite{0}{tr38901}
 \abx@aux@segm{0}{0}{tr38901}
 \abx@aux@cite{0}{winner2}
@@ -355,95 +357,92 @@
 \abx@aux@segm{0}{0}{cai2019}
 \abx@aux@cite{0}{izydorczyk2019}
 \abx@aux@segm{0}{0}{izydorczyk2019}
-\@writefile{toc}{\contentsline {paragraph}{What we took exactly from the literature.}{62}{paragraph*.53}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{What we changed or did not take.}{62}{paragraph*.54}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Try 79: delay spread and angular spread}{62}{subsubsection*.55}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{What the literature provides.}{62}{paragraph*.56}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{What we changed or did not take.}{62}{paragraph*.57}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Try 80: architecture and loss}{62}{subsubsection*.58}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.11}Try 78: Path Loss Prior}{63}{section.3.11}\protected@file@percent }
-\newlabel{sec:try78_detail}{{3.11}{63}{Try 78: Path Loss Prior}{section.3.11}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.11.1}LoS branch: enhanced two-ray model}{63}{subsection.3.11.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Try 79: delay spread and angular spread}{63}{subsubsection*.55}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{What the literature provides.}{63}{paragraph*.56}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{What we changed or did not take.}{63}{paragraph*.57}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Try 80: architecture and loss}{63}{subsubsection*.58}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.11}Try 78: Path Loss Prior}{64}{section.3.11}\protected@file@percent }
+\newlabel{sec:try78_detail}{{3.11}{64}{Try 78: Path Loss Prior}{section.3.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.11.1}LoS branch: enhanced two-ray model}{64}{subsection.3.11.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Geometry and distances}{64}{subsubsection*.59}\protected@file@percent }
 \newlabel{eq:d_los}{{3.16}{64}{Geometry and distances}{equation.3.16}{}}
-\newlabel{eq:d_ref}{{3.17}{64}{Geometry and distances}{equation.3.17}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Two-ray geometry. Direct path (blue) has length $d_{\mathrm  {LoS}}$; reflected path (green) has the same total length as the image-source path (gray dashed), which is $d_{\mathrm  {ref}}$.}}{64}{figure.caption.60}\protected@file@percent }
-\newlabel{fig:tworay}{{3.5}{64}{Two-ray geometry. Direct path (blue) has length $d_{\mathrm {LoS}}$; reflected path (green) has the same total length as the image-source path (gray dashed), which is $d_{\mathrm {ref}}$}{figure.caption.60}{}}
+\newlabel{eq:d_ref}{{3.17}{65}{Geometry and distances}{equation.3.17}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Two-ray geometry. Direct path (blue) has length $d_{\mathrm  {LoS}}$; reflected path (green) has the same total length as the image-source path (gray dashed), which is $d_{\mathrm  {ref}}$.}}{65}{figure.caption.60}\protected@file@percent }
+\newlabel{fig:tworay}{{3.5}{65}{Two-ray geometry. Direct path (blue) has length $d_{\mathrm {LoS}}$; reflected path (green) has the same total length as the image-source path (gray dashed), which is $d_{\mathrm {ref}}$}{figure.caption.60}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Free-space path-loss baseline}{65}{subsubsection*.61}\protected@file@percent }
 \newlabel{eq:fspl}{{3.18}{65}{Free-space path-loss baseline}{equation.3.18}{}}
 \@writefile{toc}{\contentsline {paragraph}{Derivation.}{65}{paragraph*.62}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Physical meaning.}{65}{paragraph*.63}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Enhanced two-ray correction}{65}{subsubsection*.64}\protected@file@percent }
-\newlabel{eq:field_sum}{{3.20}{65}{Enhanced two-ray correction}{equation.3.20}{}}
-\abx@aux@cite{0}{rappaport}
-\abx@aux@segm{0}{0}{rappaport}
-\abx@aux@cite{0}{goldsmith}
-\abx@aux@segm{0}{0}{goldsmith}
+\@writefile{toc}{\contentsline {paragraph}{Physical meaning.}{66}{paragraph*.63}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Enhanced two-ray correction}{66}{subsubsection*.64}\protected@file@percent }
+\newlabel{eq:field_sum}{{3.20}{66}{Enhanced two-ray correction}{equation.3.20}{}}
 \newlabel{eq:c2ray}{{3.22}{66}{Enhanced two-ray correction}{equation.3.22}{}}
 \@writefile{toc}{\contentsline {paragraph}{Term-by-term interpretation.}{66}{paragraph*.65}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Comparison with literature two-ray models}{66}{subsubsection*.66}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Physical vs.\ effective parameters.}{66}{paragraph*.67}\protected@file@percent }
 \abx@aux@cite{0}{rappaport}
 \abx@aux@segm{0}{0}{rappaport}
 \abx@aux@cite{0}{goldsmith}
 \abx@aux@segm{0}{0}{goldsmith}
+\abx@aux@cite{0}{rappaport}
+\abx@aux@segm{0}{0}{rappaport}
+\abx@aux@cite{0}{goldsmith}
+\abx@aux@segm{0}{0}{goldsmith}
+\@writefile{toc}{\contentsline {subsubsection}{Comparison with literature two-ray models}{67}{subsubsection*.66}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Physical vs.\ effective parameters.}{67}{paragraph*.67}\protected@file@percent }
 \newlabel{eq:fresnel}{{3.23}{67}{Physical vs.\ effective parameters}{equation.3.23}{}}
-\@writefile{toc}{\contentsline {paragraph}{The $d^4$ approximation.}{67}{paragraph*.68}\protected@file@percent }
-\newlabel{eq:d4_law}{{3.24}{67}{The $d^4$ approximation}{equation.3.24}{}}
-\@writefile{toc}{\contentsline {paragraph}{Search range vs.\ fitted values.}{67}{paragraph*.69}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Extra calibrated terms outside the two-ray model.}{67}{paragraph*.70}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Calibrated LoS prior}{67}{subsubsection*.71}\protected@file@percent }
-\newlabel{eq:pl_los}{{3.25}{67}{Calibrated LoS prior}{equation.3.25}{}}
-\newlabel{eq:x78_los_vector}{{3.26}{68}{Calibrated LoS prior}{equation.3.26}{}}
+\@writefile{toc}{\contentsline {paragraph}{The $d^4$ approximation.}{68}{paragraph*.68}\protected@file@percent }
+\newlabel{eq:d4_law}{{3.24}{68}{The $d^4$ approximation}{equation.3.24}{}}
+\@writefile{toc}{\contentsline {paragraph}{Search range vs.\ fitted values.}{68}{paragraph*.69}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Extra calibrated terms outside the two-ray model.}{68}{paragraph*.70}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Calibrated LoS prior}{68}{subsubsection*.71}\protected@file@percent }
+\newlabel{eq:pl_los}{{3.25}{68}{Calibrated LoS prior}{equation.3.25}{}}
+\newlabel{eq:x78_los_vector}{{3.26}{69}{Calibrated LoS prior}{equation.3.26}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {3.6}{\ignorespaces Term-by-term inventory of the \texttt  {Try 78} LoS prior used by \texttt  {Try 80}. Unlike the NLoS branch, this is not a long pixel-feature regression vector; it is a height-interpolated two-ray calibration plus a radial residual table.}}{70}{table.caption.72}\protected@file@percent }
 \newlabel{tab:x78_los_inventory}{{3.6}{70}{Term-by-term inventory of the \texttt {Try 78} LoS prior used by \texttt {Try 80}. Unlike the NLoS branch, this is not a long pixel-feature regression vector; it is a height-interpolated two-ray calibration plus a radial residual table}{table.caption.72}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.11.2}Calibration of the LoS two-ray model}{70}{subsection.3.11.2}\protected@file@percent }
-\newlabel{sec:los_calibration}{{3.11.2}{70}{Calibration of the LoS two-ray model}{subsection.3.11.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Data preparation}{70}{subsubsection*.73}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.11.2}Calibration of the LoS two-ray model}{71}{subsection.3.11.2}\protected@file@percent }
+\newlabel{sec:los_calibration}{{3.11.2}{71}{Calibration of the LoS two-ray model}{subsection.3.11.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Data preparation}{71}{subsubsection*.73}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Grid search for $(\rho , \phi )$}{71}{subsubsection*.74}\protected@file@percent }
 \newlabel{eq:phi_grid}{{3.28}{71}{Grid search for $(\rho , \phi )$}{equation.3.28}{}}
 \newlabel{eq:rho_grid}{{3.29}{71}{Grid search for $(\rho , \phi )$}{equation.3.29}{}}
-\newlabel{eq:rmse_grid}{{3.32}{71}{Grid search for $(\rho , \phi )$}{equation.3.32}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Post-fit Gaussian smoothing across height bins}{71}{subsubsection*.75}\protected@file@percent }
-\newlabel{eq:gauss_smooth}{{3.34}{71}{Post-fit Gaussian smoothing across height bins}{equation.3.34}{}}
+\newlabel{eq:rmse_grid}{{3.32}{72}{Grid search for $(\rho , \phi )$}{equation.3.32}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Post-fit Gaussian smoothing across height bins}{72}{subsubsection*.75}\protected@file@percent }
+\newlabel{eq:gauss_smooth}{{3.34}{72}{Post-fit Gaussian smoothing across height bins}{equation.3.34}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Radial residual correction}{72}{subsubsection*.76}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Fitted parameter values}{72}{subsubsection*.77}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3.7}{\ignorespaces Representative fitted LoS two-ray parameters by height bin.}}{72}{table.caption.78}\protected@file@percent }
-\newlabel{tab:los_params}{{3.7}{72}{Representative fitted LoS two-ray parameters by height bin}{table.caption.78}{}}
-\abx@aux@cite{0}{cost231}
-\abx@aux@segm{0}{0}{cost231}
+\@writefile{lot}{\contentsline {table}{\numberline {3.7}{\ignorespaces Representative fitted LoS two-ray parameters by height bin.}}{73}{table.caption.78}\protected@file@percent }
+\newlabel{tab:los_params}{{3.7}{73}{Representative fitted LoS two-ray parameters by height bin}{table.caption.78}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Effective ground-reflection amplitude $\rho ^*$ as a function of UAV height, fitted independently per 5 m height bin. Values are stable in the range $0.47$--$0.56$ for 10--130 m, then rise slightly at higher altitudes where training data is sparser.}}{73}{figure.caption.79}\protected@file@percent }
 \newlabel{fig:rho_vs_h}{{3.6}{73}{Effective ground-reflection amplitude $\rho ^*$ as a function of UAV height, fitted independently per 5 m height bin. Values are stable in the range $0.47$--$0.56$ for 10--130 m, then rise slightly at higher altitudes where training data is sparser}{figure.caption.79}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Schematic comparison of FSPL and the enhanced two-ray model for a 60 m UAV at 7.125 GHz ($h_{\mathrm  {rx}} = 1.5$ m). The two-ray model produces a characteristic oscillatory pattern around the FSPL baseline, corresponding to alternating zones of constructive and destructive interference.}}{73}{figure.caption.80}\protected@file@percent }
-\newlabel{fig:tworay_pl}{{3.7}{73}{Schematic comparison of FSPL and the enhanced two-ray model for a 60 m UAV at 7.125 GHz ($h_{\mathrm {rx}} = 1.5$ m). The two-ray model produces a characteristic oscillatory pattern around the FSPL baseline, corresponding to alternating zones of constructive and destructive interference}{figure.caption.80}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.11.3}NLoS branch}{73}{subsection.3.11.3}\protected@file@percent }
-\newlabel{sec:nlos_branch}{{3.11.3}{73}{NLoS branch}{subsection.3.11.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Stage 1: raw NLoS propagation prior}{73}{subsubsection*.81}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{COST-231 term.}{73}{paragraph*.82}\protected@file@percent }
+\abx@aux@cite{0}{cost231}
+\abx@aux@segm{0}{0}{cost231}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Schematic comparison of FSPL and the enhanced two-ray model for a 60 m UAV at 7.125 GHz ($h_{\mathrm  {rx}} = 1.5$ m). The two-ray model produces a characteristic oscillatory pattern around the FSPL baseline, corresponding to alternating zones of constructive and destructive interference.}}{74}{figure.caption.80}\protected@file@percent }
+\newlabel{fig:tworay_pl}{{3.7}{74}{Schematic comparison of FSPL and the enhanced two-ray model for a 60 m UAV at 7.125 GHz ($h_{\mathrm {rx}} = 1.5$ m). The two-ray model produces a characteristic oscillatory pattern around the FSPL baseline, corresponding to alternating zones of constructive and destructive interference}{figure.caption.80}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.11.3}NLoS branch}{74}{subsection.3.11.3}\protected@file@percent }
+\newlabel{sec:nlos_branch}{{3.11.3}{74}{NLoS branch}{subsection.3.11.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Stage 1: raw NLoS propagation prior}{74}{subsubsection*.81}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{COST-231 term.}{74}{paragraph*.82}\protected@file@percent }
+\newlabel{eq:cost231}{{3.36}{74}{COST-231 term}{equation.3.36}{}}
+\newlabel{eq:cost231_a}{{3.37}{74}{COST-231 term}{equation.3.37}{}}
 \abx@aux@cite{0}{cost231}
 \abx@aux@segm{0}{0}{cost231}
 \abx@aux@cite{0}{khawaja_survey}
 \abx@aux@segm{0}{0}{khawaja_survey}
 \abx@aux@cite{0}{tr38901}
 \abx@aux@segm{0}{0}{tr38901}
-\newlabel{eq:cost231}{{3.36}{74}{COST-231 term}{equation.3.36}{}}
-\newlabel{eq:cost231_a}{{3.37}{74}{COST-231 term}{equation.3.37}{}}
-\@writefile{toc}{\contentsline {paragraph}{Interpretation of Eq.~\eqref  {eq:cost231}.}{74}{paragraph*.83}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Elevation-aware UAV envelope.}{74}{paragraph*.84}\protected@file@percent }
-\newlabel{eq:a2g_nlos}{{3.38}{74}{Elevation-aware UAV envelope}{equation.3.38}{}}
-\newlabel{eq:lambda0}{{3.39}{74}{Elevation-aware UAV envelope}{equation.3.39}{}}
 \abx@aux@cite{0}{khawaja_survey}
 \abx@aux@segm{0}{0}{khawaja_survey}
 \abx@aux@cite{0}{wocc2021}
 \abx@aux@segm{0}{0}{wocc2021}
 \abx@aux@cite{0}{tr38901}
 \abx@aux@segm{0}{0}{tr38901}
+\@writefile{toc}{\contentsline {paragraph}{Interpretation of Eq.~\eqref  {eq:cost231}.}{75}{paragraph*.83}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Elevation-aware UAV envelope.}{75}{paragraph*.84}\protected@file@percent }
+\newlabel{eq:a2g_nlos}{{3.38}{75}{Elevation-aware UAV envelope}{equation.3.38}{}}
+\newlabel{eq:lambda0}{{3.39}{75}{Elevation-aware UAV envelope}{equation.3.39}{}}
 \@writefile{toc}{\contentsline {paragraph}{Interpretation of Eq.~\eqref  {eq:a2g_nlos}.}{75}{paragraph*.85}\protected@file@percent }
-\newlabel{eq:nlos_raw}{{3.40}{75}{Interpretation of Eq.~\eqref {eq:a2g_nlos}}{equation.3.40}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Stage 2: raw hybrid prior assembly}{75}{subsubsection*.86}\protected@file@percent }
-\newlabel{eq:los_blend}{{3.41}{75}{Stage 2: raw hybrid prior assembly}{equation.3.41}{}}
+\newlabel{eq:nlos_raw}{{3.40}{76}{Interpretation of Eq.~\eqref {eq:a2g_nlos}}{equation.3.40}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Stage 2: raw hybrid prior assembly}{76}{subsubsection*.86}\protected@file@percent }
+\newlabel{eq:los_blend}{{3.41}{76}{Stage 2: raw hybrid prior assembly}{equation.3.41}{}}
 \newlabel{eq:pl0}{{3.42}{76}{Stage 2: raw hybrid prior assembly}{equation.3.42}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Stage 3: map-derived morphology features}{76}{subsubsection*.87}\protected@file@percent }
 \abx@aux@cite{0}{rappaport}
 \abx@aux@segm{0}{0}{rappaport}
 \abx@aux@cite{0}{cost231}
@@ -452,6 +451,7 @@
 \abx@aux@segm{0}{0}{khawaja_survey}
 \abx@aux@cite{0}{tr38901}
 \abx@aux@segm{0}{0}{tr38901}
+\@writefile{toc}{\contentsline {subsubsection}{Stage 3: map-derived morphology features}{77}{subsubsection*.87}\protected@file@percent }
 \newlabel{eq:x78}{{3.43}{77}{Stage 3: map-derived morphology features}{equation.3.43}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {3.8}{\ignorespaces Term-by-term inventory of the \texttt  {Try 78} NLoS calibration vector.}}{78}{table.caption.88}\protected@file@percent }
 \newlabel{tab:x78_term_inventory}{{3.8}{78}{Term-by-term inventory of the \texttt {Try 78} NLoS calibration vector}{table.caption.88}{}}

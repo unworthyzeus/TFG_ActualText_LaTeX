@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber TFG"] 1777386130.17326 "TFG.bcf" "TFG.bbl" "TFG" 1777387006.43332 0
-  "TFG.bcf" 1777387004 116246 18bdfa01e477329498b3ef399a779604 "pdflatex"
+["biber TFG"] 1777386130.17326 "TFG.bcf" "TFG.bbl" "TFG" 1777472085.23905 0
+  "TFG.bcf" 1777472083 116246 18bdfa01e477329498b3ef399a779604 "pdflatex"
   "TFG.bib" 1777293932 16619 f514e1046c8b09039dc1f144c9a94bbb ""
   (generated)
   "TFG.bbl"
   "TFG.blg"
   (rewritten before read)
-["pdflatex"] 1777386968.23919 "TFG.tex" "TFG.pdf" "TFG" 1777387006.43555 0
+["pdflatex"] 1777472057.06833 "TFG.tex" "TFG.pdf" "TFG" 1777472085.24046 0
   "C:/Program Files/MiKTeX/fonts/tfm/jknappen/ec/ecrm1200.tfm" 993062126 3152 4850ff0163852b7fab34bd55e1197f28 ""
   "C:/Program Files/MiKTeX/fonts/tfm/public/cm/cmr10.tfm" 1136768653 1296 45809c5a464d5f32c8f98ba97c1bb47f ""
   "C:/Program Files/MiKTeX/fonts/tfm/public/cm/cmr12.tfm" 1136768653 1288 655e228510b4c2a1abe905c368440826 ""
@@ -369,14 +369,14 @@
   "C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/latex/titlesec/titlesec.sty" 1736611868 48766 87a17a4ef312a39cd43896e34a679a56 ""
   "C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/latex/translations/dicts/translations-basic-dictionary-english.trsl" 1644052122 5588 0c1628daf15f4411ff1f463114c634a3 ""
   "C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/latex/translations/translations.sty" 1644052122 44247 2188b95d0ee74e31eca4d316263c58a7 ""
-  "TFG.aux" 1777387004 97142 462741380867df727971acd4ab614ee8 "pdflatex"
+  "TFG.aux" 1777472083 97017 4f5f17c755abeb56055999067d2acdab "pdflatex"
   "TFG.bbl" 1777386135 85331 70f24b0abf7e7eb8b6ee12b8e6074a57 "biber TFG"
-  "TFG.lof" 1777387004 12643 c74437047a544ce691d116a825ebba03 "pdflatex"
-  "TFG.lot" 1777387004 8652 93204770387c213faf146df4b696023e "pdflatex"
-  "TFG.out" 1777387004 30449 3836147c8f243c16e2e3726305b9d554 "pdflatex"
-  "TFG.run.xml" 1777387004 2291 9bcfe3e06e8b1c70b66591379226852a "pdflatex"
+  "TFG.lof" 1777472083 12643 59f2d9e7703286c43d97ba32786d93dc "pdflatex"
+  "TFG.lot" 1777472083 8587 ad5a8a670421ab0564af8359be8e98b5 "pdflatex"
+  "TFG.out" 1777472083 30429 7e59b2cbe7be6f3e9dc85a459d8ff16e "pdflatex"
+  "TFG.run.xml" 1777472083 2291 9bcfe3e06e8b1c70b66591379226852a "pdflatex"
   "TFG.tex" 1777383892 5280 9af288c4460eb15f66f88a7601a605e6 ""
-  "TFG.toc" 1777387004 20175 853d33b488576af3981496f29a0a660a "pdflatex"
+  "TFG.toc" 1777472083 20171 0cd139aca03b6977cf25cd875488a35e "pdflatex"
   "acknowlegdements.tex" 1777033898 1822 9315f703d8e7c384492c866f7ccacd6c ""
   "acronyms.tex" 1777033898 4481 88c60835aa6e878feecbe7df9469e6ee ""
   "appendices.tex" 1777385750 37168 93c11aee246b6f1862b087404d136699 ""
@@ -413,12 +413,12 @@
   "img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovia_sample_13213_6x3.png" 1777293934 2541082 d9e7e1f4564e2ee9ac57d672657c9ebb ""
   "img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Segovia_sample_13215_6x3.png" 1777293934 2636600 51a3da1b3eb8f1b202319329371e1a64 ""
   "introduction.tex" 1777384811 10274 dbd21d28c9f8d2c92bdcc86a8f018138 ""
-  "methodology.tex" 1777385883 53670 4c84cd94fcb17180488f8b98e6a005b4 ""
+  "methodology.tex" 1777472052 55731 38e4f2a487d2f7ca7a4f9b301a7d3ced ""
   "prior_detail_overview.tex" 1777293934 26520 b03e10517065bf1300b296deec060bef ""
   "prior_detail_try78.tex" 1777384811 58906 1fb07954383e35ec1c7c7daf19f6d149 ""
   "prior_detail_try79.tex" 1777384811 20460 a1c6d008b6645de2abf772aeeb45beed ""
   "prior_detail_try80.tex" 1777386024 30759 4929d972b0d681514e3b9e6710e83d7f ""
-  "results.tex" 1777386962 59382 46d0dc61e8377b14bcf4a4320f97c5ae ""
+  "results.tex" 1777387139 59983 53301ca1a8638fe8574b9b75d103b63c ""
   "revision_history.tex" 1776860872 402 f72fcac120365de0d9af53d50bcf07ee ""
   "revision_history_en.tex" 1777033898 1338 779ad9cacc269fca0d91e39625f6f117 ""
   "state_of_art.tex" 1777380886 44403 55cc75f4888496efc9fb931c154d82cd ""

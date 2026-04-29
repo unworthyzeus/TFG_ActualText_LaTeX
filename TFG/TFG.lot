@@ -11,11 +11,11 @@
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {3.1}{\ignorespaces City-holdout assignment used by Try 76, Try 77, and Try 80.}}{41}{table.caption.20}%
 \contentsline {table}{\numberline {3.2}{\ignorespaces Evolution of modelling techniques and lessons across the attempt history.}}{42}{table.caption.21}%
-\contentsline {table}{\numberline {3.3}{\ignorespaces Best-fit parametric family for each target distribution on the CKM validation histograms, across all cities. Based on the KL-ranking study in \texttt {TFGpractice/TFGSeventySixthTry76/docs/distribution\_classes.md}.}}{51}{table.caption.33}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Best-fit parametric family for each target distribution on the CKM validation histograms, across all cities. Based on the validation KL-ranking study.}}{51}{table.caption.33}%
 \contentsline {table}{\numberline {3.4}{\ignorespaces Training configuration of the final pipeline. Unless otherwise stated, all runs use AdamW, image size $513\times 513$, batch size 1 per GPU, and gradient accumulation over 8 steps.}}{54}{table.caption.40}%
-\contentsline {table}{\numberline {3.5}{\ignorespaces One-page summary of what is inherited from the literature, what is adapted to CKM, and what is reused or newly assembled in \texttt {Try 80}.}}{55}{table.caption.42}%
+\contentsline {table}{\numberline {3.5}{\ignorespaces One-page summary of what is inherited from the literature, what is adapted to CKM, and what is reused or newly assembled in \texttt {Try 80}.}}{56}{table.caption.42}%
 \contentsline {table}{\numberline {3.6}{\ignorespaces Term-by-term inventory of the \texttt {Try 78} LoS prior used by \texttt {Try 80}. Unlike the NLoS branch, this is not a long pixel-feature regression vector; it is a height-interpolated two-ray calibration plus a radial residual table.}}{70}{table.caption.72}%
-\contentsline {table}{\numberline {3.7}{\ignorespaces Representative fitted LoS two-ray parameters by height bin.}}{72}{table.caption.78}%
+\contentsline {table}{\numberline {3.7}{\ignorespaces Representative fitted LoS two-ray parameters by height bin.}}{73}{table.caption.78}%
 \contentsline {table}{\numberline {3.8}{\ignorespaces Term-by-term inventory of the \texttt {Try 78} NLoS calibration vector.}}{78}{table.caption.88}%
 \contentsline {table}{\numberline {3.9}{\ignorespaces Term-by-term inventory of the direct terms in the \texttt {Try 79} spread calibration vector.}}{89}{table.caption.105}%
 \contentsline {table}{\numberline {3.10}{\ignorespaces Interaction terms in the \texttt {Try 79} spread calibration vector.}}{90}{table.caption.106}%

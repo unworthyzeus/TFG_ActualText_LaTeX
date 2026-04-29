@@ -702,7 +702,7 @@ overall RMSE improved substantially.
 
 However, our implementations still failed for two reasons. First, several
 branches had training-design defects: the main full-resolution reconstruction
-loss was disabled or weak in some YAMLs, Huber losses masked large NLoS tail
+loss was disabled or weak in some configurations, Huber losses masked large NLoS tail
 errors, over-regularization made predictions collapse toward a baseline,
 corridor weighting over-emphasized the centre of the map, and one PMHHNet path
 temporarily failed to inject the high-frequency topology signal into the early
@@ -757,10 +757,9 @@ The Stage-A distribution heads in \texttt{Try 76} and \texttt{Try 77}
 represent each per-sample target marginal as a parametric family. Choosing
 the family and its number of components $K$ is not a free hyperparameter; it
 is constrained by the empirical shape of the CKM histograms. A dedicated
-diagnostic, \texttt{docs/distribution\_classes.md} inside the \texttt{Try 76}
-tree, fits a fixed shortlist of parametric models to the aggregated validation
-histograms of every target under each topology class and LoS/NLoS split, and
-ranks them by the KL divergence
+distribution-ranking diagnostic fits a fixed shortlist of parametric models
+to the aggregated validation histograms of every target under each topology
+class and LoS/NLoS split, and ranks them by the KL divergence
 \(\mathrm{KL}(p_{\mathrm{empirical}}\;||\;p_{\mathrm{model}})\).  The shortlist
 contains Gaussian, Laplace, skew-Normal, log-Normal, Gamma, Weibull, a
 spike-plus-exponential model for near-degenerate targets, and Gaussian
@@ -774,8 +773,8 @@ is defined against the ground-truth marginal, not the current prediction.
 \begin{table}[H]
 \centering
 \caption{Best-fit parametric family for each target distribution on the CKM
-validation histograms, across all cities. Based on the KL-ranking study in
-\texttt{TFGpractice/TFGSeventySixthTry76/docs/distribution\_classes.md}.}
+validation histograms, across all cities. Based on the validation
+KL-ranking study.}
 \label{tab:gmm_k_choice}
 \begin{tabularx}{\textwidth}{lcX}
 \toprule
@@ -953,10 +952,10 @@ checkpoint is selected with a deterministic, RMSE-dominant objective.
 
 Table~\ref{tab:hyperparams} summarises the training configuration of the
 final prior-anchored pipeline. The values for \texttt{Try 76},
-\texttt{Try 77}, and \texttt{Try 80} are read directly from the YAML files
-under \texttt{TFGpractice/TFG*/experiments/}. Older tries are reported more
-compactly because the final thesis line inherits only the architectural
-lessons from them, not the training stack.
+\texttt{Try 77}, and \texttt{Try 80} are reported as methodological settings
+rather than as file-path artifacts. Older tries are reported more compactly
+because the final thesis line inherits only the architectural lessons from
+them, not the training stack.
 
 \begin{table}[H]
 \centering
@@ -1004,17 +1003,55 @@ inputs already include the strong Try~78/Try~79 priors; pushing the learning
 rate higher pulls the residual head away from the anchors faster than
 \texttt{prior\_guard} can catch it.
 
-\section{Training diagnostics and curves}
-\label{sec:train_curves}
+\section{Try 80 training progression}
+\label{sec:try80_training_progression}
 
-The complete per-epoch training metrics for the Try~76, Try~77, and Try~80
-runs are logged as JSON under each try's \texttt{outputs/} directory and can
-be plotted by running \texttt{scripts/plot\_history.py} inside the
-corresponding try folder. The repository also contains pre-rendered panels
-with the Stage-A distribution diagnostics for the Try~76 experts under
-\texttt{TFGSeventySixthTry76/docs/}. The Try~80 final claim is reported from
-the frozen checkpoint on the city-holdout validation and test splits rather
-than from the raw training-curve panels.
+The final Try~80 model was not obtained in a single run. Training began with
+the joint prior-anchored residual design, but the first complete runs produced
+only small improvements over the frozen Try~78/Try~79 priors. As a diagnostic,
+this showed that the priors were already strong, but also that the residual
+model was initially too constrained to correct the remaining errors, especially
+for path loss.
+
+The training path then followed four stages:
+
+\begin{enumerate}
+\item \textbf{Big.} The first full Try~80 version used a shared multi-task
+U-Net with \(96\) base channels and a \(128\)-dimensional FiLM condition
+vector. Its residual caps were conservative, especially for path loss
+(\(\pm2\) dB in LoS and \(\pm4\) dB in NLoS), and the objective retained the
+complete probabilistic bundle: GMM likelihood, distribution matching,
+prior anchoring, prior guard, RMSE, and MAE. This stage mainly tested whether
+a residual network could improve the frozen priors without degrading them.
+
+\item \textbf{Big with relaxed residuals.} The second stage kept the same
+network capacity but loosened the allowed correction range. The path-loss caps
+increased to \(\pm5\) dB in LoS and \(\pm20\) dB in NLoS, with wider spread
+caps as well. This made the residual head less constrained and produced a
+clearer, but still limited, improvement.
+
+\item \textbf{Huge with relaxed residuals.} The third stage increased model
+capacity to \(128\) base channels and a \(160\)-dimensional conditioning
+vector, while keeping the relaxed residual philosophy. It also placed more
+weight on the deterministic RMSE term. This stage tested whether the remaining
+gap was capacity-limited rather than only cap-limited. The larger model helped
+the spread tasks, but path-loss improvement remained too small while the full
+probabilistic objective was still active.
+
+\item \textbf{Huge path-loss fine-tuning.} The final stage kept the huge
+architecture and relaxed caps, lowered the learning rate, and changed the
+objective into a short RMSE-dominant fine-tune. The probabilistic terms were
+disabled, the prior guard and anchor were kept only as light stabilizers, and
+path loss received the strongest task weight. This is the checkpoint used for
+the reported final results: the GMM structure remains the residual output
+head, but model selection is driven by deterministic validation performance.
+\end{enumerate}
+
+For this reason, the methodology does not treat training curves themselves as
+evidence for the final claim. The relevant evidence is the same city-holdout
+validation and test evaluation used throughout the thesis, reported in
+Chapter~\ref{chap:results}. Training curves were used only as diagnostics for
+deciding which stage should be continued or replaced.
 
 
 

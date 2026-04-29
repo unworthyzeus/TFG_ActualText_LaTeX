@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.27)  28 APR 2026 16:36
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.27)  29 APR 2026 16:14
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2344,23 +2344,6 @@ iction_histograms.png  used on input line 636.
 (pdftex.def)             Requested size: 384.1096pt x 249.2842pt.
  [48 <./img/thesis_figures/distribution_histograms/target_prediction_histograms
 .png>] [49] [50]
-LaTeX Font Info:    Font shape `T1/DejaVuSansMono-TLF/m/it' will be
-(Font)              scaled to size 8.76003pt on input line 778.
-
-Underfull \hbox (badness 3826) in paragraph at lines 778--778
-[][]\T1/LibertinusSans-TLF/b/n/12 (+20) Table 3.3[][]: []|\T1/LibertinusSerif-T
-LF/m/it/10.95 (+20) Best-fit para-met-ric fam-ily for each tar-get dis-tri-bu-t
-ion on the CKM val-
- []
-
-
-Underfull \hbox (badness 7291) in paragraph at lines 778--778
-\T1/LibertinusSerif-TLF/m/it/10.95 (+20) i-da-tion his-tograms, across all citi
-es. Based on the KL-ranking study in \T1/DejaVuSansMono-TLF/m/it/10.95 TFG-prac
--
- []
-
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [51]
@@ -2368,10 +2351,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 1728) has occurred while \output is active []
 
  [53{C:/Users/guill/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertinust1m
-ath/libusBMR.enc}] (prior_detail_overview.tex
-Underfull \vbox (badness 4096) has occurred while \output is active []
-
- [54]
+ath/libusBMR.enc}] [54] (prior_detail_overview.tex [55]
 Underfull \hbox (badness 10000) in paragraph at lines 51--51
 \T1/LibertinusSerif-TLF/m/n/10.95 (+20) two-ray prop-a-ga-
  []
@@ -2477,15 +2457,20 @@ Underfull \hbox (badness 5878) in paragraph at lines 51--51
 \T1/LibertinusSerif-TLF/m/n/10.95 (+20) cor-rec-tions with-out re-
  []
 
+LaTeX Font Info:    Font shape `T1/DejaVuSansMono-TLF/m/it' will be
+(Font)              scaled to size 8.76003pt on input line 53.
 
-Underfull \vbox (badness 4859) has occurred while \output is active []
+Underfull \vbox (badness 5446) has occurred while \output is active []
 
- [55]
-[56]
+ [56]
 LaTeX Font Info:    Font shape `T1/DejaVuSansMono-TLF/b/n' will be
 (Font)              scaled to size 9.60004pt on input line 146.
- [57] [58] [59] [60] [61] [62]) (prior_detail_try78.tex [63] [64] [65]
-[66] [67] [68]
+
+[57] [58] [59] [60] [61] [62] [63]) (prior_detail_try78.tex [64] [65] [66]
+Underfull \vbox (badness 1137) has occurred while \output is active []
+
+ [67]
+[68] [69]
 Underfull \hbox (badness 2573) in paragraph at lines 382--382
 []|\T1/LibertinusSerif-TLF/b/n/10 (+20) Stored / com-puted
  []
@@ -2518,11 +2503,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 382--382
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [69]
-[70] [71] [72] [73] [74] [75]
+ [70]
+[71] [72]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [76]
+ [73]
+[74] [75] [76]
 Underfull \hbox (badness 1221) in paragraph at lines 861--861
 []|\T1/LibertinusSerif-TLF/m/n/10.95 (+20) Keeps the cal-i-brated model an-
  []
@@ -2693,7 +2679,7 @@ ertinusSerif-TLF/m/n/12 (-20) )
  []
 
 [108]
-<img/thesis_figures/results_addendum/try76_los_vs_nlos.png, id=1981, 724.7075pt
+<img/thesis_figures/results_addendum/try76_los_vs_nlos.png, id=1986, 724.7075pt
  x 341.275pt>
 File: img/thesis_figures/results_addendum/try76_los_vs_nlos.png Graphic file (t
 ype png)
@@ -2702,7 +2688,7 @@ Package pdftex.def Info: img/thesis_figures/results_addendum/try76_los_vs_nlos.
 png  used on input line 329.
 (pdftex.def)             Requested size: 426.79135pt x 200.98598pt.
 <img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png, id=198
-2, 894.542pt x 491.436pt>
+7, 894.542pt x 491.436pt>
 File: img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png Gr
 aphic file (type png)
 <use img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png>
@@ -2715,14 +2701,14 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [109 <./img/thesis_figures/results_addendum/try76_los_vs_nlos.png>] [110 <./im
 g/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png>] [111]
 <img/thesis_figures/results_addendum/try79_quantized_spread_example.png, id=200
-0, 1445.4pt x 722.7pt>
+5, 1445.4pt x 722.7pt>
 File: img/thesis_figures/results_addendum/try79_quantized_spread_example.png Gr
 aphic file (type png)
 <use img/thesis_figures/results_addendum/try79_quantized_spread_example.png>
 Package pdftex.def Info: img/thesis_figures/results_addendum/try79_quantized_sp
 read_example.png  used on input line 469.
 (pdftex.def)             Requested size: 426.79135pt x 213.39314pt.
-<img/thesis_figures/results_addendum/try77_per_expert.png, id=2001, 731.1315pt 
+<img/thesis_figures/results_addendum/try77_per_expert.png, id=2006, 731.1315pt 
 x 341.275pt>
 File: img/thesis_figures/results_addendum/try77_per_expert.png Graphic file (ty
 pe png)
@@ -2741,7 +2727,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [114]
-<img/thesis_figures/results_addendum/try78_by_topology.png, id=2024, 734.3435pt
+<img/thesis_figures/results_addendum/try78_by_topology.png, id=2029, 734.3435pt
  x 341.275pt>
 File: img/thesis_figures/results_addendum/try78_by_topology.png Graphic file (t
 ype png)
@@ -2803,7 +2789,7 @@ Package pgfplots info on input line 1153: Using 'lua backend=false' for axis: x
 Underfull \vbox (badness 4660) has occurred while \output is active []
 
  [121]
-<img/thesis_figures/try80_appendix_panels/try80_main_panel.png, id=2061, 867.24
+<img/thesis_figures/try80_appendix_panels/try80_main_panel.png, id=2066, 867.24
 pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_main_panel.png Graphic fil
 e (type png)
@@ -2919,7 +2905,7 @@ Appendix D.
 
 ] [143]
 <img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovia_samp
-le_13213_6x3.png, id=2303, 867.24pt x 1589.94pt>
+le_13213_6x3.png, id=2308, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovia
 _sample_13213_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovia_
@@ -2930,7 +2916,7 @@ pen_low_ant_Segovia_sample_13213_6x3.png  used on input line 286.
  [144 <./img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Sego
 via_sample_13213_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Segovia_samp
-le_13215_6x3.png, id=2309, 867.24pt x 1589.94pt>
+le_13215_6x3.png, id=2314, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Segovia
 _sample_13215_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Segovia_
@@ -2941,7 +2927,7 @@ pen_mid_ant_Segovia_sample_13215_6x3.png  used on input line 295.
  [145 <./img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Sego
 via_sample_13215_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Nazareth_sa
-mple_10722_6x3.png, id=2316, 867.24pt x 1589.94pt>
+mple_10722_6x3.png, id=2321, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Nazare
 th_sample_10722_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Nazaret
@@ -2952,7 +2938,7 @@ pen_high_ant_Nazareth_sample_10722_6x3.png  used on input line 304.
  [146 <./img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Naz
 areth_sample_10722_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Dubrovnik_s
-ample_05288_6x3.png, id=2322, 867.24pt x 1589.94pt>
+ample_05288_6x3.png, id=2327, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Dubrov
 nik_sample_05288_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Dubrovn
@@ -2963,7 +2949,7 @@ ixed_low_ant_Dubrovnik_sample_05288_6x3.png  used on input line 313.
  [147 <./img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Dub
 rovnik_sample_05288_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_sample
-_10828_6x3.png, id=2328, 867.24pt x 1589.94pt>
+_10828_6x3.png, id=2333, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_s
 ample_10828_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_sa
@@ -2974,7 +2960,7 @@ ixed_mid_ant_Nice_sample_10828_6x3.png  used on input line 322.
  [148 <./img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nic
 e_sample_10828_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Nice_sampl
-e_10814_6x3.png, id=2334, 867.24pt x 1589.94pt>
+e_10814_6x3.png, id=2339, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Nice_
 sample_10814_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Nice_s
@@ -2985,7 +2971,7 @@ ixed_high_ant_Nice_sample_10814_6x3.png  used on input line 331.
  [149 <./img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Ni
 ce_sample_10814_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chiang_Mai_
-sample_04519_6x3.png, id=2340, 867.24pt x 1589.94pt>
+sample_04519_6x3.png, id=2345, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chiang
 _Mai_sample_04519_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chiang_
@@ -2996,7 +2982,7 @@ ense_low_ant_Chiang_Mai_sample_04519_6x3.png  used on input line 340.
  [150 <./img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chi
 ang_Mai_sample_04519_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis_sampl
-e_14651_6x3.png, id=2346, 867.24pt x 1589.94pt>
+e_14651_6x3.png, id=2351, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis_
 sample_14651_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis_s
@@ -3007,7 +2993,7 @@ ense_mid_ant_Tunis_sample_14651_6x3.png  used on input line 349.
  [151 <./img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tun
 is_sample_14651_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Tunis_samp
-le_14694_6x3.png, id=2353, 867.24pt x 1589.94pt>
+le_14694_6x3.png, id=2358, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Tunis
 _sample_14694_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Tunis_
@@ -3032,7 +3018,7 @@ Appendix E.
 
 ] [154]
 Appendix F.
-<img/thesis_figures/ckm_generator/ckm_generator_app_controls.png, id=2368, 1606
+<img/thesis_figures/ckm_generator/ckm_generator_app_controls.png, id=2373, 1606
 .0pt x 953.5625pt>
 File: img/thesis_figures/ckm_generator/ckm_generator_app_controls.png Graphic f
 ile (type png)
@@ -3046,7 +3032,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [155
 
 ]
-<img/thesis_figures/ckm_generator/ckm_generator_app_result_top.png, id=2374, 16
+<img/thesis_figures/ckm_generator/ckm_generator_app_result_top.png, id=2379, 16
 06.0pt x 953.5625pt>
 File: img/thesis_figures/ckm_generator/ckm_generator_app_result_top.png Graphic
  file (type png)
@@ -3059,7 +3045,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [156 <./img/thesis_figures/ckm_generator/ckm_generator_app_controls.png (PNG c
 opy)>]
-<img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png, id=2380, 
+<img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png, id=2385, 
 1084.05pt x 375.804pt>
 File: img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png Graph
 ic file (type png)
@@ -3101,7 +3087,7 @@ tinusSerif-TLF/m/n/12 (+20) , \T1/DejaVuSansMono-TLF/m/n/12 --
  []
 
 [159] [160] [161]
-<img/thesis_figures/ckm_generator/ckm_generator_output_tree.png, id=2405, 2208.
+<img/thesis_figures/ckm_generator/ckm_generator_output_tree.png, id=2410, 2208.
 25pt x 1505.625pt>
 File: img/thesis_figures/ckm_generator/ckm_generator_output_tree.png Graphic fi
 le (type png)
@@ -3109,7 +3095,7 @@ le (type png)
 Package pdftex.def Info: img/thesis_figures/ckm_generator/ckm_generator_output_
 tree.png  used on input line 791.
 (pdftex.def)             Requested size: 426.78262pt x 290.98814pt.
-<img/thesis_figures/ckm_generator/ckm_generator_output_visuals.png, id=2406, 20
+<img/thesis_figures/ckm_generator/ckm_generator_output_visuals.png, id=2411, 20
 67.725pt x 1279.78125pt>
 File: img/thesis_figures/ckm_generator/ckm_generator_output_visuals.png Graphic
  file (type png)
@@ -3122,7 +3108,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [162 <./img/thesis_figures/ckm_generator/ckm_generator_output_tree.png (PNG co
 py)>]
-<img/thesis_figures/ckm_generator/ckm_generator_output_metadata.png, id=2411, 1
+<img/thesis_figures/ckm_generator/ckm_generator_output_metadata.png, id=2416, 1
 706.375pt x 1154.3125pt>
 File: img/thesis_figures/ckm_generator/ckm_generator_output_metadata.png Graphi
 c file (type png)
@@ -3160,15 +3146,15 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `TFG.out' has not changed.
-(rerunfilecheck)             Checksum: 3836147C8F243C16E2E3726305B9D554;30449.
+(rerunfilecheck)             Checksum: 7E59B2CBE7BE6F3E9DC85A459D8FF16E;30429.
 Package logreq Info: Writing requests to 'TFG.run.xml'.
 \openout1 = `TFG.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 88643 strings out of 467871
- 2284679 string characters out of 5428443
- 3498340 words of memory out of 5000000
+ 88647 strings out of 467871
+ 2284721 string characters out of 5428443
+ 3497279 words of memory out of 5000000
  114940 multiletter control sequences out of 15000+600000
  945135 words of font info for 777 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -3192,9 +3178,9 @@ MiKTeX/fonts/type1/public/libertinus-type1/LibertinusSerif-Regular.pfb><C:/User
 s/guill/AppData/Local/Programs/MiKTeX/fonts/type1/public/libertinust1math/Liber
 tinusT1Math.pfb><C:/Users/guill/AppData/Local/Programs/MiKTeX/fonts/type1/publi
 c/stix/stix-mathcal.pfb>
-Output written on TFG.pdf (166 pages, 29962070 bytes).
+Output written on TFG.pdf (166 pages, 29964420 bytes).
 PDF statistics:
- 2649 PDF objects out of 2984 (max. 8388607)
- 673 named destinations out of 1000 (max. 500000)
+ 2654 PDF objects out of 2984 (max. 8388607)
+ 677 named destinations out of 1000 (max. 500000)
  139986 words of extra memory for PDF output out of 154059 (max. 10000000)
 

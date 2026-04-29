@@ -82,55 +82,55 @@
 \contentsline {paragraph}{Outlier budget.}{53}{paragraph*.38}%
 \contentsline {paragraph}{Supervised pixel losses.}{53}{paragraph*.39}%
 \contentsline {section}{\numberline {3.8}Training hyperparameters}{53}{section.3.8}%
-\contentsline {section}{\numberline {3.9}Training diagnostics and curves}{54}{section.3.9}%
+\contentsline {section}{\numberline {3.9}Try 80 training progression}{54}{section.3.9}%
 \contentsline {section}{\numberline {3.10}Try 78 and Try 79 priors: overview and literature basis}{55}{section.3.10}%
 \contentsline {paragraph}{Notation convention.}{55}{paragraph*.41}%
 \contentsline {subsection}{\numberline {3.10.1}High-level architecture}{56}{subsection.3.10.1}%
-\contentsline {subsection}{\numberline {3.10.2}How to construct a good prior}{56}{subsection.3.10.2}%
-\contentsline {subsubsection}{A prior is more than an analytical equation}{56}{subsubsection*.44}%
+\contentsline {subsection}{\numberline {3.10.2}How to construct a good prior}{57}{subsection.3.10.2}%
+\contentsline {subsubsection}{A prior is more than an analytical equation}{57}{subsubsection*.44}%
 \contentsline {subsubsection}{Why the old prior and \texttt {Try 78} were not equivalent}{57}{subsubsection*.45}%
 \contentsline {subsubsection}{Scope of this mismatch}{58}{subsubsection*.46}%
 \contentsline {subsubsection}{What changed in the LoS branch}{59}{subsubsection*.47}%
-\contentsline {subsubsection}{What changed in the NLoS branch}{59}{subsubsection*.48}%
-\contentsline {subsubsection}{What was improved relative to the literature}{60}{subsubsection*.49}%
+\contentsline {subsubsection}{What changed in the NLoS branch}{60}{subsubsection*.48}%
+\contentsline {subsubsection}{What was improved relative to the literature}{61}{subsubsection*.49}%
 \contentsline {subsubsection}{Resulting design rules}{61}{subsubsection*.50}%
-\contentsline {subsection}{\numberline {3.10.3}What was reused from the literature, what was changed, and what is new}{61}{subsection.3.10.3}%
-\contentsline {subsubsection}{Try 78: path loss}{61}{subsubsection*.51}%
-\contentsline {paragraph}{What the literature provides.}{61}{paragraph*.52}%
+\contentsline {subsection}{\numberline {3.10.3}What was reused from the literature, what was changed, and what is new}{62}{subsection.3.10.3}%
+\contentsline {subsubsection}{Try 78: path loss}{62}{subsubsection*.51}%
+\contentsline {paragraph}{What the literature provides.}{62}{paragraph*.52}%
 \contentsline {paragraph}{What we took exactly from the literature.}{62}{paragraph*.53}%
 \contentsline {paragraph}{What we changed or did not take.}{62}{paragraph*.54}%
-\contentsline {subsubsection}{Try 79: delay spread and angular spread}{62}{subsubsection*.55}%
-\contentsline {paragraph}{What the literature provides.}{62}{paragraph*.56}%
-\contentsline {paragraph}{What we changed or did not take.}{62}{paragraph*.57}%
-\contentsline {subsubsection}{Try 80: architecture and loss}{62}{subsubsection*.58}%
-\contentsline {section}{\numberline {3.11}Try 78: Path Loss Prior}{63}{section.3.11}%
-\contentsline {subsection}{\numberline {3.11.1}LoS branch: enhanced two-ray model}{63}{subsection.3.11.1}%
+\contentsline {subsubsection}{Try 79: delay spread and angular spread}{63}{subsubsection*.55}%
+\contentsline {paragraph}{What the literature provides.}{63}{paragraph*.56}%
+\contentsline {paragraph}{What we changed or did not take.}{63}{paragraph*.57}%
+\contentsline {subsubsection}{Try 80: architecture and loss}{63}{subsubsection*.58}%
+\contentsline {section}{\numberline {3.11}Try 78: Path Loss Prior}{64}{section.3.11}%
+\contentsline {subsection}{\numberline {3.11.1}LoS branch: enhanced two-ray model}{64}{subsection.3.11.1}%
 \contentsline {subsubsection}{Geometry and distances}{64}{subsubsection*.59}%
 \contentsline {subsubsection}{Free-space path-loss baseline}{65}{subsubsection*.61}%
 \contentsline {paragraph}{Derivation.}{65}{paragraph*.62}%
-\contentsline {paragraph}{Physical meaning.}{65}{paragraph*.63}%
-\contentsline {subsubsection}{Enhanced two-ray correction}{65}{subsubsection*.64}%
+\contentsline {paragraph}{Physical meaning.}{66}{paragraph*.63}%
+\contentsline {subsubsection}{Enhanced two-ray correction}{66}{subsubsection*.64}%
 \contentsline {paragraph}{Term-by-term interpretation.}{66}{paragraph*.65}%
-\contentsline {subsubsection}{Comparison with literature two-ray models}{66}{subsubsection*.66}%
-\contentsline {paragraph}{Physical vs.\ effective parameters.}{66}{paragraph*.67}%
-\contentsline {paragraph}{The $d^4$ approximation.}{67}{paragraph*.68}%
-\contentsline {paragraph}{Search range vs.\ fitted values.}{67}{paragraph*.69}%
-\contentsline {paragraph}{Extra calibrated terms outside the two-ray model.}{67}{paragraph*.70}%
-\contentsline {subsubsection}{Calibrated LoS prior}{67}{subsubsection*.71}%
-\contentsline {subsection}{\numberline {3.11.2}Calibration of the LoS two-ray model}{70}{subsection.3.11.2}%
-\contentsline {subsubsection}{Data preparation}{70}{subsubsection*.73}%
+\contentsline {subsubsection}{Comparison with literature two-ray models}{67}{subsubsection*.66}%
+\contentsline {paragraph}{Physical vs.\ effective parameters.}{67}{paragraph*.67}%
+\contentsline {paragraph}{The $d^4$ approximation.}{68}{paragraph*.68}%
+\contentsline {paragraph}{Search range vs.\ fitted values.}{68}{paragraph*.69}%
+\contentsline {paragraph}{Extra calibrated terms outside the two-ray model.}{68}{paragraph*.70}%
+\contentsline {subsubsection}{Calibrated LoS prior}{68}{subsubsection*.71}%
+\contentsline {subsection}{\numberline {3.11.2}Calibration of the LoS two-ray model}{71}{subsection.3.11.2}%
+\contentsline {subsubsection}{Data preparation}{71}{subsubsection*.73}%
 \contentsline {subsubsection}{Grid search for $(\rho , \phi )$}{71}{subsubsection*.74}%
-\contentsline {subsubsection}{Post-fit Gaussian smoothing across height bins}{71}{subsubsection*.75}%
+\contentsline {subsubsection}{Post-fit Gaussian smoothing across height bins}{72}{subsubsection*.75}%
 \contentsline {subsubsection}{Radial residual correction}{72}{subsubsection*.76}%
 \contentsline {subsubsection}{Fitted parameter values}{72}{subsubsection*.77}%
-\contentsline {subsection}{\numberline {3.11.3}NLoS branch}{73}{subsection.3.11.3}%
-\contentsline {subsubsection}{Stage 1: raw NLoS propagation prior}{73}{subsubsection*.81}%
-\contentsline {paragraph}{COST-231 term.}{73}{paragraph*.82}%
-\contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:cost231}.}{74}{paragraph*.83}%
-\contentsline {paragraph}{Elevation-aware UAV envelope.}{74}{paragraph*.84}%
+\contentsline {subsection}{\numberline {3.11.3}NLoS branch}{74}{subsection.3.11.3}%
+\contentsline {subsubsection}{Stage 1: raw NLoS propagation prior}{74}{subsubsection*.81}%
+\contentsline {paragraph}{COST-231 term.}{74}{paragraph*.82}%
+\contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:cost231}.}{75}{paragraph*.83}%
+\contentsline {paragraph}{Elevation-aware UAV envelope.}{75}{paragraph*.84}%
 \contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:a2g_nlos}.}{75}{paragraph*.85}%
-\contentsline {subsubsection}{Stage 2: raw hybrid prior assembly}{75}{subsubsection*.86}%
-\contentsline {subsubsection}{Stage 3: map-derived morphology features}{76}{subsubsection*.87}%
+\contentsline {subsubsection}{Stage 2: raw hybrid prior assembly}{76}{subsubsection*.86}%
+\contentsline {subsubsection}{Stage 3: map-derived morphology features}{77}{subsubsection*.87}%
 \contentsline {paragraph}{Base masks.}{78}{paragraph*.89}%
 \contentsline {paragraph}{Quadratic raw-prior feature.}{79}{paragraph*.90}%
 \contentsline {paragraph}{Distance term.}{79}{paragraph*.91}%
