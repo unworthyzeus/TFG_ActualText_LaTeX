@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.27)  29 APR 2026 18:46
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.27)  30 APR 2026 11:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -3019,7 +3019,7 @@ Package logreq Info: Writing requests to 'TFG.run.xml'.
 Here is how much of TeX's memory you used:
  88634 strings out of 467871
  2284775 string characters out of 5428443
- 3504151 words of memory out of 5000000
+ 3504149 words of memory out of 5000000
  114946 multiletter control sequences out of 15000+600000
  943834 words of font info for 776 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -3042,7 +3042,7 @@ rtinusSerif-Italic.pfb><C:/Users/guill/AppData/Local/Programs/MiKTeX/fonts/type
 ocal/Programs/MiKTeX/fonts/type1/public/libertinust1math/LibertinusT1Math.pfb><
 C:/Users/guill/AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/stix-mathc
 al.pfb>
-Output written on TFG.pdf (153 pages, 29935999 bytes).
+Output written on TFG.pdf (153 pages, 29935976 bytes).
 PDF statistics:
  2628 PDF objects out of 2984 (max. 8388607)
  654 named destinations out of 1000 (max. 500000)
