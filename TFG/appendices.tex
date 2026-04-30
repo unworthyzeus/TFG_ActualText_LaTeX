@@ -455,7 +455,8 @@ model-correction map is the direct qualitative evidence for that claim.
 
 \begin{table}[H]
 \centering
-\caption{Final residual GMM-head model appendix panels generated from validation samples with the
+\caption[Final-model appendix panel index.]%
+{Final residual GMM-head model appendix panels generated from validation samples with the
 final huge checkpoint.}
 \label{tab:try80_appendix_panels}
 \footnotesize
@@ -644,6 +645,7 @@ pred = (pred_region * region_masks.squeeze(2)).sum(dim=1, keepdim=True)
 }
 
 \chapter{CKM Generator Interface and Reproducibility Tool}
+\label{chap:ckm_generator}
 \label{app:ckm_generator}
 
 This appendix documents the standalone CKM Generator delivered with the final
@@ -668,7 +670,8 @@ pixel spacing, HDF5 filtering, and output folder.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/ckm_generator_app_controls.png}
-\caption{CKM Generator Streamlit interface. The sidebar exposes the same
+\caption[CKM Generator Streamlit interface.]%
+{CKM Generator Streamlit interface. The sidebar exposes the same
 settings that are available through the command-line interface.}
 \label{fig:ckm_generator_controls}
 \end{figure}
@@ -682,7 +685,8 @@ Figure~\ref{fig:ckm_generator_masks} shows this inspection view.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/ckm_generator_app_result_top.png}
-\caption{Generated topology and masks for an HDF5 sample. The view reports
+\caption[Generated topology and masks.]%
+{Generated topology and masks for an HDF5 sample. The view reports
 the resolved mask source and displays topology, LoS mask, and NLoS mask
 side by side.}
 \label{fig:ckm_generator_masks}
@@ -695,7 +699,8 @@ the joint prediction panel saved by the tool.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png}
-\caption{Joint prediction figure exported by the CKM Generator, with path
+\caption[CKM Generator joint prediction output.]%
+{Joint prediction figure exported by the CKM Generator, with path
 loss in dB, delay spread in ns, and angular spread in degrees.}
 \label{fig:ckm_generator_prediction}
 \end{figure}
@@ -987,7 +992,8 @@ visual outputs, compressed numeric arrays, and metadata.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/ckm_generator_output_tree.png}
-\caption{Generated output folder for one CKM Generator run. The run contains
+\caption[Generated output folder for one run.]%
+{Generated output folder for one CKM Generator run. The run contains
 binary masks, prior maps, prediction maps, a compressed numerical archive, and
 a JSON metadata file.}
 \label{fig:ckm_generator_output_tree}
@@ -996,7 +1002,8 @@ a JSON metadata file.}
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/ckm_generator_output_visuals.png}
-\caption{Visual outputs generated for the same sample: LoS/NLoS masks and the
+\caption[Visual outputs for one generated sample.]%
+{Visual outputs generated for the same sample: LoS/NLoS masks and the
 three final-model prediction products, together with the saved joint prediction
 panel.}
 \label{fig:ckm_generator_output_visuals}
@@ -1005,7 +1012,8 @@ panel.}
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth,height=0.64\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/ckm_generator_output_metadata.png}
-\caption{Example metadata and numerical-array contents for a generated sample.
+\caption[Generated sample metadata and arrays.]%
+{Example metadata and numerical-array contents for a generated sample.
 The metadata records provenance and the resolved mask policy, while the
 \texttt{.npz} archive keeps the actual \(513\times513\) numeric maps.}
 \label{fig:ckm_generator_output_metadata}

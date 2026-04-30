@@ -67,7 +67,8 @@ longer than the direct path.
 
 \draw[|<->|] (1.0,-0.1) -- (5.0,-0.1) node[midway, below, font=\small] {$d_{2D}$};
 \end{tikzpicture}
-\caption{Two-ray geometry. Direct path (blue) has length $d_{\mathrm{LoS}}$;
+\caption[Two-ray geometry.]%
+{Two-ray geometry. Direct path (blue) has length $d_{\mathrm{LoS}}$;
 reflected path (green) has the same total length as the image-source path
 (gray dashed), which is $d_{\mathrm{ref}}$.}
 \label{fig:tworay}
@@ -597,7 +598,8 @@ where training data is sparser.}
 \addlegendentry{Two-ray (approx.)}
 \end{axis}
 \end{tikzpicture}
-\caption{Schematic comparison of FSPL and the enhanced two-ray model for a
+\caption[FSPL versus enhanced two-ray model.]%
+{Schematic comparison of FSPL and the enhanced two-ray model for a
 60 m UAV at 7.125 GHz ($h_{\mathrm{rx}} = 1.5$ m). The two-ray model produces
 a characteristic oscillatory pattern around the FSPL baseline, corresponding
 to alternating zones of constructive and destructive interference.}
@@ -1363,6 +1365,7 @@ the final-model comparison reaches \SI{1.9246}{dB} overall.
 \draw[->, thick] (blend) -- node[right, font=\scriptsize] {$\mathbb{R}^{H \times W}$} (final);
 
 \end{tikzpicture}
-\caption{Pipeline for the hybrid path loss prior. The LoS branch relies on an explicit two-ray interference model, while the NLoS branch calibrates a raw prior against map-derived morphology features using regime-wise OLS. The two branches are hard-switched based on the LoS mask to produce the final frozen prior.}
+\caption[Pipeline for the hybrid path-loss prior.]%
+{Pipeline for the hybrid path loss prior. The LoS branch relies on an explicit two-ray interference model, while the NLoS branch calibrates a raw prior against map-derived morphology features using regime-wise OLS. The two branches are hard-switched based on the LoS mask to produce the final frozen prior.}
 \label{fig:try78_pipeline}
 \end{figure}

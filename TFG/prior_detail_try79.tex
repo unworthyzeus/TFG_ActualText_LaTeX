@@ -189,7 +189,8 @@ higher-order subsets.
 \draw[arr] (vec) -- (ridge);
 \draw[arr] (ridge) -- (native);
 \end{tikzpicture}
-\caption{Feature grouping used by the calibrated spread prior.
+\caption[Feature grouping for the calibrated spread prior.]%
+{Feature grouping used by the calibrated spread prior.
 The calibrated model is linear in \(\textbf{x}_{79}\), but the features include
 nonlinear transforms and interactions selected from propagation intuition.}
 \label{fig:try79_feature_groups}
@@ -390,6 +391,7 @@ dense\_block\_highrise  & 14.64 & 21.33 & 9.78 \\
 \draw[->, thick, dashed] (inputs.east) -| ++(1.5,-1.5) |- (features.east);
 \node[draw, dashed, fill=yellow!10, right=1.5cm of ridge, align=left, font=\footnotesize] {Regime $r$ keys:\\1. Metric (DS/AS)\\2. Topology Class\\3. LoS / NLoS\\4. Antenna Bin};
 \end{tikzpicture}
-\caption{Pipeline for the delay and angular spread priors. Both spread modalities share this identical linear architecture, predicting expected spread in the log domain via regime-wise ridge regression over 23 spatial and geometric features.}
+\caption[Pipeline for the delay and angular spread priors.]%
+{Pipeline for the delay and angular spread priors. Both spread modalities share this identical linear architecture, predicting expected spread in the log domain via regime-wise ridge regression over 23 spatial and geometric features.}
 \label{fig:try79_pipeline}
 \end{figure}

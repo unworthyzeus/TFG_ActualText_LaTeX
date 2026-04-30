@@ -55,7 +55,8 @@ from each modelling choice can be isolated
 
 \begin{table}[H]
 \centering
-\caption{LoS path-loss prior progression: three priors evaluated on the same
+\caption[LoS path-loss prior progression.]%
+{LoS path-loss prior progression: three priors evaluated on the same
 30\% city-holdout evaluation set (pixel-weighted RMSE).}
 \label{tab:try78_los_waterfall}
 \begin{tabular}{lcc}
@@ -95,7 +96,8 @@ residual GMM-head model.
 
 \begin{table}[H]
 \centering
-\caption{Representative RMSE evolution across the project. Values are reported
+\caption[Representative RMSE evolution across the project.]%
+{Representative RMSE evolution across the project. Values are reported
 under their own experiment contract and are used to show trend and diagnosis,
 not to claim every row is directly comparable.}
 \label{tab:rmse_evolution}
@@ -235,7 +237,8 @@ interpretable.
 
 \begin{table}[H]
 \centering
-\caption{Distribution-first path-loss DirectML test RMSE per expert on the shared
+\caption[Distribution-first path-loss RMSE per expert.]%
+{Distribution-first path-loss DirectML test RMSE per expert on the shared
 city-holdout test split, together with the standard deviation of the
 corresponding target histogram. RMSE values are pixel-weighted over
 valid ground pixels. Source:
@@ -347,7 +350,8 @@ distribution that the GMM head can attack directly.}
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png}
-\caption{Five-component Gaussian-mixture fits of the LoS and NLoS
+\caption[Path-loss GMM target fits by topology expert.]%
+{Five-component Gaussian-mixture fits of the LoS and NLoS
 path-loss targets, shown separately for the six topology
 experts. This is the distribution actually seen by the specialised
 checkpoints, and is therefore more faithful than a single collapsed
@@ -418,7 +422,8 @@ aggregate and there are more outliers.
 
 \begin{table}[H]
 \centering
-\caption{Distribution-first spread DirectML test RMSE per expert on the shared
+\caption[Distribution-first spread RMSE per expert.]%
+{Distribution-first spread DirectML test RMSE per expert on the shared
 city-holdout test split. Sample columns average per-map RMSE; pixel
 columns aggregate squared error over all valid ground pixels. Source:
 \texttt{tmp\_try77\_directml\_test\_metrics.json}.}
@@ -473,7 +478,8 @@ the target map has lost fine detail through quantisation.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try79_quantized_spread_example.png}
-\caption{Example of spread-target quantisation on a calibrated-prior test sample
+\caption[Example of spread-target quantisation.]%
+{Example of spread-target quantisation on a calibrated-prior test sample
 (Jaipur, \texttt{sample\_07308}). The ground-truth delay-spread map
 contains broad staircase-like bands and isolated quantised pixels, while
 the height-aware calibrated prediction is smoother and more continuous.
@@ -487,14 +493,15 @@ map, whose target is dominated by sparse high-valued quantised pixels.}
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try77_per_expert.png}
-\caption{Distribution-first spread DirectML test RMSE per expert, separated by spread
+\caption[Distribution-first spread RMSE by target.]%
+{Distribution-first spread DirectML test RMSE per expert, separated by spread
 target. For each topology class, paired bars show sample-mean and
 pixel-weighted aggregation. Dashed grey lines mark the original project targets
 (\SI{50}{ns} for delay spread, \(20^\circ\) for angular spread). The
 angular-spread experts beat the target across all topology classes; the
 delay-spread experts also remain below \SI{50}{ns}, but their
-pixel-weighted errors are larger and less competitive with the later
-the final ridge calibration.}
+pixel-weighted errors are larger and less competitive with the final
+ridge calibration.}
 \label{fig:try77_per_expert}
 \end{figure}
 
@@ -576,7 +583,8 @@ Figure~\ref{fig:try78_by_topology}.
 
 \begin{table}[H]
 \centering
-\caption{Hybrid path-loss prior, pixel-weighted RMSE on the
+\caption[Hybrid path-loss prior RMSE by topology class.]%
+{Hybrid path-loss prior, pixel-weighted RMSE on the
 30\% city-holdout evaluation split, broken down by topology class. The
 overall row reproduces Table~\ref{tab:try78_results}.}
 \label{tab:try78_by_topology}
@@ -632,7 +640,8 @@ deployability.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try78_by_topology.png}
-\caption{Path-loss prior by topology class. \emph{Left}: LoS,
+\caption[Path-loss prior by topology class.]%
+{Path-loss prior by topology class. \emph{Left}: LoS,
 NLoS and overall pixel-weighted RMSE for each of the six
 topology classes. The LoS RMSE grows monotonically with morphological
 density, mirroring the growth of the LoS target standard deviation
@@ -723,7 +732,8 @@ Table~\ref{tab:try80_val_test_sanity} reports the two scopes side by side.
 
 \begin{table}[H]
 \centering
-\caption{Validation-versus-test sanity check for the same
+\caption[Validation-versus-test sanity check.]%
+{Validation-versus-test sanity check for the same
 \texttt{best\_model.pt} checkpoint. The validation row matches the metrics
 stored in the checkpoint history; the test row is the final unseen-city
 generalisation result.}
@@ -741,7 +751,8 @@ Test & 2590 & 1.6519 & 26.5570 & 28.1023 & 11.3854 & Separate 14-city holdout; t
 
 \begin{table}[H]
 \centering
-\caption{Final-model pixel-weighted RMSE by split, compared with the frozen
+\caption[Final-model RMSE by split.]%
+{Final-model pixel-weighted RMSE by split, compared with the frozen
 priors. The test split is the unseen-city generalisation claim;
 the all row aggregates train, validation, and test together.}
 \label{tab:try80_split_absolute}
@@ -779,7 +790,8 @@ delay-spread artefacts are less severe.
 
 \begin{table}[H]
 \centering
-\caption{Final-model improvement over the frozen priors by split. Values are
+\caption[Final-model improvement by split.]%
+{Final-model improvement over the frozen priors by split. Values are
 pixel-weighted \(\Delta=\mathrm{model}-\mathrm{prior}\); negative values are
 better.}
 \label{tab:try80_split_delta}
@@ -798,7 +810,8 @@ All & 16180 & -0.2867 & -0.3000 & -1.8406 & +0.6214 & -2.3710 & +0.0036 \\
 
 \begin{table}[H]
 \centering
-\caption{Final-model LoS/NLoS RMSE improvement by split. Values are
+\caption[Final-model LoS/NLoS improvement by split.]%
+{Final-model LoS/NLoS RMSE improvement by split. Values are
 pixel-weighted \(\Delta=\mathrm{model}-\mathrm{prior}\); negative values are
 better.}
 \label{tab:try80_los_nlos_split_delta}
@@ -821,7 +834,8 @@ All & NLoS & -0.3565 & -0.4525 & -0.2388 \\
 
 \begin{table}[H]
 \centering
-\caption{All-city final-model deltas by prior subexpert. Each city contributes to
+\caption[All-city final-model deltas by prior subexpert.]%
+{All-city final-model deltas by prior subexpert. Each city contributes to
 one of the nine morphology--antenna prior experts, and the table shows that
 the improvement is not concentrated in a single easy subexpert.}
 \label{tab:try80_subexpert_delta}
@@ -896,12 +910,52 @@ still better than required: \SI{2.66}{dB}, \SI{36.89}{ns}, and \(14.06^\circ\).
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{\textbf{TARGET vs Final Result.} Final global test check using
+\caption[Final result against original numerical targets.]%
+{\textbf{TARGET vs Final Result.} Final global test check using
 pixel-weighted RMSE only. The final-result bar is the held-out city test result,
 which remains below the original targets: \SI{5}{dB} for path loss, \SI{50}{ns}
 for delay spread, and \(20^\circ\) for angular spread.}
 \label{fig:try80_test_objectives}
 \end{figure}
+
+\subsubsection*{Inference-time sanity check}
+
+The secondary runtime objective can be closed with an order-of-magnitude check.
+The appendix benchmark times only model inference on exported \(513\times513\)
+HDF5 samples. On an RTX~3050~Ti Laptop GPU, full-precision fp32 inference takes
+\SIrange{6.94}{6.99}{s} per map, while mixed precision takes
+\SIrange{5.46}{5.61}{s}. The original CKM ray-tracing generation took roughly
+three weeks for 16{,}180 samples; interpreted as 21 days, this is about
+\SI{112.14}{s} per sample.
+
+\begin{table}[H]
+\centering
+\caption[Inference time and ray-tracing comparison.]
+{Approximate runtime comparison for one \(513\times513\) CKM sample. The ray-tracing
+value is derived from the dataset-generation time, while the model values are
+the measured inference-only timings reported in Appendix~\ref{chap:ckm_generator}.}
+\label{tab:inference_time_comparison}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.2cm}cc>{\raggedright\arraybackslash}X}
+\toprule
+Method & Time per map & 16{,}180 maps & Interpretation \\
+\midrule
+Ray tracing, RTX~2080~Ti desktop & \(\approx\)\SI{112.14}{s} & \(\approx\)21 days & Dataset-generation baseline. \\
+Final model, RTX~3050~Ti Laptop GPU, fp32 & \SIrange{6.94}{6.99}{s} & \SIrange{31.19}{31.42}{h} & About \(16.0\)--\(16.2\times\) faster than the ray-tracing baseline. \\
+Final model, RTX~3050~Ti Laptop GPU, mixed precision & \SIrange{5.46}{5.61}{s} & \SIrange{24.54}{25.21}{h} & About \(20.0\)--\(20.5\times\) faster than the ray-tracing baseline. \\
+Final model, CPU & Not benchmarked & -- & Supported as a fallback runtime, but no CPU speed-up claim is made. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+This comparison excludes the one-time training and calibration cost. It only
+answers the deployment-style question: after training, replacing repeated
+ray-tracing queries by the final surrogate reduces the marginal generation time
+by roughly one order of magnitude, and by about \(16\times\) even in the
+full-precision GPU setting. The comparison is conservative for the surrogate:
+the neural inference was measured on a laptop RTX~3050~Ti, whereas the
+ray-tracing generation used a desktop RTX~2080~Ti. A same-class desktop-GPU
+comparison would likely widen the inference advantage rather than reduce it.
 
 \section{Data Visualization}
 
@@ -969,7 +1023,8 @@ target distribution was multi-modal.
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{Test-set comparison between the distribution-first neural references
+\caption[Final model compared with prior and GMM references.]%
+{Test-set comparison between the distribution-first neural references
 and the final prior-anchored residual GMM-head checkpoint. The path-loss panel uses global
 pixel-weighted RMSE; the spread GMM reference is shown for the two spread targets.}
 \label{fig:try76_77_80_prior_comparison}
@@ -1017,7 +1072,8 @@ pixel-weighted RMSE; the spread GMM reference is shown for the two spread target
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{Final model versus the frozen prior across train, validation, unseen test,
+\caption[Final model versus frozen priors by split.]%
+{Final model versus the frozen prior across train, validation, unseen test,
 and all-city aggregation. Validation is the checkpoint-selection split; test
 contains cities not seen during training.}
 \label{fig:try80_split_rmse}
@@ -1061,7 +1117,8 @@ contains cities not seen during training.}
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{Final test RMSE on unseen cities against the frozen priors for
+\caption[Final test RMSE against frozen priors.]%
+{Final test RMSE on unseen cities against the frozen priors for
 path loss, delay spread, and angular spread.}
 \label{fig:try80_test_final}
 \end{figure}
@@ -1107,7 +1164,8 @@ path loss, delay spread, and angular spread.}
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{Final test RMSE separated by LoS and NLoS pixels. The model
+\caption[Final test RMSE by LoS and NLoS regime.]%
+{Final test RMSE separated by LoS and NLoS pixels. The model
 improves the frozen prior in both regimes for all three outputs.}
 \label{fig:try80_test_los_nlos}
 \end{figure}
@@ -1163,7 +1221,8 @@ improves the frozen prior in both regimes for all three outputs.}
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{All-city RMSE deltas by prior subexpert. Negative values mean
+\caption[All-city RMSE deltas by prior subexpert.]%
+{All-city RMSE deltas by prior subexpert. Negative values mean
 that the final model improves the frozen prior. The first letter denotes the morphology
 expert (dense, mixed, open) and the second letter the antenna-height expert
 (high, low, mid).}
@@ -1183,7 +1242,8 @@ prior-error row.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_main_panel.png}
-\caption{Representative final-model \(6\times3\) inspection panel for a validation
+\caption[Representative final-model inspection panel.]%
+{Representative final-model \(6\times3\) inspection panel for a validation
 diagnostic sample from the final checkpoint. Columns: path loss, delay spread,
 angular spread. Rows: ground truth, frozen prior, final
 prediction, context / support mask, prior error
@@ -1227,7 +1287,8 @@ labels and becomes important once residual errors approach the sub-unit regime.
 
 \begin{table}[H]
 \centering
-\caption{Approximate quantisation RMSE implied by the stored integer target
+\caption[Approximate RMSE floor from target quantisation.]%
+{Approximate quantisation RMSE implied by the stored integer target
 precision in the current CKM HDF5 file. The table reports the actual storage
 used in this thesis.}
 \label{tab:quantisation_floor}

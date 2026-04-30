@@ -396,7 +396,8 @@ a heavy tail for NLoS).
 
 \end{tikzpicture}%
 }
-\caption{Distribution-first spread-prediction system. The Stage~A mixture head
+\caption[Distribution-first spread-prediction system.]%
+{Distribution-first spread-prediction system. The Stage~A mixture head
 separately models the near-zero spike (LoS direct path) and the
 heavy-tailed components (NLoS scattering). Stage~B decodes these into
 spatially varying per-pixel predictions.}
@@ -544,7 +545,8 @@ about \(74^\circ\), while the prediction \(p_{99}\) is about \(43^\circ\).
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{img/thesis_figures/distribution_histograms/target_prediction_histograms.png}
-\caption{Aggregated target and prediction histograms from the late diagnostic
+\caption[Diagnostic target and prediction histograms.]%
+{Aggregated target and prediction histograms from the late diagnostic
 histogram study. The vertical scale is logarithmic to show the rare tail mass:
 path-loss NLoS suffers from mode collapse, while delay and angular spreads
 learn the bulk but miss part of the high-value tail.}
@@ -682,7 +684,8 @@ is defined against the ground-truth marginal, not the current prediction.
 
 \begin{table}[H]
 \centering
-\caption{Best-fit parametric family for each target distribution on the CKM
+\caption[Best-fit parametric family by target.]%
+{Best-fit parametric family for each target distribution on the CKM
 validation histograms, across all cities. Based on the validation
 KL-ranking study.}
 \label{tab:gmm_k_choice}
@@ -813,7 +816,8 @@ them, not the training stack.
 
 \begin{table}[H]
 \centering
-\caption{Training configuration of the final pipeline. Unless otherwise
+\caption[Training configuration of the final pipeline.]%
+{Training configuration of the final pipeline. Unless otherwise
 stated, all runs use AdamW, image size $513\times513$, batch size 1 per GPU,
 and gradient accumulation over 8 steps.}
 \label{tab:hyperparams}

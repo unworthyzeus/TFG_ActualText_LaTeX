@@ -7,46 +7,42 @@
   \huge\bfseries\raggedright Resum~\hrulefill
 \end{center}
 Aquest TFG estudia la predicció de mapes de coneixement de canal per a xarxes
-6G amb UAVs. A partir del conjunt de dades CKM (66 ciutats reals, 16180
+6G amb UAVs. A partir del conjunt de dades CKM (66 ciutats reals, 16{,}180
 mostres, mapes urbans de 513 x 513 píxels amb màscares LoS/NLoS i altura
 d'antena contínua entre 12 i 478 m) es prediuen pèrdua de trajecte, dispersió
-temporal i dispersió angular sota un protocol estricte de validació per
-ciutats completes, en què ciutats senceres queden reservades per a validació
-i test. Després de provar U-Nets, cGANs, experts i priors físics, el treball
-convergeix en un model híbrid: un prior interpretable calibrat per pèrdua de trajecte
-(model coherent de dos raigs per a LoS i calibració per règims per a NLoS) i
-un prior de spreads (regressió ridge en espai logarítmic per als dos spreads), amb un model
-final amb cap GMM residual conjunt. El resultat final no és un prior pur ni una
-xarxa neuronal pura: el model final introdueix Deep Learning com a corrector multitasca
-amb cap GMM residual, condicionat per la geometria urbana, l'altura del UAV, les màscares
-LoS/NLoS i els mapes prior, per corregir errors locals sense perdre
-interpretabilitat física. Els priors finals assoleixen 1.92 dB en pèrdua de
-trajecte, 28.10 ns en delay spread i 13.74 graus en angular spread sobre les
-ciutats de test. El checkpoint final refina aquests priors fins a
-1.65 dB, 26.56 ns i 11.39 graus RMSE en ciutats de test no vistes.
+temporal / delay spread i dispersió angular / angular spread sota un protocol
+estricte de validació per ciutats completes. Després de provar U-Nets, cGANs,
+experts i priors físics, el treball convergeix en un model híbrid: priors
+interpretables calibrats per pèrdua de trajecte i spreads, més un model final
+amb cap GMM residual conjunt.
+
+El resultat final no és un prior pur ni una xarxa neuronal pura: el model final
+usa Deep Learning com a corrector multitasca condicionat per la geometria
+urbana, l'altura del UAV, les màscares LoS/NLoS i els mapes prior. En el split
+final de test de 14 ciutats no vistes, els priors congelats assoleixen
+1.94 dB, 28.10 ns i 13.74 graus RMSE, mentre que el model final amb residuals
+ancorats als priors els millora fins a 1.65 dB, 26.56 ns i 11.39 graus.
 
 %%% RESUMEN EN CASTELLANO
 \begin{center}
   \huge\bfseries\raggedleft\vspace*{.5\baselineskip} \hrulefill ~Resumen
 \end{center}
 Este TFG estudia la predicción de mapas de conocimiento de canal para redes 6G
-con UAVs. A partir del conjunto de datos CKM (66 ciudades reales, 16180
+con UAVs. A partir del conjunto de datos CKM (66 ciudades reales, 16{,}180
 muestras, mapas urbanos de 513 x 513 píxeles con máscaras LoS/NLoS y altura de
 antena continua entre 12 y 478 m) se predicen pérdida de trayecto, dispersión
-temporal y dispersión angular bajo un protocolo estricto de validación por
-ciudades completas, en el que ciudades enteras se reservan para validación y
-test. Tras probar U-Nets, cGANs, expertos y priors físicos, el trabajo
-converge en un modelo híbrido: un prior interpretable calibrado para pérdida de trayecto
-(modelo coherente de dos rayos para LoS y calibración por regímenes para
-NLoS) y un prior de spreads (regresión ridge en espacio logarítmico para ambos spreads),
-más un modelo final con cabeza GMM residual conjunta. El resultado final no es un prior
-puro ni una red neuronal pura: el modelo final introduce Deep Learning como corrector
-multitarea con cabeza GMM residual, condicionado por la geometría urbana, la altura del UAV,
-las máscaras LoS/NLoS y los mapas prior, para corregir errores locales sin
-perder interpretabilidad física. Los priors finales alcanzan 1.92 dB en
-pérdida de trayecto, 28.10 ns en delay spread y 13.74 grados en angular spread
-sobre las ciudades de test. El checkpoint final refina esos priors
-hasta 1.65 dB, 26.56 ns y 11.39 grados RMSE en ciudades de test no vistas.
+temporal / delay spread y dispersión angular / angular spread bajo un protocolo
+estricto de validación por ciudades completas. Tras probar U-Nets, cGANs,
+expertos y priors físicos, el trabajo converge en un modelo híbrido: priors
+interpretables calibrados para pérdida de trayecto y spreads, más un modelo
+final con cabeza GMM residual conjunta.
+
+El resultado final no es un prior puro ni una red neuronal pura: el modelo final
+usa Deep Learning como corrector multitarea condicionado por la geometría urbana,
+la altura del UAV, las máscaras LoS/NLoS y los mapas prior. En el split final de
+test de 14 ciudades no vistas, los priors congelados alcanzan 1.94 dB,
+28.10 ns y 13.74 grados RMSE, mientras que el modelo final con residuales
+anclados a los priors los mejora hasta 1.65 dB, 26.56 ns y 11.39 grados.
 
 %%% ENGLISH SUMMARY
 \begin{center}
@@ -59,13 +55,12 @@ between 12 and 478 m), the project predicts path loss, delay spread, and
 angular spread under a strict city-holdout evaluation protocol, where entire
 cities are reserved for validation and test. After testing U-Nets, cGANs,
 expert models, and physical priors, the project converges on a hybrid design:
-calibrated interpretable priors: an enhanced two-ray LoS path-loss model with
-regime-wise NLoS calibration, and log-domain ridge regression for
-both spreads, plus a joint residual GMM-head model. The final system is
-neither a pure prior nor a pure neural network: the final model adds Deep Learning as a
-multi-task residual GMM-head corrector conditioned on urban geometry, UAV height,
-LoS/NLoS masks, and prior maps, so it can correct local errors while keeping
-the physical interpretation of the anchors. The finished priors reach 1.92 dB
-path-loss RMSE, 28.10 ns delay-spread RMSE, and 13.74-degree angular-spread
-RMSE on the held-out test cities. The final checkpoint refines those
-priors to 1.65 dB, 26.56 ns, and 11.39-degree RMSE on unseen test cities.
+calibrated interpretable priors for path loss and spreads, plus a joint
+residual GMM-head model.
+
+The final system is neither a pure prior nor a pure neural network: the final
+model adds Deep Learning as a multi-task residual corrector conditioned on urban
+geometry, UAV height, LoS/NLoS masks, and prior maps. On the final 14-city
+unseen test split, the frozen priors achieve 1.94 dB, 28.10 ns, and 13.74-degree
+RMSE, while the final prior-anchored residual GMM-head model improves them to
+1.65 dB, 26.56 ns, and 11.39-degree RMSE.

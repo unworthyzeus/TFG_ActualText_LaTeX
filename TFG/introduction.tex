@@ -41,8 +41,9 @@ margins, and tens of ns of delay spread and tens of degrees of angular spread
 stay well inside typical multipath spread values reported by 3GPP TR\,38.901
 for UMa/UMi scenarios. The proposal also fixed a secondary engineering goal,
 namely a 10--100$\times$ reduction in channel-map generation time compared to
-a ray tracer, which is satisfied automatically by any CNN-based surrogate once
-the model is trained.
+a ray tracer. Chapter~\ref{chap:results} checks this explicitly by comparing
+the measured inference time of the final model with the approximate ray-tracing
+time needed to create the CKM dataset.
 
 The most important methodological objective was not only to obtain a low
 average RMSE, but to do so under a strict city-holdout protocol. In this
@@ -85,7 +86,7 @@ The main contributions corresponding to these questions are:
         \ang{13.74} angular-spread RMSE on the same split.
   \item A prior-anchored joint neural residual GMM-head model that shares
         a single backbone across the three targets, conditioned on the frozen
-        the frozen path-loss and spread priors.
+        path-loss and spread priors.
   \item A distribution-first diagnosis of the previous PMHHNet family
         that identifies NLoS mode collapse and motivates the
         distribution-first GMM architecture. The distribution analysis is released as
@@ -153,8 +154,8 @@ The largest methodological change came after the models repeatedly failed on
 NLoS tails. Histogram analysis showed that the path-loss distribution in NLoS
 regions is not well described by a single Gaussian-like target. This motivated
 the distribution-first architecture: a sample-level GMM head followed
-by a map head that assigns pixels to distribution components. The same idea was applied
-the same idea to delay and angular spreads, where spike-plus-tail behaviour is
+by a map head that assigns pixels to distribution components. The same idea was
+then applied to delay and angular spreads, where spike-plus-tail behaviour is
 even more visible.
 
 The final stage changed the role of deep learning again. The path-loss prior built a strong
