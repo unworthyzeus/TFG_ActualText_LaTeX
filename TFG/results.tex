@@ -4,13 +4,16 @@
 This chapter reports the main quantitative and qualitative outcomes of the
 project. The headline numbers now include the final frozen residual GMM-head
 checkpoint evaluated on the same city-holdout test split used by the calibrated
-spread priors: 2590 samples from 14 unseen cities. The path-loss prior remains
-documented under its 30\% analytic-prior evaluation holdout, while the final
-model is reported as the
-final prior-anchored residual GMM-head model over the three outputs: path loss, delay
-spread, and angular spread.
+spread priors: 2590 samples from 14 unseen cities. Two path-loss-prior numbers
+therefore appear in this chapter: \SI{1.9246}{dB} is the standalone Try~78
+hybrid prior on its 30\% analytic-prior evaluation holdout, whereas
+\SI{1.9383}{dB} is the same frozen path-loss prior re-evaluated inside Try~80
+on the final 14-city test split. All final model-versus-prior comparisons use
+the latter. The final model is reported as the final prior-anchored residual
+GMM-head model over the three outputs: path loss, delay spread, and angular
+spread.
 
-\section{Experiments and Tests}
+\section{Experimental Evaluation}
 
 Table~\ref{tab:timeline_results} summarizes the most important milestones. The
 early rows are not meant as a leaderboard because masking rules and objectives
@@ -33,7 +36,7 @@ Masked-evaluation reset  & Ground-only masking became mandatory. & Building pixe
 Prior-residual phase  & Prior plus residual helped LoS but NLoS remained dominant. & PMNet residual branch: \SI{19.78}{dB} overall, \SI{3.86}{dB} LoS, \SI{34.47}{dB} NLoS. \\
 PMHHNet reference      & PMHHNet synthesis with six experts and physical channels. & \SI{9.41}{dB} overall, \SI{3.75}{dB} LoS, \SI{31.48}{dB} NLoS. \\
 Distribution-first GMM      & Distribution-first path-loss modelling. & NLoS pixel-weighted RMSE $\approx$\,\SI{3.34}{dB}. \\
-Final path-loss prior      & ML-calibrated path-loss prior. & \SI{1.92}{dB} overall, \SI{1.75}{dB} LoS, \SI{3.40}{dB} NLoS. \\
+Final path-loss prior      & ML-calibrated path-loss prior. & Standalone holdout: \SI{1.9246}{dB} overall, \SI{1.75}{dB} LoS, \SI{3.40}{dB} NLoS; final-test prior baseline: \SI{1.9383}{dB}. \\
 Final spread priors      & ML-calibrated spread priors. & \SI{28.10}{ns} delay; \SI{13.74}{\degree} angular. \\
 Final residual GMM-head model      & Joint prior-anchored residual GMM-head model. & Final test: \SI{1.65}{dB} path loss, \SI{26.56}{ns} delay spread, \SI{11.39}{\degree} angular spread; RMSE improves over the frozen priors on all three outputs. \\
 \bottomrule
@@ -44,7 +47,7 @@ Final residual GMM-head model      & Joint prior-anchored residual GMM-head mode
 The final path-loss prior is the clearest path-loss breakthrough. The enhanced two-ray LoS model
 reduced LoS RMSE from roughly \SI{3.95}{dB} with FSPL to
 \SI{1.75}{dB}. The final hybrid prior reached \SI{1.9246}{dB} overall under the
-pixel-weighted metric.
+pixel-weighted metric on its 30\% evaluation holdout.
 
 \subsection{LoS path-loss prior progression}
 
@@ -144,7 +147,9 @@ evaluation used a 30\% evaluation holdout for fitting-versus-evaluation
 of the analytic prior. This holdout contains the same final test
 cities, but also contains additional validation-side cities, so the path-loss prior
 is grouped in the same results chapter for continuity rather than as a
-bitwise-identical split.
+bitwise-identical split. For this reason, the standalone Try~78 prior result is
+\SI{1.9246}{dB}, while the frozen prior baseline used in the final Try~80 test
+comparison is \SI{1.9383}{dB}.
 
 Several conclusions follow from this table. First, the project did not improve
 only because the neural network became larger. Some larger or more complex
@@ -957,7 +962,7 @@ the neural inference was measured on a laptop RTX~3050~Ti, whereas the
 ray-tracing generation used a desktop RTX~2080~Ti. A same-class desktop-GPU
 comparison would likely widen the inference advantage rather than reduce it.
 
-\section{Data Visualization}
+\section{Qualitative Analysis}
 
 The most important visual diagnosis was the contrast between plausible LoS
 maps and failed NLoS tails. Early CNN outputs often followed the central radial

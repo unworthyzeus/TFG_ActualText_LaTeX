@@ -118,10 +118,12 @@
 %%%% ACRONYMS %%%% <<<<<< PLEASE DEFINE YOUR ACRONYMS IN "acronyms.tex"
 \clearpage
 \newcommand\AbbrvName{\ifcase\doclanguage\or Sigles i acrÃ²nims\or Siglas y acrÃ³nimos\else Abbreviations\fi}
+\chapter*{\AbbrvName}
+\markboth{\AbbrvName}{\AbbrvName}
 \phantomsection
 \addcontentsline{toc}{section}{\AbbrvName}
 \printacronyms[
-  heading=chapter*,
+  heading=none,
   display=all,
   include=abbrev,
   name=\AbbrvName,

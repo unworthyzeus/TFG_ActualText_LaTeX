@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.24.0 (MiKTeX 25.12) (format=lualatex 2026.4.27)  30 APR 2026 12:40
+This is LuaHBTeX, Version 1.24.0 (MiKTeX 25.12) (format=lualatex 2026.4.27)  30 APR 2026 13:36
  restricted system commands enabled.
 **TFG.tex
 (./TFG.tex
@@ -3954,7 +3954,7 @@ LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/b/n' will be
 (Font)              scaled to size 14.4pt on input line 53.
 
-Underfull \vbox (badness 1253) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [22
 
@@ -4251,7 +4251,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [88]
 [89] [90]
 LaTeX Font Info:    Font shape `TU/DejaVuSansMono(0)/m/it' will be
-(Font)              scaled to size 8.76003pt on input line 245.
+(Font)              scaled to size 8.76003pt on input line 250.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
@@ -4262,7 +4262,7 @@ File: img/thesis_figures/results_addendum/try76_los_vs_nlos.png Graphic file (t
 ype png)
 <use img/thesis_figures/results_addendum/try76_los_vs_nlos.png>
 Package luatex.def Info: img/thesis_figures/results_addendum/try76_los_vs_nlos.
-png  used on input line 337.
+png  used on input line 342.
 (luatex.def)             Requested size: 426.79135pt x 200.98598pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -4274,7 +4274,7 @@ File: img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png Gr
 aphic file (type png)
 <use img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png>
 Package luatex.def Info: img/thesis_figures/results_addendum/try76_los_vs_nlos_
-distribution.png  used on input line 352.
+distribution.png  used on input line 357.
 (luatex.def)             Requested size: 426.79135pt x 234.46184pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -4290,7 +4290,7 @@ File: img/thesis_figures/results_addendum/try79_quantized_spread_example.png Gr
 aphic file (type png)
 <use img/thesis_figures/results_addendum/try79_quantized_spread_example.png>
 Package luatex.def Info: img/thesis_figures/results_addendum/try79_quantized_sp
-read_example.png  used on input line 480.
+read_example.png  used on input line 485.
 (luatex.def)             Requested size: 426.79135pt x 213.39314pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -4302,7 +4302,7 @@ File: img/thesis_figures/results_addendum/try77_per_expert.png Graphic file (ty
 pe png)
 <use img/thesis_figures/results_addendum/try77_per_expert.png>
 Package luatex.def Info: img/thesis_figures/results_addendum/try77_per_expert.p
-ng  used on input line 495.
+ng  used on input line 500.
 (luatex.def)             Requested size: 426.79135pt x 199.21545pt.
 
 [96<./img/thesis_figures/results_addendum/try79_quantized_spread_example.png><./
@@ -4313,54 +4313,54 @@ File: img/thesis_figures/results_addendum/try78_by_topology.png Graphic file (t
 ype png)
 <use img/thesis_figures/results_addendum/try78_by_topology.png>
 Package luatex.def Info: img/thesis_figures/results_addendum/try78_by_topology.
-png  used on input line 642.
+png  used on input line 647.
 (luatex.def)             Requested size: 426.79135pt x 198.35101pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [98]
 [99<./img/thesis_figures/results_addendum/try78_by_topology.png>] [100]
-Package pgfplots info on input line 889: Using 'lua backend=false' for axis: x 
+Package pgfplots info on input line 894: Using 'lua backend=false' for axis: x 
 coord trafo unsupported.
-Package pgfplots info on input line 898: Using 'lua backend=false' for axis: x 
+Package pgfplots info on input line 903: Using 'lua backend=false' for axis: x 
 coord trafo unsupported.
-Package pgfplots info on input line 907: Using 'lua backend=false' for axis: x 
+Package pgfplots info on input line 912: Using 'lua backend=false' for axis: x 
 coord trafo unsupported.
 
 [101] [102]
-Package pgfplots info on input line 991: Using 'lua backend=false' for axis: x 
+Package pgfplots info on input line 996: Using 'lua backend=false' for axis: x 
 coord trafo unsupported.
-Package pgfplots info on input line 1006: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1011: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
-Package pgfplots info on input line 1021: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1026: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
-Package pgfplots info on input line 1051: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1056: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
-Package pgfplots info on input line 1060: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1065: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
-Package pgfplots info on input line 1069: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1074: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
-Package pgfplots info on input line 1099: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1104: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
-Package pgfplots info on input line 1107: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1112: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
-Package pgfplots info on input line 1115: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1120: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
-Package pgfplots info on input line 1143: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1148: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
-Package pgfplots info on input line 1152: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1157: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
-Package pgfplots info on input line 1161: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1166: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [103]
-Package pgfplots info on input line 1191: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1196: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
-Package pgfplots info on input line 1203: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1208: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
-Package pgfplots info on input line 1215: Using 'lua backend=false' for axis: x
+Package pgfplots info on input line 1220: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
 
 [104]
@@ -4370,7 +4370,7 @@ File: img/thesis_figures/try80_appendix_panels/try80_main_panel.png Graphic fil
 e (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_main_panel.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_main_pa
-nel.png  used on input line 1244.
+nel.png  used on input line 1249.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
  [105]) (./sustainability.tex [106] [107<./img/thesis_figures/try80_appendix_pan
 els/try80_main_panel.png>]
@@ -4447,13 +4447,13 @@ Underfull \vbox (badness 4859) has occurred while \output is active []
 [114]) [115] [116
 
 ] [117]
-Underfull \hbox (badness 1675) in paragraph at lines 176--176
+Underfull \hbox (badness 1675) in paragraph at lines 178--178
 []\TU/LibertinusSerif(0)/m/n/12 Fer-daous Tarhouni, Muneer AlZubi, and Mohamed-S
 lim Alouini. \TU/LibertinusSerif(0)/m/it/12 Ma-chine
  []
 
 [118]
-Overfull \hbox (11.47919pt too wide) in paragraph at lines 176--176
+Overfull \hbox (11.47919pt too wide) in paragraph at lines 178--178
 []\TU/LibertinusSerif(0)/m/n/12 Çağkan Ya-par et al. \TU/LibertinusSerif(0)/m
 /it/12 The First Pathloss Ra-dio Map Pre-dic-tion Chal-lenge\TU/LibertinusSerif
 (0)/m/n/12 . arXiv:2310.07658.
@@ -4496,7 +4496,7 @@ _sample_13213_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovia_
 sample_13213_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_o
-pen_low_ant_Segovia_sample_13213_6x3.png  used on input line 485.
+pen_low_ant_Segovia_sample_13213_6x3.png  used on input line 482.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
  [131<./img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovi
 a_sample_13213_6x3.png>]
@@ -4507,7 +4507,7 @@ _sample_13215_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Segovia_
 sample_13215_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_o
-pen_mid_ant_Segovia_sample_13215_6x3.png  used on input line 494.
+pen_mid_ant_Segovia_sample_13215_6x3.png  used on input line 491.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
  [132<./img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Segovi
 a_sample_13215_6x3.png>]
@@ -4518,7 +4518,7 @@ th_sample_10722_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Nazaret
 h_sample_10722_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_o
-pen_high_ant_Nazareth_sample_10722_6x3.png  used on input line 503.
+pen_high_ant_Nazareth_sample_10722_6x3.png  used on input line 500.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
  [133<./img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Nazar
 eth_sample_10722_6x3.png>]
@@ -4529,7 +4529,7 @@ nik_sample_05288_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Dubrovn
 ik_sample_05288_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_m
-ixed_low_ant_Dubrovnik_sample_05288_6x3.png  used on input line 512.
+ixed_low_ant_Dubrovnik_sample_05288_6x3.png  used on input line 509.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
  [134<./img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Dubro
 vnik_sample_05288_6x3.png>]
@@ -4540,7 +4540,7 @@ ample_10828_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_sa
 mple_10828_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_m
-ixed_mid_ant_Nice_sample_10828_6x3.png  used on input line 521.
+ixed_mid_ant_Nice_sample_10828_6x3.png  used on input line 518.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
  [135<./img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_
 sample_10828_6x3.png>]
@@ -4551,7 +4551,7 @@ sample_10814_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Nice_s
 ample_10814_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_m
-ixed_high_ant_Nice_sample_10814_6x3.png  used on input line 530.
+ixed_high_ant_Nice_sample_10814_6x3.png  used on input line 527.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
  [136<./img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Nice
 _sample_10814_6x3.png>]
@@ -4562,7 +4562,7 @@ _Mai_sample_04519_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chiang_
 Mai_sample_04519_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_d
-ense_low_ant_Chiang_Mai_sample_04519_6x3.png  used on input line 539.
+ense_low_ant_Chiang_Mai_sample_04519_6x3.png  used on input line 536.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
  [137<./img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chian
 g_Mai_sample_04519_6x3.png>]
@@ -4573,7 +4573,7 @@ sample_14651_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis_s
 ample_14651_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_d
-ense_mid_ant_Tunis_sample_14651_6x3.png  used on input line 548.
+ense_mid_ant_Tunis_sample_14651_6x3.png  used on input line 545.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
  [138<./img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis
 _sample_14651_6x3.png>]
@@ -4584,7 +4584,7 @@ _sample_14694_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Tunis_
 sample_14694_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_d
-ense_high_ant_Tunis_sample_14694_6x3.png  used on input line 557.
+ense_high_ant_Tunis_sample_14694_6x3.png  used on input line 554.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
  [139<./img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Tuni
 s_sample_14694_6x3.png>]
@@ -4609,7 +4609,7 @@ File: img/thesis_figures/ckm_generator/ckm_generator_app_controls.png Graphic f
 ile (type png)
 <use img/thesis_figures/ckm_generator/ckm_generator_app_controls.png>
 Package luatex.def Info: img/thesis_figures/ckm_generator/ckm_generator_app_con
-trols.png  used on input line 672.
+trols.png  used on input line 669.
 (luatex.def)             Requested size: 426.78876pt x 253.40582pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -4623,7 +4623,7 @@ File: img/thesis_figures/ckm_generator/ckm_generator_app_result_top.png Graphic
  file (type png)
 <use img/thesis_figures/ckm_generator/ckm_generator_app_result_top.png>
 Package luatex.def Info: img/thesis_figures/ckm_generator/ckm_generator_app_res
-ult_top.png  used on input line 687.
+ult_top.png  used on input line 684.
 (luatex.def)             Requested size: 426.78876pt x 253.40582pt.
 
 Underfull \vbox (badness 1354) has occurred while \output is active []
@@ -4636,11 +4636,11 @@ File: img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png Graph
 ic file (type png)
 <use img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png>
 Package luatex.def Info: img/thesis_figures/ckm_generator/ckm_generator_predict
-ion_joint.png  used on input line 701.
+ion_joint.png  used on input line 698.
 (luatex.def)             Requested size: 426.79733pt x 147.9564pt.
  [144<./img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png>] [
 145]
-Underfull \hbox (badness 1584) in paragraph at lines 838--847
+Underfull \hbox (badness 1584) in paragraph at lines 835--844
 \TU/DejaVuSansMono(0)/m/n/12 --height\TU/LibertinusSerif(0)/m/n/12 , \TU/DejaVu
 SansMono(0)/m/n/12 --out\TU/LibertinusSerif(0)/m/n/12 , \TU/DejaVuSansMono(0)/m
 /n/12 --checkpoint\TU/LibertinusSerif(0)/m/n/12 , \TU/DejaVuSansMono(0)/m/n/12 
@@ -4651,7 +4651,7 @@ inusSerif(0)/m/n/12 ,
  []
 
 
-Underfull \hbox (badness 5260) in paragraph at lines 838--847
+Underfull \hbox (badness 5260) in paragraph at lines 835--844
 \TU/DejaVuSansMono(0)/m/n/12 --mixed-precision\TU/LibertinusSerif(0)/m/n/12 , \
 TU/DejaVuSansMono(0)/m/n/12 --save-arrays\TU/LibertinusSerif(0)/m/n/12 , \TU/De
 jaVuSansMono(0)/m/n/12 --save-masks\TU/LibertinusSerif(0)/m/n/12 , \TU/DejaVuSa
@@ -4660,7 +4660,7 @@ nsMono(0)/m/n/12 --los-mask\TU/LibertinusSerif(0)/m/n/12 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 838--847
+Underfull \hbox (badness 10000) in paragraph at lines 835--844
 \TU/DejaVuSansMono(0)/m/n/12 --nlos-mask\TU/LibertinusSerif(0)/m/n/12 , \TU/Dej
 aVuSansMono(0)/m/n/12 --topology-max-m\TU/LibertinusSerif(0)/m/n/12 , \TU/DejaV
 uSansMono(0)/m/n/12 --image-values-are-metres\TU/LibertinusSerif(0)/m/n/12 , \T
@@ -4674,7 +4674,7 @@ File: img/thesis_figures/ckm_generator/ckm_generator_output_tree.png Graphic fi
 le (type png)
 <use img/thesis_figures/ckm_generator/ckm_generator_output_tree.png>
 Package luatex.def Info: img/thesis_figures/ckm_generator/ckm_generator_output_
-tree.png  used on input line 994.
+tree.png  used on input line 991.
 (luatex.def)             Requested size: 426.78262pt x 290.98814pt.
 <img/thesis_figures/ckm_generator/ckm_generator_output_visuals.png, id=2345, 20
 67.725pt x 1279.78125pt>
@@ -4682,7 +4682,7 @@ File: img/thesis_figures/ckm_generator/ckm_generator_output_visuals.png Graphic
  file (type png)
 <use img/thesis_figures/ckm_generator/ckm_generator_output_visuals.png>
 Package luatex.def Info: img/thesis_figures/ckm_generator/ckm_generator_output_
-visuals.png  used on input line 1004.
+visuals.png  used on input line 1001.
 (luatex.def)             Requested size: 426.78906pt x 264.15341pt.
 
 Underfull \vbox (badness 1009) has occurred while \output is active []
@@ -4694,15 +4694,15 @@ File: img/thesis_figures/ckm_generator/ckm_generator_output_metadata.png Graphi
 c file (type png)
 <use img/thesis_figures/ckm_generator/ckm_generator_output_metadata.png>
 Package luatex.def Info: img/thesis_figures/ckm_generator/ckm_generator_output_
-metadata.png  used on input line 1014.
+metadata.png  used on input line 1011.
 (luatex.def)             Requested size: 426.77496pt x 288.70071pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1022--1032
+Underfull \hbox (badness 10000) in paragraph at lines 1019--1029
 \TU/DejaVuSansMono(0)/m/n/12 generated_nlos_mask\TU/LibertinusSerif(0)/m/n/12 , \TU/DejaVuSansMono(0)/m/n/12 reference_los_mask \TU/LibertinusSerif(0)/m/n/12 when avail-able, \TU/DejaVuSansMono(0)/m/n/12 prior_path_loss\TU/LibertinusSerif(0)/m/n/12 ,
  []
 
 
-Overfull \hbox (33.87508pt too wide) in paragraph at lines 1022--1032
+Overfull \hbox (33.87508pt too wide) in paragraph at lines 1019--1029
 \TU/DejaVuSansMono(0)/m/n/12 prior_path_loss_los\TU/LibertinusSerif(0)/m/n/12 , \TU/DejaVuSansMono(0)/m/n/12 prior_path_loss_nlos\TU/LibertinusSerif(0)/m/n/12 , \TU/DejaVuSansMono(0)/m/n/12 prior_delay_spread\TU/LibertinusSerif(0)/m/n/12 , \TU/DejaVuSansMono(0)/m/n/12 prior_angular_spread\TU/LibertinusSerif(0)/m/n/12 ,
  []
 
@@ -4718,14 +4718,14 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `TFG.out' has not changed.
-(rerunfilecheck)             Checksum: C8A9F1C742C1698BFC211323C72B080E;33789.
+(rerunfilecheck)             Checksum: E768C396B4729DC6999CF647FA4D33A7;33806.
 Package logreq Info: Writing requests to 'TFG.run.xml'.
 
 \openout1 = TFG.run.xml
 )
 
 Here is how much of LuaTeX's memory you used:
- 94053 strings out of 476081
+ 94055 strings out of 476081
  195455,4101490 words of node,token memory allocated
  2442 words of node memory still in use:
    8 hlist, 2 vlist, 2 rule, 1 local_par, 5 glue, 4 kern, 1 penalty, 4 sub_mlist
@@ -4733,8 +4733,8 @@ Here is how much of LuaTeX's memory you used:
 on nodes
    avail lists: 1:25,2:14352,3:4266,4:438,5:830,6:199,7:12791,8:121,9:2908,10:43
 ,11:960,12:10
- 114181 multiletter control sequences out of 65536+600000
- 182 fonts using 75836391 bytes
+ 114183 multiletter control sequences out of 65536+600000
+ 183 fonts using 76376575 bytes
  89i,19n,146p,1195b,2804s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/windows/fonts/dejavusansmono-oblique.ttf><C:/Users/guill/AppData/Local/Progr
 ams/MiKTeX/fonts/opentype/public/libertinus-fonts/LibertinusSerif-BoldItalic.otf
@@ -4753,7 +4753,7 @@ pe/public/libertinus-fonts/LibertinusSerif-Bold.otf><C:/Users/guill/AppData/Loca
 l/Programs/MiKTeX/fonts/opentype/public/libertinus-fonts/LibertinusSans-Regular.
 otf><C:/Users/guill/AppData/Local/Programs/MiKTeX/fonts/opentype/public/libertin
 us-fonts/LibertinusSans-Bold.otf>
-Output written on TFG.pdf (151 pages, 29232806 bytes).
+Output written on TFG.pdf (151 pages, 29233328 bytes).
 
 PDF statistics: 2471 PDF objects out of 2487 (max. 8388607)
  652 named destinations out of 1000 (max. 1048576)

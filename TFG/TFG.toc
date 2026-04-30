@@ -7,7 +7,7 @@
 \contentsline {section}{Contents}{7}{section*.6}%
 \contentsline {section}{List of figures}{11}{section*.8}%
 \contentsline {section}{List of tables}{13}{section*.10}%
-\contentsline {section}{Abbreviations}{15}{section*.12}%
+\contentsline {section}{Abbreviations}{15}{section*.13}%
 \contentsline {chapter}{\numberline {1}Introduction}{17}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Work goals}{17}{section.1.1}%
 \contentsline {section}{\numberline {1.2}Research questions and contributions}{18}{section.1.2}%
@@ -15,7 +15,7 @@
 \contentsline {section}{\numberline {1.4}Requirements and specifications}{19}{section.1.4}%
 \contentsline {section}{\numberline {1.5}Methods and procedures}{19}{section.1.5}%
 \contentsline {section}{\numberline {1.6}Work plan}{20}{section.1.6}%
-\contentsline {chapter}{\numberline {2}State of the art}{22}{chapter.2}%
+\contentsline {chapter}{\numberline {2}State of the Art}{22}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Channel knowledge maps as the thesis context}{22}{section.2.1}%
 \contentsline {section}{\numberline {2.2}Classical propagation models and channel statistics}{23}{section.2.2}%
 \contentsline {subsection}{\numberline {2.2.1}Free-space and two-ray propagation}{23}{subsection.2.2.1}%
@@ -153,8 +153,8 @@
 \contentsline {paragraph}{Anchor and guard terms.}{86}{paragraph*.107}%
 \contentsline {paragraph}{Outlier budget and deterministic losses.}{86}{paragraph*.108}%
 \contentsline {chapter}{\numberline {4}Results}{87}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Experiments and Tests}{87}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}LoS path-loss prior progression}{87}{subsection.4.1.1}%
+\contentsline {section}{\numberline {4.1}Experimental Evaluation}{87}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}LoS path-loss prior progression}{88}{subsection.4.1.1}%
 \contentsline {section}{\numberline {4.2}RMSE evolution and interpretation}{88}{section.4.2}%
 \contentsline {paragraph}{Split-comparability note.}{89}{paragraph*.113}%
 \contentsline {subsection}{\numberline {4.2.1}Distribution-first path-loss reference}{91}{subsection.4.2.1}%
@@ -164,7 +164,7 @@
 \contentsline {subsection}{\numberline {4.2.4}RMSE by UAV transmitter height}{96}{subsection.4.2.4}%
 \contentsline {subsection}{\numberline {4.2.5}Path-loss prior by topology class}{97}{subsection.4.2.5}%
 \contentsline {subsection}{\numberline {4.2.6}Final joint prior-anchored residual GMM-head model test results}{99}{subsection.4.2.6}%
-\contentsline {section}{\numberline {4.3}Data Visualization}{103}{section.4.3}%
+\contentsline {section}{\numberline {4.3}Qualitative Analysis}{103}{section.4.3}%
 \contentsline {section}{\numberline {4.4}Limitations}{105}{section.4.4}%
 \contentsline {chapter}{\numberline {5}Sustainability Analysis and Ethical Implications}{108}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Sustainability matrix}{108}{section.5.1}%

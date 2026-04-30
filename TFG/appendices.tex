@@ -330,10 +330,10 @@ priors are deterministic and can also be recomputed.
 \caption{Main final residual GMM-head model configuration values.}
 \label{tab:try80_config_appendix}
 \begingroup
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\renewcommand{\arraystretch}{0.86}
-\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.45cm}>{\raggedright\arraybackslash}X@{}}
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.16}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.15cm}>{\raggedright\arraybackslash}X@{}}
 \toprule
 Category & Value \\
 \midrule
@@ -356,14 +356,11 @@ one warmup epoch. \\
 \endgroup
 \end{table}
 
-\vspace{-0.6em}
 The final prediction for each task \(t\) has the same conceptual form:
-\vspace{-0.4em}
 \[
   \hat y_t(x) = y_{t,\mathrm{prior}}(x) + \alpha_t(x)\Delta_t(x),
   \qquad 0 \le \alpha_t(x) \le 1.
 \]
-\vspace{-0.7em}
 This is the central safety mechanism. The network is allowed to improve the
 prior, but the residual is bounded and gated. The prior-guard term then
 penalizes cases where the model moves away from the prior and becomes worse.
