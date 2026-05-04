@@ -35,31 +35,31 @@
 \contentsline {table}{\numberline {4.8}{\ignorespaces Path-loss prior pixel-weighted RMSE by UAV transmitter height, on the 30\% city-holdout evaluation split.}}{97}{table.caption.123}%
 \contentsline {table}{\numberline {4.9}{\ignorespaces Delay-spread and angular-spread calibrated pixel-weighted RMSE by UAV transmitter height, on the city-holdout test split.}}{97}{table.caption.124}%
 \contentsline {table}{\numberline {4.10}{\ignorespaces Hybrid path-loss prior RMSE by topology class.}}{98}{table.caption.125}%
-\contentsline {table}{\numberline {4.11}{\ignorespaces Final residual GMM-head model test results on unseen cities.}}{99}{table.caption.127}%
+\contentsline {table}{\numberline {4.11}{\ignorespaces Final residual GMM-head model test results on unseen cities.}}{100}{table.caption.127}%
 \contentsline {table}{\numberline {4.12}{\ignorespaces Final residual GMM-head model test RMSE separated by LoS and NLoS pixels. The test cities are unseen during training.}}{100}{table.caption.128}%
 \contentsline {table}{\numberline {4.13}{\ignorespaces Validation-versus-test sanity check.}}{100}{table.caption.129}%
 \contentsline {table}{\numberline {4.14}{\ignorespaces Final-model RMSE by split.}}{100}{table.caption.130}%
 \contentsline {table}{\numberline {4.15}{\ignorespaces Final-model improvement by split.}}{101}{table.caption.131}%
 \contentsline {table}{\numberline {4.16}{\ignorespaces Final-model LoS/NLoS improvement by split.}}{101}{table.caption.132}%
-\contentsline {table}{\numberline {4.17}{\ignorespaces All-city final-model deltas by prior subexpert.}}{101}{table.caption.133}%
-\contentsline {table}{\numberline {4.18}{\ignorespaces Inference time and ray-tracing comparison.}}{102}{table.caption.135}%
-\contentsline {table}{\numberline {4.19}{\ignorespaces Approximate RMSE floor from target quantisation.}}{105}{table.caption.142}%
+\contentsline {table}{\numberline {4.17}{\ignorespaces All-city final-model deltas by prior subexpert.}}{102}{table.caption.133}%
+\contentsline {table}{\numberline {4.18}{\ignorespaces Inference time and ray-tracing comparison.}}{103}{table.caption.135}%
+\contentsline {table}{\numberline {4.19}{\ignorespaces Approximate RMSE floor from target quantisation.}}{106}{table.caption.142}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces Sustainability matrix summary for the thesis.}}{108}{table.caption.143}%
-\contentsline {table}{\numberline {5.2}{\ignorespaces Indicative economic cost of the BT development.}}{110}{table.caption.144}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces Sustainability matrix summary for the thesis.}}{109}{table.caption.143}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Indicative economic cost of the BT development.}}{111}{table.caption.144}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {6.1}{\ignorespaces Main lessons learned across the development path.}}{115}{table.caption.145}%
+\contentsline {table}{\numberline {6.1}{\ignorespaces Main lessons learned across the development path.}}{116}{table.caption.145}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces Try-number map, early image-regression phase.}}{121}{table.caption.149}%
-\contentsline {table}{\numberline {A.2}{\ignorespaces Try-number map, spread branches, masks, and first priors.}}{122}{table.caption.150}%
-\contentsline {table}{\numberline {A.3}{\ignorespaces Try-number map, prior-residual and PMNet-style phase.}}{122}{table.caption.151}%
-\contentsline {table}{\numberline {A.4}{\ignorespaces Try-number map, PMHHNet, regularization, and distribution diagnosis.}}{123}{table.caption.152}%
-\contentsline {table}{\numberline {A.5}{\ignorespaces Try-number map, final distribution, prior, and joint model phase.}}{123}{table.caption.153}%
+\contentsline {table}{\numberline {A.1}{\ignorespaces Try-number map, early image-regression phase.}}{122}{table.caption.149}%
+\contentsline {table}{\numberline {A.2}{\ignorespaces Try-number map, spread branches, masks, and first priors.}}{123}{table.caption.150}%
+\contentsline {table}{\numberline {A.3}{\ignorespaces Try-number map, prior-residual and PMNet-style phase.}}{123}{table.caption.151}%
+\contentsline {table}{\numberline {A.4}{\ignorespaces Try-number map, PMHHNet, regularization, and distribution diagnosis.}}{124}{table.caption.152}%
+\contentsline {table}{\numberline {A.5}{\ignorespaces Try-number map, final distribution, prior, and joint model phase.}}{124}{table.caption.153}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {B.1}{\ignorespaces Main final residual GMM-head model configuration values.}}{127}{table.caption.154}%
+\contentsline {table}{\numberline {B.1}{\ignorespaces Main final residual GMM-head model configuration values.}}{128}{table.caption.154}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {C.1}{\ignorespaces Location of the main mathematical definitions.}}{128}{table.caption.155}%
+\contentsline {table}{\numberline {C.1}{\ignorespaces Location of the main mathematical definitions.}}{129}{table.caption.155}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {D.1}{\ignorespaces Final-model appendix panel index.}}{130}{table.caption.156}%
+\contentsline {table}{\numberline {D.1}{\ignorespaces Final-model appendix panel index.}}{131}{table.caption.156}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }

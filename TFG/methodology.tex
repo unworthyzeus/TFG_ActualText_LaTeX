@@ -57,6 +57,14 @@ The receiver mask is:
   \end{cases}
   \label{eq:ground_mask}
 \end{equation}
+The LoS/NLoS visibility masks used later by the priors and the final
+residual model are geometric support inputs rather than target radio maps. In
+the CKM experiments they are read from the dataset when available; for
+topology-only deployment they can be generated from topology and UAV antenna
+height using geometric ray-casting, although generated masks are not expected
+to be bit-identical to the CKM reference masks. This makes the visibility
+signal explicit without requiring a previous prediction of the target radio
+maps.
 All RMSE values in this thesis are pixel-weighted over valid ground pixels:
 \begin{equation}
   \mathrm{RMSE}
@@ -771,28 +779,29 @@ All sums are restricted to valid receiver pixels.
 >{\raggedright\arraybackslash}p{0.19\textwidth}
 >{\raggedright\arraybackslash}X}
 \toprule
-Term group & Huge relaxed residuals & Path-loss fine-tune & Interpretation \\
+Term group & Large-capacity residual stage & Final residual fine-tuning stage & Interpretation \\
 \midrule
 NLL, KL, moment and outlier budget &
 1.00 / 0.25 / 0.10 / 0.02 &
 0 / 0 / 0 / 0 &
-Active in the final non-path-loss-finetuned stage, then disabled in the
-selected deterministic fine-tune. \\
+Active in the preceding large-capacity stage, then disabled in the selected
+deterministic fine-tuning stage. \\
 RMSE / MAE &
 1.50 / 0.10 &
 1.00 / 0.05 &
-Supervised pixel losses in native output units; the fine-tune makes them the
-dominant active terms. \\
+Supervised pixel losses in native output units; the final fine-tuning stage
+makes them the dominant active terms. \\
 Anchor / prior guard &
 0.05 / 0.10 &
 0.01 / 0.02 &
-Keep residual corrections small and penalize checkpoints that become worse than
-the frozen priors, with lighter regularization in the fine-tune. \\
+Keep residual corrections small and penalize model states that become worse
+than the frozen priors, with lighter regularization in the fine-tuning stage. \\
 Task weights &
 PL 1.00, DS 1.00, AS 1.00 &
 PL 1.00, DS 0.25, AS 0.25 &
-Equal target weighting before the fine-tune; then path loss becomes the main
-optimization target while spread supervision remains in the joint model. \\
+Equal target weighting before the final fine-tuning stage; then path loss
+becomes the main optimization target while spread supervision remains in the
+joint model. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -800,9 +809,14 @@ optimization target while spread supervision remains in the joint model. \\
 This is a deliberate simplification relative to the earlier branches. The
 PMHHNet diagnostic runs used masked MSE with multi-scale and Laplacian-style auxiliaries; the
 distribution-first models removed those structural losses and focused on target
-shape. The final model keeps the residual GMM-head machinery available, but the selected
-checkpoint is chosen with an RMSE-dominant objective because the frozen priors
-already explain the main large-scale structure.
+shape. The final model keeps the residual GMM-head machinery available: it
+still emits mixture parameters and uses the mixture expectation as the
+deterministic map prediction. The probabilistic NLL, KL, moment and outlier
+terms were active in the preceding large-capacity training stage, but the
+selected final model is chosen after a deterministic RMSE/MAE-dominant
+fine-tuning stage because the frozen priors already explain the main
+large-scale structure. Consequently, the final claim is an RMSE improvement
+over the frozen priors, not a calibrated probabilistic prediction claim.
 
 \section{Training hyperparameters}
 \label{sec:hyperparams}
@@ -874,7 +888,7 @@ for path loss.
 The training path then followed four stages:
 
 \begin{enumerate}
-\item \textbf{Big.} The first full version used a shared multi-task
+\item \textbf{Wide residual model.} The first full version used a shared multi-task
 U-Net with \(96\) base channels and a \(128\)-dimensional FiLM condition
 vector. Its residual caps were conservative, especially for path loss
 (\(\pm2\) dB in LoS and \(\pm4\) dB in NLoS), and the objective retained the
@@ -882,13 +896,13 @@ complete probabilistic bundle: GMM likelihood, distribution matching,
 prior anchoring, prior guard, RMSE, and MAE. This stage mainly tested whether
 a residual network could improve the frozen priors without degrading them.
 
-\item \textbf{Big with relaxed residuals.} The second stage kept the same
+\item \textbf{Wide residual model with relaxed residual bounds.} The second stage kept the same
 network capacity but loosened the allowed correction range. The path-loss caps
 increased to \(\pm5\) dB in LoS and \(\pm20\) dB in NLoS, with wider spread
 caps as well. This made the residual head less constrained and produced a
 clearer, but still limited, improvement.
 
-\item \textbf{Huge with relaxed residuals.} The third stage increased model
+\item \textbf{Large-capacity residual model.} The third stage increased model
 capacity to \(128\) base channels and a \(160\)-dimensional conditioning
 vector, while keeping the relaxed residual philosophy. It also placed more
 weight on the deterministic RMSE term. This stage tested whether the remaining
@@ -896,13 +910,14 @@ gap was capacity-limited rather than only cap-limited. The larger model helped
 the spread tasks, but path-loss improvement remained too small while the full
 probabilistic objective was still active.
 
-\item \textbf{Huge path-loss fine-tuning.} The final stage kept the huge
-architecture and relaxed caps, lowered the learning rate, and changed the
-objective into a short RMSE-dominant fine-tune. The probabilistic terms were
-disabled, the prior guard and anchor were kept only as light stabilizers, and
-path loss received the strongest task weight. This is the checkpoint used for
-the reported final results: the GMM structure remains the residual output
-head, but model selection is driven by deterministic validation performance.
+\item \textbf{Final residual fine-tuning stage.} The final stage kept the
+large-capacity architecture and relaxed caps, lowered the learning rate, and
+changed the objective into a short RMSE-dominant fine-tuning stage. The
+probabilistic terms were disabled, the prior guard and anchor were kept only
+as light stabilizers, and path loss received the strongest task weight. This
+selected final model is used for the reported final results: the GMM structure
+remains the residual output head, but model selection is driven by
+deterministic validation performance.
 \end{enumerate}
 
 For this reason, the methodology does not treat training curves themselves as

@@ -511,7 +511,7 @@ valid comparison:
 This thesis uses a strict city-holdout split, continuous UAV height, ground-only
 metrics (building pixels excluded from loss and metrics), native
 $513 \times 513$ pixel maps, and no test-data or field calibration after the
-train-calibrated priors and final checkpoint are frozen. Calibration is
+train-calibrated priors and selected final model are frozen. Calibration is
 therefore not shown as a binary column in Table~\ref{tab:fairness}: the relevant
 question is not whether a method has fitted parameters, but whether it adapts
 to the evaluation scene using validation, test, or field measurements.
@@ -873,7 +873,7 @@ ML-calibrated path-loss prior & 1.92\,dB overall; 1.75\,dB LoS & Yes & Frozen pa
 \end{tabularx}
 \end{table}
 \normalsize
-The final-model number in Table~\ref{tab:position} is the final frozen-checkpoint
+The final-model number in Table~\ref{tab:position} is the selected final-model
 test result on the held-out city split. The prior-anchored design lets the
 neural residual head converge to a narrower error floor than the
 direct-regression PMHHNet family, particularly in LoS-dominated

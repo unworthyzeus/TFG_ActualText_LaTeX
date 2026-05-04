@@ -21,14 +21,13 @@ LoS/NLoS masks. The model input contains nine spatial channels:
 
 The scalar UAV height is not appended as a constant image channel. It is
 encoded with a sinusoidal embedding and injected into the network through FiLM
-conditioning. The final \texttt{try80\_joint\_huge\_pathloss\_finetune}
-configuration uses a shared encoder-decoder with
+conditioning. The selected final configuration uses a shared encoder-decoder with
 \texttt{base\_width = 128}, \texttt{cond\_dim = 160}, three GMM
 components per task and region, \(\alpha\)-gate bias \(-2\), and fixed
 residual caps specified separately for path loss, delay spread and
 angular spread.
 
-The final checkpoint reported in Chapter~\ref{chap:results}
+The selected final model reported in Chapter~\ref{chap:results}
 uses these frozen path-loss and spread priors as anchors. This
 section therefore documents both the frozen-prior inputs and the residual
 architecture used by the final evaluation.
@@ -131,12 +130,13 @@ probabilistic head and prevent the NLL term, when it is enabled, from
 collapsing to unrealistically tiny uncertainty or exploding to a uselessly
 flat density.
 
-The architecture supports a full GMM Negative Log Likelihood (NLL). The final
-\texttt{try80\_joint\_huge\_pathloss\_finetune} checkpoint, however, uses the
-same head with an RMSE-dominant fine-tuning objective; its NLL, KL, moment and
-outlier-budget weights are set to zero in the resolved YAML configuration. The
-deterministic point prediction used for RMSE evaluation is the expected value
-of the mixture:
+The architecture supports a full GMM Negative Log Likelihood (NLL), and the
+preceding large-capacity residual stage used non-zero probabilistic weights.
+The selected final model keeps the same GMM head, but the last residual
+fine-tuning stage is RMSE/MAE-dominant: its NLL, KL, moment and
+outlier-budget weights are set to zero in the resolved YAML configuration.
+The deterministic point prediction used for RMSE evaluation is the expected
+value of the mixture:
 
 \begin{equation}
 \hat z_{k,r}(x)
@@ -181,7 +181,7 @@ Sec.~\ref{sec:try80_objective}.
 \subsection{Architecture: Shared UNet with FiLM}
 
 The final model processes the map inputs through a shared multi-task
-convolutional encoder-decoder. In the final \texttt{huge} configuration,
+convolutional encoder-decoder. In the final large-capacity configuration,
 scalar UAV height is encoded into a condition vector
 $\textbf{c} \in \mathbb{R}^{160}$ and injected dynamically into the
 convolutional feature maps at multiple scales via
@@ -193,10 +193,9 @@ For a given convolutional feature map $\textbf{X} \in \mathbb{R}^{C \times H \ti
 \label{eq:film}
 \end{equation}
 where $\textbf{g}$ and $\textbf{b}$ are broadcasted spatially across the height and width.
-The FiLM mechanism and injection points are unchanged between the
-\texttt{big} and \texttt{huge} variants; only the width of the feature
-maps changes, so the FiLM projection emits \(2C\) parameters for the
-larger \texttt{huge} channel counts.
+The FiLM mechanism and injection points are unchanged between the wide and
+large-capacity variants; only the width of the feature maps changes, so the
+FiLM projection emits \(2C\) parameters for the larger channel counts.
 
 The architecture explicitly enforces the separation of global and local effects via a dual-head design for each task:
 
@@ -308,7 +307,7 @@ $\hat y_k = \sum p_{k,j} \mu_{k,j}$};
 
 \end{tikzpicture}
 }
-\caption{Schematic of the final huge shared UNet architecture with FiLM conditioning.}
+\caption{Schematic of the final large-capacity shared UNet architecture with FiLM conditioning.}
 \label{fig:try80_arch}
 \end{figure}
 
@@ -503,8 +502,8 @@ w_k
 \end{equation}
 
 Table~\ref{tab:try80_loss_settings} gives the resolved weights for both the
-huge relaxed-residual stage and the final path-loss fine-tune; the equations
-below define the terms used in that table.
+large-capacity residual stage and the final residual fine-tuning stage; the
+equations below define the terms used in that table.
 
 \paragraph{Map negative log-likelihood.}
 The likelihood is computed separately in LoS and NLoS regions, then averaged
@@ -653,10 +652,10 @@ The RMSE and MAE terms are conventional masked deterministic losses:
 \end{tikzpicture}%
 }
 \caption[Composite final loss family]{Composite final
-loss family. In the final path-loss fine-tuning stage, the selected checkpoint
+loss family. In the final residual fine-tuning stage, the selected final model
 keeps the GMM head and uses RMSE/MAE, anchor and guard penalties; NLL, KL,
-moment and outlier-budget weights are set to zero. Earlier relaxed-residual
-runs used non-zero probabilistic weights.}
+moment and outlier-budget weights are set to zero. Earlier residual stages
+used non-zero probabilistic weights.}
 \label{fig:try80_loss_terms}
 \end{figure}
 \endgroup

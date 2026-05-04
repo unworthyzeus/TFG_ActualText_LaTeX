@@ -169,7 +169,7 @@ Try & Public definition \\
 77 & Distribution-first spread architecture: delay/angular spread GMM and spike-plus-tail modelling. \\
 78 & Final ML-calibrated path-loss prior: enhanced two-ray LoS branch plus regime-wise linear NLoS calibration with 18 final calibration regimes. \\
 79 & Final ML-calibrated spread priors: log-domain ridge calibration for delay and angular spread, with 36 exact regimes per metric and fallbacks. \\
-80 & Final joint prior-anchored residual GMM-head model: frozen Try 78/79 priors plus a shared neural residual model selected through Big \(\rightarrow\) Big relaxed residuals \(\rightarrow\) Huge \(\rightarrow\) Huge path-loss fine-tuning. \\
+80 & Final joint prior-anchored residual GMM-head model: frozen Try 78/79 priors plus a shared neural residual model selected through the wide residual model, relaxed residual bounds, a large-capacity stage, and the final residual fine-tuning stage. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -305,17 +305,17 @@ The final attempt is the joint prior-anchored residual GMM-head model. It starts
 the frozen Try 78 path-loss prior and Try 79 spread priors, then learns
 bounded residual corrections for path loss, delay spread, and angular spread
 with one shared multi-task network. The GMM head remains part of the residual
-output design even when the final checkpoint is selected by deterministic
+output design even when the selected final model is chosen by deterministic
 validation RMSE.
 
 The first training runs for this final line gave only small improvements over the frozen
 priors, which was itself useful information: the priors were already strong
 and the residual model was initially too constrained. The final training path
-therefore moved through Big, Big with relaxed residuals, Huge with relaxed
-residuals, and Huge path-loss fine-tuning. The last stage kept the large
-architecture and relaxed caps, but used an RMSE-dominant fine-tune with light
-anchor and prior-guard terms. This is the checkpoint reported in
-Chapter~\ref{chap:results}.
+therefore moved through a wide residual model, relaxed residual bounds, a
+large-capacity residual model, and the final residual fine-tuning stage. The
+last stage kept the large architecture and relaxed caps, but used an
+RMSE-dominant fine-tune with light anchor and prior-guard terms. This is the
+selected final model reported in Chapter~\ref{chap:results}.
 
 \chapter{Final Residual GMM-Head Model Configuration Summary}
 
@@ -409,7 +409,7 @@ the chronological and reproducibility context behind those choices.
 \chapter{Representative Final Residual GMM-Head Model Inspection Panels}
 
 The qualitative appendix is generated with the panel-generation script. It uses
-the validation split, the final huge path-loss-finetuned checkpoint, DirectML
+the validation split, the selected final model state, DirectML
 inference, and the frozen calibrated priors. The script selects one validation
 sample for each macro expert
 \((\mathrm{open},\mathrm{mixed},\mathrm{dense})\times
@@ -454,7 +454,7 @@ model-correction map is the direct qualitative evidence for that claim.
 \centering
 \caption[Final-model appendix panel index.]%
 {Final residual GMM-head model appendix panels generated from validation samples with the
-final huge checkpoint.}
+selected final model.}
 \label{tab:try80_appendix_panels}
 \footnotesize
 \begin{tabular}{llll}

@@ -2,16 +2,16 @@
 \label{chap:results}
 
 This chapter reports the main quantitative and qualitative outcomes of the
-project. The headline numbers now include the final frozen residual GMM-head
-checkpoint evaluated on the same city-holdout test split used by the calibrated
-spread priors: 2590 samples from 14 unseen cities. Two path-loss-prior numbers
-therefore appear in this chapter: \SI{1.9246}{dB} is the standalone Try~78
-hybrid prior on its 30\% analytic-prior evaluation holdout, whereas
-\SI{1.9383}{dB} is the same frozen path-loss prior re-evaluated inside Try~80
-on the final 14-city test split. All final model-versus-prior comparisons use
-the latter. The final model is reported as the final prior-anchored residual
-GMM-head model over the three outputs: path loss, delay spread, and angular
-spread.
+project. The headline numbers now include the selected final residual
+GMM-head model evaluated on the same city-holdout test split used by the
+calibrated spread priors: 2590 samples from 14 unseen cities. Two
+path-loss-prior numbers therefore appear in this chapter: \SI{1.9246}{dB} is
+the standalone calibrated hybrid prior on its 30\% analytic-prior evaluation
+holdout, whereas \SI{1.9383}{dB} is the same frozen path-loss prior
+re-evaluated as the baseline for the final residual model on the final
+14-city test split. All final model-versus-prior comparisons use the latter.
+The final model is reported as the final prior-anchored residual GMM-head
+model over the three outputs: path loss, delay spread, and angular spread.
 
 \section{Experimental Evaluation}
 
@@ -128,7 +128,7 @@ Dist.-first GMM & Path loss NLoS & \(\approx 3.34\) dB & Distribution-first mode
 Final path-loss prior & Path loss overall & 1.9246 dB & ML-calibrated prior became the strongest path-loss baseline. \\
 Final DS prior & Delay spread overall & 28.10 ns & Log-domain ridge calibration met the original 50 ns project target. \\
 Final AS prior & Angular spread overall & \(13.74^\circ\) & Regime-wise calibration met the original 20 degree target. \\
-Final GMM test & Joint outputs & 1.6519 dB PL; 26.5570 ns DS; \(11.3854^\circ\) AS & Final frozen checkpoint on 14 unseen test cities; model RMSE improves over every frozen prior. \\
+Final GMM test & Joint outputs & 1.6519 dB PL; 26.5570 ns DS; \(11.3854^\circ\) AS & Selected final model on 14 unseen test cities; model RMSE improves over every frozen prior. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -147,9 +147,9 @@ evaluation used a 30\% evaluation holdout for fitting-versus-evaluation
 of the analytic prior. This holdout contains the same final test
 cities, but also contains additional validation-side cities, so the path-loss prior
 is grouped in the same results chapter for continuity rather than as a
-bitwise-identical split. For this reason, the standalone Try~78 prior result is
-\SI{1.9246}{dB}, while the frozen prior baseline used in the final Try~80 test
-comparison is \SI{1.9383}{dB}.
+bitwise-identical split. For this reason, the standalone path-loss-prior
+result is \SI{1.9246}{dB}, while the frozen prior baseline used in the final
+residual-model test comparison is \SI{1.9383}{dB}.
 
 Several conclusions follow from this table. First, the project did not improve
 only because the neural network became larger. Some larger or more complex
@@ -230,7 +230,7 @@ result because it is obtained without injecting any physics.
 $\times$ LoS / NLoS)}
 
 The distribution-first path-loss predecessor trains twelve specialised GMM experts. A sequential DirectML
-evaluation of the 6 LoS and 6 NLoS checkpoints on the shared test split
+evaluation of the 6 LoS and 6 NLoS trained expert models on the shared test split
 gives an aggregated NLoS metric of \SI{3.34}{dB} pixel-weighted and
 \SI{2.64}{dB} sample-weighted; the matching LoS aggregate is
 \SI{4.43}{dB} pixel-weighted and \SI{4.34}{dB} sample-weighted. This
@@ -246,8 +246,7 @@ interpretable.
 {Distribution-first path-loss DirectML test RMSE per expert on the shared
 city-holdout test split, together with the standard deviation of the
 corresponding target histogram. RMSE values are pixel-weighted over
-valid ground pixels. Source:
-\texttt{tmp\_try76\_directml\_test\_metrics.json}.}
+valid ground pixels. Source: internal DirectML evaluation JSON.}
 \label{tab:try76_per_expert}
 \scriptsize
 \begin{tabular}{lcccc}
@@ -359,7 +358,7 @@ distribution that the GMM head can attack directly.}
 {Five-component Gaussian-mixture fits of the LoS and NLoS
 path-loss targets, shown separately for the six topology
 experts. This is the distribution actually seen by the specialised
-checkpoints, and is therefore more faithful than a single collapsed
+expert models, and is therefore more faithful than a single collapsed
 global curve. Per expert, the target is treated as a GMM rather than as
 a perfect Gaussian: the LoS and NLoS marginals contain asymmetric
 shoulders, tails and rare outliers, including values outside the visible
@@ -418,7 +417,7 @@ subexpert grid: three morphology groups (\texttt{open}, \texttt{mixed},
 (\texttt{low\_ant}, \texttt{mid\_ant}, \texttt{high\_ant}), giving the
 nine subexperts used in the final breakdowns.
 
-A sequential DirectML pass over the 12 mirrored checkpoints now gives
+A sequential DirectML pass over the 12 mirrored expert models now gives
 test metrics on the same 2590-sample holdout used by the distribution-first path-loss predecessor and the final model.
 Table~\ref{tab:try77_per_expert} reports both sample-mean and
 pixel-weighted RMSE. The distinction matters for spread targets because
@@ -431,7 +430,7 @@ aggregate and there are more outliers.
 {Distribution-first spread DirectML test RMSE per expert on the shared
 city-holdout test split. Sample columns average per-map RMSE; pixel
 columns aggregate squared error over all valid ground pixels. Source:
-\texttt{tmp\_try77\_directml\_test\_metrics.json}.}
+internal DirectML evaluation JSON.}
 \label{tab:try77_per_expert}
 \scriptsize
 \begin{tabular}{lcccc}
@@ -661,11 +660,15 @@ to deployability rather than accuracy.}
 \subsection{Final joint prior-anchored residual GMM-head model test results}
 
 The final residual GMM-head model freezes the path-loss and spread priors and learns a bounded residual correction
-for the three radio maps. The final checkpoint evaluated here is
-\texttt{best\_model.pt} from
-\texttt{try80\_joint\_huge\_pathloss\_finetune}; it is tested on the
-city-holdout test split with 2590 samples from 14 cities that were not seen in
-training. For a target \(t\), group \(G\), and valid pixel set
+for the three radio maps. The selected final model evaluated here is the
+validation-selected model state from the final residual fine-tuning stage; it
+is tested on the city-holdout test split with 2590 samples from 14 cities that
+were not seen in training. The architecture retains the GMM-head
+parameterisation, and the preceding residual stage used non-zero probabilistic
+weights, but this reported final model is selected with deterministic
+RMSE/MAE-dominant fine-tuning. The final claim is therefore an RMSE
+improvement over the frozen priors rather than a calibrated probabilistic
+prediction claim. For a target \(t\), group \(G\), and valid pixel set
 \(\Omega_{G,t}\), the reported model RMSE is
 
 \begin{equation}
@@ -728,27 +731,27 @@ in train, validation, test, and all-city reporting. Angular spread improves
 RMSE strongly, while MAE is practically neutral overall; on the unseen test
 split the MAE change is only \(+0.02^\circ\), and the LoS MAE even improves.
 
-The validation metrics stored inside \texttt{best\_model.pt} are not the final
-test claim. They are the checkpoint-selection metrics computed during training
-on the validation cities. As a sanity check, re-running the external evaluator
-on the validation split reproduces the stored checkpoint values up to numerical
-rounding; the same checkpoint is then evaluated on the separate test cities.
+The validation metrics stored for the selected model state are not the final
+test claim. They are the model-selection metrics computed during training on
+the validation cities. As a sanity check, re-running the external evaluator on
+the validation split reproduces the stored validation values up to numerical
+rounding; the same selected model is then evaluated on the separate test
+cities.
 Table~\ref{tab:try80_val_test_sanity} reports the two scopes side by side.
 
 \begin{table}[H]
 \centering
 \caption[Validation-versus-test sanity check.]%
-{Validation-versus-test sanity check for the same
-\texttt{best\_model.pt} checkpoint. The validation row matches the metrics
-stored in the checkpoint history; the test row is the final unseen-city
-generalisation result.}
+{Validation-versus-test sanity check for the same selected final model. The
+validation row matches the metrics stored during training; the test row is the
+final unseen-city generalisation result.}
 \label{tab:try80_val_test_sanity}
 \scriptsize
 \begin{tabularx}{\textwidth}{lrrrrr>{\raggedright\arraybackslash}X}
 \toprule
 Split & Samples & PL RMSE & DS RMSE & DS prior RMSE & AS RMSE & Meaning \\
 \midrule
-Validation & 2750 & 1.6157 & 22.1061 & 23.4494 & 11.3782 & Stored in the checkpoint history and used to select \texttt{best\_model.pt}. \\
+Validation & 2750 & 1.6157 & 22.1061 & 23.4494 & 11.3782 & Stored during training and used to select the final model state. \\
 Test & 2590 & 1.6519 & 26.5570 & 28.1023 & 11.3854 & Separate 14-city holdout; this is the thesis generalisation number. \\
 \bottomrule
 \end{tabularx}
@@ -781,8 +784,8 @@ so the test cities contain harder delay-spread distributions before the neural
 residual is applied. In particular, Kuala Lumpur contributes only 13.2\% of
 the valid delay-spread test pixels but 36.2\% of the test delay-spread squared
 error, with \SI{44.00}{ns} model RMSE and \SI{46.93}{ns} prior RMSE. This is
-why the final test delay-spread RMSE is higher than the value visible in the
-checkpoint validation summary, while still improving over the prior.
+why the final test delay-spread RMSE is higher than the validation-selection
+summary, while still improving over the prior.
 
 Delay spread is the only output where RMSE and MAE move in opposite directions.
 This is not a contradiction. RMSE weights large high-delay errors
@@ -864,7 +867,7 @@ Subexpert & Samples & PL \(\Delta\)RMSE & PL \(\Delta\)MAE & DS \(\Delta\)RMSE &
 
 \subsubsection*{Target vs final result}
 
-The final checkpoint clears the original numerical targets on the unseen-city
+The selected final model clears the original numerical targets on the unseen-city
 test split. Figure~\ref{fig:try80_test_objectives} compares those targets with
 the global pixel-weighted final test scores: \SI{1.65}{dB} for path loss,
 \SI{26.56}{ns} for delay spread, and \(11.39^\circ\) for angular spread. The
@@ -1030,7 +1033,7 @@ target distribution was multi-modal.
 \end{minipage}
 \caption[Final model compared with prior and GMM references.]%
 {Test-set comparison between the distribution-first neural references
-and the final prior-anchored residual GMM-head checkpoint. The path-loss panel uses global
+and the final prior-anchored residual GMM-head model. The path-loss panel uses global
 pixel-weighted RMSE; the spread GMM reference is shown for the two spread targets.}
 \label{fig:try76_77_80_prior_comparison}
 \end{figure}
@@ -1079,7 +1082,7 @@ pixel-weighted RMSE; the spread GMM reference is shown for the two spread target
 \end{minipage}
 \caption[Final model versus frozen priors by split.]%
 {Final model versus the frozen prior across train, validation, unseen test,
-and all-city aggregation. Validation is the checkpoint-selection split; test
+and all-city aggregation. Validation is the model-selection split; test
 contains cities not seen during training.}
 \label{fig:try80_split_rmse}
 \end{figure}
@@ -1249,7 +1252,7 @@ prior-error row.
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_main_panel.png}
 \caption[Representative final-model inspection panel.]%
 {Representative final-model \(6\times3\) inspection panel for a validation
-diagnostic sample from the final checkpoint. Columns: path loss, delay spread,
+diagnostic sample from the selected final model. Columns: path loss, delay spread,
 angular spread. Rows: ground truth, frozen prior, final
 prediction, context / support mask, prior error
 ($\mathrm{Prior}-\mathrm{GT}$), and model correction
@@ -1334,7 +1337,7 @@ can be derived by line-of-sight tracing through the building topology. It is
 therefore a deterministic geometric feature and branch key, not extra measured
 radio information unavailable at deployment.
 
-The final checkpoint is evaluated on one city-holdout split and one
+The selected final model is evaluated on one city-holdout split and one
 training seed. This demonstrates generalisation to unseen cities, but not full
 robustness: future work should repeat selection across seeds and add field
 measurements, especially for delay-spread tails where quantised labels make

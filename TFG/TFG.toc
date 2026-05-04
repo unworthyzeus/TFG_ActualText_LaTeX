@@ -62,21 +62,21 @@
 \contentsline {section}{\numberline {3.2}From U-Net and cGAN to masked baselines}{38}{section.3.2}%
 \contentsline {section}{\numberline {3.3}Development lessons used by the methodology}{38}{section.3.3}%
 \contentsline {section}{\numberline {3.4}Physical priors and PMHHNet}{38}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Mathematical Evolution: From PMNet to PMHHNet}{38}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.1}Mathematical Evolution: From PMNet to PMHHNet}{39}{subsection.3.4.1}%
 \contentsline {paragraph}{High-Frequency (HF) Stem.}{39}{paragraph*.22}%
 \contentsline {paragraph}{Continuous Sinusoidal FiLM Conditioning.}{39}{paragraph*.23}%
 \contentsline {subsection}{\numberline {3.4.2}Limitations and Legacy}{39}{subsection.3.4.2}%
-\contentsline {section}{\numberline {3.5}Distribution-first modelling}{39}{section.3.5}%
-\contentsline {subsection}{\numberline {3.5.1}How to construct a good deep-learning model for radio maps}{40}{subsection.3.5.1}%
+\contentsline {section}{\numberline {3.5}Distribution-first modelling}{40}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}How to construct a good deep-learning model for radio maps}{41}{subsection.3.5.1}%
 \contentsline {subsubsection}{A prior is useful, but not the core requirement}{41}{subsubsection*.26}%
 \contentsline {subsubsection}{Path loss: LoS has structure, NLoS has a narrow but noisy law with outliers}{42}{subsubsection*.27}%
 \contentsline {subsubsection}{Delay spread and angular spread: NLoS is the important regime}{43}{subsubsection*.28}%
 \contentsline {subsubsection}{Why the cGAN line failed}{44}{subsubsection*.30}%
-\contentsline {subsubsection}{Why PMNet and PMHHNet were not enough}{44}{subsubsection*.31}%
+\contentsline {subsubsection}{Why PMNet and PMHHNet were not enough}{45}{subsubsection*.31}%
 \contentsline {subsubsection}{Design rules that survived}{45}{subsubsection*.32}%
-\contentsline {section}{\numberline {3.6}GMM component count and distribution choice}{45}{section.3.6}%
-\contentsline {section}{\numberline {3.7}Loss functions of the final pipeline}{46}{section.3.7}%
-\contentsline {section}{\numberline {3.8}Training hyperparameters}{47}{section.3.8}%
+\contentsline {section}{\numberline {3.6}GMM component count and distribution choice}{46}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Loss functions of the final pipeline}{47}{section.3.7}%
+\contentsline {section}{\numberline {3.8}Training hyperparameters}{48}{section.3.8}%
 \contentsline {section}{\numberline {3.9}Final residual GMM-head model training progression}{48}{section.3.9}%
 \contentsline {section}{\numberline {3.10}Final priors: overview and literature basis}{49}{section.3.10}%
 \contentsline {subsection}{\numberline {3.10.1}High-level architecture}{50}{subsection.3.10.1}%
@@ -166,52 +166,52 @@
 \contentsline {subsection}{\numberline {4.2.6}Final joint prior-anchored residual GMM-head model test results}{99}{subsection.4.2.6}%
 \contentsline {section}{\numberline {4.3}Qualitative Analysis}{103}{section.4.3}%
 \contentsline {section}{\numberline {4.4}Limitations}{105}{section.4.4}%
-\contentsline {chapter}{\numberline {5}Sustainability Analysis and Ethical Implications}{108}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Sustainability matrix}{108}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Environmental impact}{108}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Economic impact}{109}{subsection.5.1.2}%
-\contentsline {subsection}{\numberline {5.1.3}Social impact}{110}{subsection.5.1.3}%
-\contentsline {section}{\numberline {5.2}Ethical implications}{110}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Relationship with the Sustainable Development Goals}{111}{section.5.3}%
-\contentsline {chapter}{\numberline {6}Conclusions and Future Work}{112}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Conclusions}{112}{section.6.1}%
-\contentsline {subsection}{\numberline {6.1.1}What the final result means}{112}{subsection.6.1.1}%
-\contentsline {subsection}{\numberline {6.1.2}Answers to the research questions}{113}{subsection.6.1.2}%
-\contentsline {subsection}{\numberline {6.1.3}Main contributions}{113}{subsection.6.1.3}%
-\contentsline {subsection}{\numberline {6.1.4}Practical implications and scope}{114}{subsection.6.1.4}%
-\contentsline {subsection}{\numberline {6.1.5}Negative results}{114}{subsection.6.1.5}%
-\contentsline {subsection}{\numberline {6.1.6}Lessons learned across the development path}{114}{subsection.6.1.6}%
-\contentsline {section}{\numberline {6.2}Future Directions}{115}{section.6.2}%
-\contentsline {paragraph}{Short-medium term.}{115}{paragraph*.146}%
-\contentsline {paragraph}{Medium-long term.}{115}{paragraph*.147}%
-\contentsline {chapter}{Bibliography}{116}{chapter*.148}%
-\contentsline {chapter}{\numberline {A}Detailed Attempt Log}{120}{appendix.A}%
-\contentsline {section}{\numberline {A.1}How to read the attempt numbers}{120}{section.A.1}%
-\contentsline {section}{\numberline {A.2}Try-number map}{121}{section.A.2}%
-\contentsline {section}{\numberline {A.3}Expanded chronological timeline}{124}{section.A.3}%
-\contentsline {subsection}{\numberline {A.3.1}Early image-to-image baselines}{124}{subsection.A.3.1}%
-\contentsline {subsection}{\numberline {A.3.2}Geometry conditioning and artifact control}{124}{subsection.A.3.2}%
-\contentsline {subsection}{\numberline {A.3.3}Masking and evaluation contract}{124}{subsection.A.3.3}%
-\contentsline {subsection}{\numberline {A.3.4}Prior-guided residual learning}{124}{subsection.A.3.4}%
-\contentsline {subsection}{\numberline {A.3.5}PMHHNet and expert-routing phase}{125}{subsection.A.3.5}%
-\contentsline {subsection}{\numberline {A.3.6}Regularization and distribution diagnosis}{125}{subsection.A.3.6}%
-\contentsline {subsection}{\numberline {A.3.7}Distribution-first modelling}{125}{subsection.A.3.7}%
-\contentsline {subsection}{\numberline {A.3.8}Frozen calibrated priors}{125}{subsection.A.3.8}%
-\contentsline {subsection}{\numberline {A.3.9}Final prior-anchored residual GMM-head model}{126}{subsection.A.3.9}%
-\contentsline {chapter}{\numberline {B}Final Residual GMM-Head Model Configuration Summary}{127}{appendix.B}%
-\contentsline {chapter}{\numberline {C}Formula Placement}{128}{appendix.C}%
-\contentsline {chapter}{\numberline {D}Representative Final Residual GMM-Head Model Inspection Panels}{129}{appendix.D}%
-\contentsline {chapter}{\numberline {E}Implementation Snippets}{140}{appendix.E}%
-\contentsline {section}{\numberline {E.1}Frozen prior assembly}{140}{section.E.1}%
-\contentsline {section}{\numberline {E.2}Final residual GMM-head model input tensor}{140}{section.E.2}%
-\contentsline {section}{\numberline {E.3}Bounded residual decoder}{140}{section.E.3}%
-\contentsline {chapter}{\numberline {F}CKM Generator Interface and Reproducibility Tool}{142}{appendix.F}%
-\contentsline {section}{\numberline {F.1}Interface overview}{142}{section.F.1}%
-\contentsline {section}{\numberline {F.2}How the tool is run}{144}{section.F.2}%
-\contentsline {section}{\numberline {F.3}Accepted inputs}{144}{section.F.3}%
-\contentsline {section}{\numberline {F.4}Configurable controls}{145}{section.F.4}%
-\contentsline {section}{\numberline {F.5}Image scaling and raw numeric data}{146}{section.F.5}%
-\contentsline {section}{\numberline {F.6}Model-grid fitting and interpolation}{146}{section.F.6}%
-\contentsline {section}{\numberline {F.7}Mask policies}{147}{section.F.7}%
-\contentsline {section}{\numberline {F.8}Outputs}{147}{section.F.8}%
-\contentsline {section}{\numberline {F.9}Performance controls}{150}{section.F.9}%
+\contentsline {chapter}{\numberline {5}Sustainability Analysis and Ethical Implications}{109}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Sustainability matrix}{109}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Environmental impact}{109}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Economic impact}{110}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Social impact}{111}{subsection.5.1.3}%
+\contentsline {section}{\numberline {5.2}Ethical implications}{111}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Relationship with the Sustainable Development Goals}{112}{section.5.3}%
+\contentsline {chapter}{\numberline {6}Conclusions and Future Work}{113}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Conclusions}{113}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}What the final result means}{113}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Answers to the research questions}{114}{subsection.6.1.2}%
+\contentsline {subsection}{\numberline {6.1.3}Main contributions}{114}{subsection.6.1.3}%
+\contentsline {subsection}{\numberline {6.1.4}Practical implications and scope}{115}{subsection.6.1.4}%
+\contentsline {subsection}{\numberline {6.1.5}Negative results}{115}{subsection.6.1.5}%
+\contentsline {subsection}{\numberline {6.1.6}Lessons learned across the development path}{115}{subsection.6.1.6}%
+\contentsline {section}{\numberline {6.2}Future Directions}{116}{section.6.2}%
+\contentsline {paragraph}{Short-medium term.}{116}{paragraph*.146}%
+\contentsline {paragraph}{Medium-long term.}{116}{paragraph*.147}%
+\contentsline {chapter}{Bibliography}{117}{chapter*.148}%
+\contentsline {chapter}{\numberline {A}Detailed Attempt Log}{121}{appendix.A}%
+\contentsline {section}{\numberline {A.1}How to read the attempt numbers}{121}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Try-number map}{122}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Expanded chronological timeline}{125}{section.A.3}%
+\contentsline {subsection}{\numberline {A.3.1}Early image-to-image baselines}{125}{subsection.A.3.1}%
+\contentsline {subsection}{\numberline {A.3.2}Geometry conditioning and artifact control}{125}{subsection.A.3.2}%
+\contentsline {subsection}{\numberline {A.3.3}Masking and evaluation contract}{125}{subsection.A.3.3}%
+\contentsline {subsection}{\numberline {A.3.4}Prior-guided residual learning}{125}{subsection.A.3.4}%
+\contentsline {subsection}{\numberline {A.3.5}PMHHNet and expert-routing phase}{126}{subsection.A.3.5}%
+\contentsline {subsection}{\numberline {A.3.6}Regularization and distribution diagnosis}{126}{subsection.A.3.6}%
+\contentsline {subsection}{\numberline {A.3.7}Distribution-first modelling}{126}{subsection.A.3.7}%
+\contentsline {subsection}{\numberline {A.3.8}Frozen calibrated priors}{126}{subsection.A.3.8}%
+\contentsline {subsection}{\numberline {A.3.9}Final prior-anchored residual GMM-head model}{127}{subsection.A.3.9}%
+\contentsline {chapter}{\numberline {B}Final Residual GMM-Head Model Configuration Summary}{128}{appendix.B}%
+\contentsline {chapter}{\numberline {C}Formula Placement}{129}{appendix.C}%
+\contentsline {chapter}{\numberline {D}Representative Final Residual GMM-Head Model Inspection Panels}{130}{appendix.D}%
+\contentsline {chapter}{\numberline {E}Implementation Snippets}{141}{appendix.E}%
+\contentsline {section}{\numberline {E.1}Frozen prior assembly}{141}{section.E.1}%
+\contentsline {section}{\numberline {E.2}Final residual GMM-head model input tensor}{141}{section.E.2}%
+\contentsline {section}{\numberline {E.3}Bounded residual decoder}{141}{section.E.3}%
+\contentsline {chapter}{\numberline {F}CKM Generator Interface and Reproducibility Tool}{143}{appendix.F}%
+\contentsline {section}{\numberline {F.1}Interface overview}{143}{section.F.1}%
+\contentsline {section}{\numberline {F.2}How the tool is run}{145}{section.F.2}%
+\contentsline {section}{\numberline {F.3}Accepted inputs}{145}{section.F.3}%
+\contentsline {section}{\numberline {F.4}Configurable controls}{146}{section.F.4}%
+\contentsline {section}{\numberline {F.5}Image scaling and raw numeric data}{147}{section.F.5}%
+\contentsline {section}{\numberline {F.6}Model-grid fitting and interpolation}{147}{section.F.6}%
+\contentsline {section}{\numberline {F.7}Mask policies}{148}{section.F.7}%
+\contentsline {section}{\numberline {F.8}Outputs}{148}{section.F.8}%
+\contentsline {section}{\numberline {F.9}Performance controls}{151}{section.F.9}%
