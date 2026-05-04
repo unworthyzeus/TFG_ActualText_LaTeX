@@ -186,8 +186,8 @@ propagation law in NLoS regions.
 
 \begin{quote}
 \textit{Legacy of PMHHNet:} While the full architecture was eventually superseded
-by the final prior-anchored GMM approach, its core components---the
-HF stem and sinusoidal FiLM---remain highly effective for point-prediction
+by the final prior-anchored GMM approach, its core components, the
+HF stem and sinusoidal FiLM, remain highly effective for point-prediction
 tasks or real-time implementations where the distributional complexity of a GMM
 is not required.
 \end{quote}
@@ -244,7 +244,7 @@ simple point estimate.
 \end{pgfonlayer}
 \node[lbl] at (inp_box.north west) {Inputs and routing};
 
-%% Stage A — GMM head (right)
+%% Stage A: GMM head (right)
 \node[sa, below=1.2cm of exp]       (enc)  {Encoder with FiLM(height)};
 \node[sa, below=0.4cm of enc]       (gap)  {Global average pooling};
 \node[sa, below=0.4cm of gap]       (gmm)  {GMM head};
@@ -258,9 +258,9 @@ simple point estimate.
 \begin{pgfonlayer}{background}
   \node[grp, fit=(enc)(gap)(gmm)(outa)] (sa_box) {};
 \end{pgfonlayer}
-\node[lbl] at (sa_box.north west) {Stage A --- distribution head};
+\node[lbl] at (sa_box.north west) {Stage A: distribution head};
 
-%% Stage B — map head (left of Stage A)
+%% Stage B: map head (left of Stage A)
 \node[sb, left=1.6cm of enc, yshift=-0.4cm]  (dec)  {U-Net decoder};
 \node[sb, below=0.4cm of dec]                 (cond) {Condition on height +\\GMM summary};
 \node[sb, below=0.4cm of cond]                (pix)  {Per-pixel $p_k,\,z_k,\,\log\sigma_k$};
@@ -274,7 +274,7 @@ simple point estimate.
 \begin{pgfonlayer}{background}
   \node[grp, fit=(dec)(cond)(pix)(yhat)] (sb_box) {};
 \end{pgfonlayer}
-\node[lbl] at (sb_box.north west) {Stage B --- map head};
+\node[lbl] at (sb_box.north west) {Stage B: map head};
 
 %% Objective row
 \node[ob, below=1.2cm of yhat]     (o1) {map\_nll under\\mixture};
@@ -347,7 +347,7 @@ a heavy tail for NLoS).
 \end{pgfonlayer}
 \node[lbl] at (inp_box.north west) {Inputs and routing};
 
-%% Stage A — spike+tail head (right)
+%% Stage A: spike+tail head (right)
 \node[sa, below=1.2cm of exp]              (enc)  {Encoder with FiLM(height)};
 \node[sa, below=0.4cm of enc]              (pool) {Global pooled context};
 \node[sa, below=0.4cm of pool]             (head) {Spike + tail mixture head};
@@ -365,7 +365,7 @@ a heavy tail for NLoS).
 \end{pgfonlayer}
 \node[lbl] at (sa_box.north west) {Stage A for spreads};
 
-%% Stage B — decoder (left)
+%% Stage B: decoder (left)
 \node[sb, left=1.6cm of enc, yshift=-0.4cm]  (dec)  {U-Net decoder};
 \node[sb, below=0.4cm of dec]                 (cond) {Condition on height +\\mixture summary};
 \node[sb, below=0.4cm of cond]                (pix)  {Per-pixel $p_k(j),\,z(j),\,\log\sigma_k(j)$};
@@ -843,22 +843,22 @@ and gradient accumulation over 8 steps.}
 \toprule
 Config & Distribution-first experts & Final joint GMM & PMHHNet diagnostics \\
 \midrule
-Input channels   & topology, LoS, NLoS, ground mask (4 + scalar height) & topology + frozen priors + masks (9) & topology, LoS, distance, formula prior, knife-edge (5--6) \\
+Input channels   & topology, LoS, NLoS, ground mask (4 + scalar height) & topology + frozen priors + masks (9) & topology, LoS, distance, formula prior, knife-edge (5 to 6) \\
 Optimizer        & AdamW ($\beta_1{=}0.9, \beta_2{=}0.999$) & AdamW & AdamW \\
 Learning rate    & \num{3e-4} & \num{5e-5} & \num{1e-3} to \num{3e-4} (cosine or plateau) \\
-Weight decay     & 0.01 & 0.01 & 0.015--0.030 \\
+Weight decay     & 0.01 & 0.01 & 0.015 to 0.030 \\
 Batch size       & 1 & 1 & 1 \\
 Grad accumulation & 8 & 8 & 16 (68) / 8 (69) \\
-Warmup epochs    & 2 & 1 & 2--5 \\
+Warmup epochs    & 2 & 1 & 2 to 5 \\
 Epochs           & 120 & 40 fine-tune epochs & 80 \\
 Scheduler        & ReduceLROnPlateau, patience 15 & cosine \texttt{LambdaLR} after warmup & ReduceLROnPlateau (post-April~2025 patch) \\
 SWA              & Off & Off & On, start fraction 0.60 \\
 Label noise      & Off & Off & On, $\sigma_{\mathrm{dB}}=0.5$ \\
-CutMix           & Off & Off (D4 augmentation only) & On, $p=0.25$--$0.45$, FiLM-safe \\
+CutMix           & Off & Off (D4 augmentation only) & On, $p=0.25$ to $0.45$, FiLM-safe \\
 EMA weights      & Off & Off & On, decay 0.9975 \\
-Dropout          & 0.10 (decoder only) & 0.10 (decoder only) & 0.12 (69) -- 0.20 (67) \\
+Dropout          & 0.10 (decoder only) & 0.10 (decoder only) & 0.12 (69) to 0.20 (67) \\
 Height encoding  & Sinusoidal FiLM, 16 log-freqs over $[12,478]$ m & Sinusoidal FiLM at encoder and decoder scales & Sinusoidal FiLM, 8 injection points \\
-GMM components $K$ & 5 (Stage A, path/delay), spike+exp (angular) & 3 (residual head on anchored output) & --- (MSE/Huber heads) \\
+GMM components $K$ & 5 (Stage A, path/delay), spike+exp (angular) & 3 (residual head on anchored output) & not used (MSE/Huber heads) \\
 \bottomrule
 \end{tabularx}
 \end{table}

@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.24.0 (MiKTeX 25.12) (format=lualatex 2026.4.27)  4 MAY 2026 15:39
+This is LuaHBTeX, Version 1.24.0 (MiKTeX 25.12) (format=lualatex 2026.4.27)  4 MAY 2026 16:05
  restricted system commands enabled.
 **TFG.tex
 (./TFG.tex
@@ -2379,48 +2379,64 @@ Loading module `upgrade' ...
 \c@g@acro@EU@int=\count359
 \c@g@acro@ETSETB@int=\count360
 \c@g@acro@GRETST@int=\count361
-\c@g@acro@UAV@int=\count362
-\c@g@acro@A2G@int=\count363
-\c@g@acro@ABS@int=\count364
-\c@g@acro@LSF@int=\count365
-\c@g@acro@PLE@int=\count366
-\c@g@acro@mmWave@int=\count367
-\c@g@acro@6G@int=\count368
-\c@g@acro@CKM@int=\count369
-\c@g@acro@CSI@int=\count370
-\c@g@acro@CGM@int=\count371
-\c@g@acro@LoS@int=\count372
-\c@g@acro@NLOS@int=\count373
-\c@g@acro@RMSE@int=\count374
-\c@g@acro@MAE@int=\count375
-\c@g@acro@FSPL@int=\count376
-\c@g@acro@Tx@int=\count377
-\c@g@acro@Rx@int=\count378
-\c@g@acro@DS@int=\count379
-\c@g@acro@AS@int=\count380
-\c@g@acro@DL@int=\count381
-\c@g@acro@ML@int=\count382
-\c@g@acro@CNN@int=\count383
-\c@g@acro@GAN@int=\count384
-\c@g@acro@CGAN@int=\count385
-\c@g@acro@UNET@int=\count386
-\c@g@acro@GMM@int=\count387
-\c@g@acro@PMNet@int=\count388
-\c@g@acro@PMHHNet@int=\count389
-\c@g@acro@FiLM@int=\count390
-\c@g@acro@NLL@int=\count391
-\c@g@acro@KL@int=\count392
-\c@g@acro@TTA@int=\count393
-\c@g@acro@OLS@int=\count394
-\c@g@acro@HDF5@int=\count395
-\c@g@acro@GPU@int=\count396
-\c@g@acro@HPC@int=\count397
-\c@g@acro@SLURM@int=\count398
-\c@g@acro@SWA@int=\count399
-\c@g@acro@EMA@int=\count400
-\c@g@acro@SOA@int=\count401
-\c@g@acro@SDG@int=\count402
-\c@g@acro@BT@int=\count403
+\c@g@acro@PARS@int=\count362
+\c@g@acro@UAV@int=\count363
+\c@g@acro@A2G@int=\count364
+\c@g@acro@ABS@int=\count365
+\c@g@acro@LSF@int=\count366
+\c@g@acro@PLE@int=\count367
+\c@g@acro@mmWave@int=\count368
+\c@g@acro@6G@int=\count369
+\c@g@acro@CKM@int=\count370
+\c@g@acro@CSI@int=\count371
+\c@g@acro@CGM@int=\count372
+\c@g@acro@LoS@int=\count373
+\c@g@acro@NLOS@int=\count374
+\c@g@acro@RMSE@int=\count375
+\c@g@acro@MAE@int=\count376
+\c@g@acro@FSPL@int=\count377
+\c@g@acro@Tx@int=\count378
+\c@g@acro@Rx@int=\count379
+\c@g@acro@DS@int=\count380
+\c@g@acro@AS@int=\count381
+\c@g@acro@PL@int=\count382
+\c@g@acro@DL@int=\count383
+\c@g@acro@ML@int=\count384
+\c@g@acro@MSE@int=\count385
+\c@g@acro@CNN@int=\count386
+\c@g@acro@DNN@int=\count387
+\c@g@acro@GAN@int=\count388
+\c@g@acro@CGAN@int=\count389
+\c@g@acro@UNET@int=\count390
+\c@g@acro@GMM@int=\count391
+\c@g@acro@PMNet@int=\count392
+\c@g@acro@PMHHNet@int=\count393
+\c@g@acro@FiLM@int=\count394
+\c@g@acro@NLL@int=\count395
+\c@g@acro@KL@int=\count396
+\c@g@acro@TTA@int=\count397
+\c@g@acro@OLS@int=\count398
+\c@g@acro@GT@int=\count399
+\c@g@acro@MLP@int=\count400
+\c@g@acro@COST231@int=\count401
+\c@g@acro@HDF5@int=\count402
+\c@g@acro@JSON@int=\count403
+\c@g@acro@YAML@int=\count404
+\c@g@acro@CLI@int=\count405
+\c@g@acro@GPU@int=\count406
+\c@g@acro@CPU@int=\count407
+\c@g@acro@CUDA@int=\count408
+\c@g@acro@DirectML@int=\count409
+\c@g@acro@RTX@int=\count410
+\c@g@acro@HPC@int=\count411
+\c@g@acro@SLURM@int=\count412
+\c@g@acro@SWA@int=\count413
+\c@g@acro@EMA@int=\count414
+\c@g@acro@SOA@int=\count415
+\c@g@acro@ICASSP@int=\count416
+\c@g@acro@IEEE@int=\count417
+\c@g@acro@SDG@int=\count418
+\c@g@acro@BT@int=\count419
 ) ("C:/Program Files/MiKTeX/tex/latex/graphics/graphicx.sty"
 Package: graphicx 2024/12/31 v1.2e Enhanced LaTeX Graphics (DPC,SPQR)
 
@@ -2480,14 +2496,14 @@ Package: pgfsys 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@yd=\dimen287
 \w@pgf@writea=\write3
 \r@pgf@reada=\read2
-\c@pgf@counta=\count404
-\c@pgf@countb=\count405
-\c@pgf@countc=\count406
-\c@pgf@countd=\count407
+\c@pgf@counta=\count420
+\c@pgf@countb=\count421
+\c@pgf@countc=\count422
+\c@pgf@countd=\count423
 \t@pgf@toka=\toks39
 \t@pgf@tokb=\toks40
 \t@pgf@tokc=\toks41
-\pgf@sys@id@count=\count408
+\pgf@sys@id@count=\count424
  ("C:/Program Files/MiKTeX/tex/generic/pgf/systemlayer/pgf.cfg"
 File: pgf.cfg 2025-08-29 v3.1.11a (3.1.11a)
 )
@@ -2501,8 +2517,8 @@ File: pgfsys-common-pdf.def 2025-08-29 v3.1.11a (3.1.11a)
 ))) ("C:/Program Files/MiKTeX/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.t
 ex"
 File: pgfsyssoftpath.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfsyssoftpath@smallbuffer@items=\count409
-\pgfsyssoftpath@bigbuffer@items=\count410
+\pgfsyssoftpath@smallbuffer@items=\count425
+\pgfsyssoftpath@bigbuffer@items=\count426
 ) ("C:/Program Files/MiKTeX/tex/generic/pgf/systemlayer/pgfsysprotocol.code.tex
 "
 File: pgfsysprotocol.code.tex 2025-08-29 v3.1.11a (3.1.11a)
@@ -2513,7 +2529,7 @@ Package: pgfcore 2025-08-29 v3.1.11a (3.1.11a)
 ("C:/Program Files/MiKTeX/tex/generic/pgf/math/pgfmathutil.code.tex")
 ("C:/Program Files/MiKTeX/tex/generic/pgf/math/pgfmathparser.code.tex"
 \pgfmath@dimen=\dimen288
-\pgfmath@count=\count411
+\pgfmath@count=\count427
 \pgfmath@box=\box71
 \pgfmath@toks=\toks42
 \pgfmath@stack@operand=\toks43
@@ -2533,7 +2549,7 @@ ode.tex")
 ics.code.tex")
 ("C:/Program Files/MiKTeX/tex/generic/pgf/math/pgfmathcalc.code.tex")
 ("C:/Program Files/MiKTeX/tex/generic/pgf/math/pgfmathfloat.code.tex"
-\c@pgfmathroundto@lastzeros=\count412
+\c@pgfmathroundto@lastzeros=\count428
 ))
 ("C:/Program Files/MiKTeX/tex/generic/pgf/math/pgfint.code.tex")
 ("C:/Program Files/MiKTeX/tex/generic/pgf/basiclayer/pgfcorepoints.code.tex"
@@ -2568,7 +2584,7 @@ File: pgfcorescopes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfpic=\box72
 \pgf@hbox=\box73
 \pgf@layerbox@main=\box74
-\pgf@picture@serial@count=\count413
+\pgf@picture@serial@count=\count429
 )
 ("C:/Program Files/MiKTeX/tex/generic/pgf/basiclayer/pgfcoregraphicstate.code.t
 ex"
@@ -2599,8 +2615,8 @@ File: pgfcorearrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 ("C:/Program Files/MiKTeX/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex"
 File: pgfcoreshade.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@max=\dimen312
-\pgf@sys@shading@range@num=\count414
-\pgf@shadingcount=\count415
+\pgf@sys@shading@range@num=\count430
+\pgf@shadingcount=\count431
 )
 ("C:/Program Files/MiKTeX/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex"
 File: pgfcoreimage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
@@ -2652,7 +2668,7 @@ Package: tikz 2025-08-29 v3.1.11a (3.1.11a)
 ("C:/Program Files/MiKTeX/tex/generic/pgf/libraries/pgflibraryplothandlers.code
 .tex"
 File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@plot@mark@count=\count416
+\pgf@plot@mark@count=\count432
 \pgfplotmarksize=\dimen317
 )
 \tikz@lastx=\dimen318
@@ -2667,18 +2683,18 @@ File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \tikz@figbox@bg=\box78
 \tikz@tempbox=\box79
 \tikz@tempbox@bg=\box80
-\tikztreelevel=\count417
-\tikznumberofchildren=\count418
-\tikznumberofcurrentchild=\count419
-\tikz@fig@count=\count420
+\tikztreelevel=\count433
+\tikznumberofchildren=\count434
+\tikznumberofcurrentchild=\count435
+\tikz@fig@count=\count436
 
 ("C:/Program Files/MiKTeX/tex/generic/pgf/modules/pgfmodulematrix.code.tex"
 File: pgfmodulematrix.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfmatrixcurrentrow=\count421
-\pgfmatrixcurrentcolumn=\count422
-\pgf@matrix@numberofcolumns=\count423
+\pgfmatrixcurrentrow=\count437
+\pgfmatrixcurrentcolumn=\count438
+\pgf@matrix@numberofcolumns=\count439
 )
-\tikz@expandcount=\count424
+\tikz@expandcount=\count440
 
 ("C:/Program Files/MiKTeX/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibr
 arytopaths.code.tex"
@@ -2719,7 +2735,7 @@ arydecorations.code.tex"
 \pgfdecoratedinputsegmentcompleteddistance=\dimen332
 \pgfdecoratedinputsegmentremainingdistance=\dimen333
 \pgf@decorate@distancetomove=\dimen334
-\pgf@decorate@repeatstate=\count425
+\pgf@decorate@repeatstate=\count441
 \pgfdecorationsegmentamplitude=\dimen335
 \pgfdecorationsegmentlength=\dimen336
 )
@@ -2758,34 +2774,34 @@ File: pgflibrarypatterns.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 )) ("C:/Program Files/MiKTeX/tex/latex/pgf/utilities/pgfcalendar.sty"
 ("C:/Program Files/MiKTeX/tex/generic/pgf/utilities/pgfcalendar.code.tex"
 File: pgfcalendar.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfcalendarcurrentjulian=\count426
-\pgf@cal@easter@Y=\count427
-\pgf@cal@easter@G=\count428
-\pgf@cal@easter@C=\count429
-\pgf@cal@easter@X=\count430
-\pgf@cal@easter@Z=\count431
-\pgf@cal@easter@D=\count432
-\pgf@cal@easter@E=\count433
-\pgf@cal@easter@N=\count434
-\pgf@cal@easter@M=\count435
-\pgf@cal@easter@julianday=\count436
+\pgfcalendarcurrentjulian=\count442
+\pgf@cal@easter@Y=\count443
+\pgf@cal@easter@G=\count444
+\pgf@cal@easter@C=\count445
+\pgf@cal@easter@X=\count446
+\pgf@cal@easter@Z=\count447
+\pgf@cal@easter@D=\count448
+\pgf@cal@easter@E=\count449
+\pgf@cal@easter@N=\count450
+\pgf@cal@easter@M=\count451
+\pgf@cal@easter@julianday=\count452
 ))
-\gtt@currentline=\count437
-\gtt@lasttitleline=\count438
-\gtt@currgrid=\count439
-\gtt@chartwidth=\count440
-\gtt@lasttitleslot=\count441
-\gtt@elementid=\count442
-\gtt@today@slot=\count443
-\gtt@startjulian=\count444
-\gtt@endjulian=\count445
-\gtt@chartid=\count446
-\gtt@vrule@slot=\count447
-\gtt@calendar@slots=\count448
-\gtt@calendar@weeknumber=\count449
-\gtt@calendar@startofweek=\count450
-\gtt@left@slot=\count451
-\gtt@right@slot=\count452
+\gtt@currentline=\count453
+\gtt@lasttitleline=\count454
+\gtt@currgrid=\count455
+\gtt@chartwidth=\count456
+\gtt@lasttitleslot=\count457
+\gtt@elementid=\count458
+\gtt@today@slot=\count459
+\gtt@startjulian=\count460
+\gtt@endjulian=\count461
+\gtt@chartid=\count462
+\gtt@vrule@slot=\count463
+\gtt@calendar@slots=\count464
+\gtt@calendar@weeknumber=\count465
+\gtt@calendar@startofweek=\count466
+\gtt@left@slot=\count467
+\gtt@right@slot=\count468
 )
 (C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/latex/circuitikz/circuitikz.s
 ty
@@ -2820,9 +2836,9 @@ aryfpu.code.tex"
 ("C:/Program Files/MiKTeX/tex/generic/pgf/libraries/pgflibraryfpu.code.tex"))
 (C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/generic/circuitikz/pgfcirc.de
 fines.tex
-\pgf@circ@count@a=\count453
-\pgf@circ@count@b=\count454
-\pgf@circ@count@c=\count455
+\pgf@circ@count@a=\count469
+\pgf@circ@count@b=\count470
+\pgf@circ@count@c=\count471
 \pgf@circ@res@up=\dimen345
 \pgf@circ@res@down=\dimen346
 \pgf@circ@res@zero=\dimen347
@@ -2841,7 +2857,7 @@ ls.tex
 )
 (C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/generic/circuitikz/pgfcircpat
 h.tex
-\ctikz@vif@count=\count456
+\ctikz@vif@count=\count472
 )
 (C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/generic/circuitikz/pgfcircsha
 pes.tex)
@@ -2851,7 +2867,7 @@ opoles.tex)
 oles.tex)
 (C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/generic/circuitikz/pgfcirctri
 poles.tex
-\pgf@circ@res@count=\count457
+\pgf@circ@res@count=\count473
 )
 (C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/generic/circuitikz/pgfcircqua
 dpoles.tex)
@@ -2878,8 +2894,8 @@ Package pgfplots info on input line 124: Initializing with LUA version Lua 5.3
 \t@pgfplots@tokb=\toks48
 \t@pgfplots@tokc=\toks49
 \pgfplots@tmpa=\dimen357
-\c@pgfplots@coordindex=\count458
-\c@pgfplots@scanlineindex=\count459
+\c@pgfplots@coordindex=\count474
+\c@pgfplots@scanlineindex=\count475
 
 ("C:/Program Files/MiKTeX/tex/generic/pgfplots/sys/pgfplotssysgeneric.code.tex"
 )) ("C:/Program Files/MiKTeX/tex/generic/pgfplots/libs/pgfplotslibrary.code.tex
@@ -2908,13 +2924,13 @@ ure.code.tex")
 ureext.code.tex")
 ("C:/Program Files/MiKTeX/tex/generic/pgfplots/liststructure/pgfplotsarray.code
 .tex"
-\c@pgfplotsarray@tmp=\count460
+\c@pgfplotsarray@tmp=\count476
 )
 ("C:/Program Files/MiKTeX/tex/generic/pgfplots/liststructure/pgfplotsmatrix.cod
 e.tex")
 ("C:/Program Files/MiKTeX/tex/generic/pgfplots/numtable/pgfplotstableshared.cod
 e.tex"
-\c@pgfplotstable@counta=\count461
+\c@pgfplotstable@counta=\count477
 \t@pgfplotstable@a=\toks53
 )
 ("C:/Program Files/MiKTeX/tex/generic/pgfplots/liststructure/pgfplotsdeque.code
@@ -2926,7 +2942,7 @@ x"))
 )
 ("C:/Program Files/MiKTeX/tex/generic/pgfplots/libs/pgflibrarypgfplots.surfshad
 ing.code.tex"
-\c@pgfplotslibrarysurf@no=\count462
+\c@pgfplotslibrarysurf@no=\count478
 
 ("C:/Program Files/MiKTeX/tex/generic/pgfplots/sys/pgflibrarypgfplots.surfshadi
 ng.pgfsys-luatex.def")))
@@ -2945,7 +2961,7 @@ arydecorations.pathmorphing.code.tex"
 ations.pathmorphing.code.tex"))
 ("C:/Program Files/MiKTeX/tex/generic/pgfplots/libs/tikzlibrarypgfplots.contour
 lua.code.tex")
-\pgfplots@numplots=\count463
+\pgfplots@numplots=\count479
 \pgfplots@xmin@reg=\dimen358
 \pgfplots@xmax@reg=\dimen359
 \pgfplots@ymin@reg=\dimen360
@@ -2971,9 +2987,9 @@ Package: pgfplotstable 2021/05/15 v1.18.1 Table typesetting and Pretty-printing
 ode.tex")))
 ("C:/Program Files/MiKTeX/tex/generic/pgfplots/libs/tikzlibrarypgfplots.grouppl
 ots.code.tex"
-\pgfplots@group@current@plot=\count464
-\pgfplots@group@current@row=\count465
-\pgfplots@group@current@column=\count466
+\pgfplots@group@current@plot=\count480
+\pgfplots@group@current@row=\count481
+\pgfplots@group@current@column=\count482
 ) ("C:/Program Files/MiKTeX/tex/latex/tcolorbox/tcolorbox.sty"
 Package: tcolorbox 2025/11/28 version 6.9.0 text color boxes
 
@@ -2993,9 +3009,9 @@ Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 \tcb@upperbox=\box86
 \tcb@lowerbox=\box87
 \tcb@phantombox=\box88
-\c@tcbbreakpart=\count467
-\c@tcblayer=\count468
-\c@tcolorbox@number=\count469
+\c@tcbbreakpart=\count483
+\c@tcblayer=\count484
+\c@tcolorbox@number=\count485
 \l__tcobox_tmpa_box=\box89
 \l__tcobox_tmpa_dim=\dimen364
 \tcb@temp=\box90
@@ -3008,7 +3024,7 @@ Package: biblatex 2025/07/10 v3.21 programmable bibliographies (PK/MW)
 
 (C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/latex/logreq/logreq.sty
 Package: logreq 2010/08/04 v1.0 xml request logger
-\lrq@indent=\count470
+\lrq@indent=\count486
 
 (C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/latex/logreq/logreq.def
 File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
@@ -3020,49 +3036,49 @@ Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
 \Urlmuskip=\muskip19
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
-\c@tabx@nest=\count471
-\c@listtotal=\count472
-\c@listcount=\count473
-\c@liststart=\count474
-\c@liststop=\count475
-\c@citecount=\count476
-\c@citetotal=\count477
-\c@multicitecount=\count478
-\c@multicitetotal=\count479
-\c@instcount=\count480
-\c@maxnames=\count481
-\c@minnames=\count482
-\c@maxitems=\count483
-\c@minitems=\count484
-\c@citecounter=\count485
-\c@maxcitecounter=\count486
-\c@savedcitecounter=\count487
-\c@uniquelist=\count488
-\c@uniquename=\count489
-\c@refsection=\count490
-\c@refsegment=\count491
-\c@maxextratitle=\count492
-\c@maxextratitleyear=\count493
-\c@maxextraname=\count494
-\c@maxextradate=\count495
-\c@maxextraalpha=\count496
-\c@abbrvpenalty=\count497
-\c@highnamepenalty=\count498
-\c@lownamepenalty=\count499
-\c@maxparens=\count500
-\c@parenlevel=\count501
-\blx@tempcnta=\count502
-\blx@tempcntb=\count503
-\blx@tempcntc=\count504
-\c@blx@maxsection=\count505
-\blx@maxsegment@0=\count506
-\blx@notetype=\count507
-\blx@parenlevel@text=\count508
-\blx@parenlevel@foot=\count509
-\blx@sectionciteorder@0=\count510
-\blx@sectionciteorderinternal@0=\count511
-\blx@entrysetcounter=\count512
-\blx@biblioinstance=\count513
+\c@tabx@nest=\count487
+\c@listtotal=\count488
+\c@listcount=\count489
+\c@liststart=\count490
+\c@liststop=\count491
+\c@citecount=\count492
+\c@citetotal=\count493
+\c@multicitecount=\count494
+\c@multicitetotal=\count495
+\c@instcount=\count496
+\c@maxnames=\count497
+\c@minnames=\count498
+\c@maxitems=\count499
+\c@minitems=\count500
+\c@citecounter=\count501
+\c@maxcitecounter=\count502
+\c@savedcitecounter=\count503
+\c@uniquelist=\count504
+\c@uniquename=\count505
+\c@refsection=\count506
+\c@refsegment=\count507
+\c@maxextratitle=\count508
+\c@maxextratitleyear=\count509
+\c@maxextraname=\count510
+\c@maxextradate=\count511
+\c@maxextraalpha=\count512
+\c@abbrvpenalty=\count513
+\c@highnamepenalty=\count514
+\c@lownamepenalty=\count515
+\c@maxparens=\count516
+\c@parenlevel=\count517
+\blx@tempcnta=\count518
+\blx@tempcntb=\count519
+\blx@tempcntc=\count520
+\c@blx@maxsection=\count521
+\blx@maxsegment@0=\count522
+\blx@notetype=\count523
+\blx@parenlevel@text=\count524
+\blx@parenlevel@foot=\count525
+\blx@sectionciteorder@0=\count526
+\blx@sectionciteorderinternal@0=\count527
+\blx@entrysetcounter=\count528
+\blx@biblioinstance=\count529
 \labelnumberwidth=\skip79
 \labelalphawidth=\skip80
 \biblabelsep=\skip81
@@ -3074,9 +3090,9 @@ Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 \blx@bcfin=\read4
 \blx@bcfout=\write4
 \blx@langwohyphens=\language2
-\c@mincomprange=\count514
-\c@maxcomprange=\count515
-\c@mincompwidth=\count516
+\c@mincomprange=\count530
+\c@maxcomprange=\count531
+\c@mincompwidth=\count532
 Package biblatex Info: Trying to load biblatex default data model...
 Package biblatex Info: ... file 'blx-dm.def' found.
 
@@ -3087,74 +3103,74 @@ Package biblatex Info: Trying to load biblatex style data model...
 Package biblatex Info: ... file 'numeric.dbx' not found.
 Package biblatex Info: Trying to load biblatex custom data model...
 Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
-\c@afterword=\count517
-\c@savedafterword=\count518
-\c@annotator=\count519
-\c@savedannotator=\count520
-\c@author=\count521
-\c@savedauthor=\count522
-\c@bookauthor=\count523
-\c@savedbookauthor=\count524
-\c@commentator=\count525
-\c@savedcommentator=\count526
-\c@editor=\count527
-\c@savededitor=\count528
-\c@editora=\count529
-\c@savededitora=\count530
-\c@editorb=\count531
-\c@savededitorb=\count532
-\c@editorc=\count533
-\c@savededitorc=\count534
-\c@foreword=\count535
-\c@savedforeword=\count536
-\c@holder=\count537
-\c@savedholder=\count538
-\c@introduction=\count539
-\c@savedintroduction=\count540
-\c@namea=\count541
-\c@savednamea=\count542
-\c@nameb=\count543
-\c@savednameb=\count544
-\c@namec=\count545
-\c@savednamec=\count546
-\c@translator=\count547
-\c@savedtranslator=\count548
-\c@shortauthor=\count549
-\c@savedshortauthor=\count550
-\c@shorteditor=\count551
-\c@savedshorteditor=\count552
-\c@labelname=\count553
-\c@savedlabelname=\count554
-\c@institution=\count555
-\c@savedinstitution=\count556
-\c@lista=\count557
-\c@savedlista=\count558
-\c@listb=\count559
-\c@savedlistb=\count560
-\c@listc=\count561
-\c@savedlistc=\count562
-\c@listd=\count563
-\c@savedlistd=\count564
-\c@liste=\count565
-\c@savedliste=\count566
-\c@listf=\count567
-\c@savedlistf=\count568
-\c@location=\count569
-\c@savedlocation=\count570
-\c@organization=\count571
-\c@savedorganization=\count572
-\c@origlocation=\count573
-\c@savedoriglocation=\count574
-\c@origpublisher=\count575
-\c@savedorigpublisher=\count576
-\c@publisher=\count577
-\c@savedpublisher=\count578
-\c@language=\count579
-\c@savedlanguage=\count580
-\c@origlanguage=\count581
-\c@savedoriglanguage=\count582
-\c@pageref=\count583
-\c@savedpageref=\count584
+\c@afterword=\count533
+\c@savedafterword=\count534
+\c@annotator=\count535
+\c@savedannotator=\count536
+\c@author=\count537
+\c@savedauthor=\count538
+\c@bookauthor=\count539
+\c@savedbookauthor=\count540
+\c@commentator=\count541
+\c@savedcommentator=\count542
+\c@editor=\count543
+\c@savededitor=\count544
+\c@editora=\count545
+\c@savededitora=\count546
+\c@editorb=\count547
+\c@savededitorb=\count548
+\c@editorc=\count549
+\c@savededitorc=\count550
+\c@foreword=\count551
+\c@savedforeword=\count552
+\c@holder=\count553
+\c@savedholder=\count554
+\c@introduction=\count555
+\c@savedintroduction=\count556
+\c@namea=\count557
+\c@savednamea=\count558
+\c@nameb=\count559
+\c@savednameb=\count560
+\c@namec=\count561
+\c@savednamec=\count562
+\c@translator=\count563
+\c@savedtranslator=\count564
+\c@shortauthor=\count565
+\c@savedshortauthor=\count566
+\c@shorteditor=\count567
+\c@savedshorteditor=\count568
+\c@labelname=\count569
+\c@savedlabelname=\count570
+\c@institution=\count571
+\c@savedinstitution=\count572
+\c@lista=\count573
+\c@savedlista=\count574
+\c@listb=\count575
+\c@savedlistb=\count576
+\c@listc=\count577
+\c@savedlistc=\count578
+\c@listd=\count579
+\c@savedlistd=\count580
+\c@liste=\count581
+\c@savedliste=\count582
+\c@listf=\count583
+\c@savedlistf=\count584
+\c@location=\count585
+\c@savedlocation=\count586
+\c@organization=\count587
+\c@savedorganization=\count588
+\c@origlocation=\count589
+\c@savedoriglocation=\count590
+\c@origpublisher=\count591
+\c@savedorigpublisher=\count592
+\c@publisher=\count593
+\c@savedpublisher=\count594
+\c@language=\count595
+\c@savedlanguage=\count596
+\c@origlanguage=\count597
+\c@savedoriglanguage=\count598
+\c@pageref=\count599
+\c@savedpageref=\count600
 \shorthandwidth=\skip87
 \shortjournalwidth=\skip88
 \shortserieswidth=\skip89
@@ -3184,19 +3200,19 @@ Package biblatex Info: ... file 'biblatex.def' found.
 
 ("C:/Program Files/MiKTeX/tex/latex/biblatex/biblatex.def"
 File: biblatex.def 2025/07/10 v3.21 biblatex compatibility (PK/MW)
-\c@textcitecount=\count585
-\c@textcitetotal=\count586
-\c@textcitemaxnames=\count587
-\c@biburlbigbreakpenalty=\count588
-\c@biburlbreakpenalty=\count589
-\c@biburlnumpenalty=\count590
-\c@biburlucpenalty=\count591
-\c@biburllcpenalty=\count592
+\c@textcitecount=\count601
+\c@textcitetotal=\count602
+\c@textcitemaxnames=\count603
+\c@biburlbigbreakpenalty=\count604
+\c@biburlbreakpenalty=\count605
+\c@biburlnumpenalty=\count606
+\c@biburlucpenalty=\count607
+\c@biburllcpenalty=\count608
 \biburlbigskip=\muskip20
 \biburlnumskip=\muskip21
 \biburlucskip=\muskip22
 \biburllcskip=\muskip23
-\c@smartand=\count593
+\c@smartand=\count609
 )
 Package biblatex Info: Trying to load bibliography style 'numeric'...
 Package biblatex Info: ... file 'numeric.bbx' found.
@@ -3208,8 +3224,8 @@ Package biblatex Info: ... file 'standard.bbx' found.
 
 ("C:/Program Files/MiKTeX/tex/latex/biblatex/bbx/standard.bbx"
 File: standard.bbx 2025/07/10 v3.21 biblatex bibliography style (PK/MW)
-\c@bbx:relatedcount=\count594
-\c@bbx:relatedtotal=\count595
+\c@bbx:relatedcount=\count610
+\c@bbx:relatedtotal=\count611
 ))
 Package biblatex Info: Trying to load citation style 'numeric'...
 Package biblatex Info: ... file 'numeric.cbx' found.
@@ -3247,12 +3263,12 @@ Package: blx-case-expl3 2025/07/10 v3.21 expl3 case changing code for biblatex
 ))
 (C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/latex/csquotes/csquotes.sty
 Package: csquotes 2024-04-04 v5.2o context-sensitive quotations (JAW)
-\csq@reset=\count596
-\csq@gtype=\count597
-\csq@glevel=\count598
-\csq@qlevel=\count599
-\csq@maxlvl=\count600
-\csq@tshold=\count601
+\csq@reset=\count612
+\csq@gtype=\count613
+\csq@glevel=\count614
+\csq@qlevel=\count615
+\csq@maxlvl=\count616
+\csq@tshold=\count617
 \csq@ltx@everypar=\toks56
 
 (C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/latex/csquotes/csquotes.def
@@ -3285,7 +3301,7 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 lestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count602
+\c@section@level=\count618
 )
 (C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/generic/stringenc/stringenc.s
 ty
@@ -3293,15 +3309,15 @@ Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
 )
 )
 \@linkdim=\dimen365
-\Hy@linkcounter=\count603
-\Hy@pagecounter=\count604
+\Hy@linkcounter=\count619
+\Hy@pagecounter=\count620
  ("C:/Program Files/MiKTeX/tex/latex/hyperref/pd1enc.def"
 File: pd1enc.def 2025-07-12 v7.01o Hyperref: PDFDocEncoding definition (HO)
 )
 (C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/generic/intcalc/intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
-\Hy@SavedSpaceFactor=\count605
+\Hy@SavedSpaceFactor=\count621
 
 ("C:/Program Files/MiKTeX/tex/latex/hyperref/puenc.def"
 File: puenc.def 2025-07-12 v7.01o Hyperref: PDF Unicode definition (HO)
@@ -3313,7 +3329,7 @@ Package hyperref Info: Plain pages OFF on input line 4210.
 Package hyperref Info: Backreferencing OFF on input line 4215.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4462.
-\c@Hy@tempcnt=\count606
+\c@Hy@tempcnt=\count622
 LaTeX Info: Redefining \url on input line 4801.
 \XeTeXLinkMargin=\dimen366
 
@@ -3325,7 +3341,7 @@ Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
-\Fld@menulength=\count607
+\Fld@menulength=\count623
 \Field@Width=\dimen367
 \Fld@charsize=\dimen368
 Package hyperref Info: Hyper figures OFF on input line 6078.
@@ -3335,15 +3351,15 @@ Package hyperref Info: backreferencing OFF on input line 6093.
 Package hyperref Info: Link coloring OFF on input line 6098.
 Package hyperref Info: Link coloring with OCG OFF on input line 6103.
 Package hyperref Info: PDF/A mode OFF on input line 6108.
-\Hy@abspage=\count608
-\c@Item=\count609
-\c@Hfootnote=\count610
+\Hy@abspage=\count624
+\c@Item=\count625
+\c@Hfootnote=\count626
 )
 Package hyperref Info: Driver (autodetected): hluatex.
  ("C:/Program Files/MiKTeX/tex/latex/hyperref/hluatex.def"
 File: hluatex.def 2025-07-12 v7.01o Hyperref driver for luaTeX
-\Fld@listcount=\count611
-\c@bookmark@seq@number=\count612
+\Fld@listcount=\count627
+\c@bookmark@seq@number=\count628
 
 (C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/latex/rerunfilecheck/rerunfil
 echeck.sty
@@ -3481,17 +3497,17 @@ Library (tcolorbox): 'tcblistingsutf8.code.tex' version '6.9.0'
 ("C:/Program Files/MiKTeX/tex/latex/tcolorbox/tcblistings.code.tex"
 Library (tcolorbox): 'tcblistings.code.tex' version '6.9.0'
 ("C:/Program Files/MiKTeX/tex/latex/listings/listings.sty"
-\lst@mode=\count613
+\lst@mode=\count629
 \lst@gtempboxa=\box98
 \lst@token=\toks57
-\lst@length=\count614
+\lst@length=\count630
 \lst@currlwidth=\dimen371
-\lst@column=\count615
-\lst@pos=\count616
+\lst@column=\count631
+\lst@pos=\count632
 \lst@lostspace=\dimen372
 \lst@width=\dimen373
-\lst@newlines=\count617
-\lst@lineno=\count618
+\lst@newlines=\count633
+\lst@lineno=\count634
 \lst@maxwidth=\dimen374
 
 ("C:/Program Files/MiKTeX/tex/latex/listings/lstpatch.sty"
@@ -3499,8 +3515,8 @@ File: lstpatch.sty 2025/11/14 1.11b (Carsten Heinz)
 )
 ("C:/Program Files/MiKTeX/tex/latex/listings/lstmisc.sty"
 File: lstmisc.sty 2025/11/14 1.11b (Carsten Heinz)
-\c@lstnumber=\count619
-\lst@skipnumbers=\count620
+\c@lstnumber=\count635
+\lst@skipnumbers=\count636
 \lst@framebox=\box99
 )
 ("C:/Program Files/MiKTeX/tex/latex/listings/listings.cfg"
@@ -3519,7 +3535,7 @@ Library (tcolorbox): 'tcblistingscore.code.tex' version '6.9.0'
 ("C:/Program Files/MiKTeX/tex/latex/tcolorbox/tcbprocessing.code.tex"
 Library (tcolorbox): 'tcbprocessing.code.tex' version '6.9.0'
 )
-\c@tcblisting=\count621
+\c@tcblisting=\count637
 ))
 Package tcolorbox Info: Library `listingsutf8' is compatible with pdftex only. 
 Library `listings` is loaded instead. on input line 29.
@@ -3612,7 +3628,7 @@ Package babel Info: Non-standard hyphenation setup on input line 118.
 \babelcatcodetablenum=\catcodetable15
 \bbl@pattcodes=\catcodetable16
 )
-\babel@savecnt=\count622
+\babel@savecnt=\count638
 LaTeX Encoding Info:    Redeclaring text command \ij (encoding OT1) on input li
 ne 2068.
 LaTeX Encoding Info:    Redeclaring text command \IJ (encoding OT1) on input li
@@ -3750,16 +3766,16 @@ Package microtype Info: Loading generic protrusion settings for font family
 
 ("C:/Program Files/MiKTeX/tex/context/base/mkii/supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count623
+\scratchcounter=\count639
 \scratchdimen=\dimen376
 \scratchbox=\box100
-\nofMPsegments=\count624
-\nofMParguments=\count625
+\nofMPsegments=\count640
+\nofMParguments=\count641
 \everyMPshowfont=\toks58
-\MPscratchCnt=\count626
+\MPscratchCnt=\count642
 \MPscratchDim=\dimen377
-\MPnumerator=\count627
-\makeMPintoPDFobject=\count628
+\MPnumerator=\count643
+\makeMPintoPDFobject=\count644
 \everyMPtoPDFconversion=\toks59
 ) ("C:/Program Files/MiKTeX/tex/latex/epstopdf-pkg/epstopdf-base.sty"
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -3807,7 +3823,7 @@ Package hyperref Info: Link coloring ON on input line 70.
 \@outlinefile=\write5
 
 \openout5 = TFG.out
-\c@lstlisting=\count629
+\c@lstlisting=\count645
  (./cover.tex
 LaTeX Font Info:    Font shape `TU/LibertinusSans(0)/m/n' will be
 (Font)              scaled to size 12.0pt on input line 6.
@@ -3908,10 +3924,10 @@ Underfull \vbox (badness 3568) has occurred while \output is active []
  [14] [15
 
 
-] (./introduction.tex
+] [16] (./introduction.tex
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/sc' will be
 (Font)              scaled to size 12.0pt on input line 1.
- [16]
+ [17]
 Chapter 1.
 LaTeX Font Info:    Font shape `TU/LibertinusSans(0)/m/n' will be
 (Font)              scaled to size 60.0pt on input line 1.
@@ -3925,9 +3941,9 @@ LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/n' will be
 (Font)              scaled to size 9.6pt on input line 30.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/n' will be
 (Font)              scaled to size 7.2pt on input line 30.
-[17
+[18
 
-] [18]
+] [19]
 LaTeX Font Info:    Font shape `TU/DejaVuSansMono(0)/m/n' will be
 (Font)              scaled to size 9.60004pt on input line 115.
 Package microtype Info: Loading generic protrusion settings for font family
@@ -3936,12 +3952,12 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/it' will be
 (Font)              scaled to size 10.95pt on input line 121.
- [19] (./img/gantt_diagrama.tex
+ [20] (./img/gantt_diagrama.tex
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
 (Font)              scaled to size 10.95pt on input line 57.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/b/n' will be
 (Font)              scaled to size 10.95pt on input line 57.
-)) (./state_of_art.tex [20] [21]
+)) (./state_of_art.tex [21] [22]
 Chapter 2.
 
 Underfull \hbox (badness 1158) in paragraph at lines 37--47
@@ -3956,10 +3972,10 @@ LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/b/n' will be
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [22
+ [23
 
 ]
-[23] [24]
+[24] [25]
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/n' will be
 (Font)              scaled to size 10.95pt on input line 181.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/n' will be
@@ -3978,37 +3994,29 @@ LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/n' will be
 (Font)              scaled to size 5.0pt on input line 199.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
 (Font)              scaled to size 7.0pt on input line 199.
- [25] [26]
+ [26] [27]
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
 (Font)              scaled to size 9.6pt on input line 306.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
 (Font)              scaled to size 7.2pt on input line 306.
- [27] [28]
+ [28] [29]
 Underfull \hbox (badness 1769) in paragraph at lines 449--449
 |[]\TU/LibertinusSerif(0)/b/n/17.28 Train-ing sta-bil-i-sa-tion and reg-u-lar-i-
 sa-tion tech-
  []
 
-[29] [30] [31] [32]
-Underfull \vbox (badness 4779) has occurred while \output is active []
-
- [33]
-[34]
-Underfull \vbox (badness 1194) has occurred while \output is active []
-
- [35])
-(./methodology.tex [36]
+[30] [31] [32] [33] [34] [35]) [36] (./methodology.tex [37]
 Chapter 3.
-[37
+[38
 
-] [38] [39]
+] [39] [40]
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
 (Font)              scaled to size 6.0pt on input line 298.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/it' will be
 (Font)              scaled to size 6.0pt on input line 298.
- [40] [41] [42]
+ [41] [42] [43]
 <img/thesis_figures/distribution_histograms/target_prediction_histograms.png, i
-d=1374, 823.5495pt x 534.4695pt>
+d=1378, 823.5495pt x 534.4695pt>
 File: img/thesis_figures/distribution_histograms/target_prediction_histograms.p
 ng Graphic file (type png)
 <use img/thesis_figures/distribution_histograms/target_prediction_histograms.pn
@@ -4016,16 +4024,16 @@ g>
 Package luatex.def Info: img/thesis_figures/distribution_histograms/target_pred
 iction_histograms.png  used on input line 555.
 (luatex.def)             Requested size: 384.1096pt x 249.2842pt.
- [43]
+ [44]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [44<./img/thesis_figures/distribution_histograms/target_prediction_histograms.p
+ [45<./img/thesis_figures/distribution_histograms/target_prediction_histograms.p
 ng>]
-[45] [46]
+[46] [47]
 Underfull \vbox (badness 1028) has occurred while \output is active []
 
- [47]
-[48] (./prior_detail_overview.tex
+ [48]
+[49] (./prior_detail_overview.tex
 Underfull \hbox (badness 10000) in paragraph at lines 40--40
 \TU/LibertinusSerif(0)/m/n/10.95 two-ray prop-a-ga-
  []
@@ -4103,17 +4111,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 40--40
 
 Underfull \vbox (badness 4779) has occurred while \output is active []
 
- [49]
+ [50]
 Overfull \hbox (15.11209pt too wide) in paragraph at lines 54--56
 []\TU/LibertinusSerif(0)/m/n/12 the spread-prior mod-ule pro-vides frozen pri-or
 s for \TU/DejaVuSansMono(0)/m/n/12 delay_spread \TU/LibertinusSerif(0)/m/n/12 an
 d \TU/DejaVuSansMono(0)/m/n/12 angular_spread\TU/LibertinusSerif(0)/m/n/12 , 
  []
 
-[50]) [51] (./prior_detail_try78.tex [52] [53] [54]
+[51]) [52] (./prior_detail_try78.tex [53] [54] [55]
 Underfull \vbox (badness 1331) has occurred while \output is active []
 
- [55]
+ [56]
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/b/n' will be
 (Font)              scaled to size 10.95pt on input line 289.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/b/n' will be
@@ -4121,14 +4129,14 @@ LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/b/n' will be
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/b/n' will be
 (Font)              scaled to size 6.0pt on input line 289.
 
-[56]
+[57]
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/b/n' will be
 (Font)              scaled to size 12.0pt on input line 308.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/b/n' will be
 (Font)              scaled to size 9.6pt on input line 308.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/b/n' will be
 (Font)              scaled to size 7.2pt on input line 308.
- [57]
+ [58]
 Underfull \hbox (badness 2573) in paragraph at lines 383--383
 []|\TU/LibertinusSerif(0)/b/n/10 Stored / com-puted
  []
@@ -4158,7 +4166,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 383--383
 \TU/LibertinusSerif(0)/m/n/10 dependent resid-u-als not cap-tured
  []
 
-[58] [59] [60] [61] [62] [63]
+[59] [60] [61] [62] [63] [64]
 Underfull \hbox (badness 2318) in paragraph at lines 864--864
 []|\TU/LibertinusSerif(0)/m/n/10.95 Keeps the cal-i-brated model an-
  []
@@ -4183,7 +4191,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 864--864
 []|\TU/LibertinusSerif(0)/m/n/10.95 Elevation-dependent shad-ow-ing
  []
 
-[64] [65]
+[65] [66]
 Overfull \hbox (7.26611pt too wide) detected at line 953
 [][][][] [] \TU/LibertinusMath-Regular.otf(1)/m/n/12 𝑓[](𝑖[], 𝑗[]) = 
 𝐼(𝑖 + 𝑝,  𝑗 + 𝑝) − 𝐼(𝑖 − 𝑝 − 1,  𝑗 + 𝑝) 
@@ -4191,11 +4199,11 @@ Overfull \hbox (7.26611pt too wide) detected at line 953
 − 𝑝 − 1)
  []
 
-[66] [67] [68]
+[67] [68] [69]
 Underfull \vbox (badness 1577) has occurred while \output is active []
 
- [69]
-[70]) [71] (./prior_detail_try79.tex [72] [73]
+ [70]
+[71]) [72] (./prior_detail_try79.tex [73] [74]
 Underfull \hbox (badness 1314) in paragraph at lines 144--144
 []|\TU/LibertinusSerif(0)/m/n/10.95 UAV-height ba-sis and quadratic
  []
@@ -4218,7 +4226,7 @@ Underfull \hbox (badness 1038) in paragraph at lines 144--144
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [74]
+ [75]
 Underfull \hbox (badness 10000) in paragraph at lines 163--163
 []|\TU/LibertinusSerif(0)/m/n/10.95 Lets range mat-ter dif-fer-ently
  []
@@ -4226,7 +4234,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 163--163
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [75]
+ [76]
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
 (Font)              scaled to size 5.0pt on input line 182.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/b/it' will be
@@ -4234,30 +4242,30 @@ LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/b/it' will be
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/it' will be
 (Font)              scaled to size 8.0pt on input line 195.
 
-[76] [77]
+[77] [78]
 Underfull \vbox (badness 4467) has occurred while \output is active []
 
- [78])
+ [79])
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [79]
-(./prior_detail_try80.tex [80] [81] [82]
+ [80]
+(./prior_detail_try80.tex [81] [82] [83]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [83]
-[84] [85])) (./results.tex [86]
+ [84]
+[85] [86])) (./results.tex [87]
 Chapter 4.
-[87
+[88
 
 ]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [88]
-[89] [90]
+ [89]
+[90] [91]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [91]
-<img/thesis_figures/results_addendum/try76_los_vs_nlos.png, id=1883, 724.7075pt
+ [92]
+<img/thesis_figures/results_addendum/try76_los_vs_nlos.png, id=1887, 724.7075pt
  x 341.275pt>
 File: img/thesis_figures/results_addendum/try76_los_vs_nlos.png Graphic file (t
 ype png)
@@ -4268,9 +4276,9 @@ png  used on input line 341.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [92]
-<img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png, id=188
-9, 894.542pt x 491.436pt>
+ [93]
+<img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png, id=189
+3, 894.542pt x 491.436pt>
 File: img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png Gr
 aphic file (type png)
 <use img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png>
@@ -4280,13 +4288,13 @@ distribution.png  used on input line 356.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [93<./img/thesis_figures/results_addendum/try76_los_vs_nlos.png><./img/thesis_f
+ [94<./img/thesis_figures/results_addendum/try76_los_vs_nlos.png><./img/thesis_f
 igures/results_addendum/try76_los_vs_nlos_distribution.png>]
 Underfull \vbox (badness 3199) has occurred while \output is active []
 
- [94]
+ [95]
 <img/thesis_figures/results_addendum/try79_quantized_spread_example.png, id=190
-3, 1445.4pt x 722.7pt>
+7, 1445.4pt x 722.7pt>
 File: img/thesis_figures/results_addendum/try79_quantized_spread_example.png Gr
 aphic file (type png)
 <use img/thesis_figures/results_addendum/try79_quantized_spread_example.png>
@@ -4298,8 +4306,8 @@ LaTeX Font Info:    Font shape `TU/DejaVuSansMono(0)/m/it' will be
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [95]
-<img/thesis_figures/results_addendum/try77_per_expert.png, id=1908, 731.1315pt 
+ [96]
+<img/thesis_figures/results_addendum/try77_per_expert.png, id=1912, 731.1315pt 
 x 341.275pt>
 File: img/thesis_figures/results_addendum/try77_per_expert.png Graphic file (ty
 pe png)
@@ -4308,9 +4316,9 @@ Package luatex.def Info: img/thesis_figures/results_addendum/try77_per_expert.p
 ng  used on input line 499.
 (luatex.def)             Requested size: 426.79135pt x 199.21545pt.
 
-[96<./img/thesis_figures/results_addendum/try79_quantized_spread_example.png><./
-img/thesis_figures/results_addendum/try77_per_expert.png>] [97]
-<img/thesis_figures/results_addendum/try78_by_topology.png, id=1930, 734.3435pt
+[97<./img/thesis_figures/results_addendum/try79_quantized_spread_example.png><./
+img/thesis_figures/results_addendum/try77_per_expert.png>] [98]
+<img/thesis_figures/results_addendum/try78_by_topology.png, id=1934, 734.3435pt
  x 341.275pt>
 File: img/thesis_figures/results_addendum/try78_by_topology.png Graphic file (t
 ype png)
@@ -4321,13 +4329,13 @@ png  used on input line 646.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [98]
+ [99]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [99<./img/thesis_figures/results_addendum/try78_by_topology.png>] [100]
+ [100<./img/thesis_figures/results_addendum/try78_by_topology.png>] [101]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [101]
+ [102]
 Package pgfplots info on input line 897: Using 'lua backend=false' for axis: x 
 coord trafo unsupported.
 Package pgfplots info on input line 906: Using 'lua backend=false' for axis: x 
@@ -4337,7 +4345,7 @@ coord trafo unsupported.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [102]
+ [103]
 Package pgfplots info on input line 999: Using 'lua backend=false' for axis: x 
 coord trafo unsupported.
 Package pgfplots info on input line 1014: Using 'lua backend=false' for axis: x
@@ -4347,7 +4355,7 @@ Package pgfplots info on input line 1029: Using 'lua backend=false' for axis: x
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [103]
+ [104]
 Package pgfplots info on input line 1059: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
 Package pgfplots info on input line 1068: Using 'lua backend=false' for axis: x
@@ -4369,14 +4377,14 @@ Package pgfplots info on input line 1169: Using 'lua backend=false' for axis: x
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [104]
+ [105]
 Package pgfplots info on input line 1199: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
 Package pgfplots info on input line 1211: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
 Package pgfplots info on input line 1223: Using 'lua backend=false' for axis: x
  coord trafo unsupported.
-<img/thesis_figures/try80_appendix_panels/try80_main_panel.png, id=1972, 867.24
+<img/thesis_figures/try80_appendix_panels/try80_main_panel.png, id=1976, 867.24
 pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_main_panel.png Graphic fil
 e (type png)
@@ -4385,7 +4393,7 @@ Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_main_pa
 nel.png  used on input line 1252.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
 
-[105] [106]) (./sustainability.tex [107] [108<./img/thesis_figures/try80_appendi
+[106] [107]) (./sustainability.tex [108] [109<./img/thesis_figures/try80_appendi
 x_panels/try80_main_panel.png>]
 Chapter 5.
 
@@ -4443,67 +4451,63 @@ Underfull \hbox (badness 10000) in paragraph at lines 33--33
 \TU/LibertinusSerif(0)/m/n/12 of over-claim-ing
  []
 
-[109
+[110
 
 ]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [110]
-[111]) (./conclusions.tex [112]
+ [111]
+[112]) (./conclusions.tex [113]
 Chapter 6.
-[113
+[114
 
-]
-Underfull \vbox (badness 4859) has occurred while \output is active []
+] [115] [116]) [117] [118
 
- [114]
-[115]) [116] [117
-
-] [118]
+] [119]
 Underfull \hbox (badness 1675) in paragraph at lines 178--178
 []\TU/LibertinusSerif(0)/m/n/12 Fer-daous Tarhouni, Muneer AlZubi, and Mohamed-S
 lim Alouini. \TU/LibertinusSerif(0)/m/it/12 Ma-chine
  []
 
-[119]
+[120]
 Overfull \hbox (11.47919pt too wide) in paragraph at lines 178--178
 []\TU/LibertinusSerif(0)/m/n/12 Çağkan Ya-par et al. \TU/LibertinusSerif(0)/m
 /it/12 The First Pathloss Ra-dio Map Pre-dic-tion Chal-lenge\TU/LibertinusSerif
 (0)/m/n/12 . arXiv:2310.07658.
  []
 
-(./appendices.tex [120]
+(./appendices.tex [121]
 Appendix A.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [121
+ [122
 
 ]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [122]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [123]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [124]
-[125] [126] [127]
-Appendix B.
-[128
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-]
-Appendix C.
+ [125]
+[126] [127] [128]
+Appendix B.
 [129
 
 ]
-Appendix D.
+Appendix C.
 [130
 
-] [131]
+]
+Appendix D.
+[131
+
+] [132]
 <img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovia_samp
-le_13213_6x3.png, id=2251, 867.24pt x 1589.94pt>
+le_13213_6x3.png, id=2255, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovia
 _sample_13213_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovia_
@@ -4511,10 +4515,10 @@ sample_13213_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_o
 pen_low_ant_Segovia_sample_13213_6x3.png  used on input line 482.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
- [132<./img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovi
+ [133<./img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovi
 a_sample_13213_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Segovia_samp
-le_13215_6x3.png, id=2257, 867.24pt x 1589.94pt>
+le_13215_6x3.png, id=2261, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Segovia
 _sample_13215_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Segovia_
@@ -4522,10 +4526,10 @@ sample_13215_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_o
 pen_mid_ant_Segovia_sample_13215_6x3.png  used on input line 491.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
- [133<./img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Segovi
+ [134<./img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Segovi
 a_sample_13215_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Nazareth_sa
-mple_10722_6x3.png, id=2263, 867.24pt x 1589.94pt>
+mple_10722_6x3.png, id=2267, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Nazare
 th_sample_10722_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Nazaret
@@ -4533,10 +4537,10 @@ h_sample_10722_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_o
 pen_high_ant_Nazareth_sample_10722_6x3.png  used on input line 500.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
- [134<./img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Nazar
+ [135<./img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Nazar
 eth_sample_10722_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Dubrovnik_s
-ample_05288_6x3.png, id=2269, 867.24pt x 1589.94pt>
+ample_05288_6x3.png, id=2273, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Dubrov
 nik_sample_05288_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Dubrovn
@@ -4544,10 +4548,10 @@ ik_sample_05288_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_m
 ixed_low_ant_Dubrovnik_sample_05288_6x3.png  used on input line 509.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
- [135<./img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Dubro
+ [136<./img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Dubro
 vnik_sample_05288_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_sample
-_10828_6x3.png, id=2275, 867.24pt x 1589.94pt>
+_10828_6x3.png, id=2279, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_s
 ample_10828_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_sa
@@ -4555,10 +4559,10 @@ mple_10828_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_m
 ixed_mid_ant_Nice_sample_10828_6x3.png  used on input line 518.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
- [136<./img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_
+ [137<./img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_
 sample_10828_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Nice_sampl
-e_10814_6x3.png, id=2281, 867.24pt x 1589.94pt>
+e_10814_6x3.png, id=2285, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Nice_
 sample_10814_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Nice_s
@@ -4566,10 +4570,10 @@ ample_10814_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_m
 ixed_high_ant_Nice_sample_10814_6x3.png  used on input line 527.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
- [137<./img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Nice
+ [138<./img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Nice
 _sample_10814_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chiang_Mai_
-sample_04519_6x3.png, id=2287, 867.24pt x 1589.94pt>
+sample_04519_6x3.png, id=2291, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chiang
 _Mai_sample_04519_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chiang_
@@ -4577,10 +4581,10 @@ Mai_sample_04519_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_d
 ense_low_ant_Chiang_Mai_sample_04519_6x3.png  used on input line 536.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
- [138<./img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chian
+ [139<./img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chian
 g_Mai_sample_04519_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis_sampl
-e_14651_6x3.png, id=2293, 867.24pt x 1589.94pt>
+e_14651_6x3.png, id=2297, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis_
 sample_14651_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis_s
@@ -4588,10 +4592,10 @@ ample_14651_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_d
 ense_mid_ant_Tunis_sample_14651_6x3.png  used on input line 545.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
- [139<./img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis
+ [140<./img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis
 _sample_14651_6x3.png>]
 <img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Tunis_samp
-le_14694_6x3.png, id=2299, 867.24pt x 1589.94pt>
+le_14694_6x3.png, id=2303, 867.24pt x 1589.94pt>
 File: img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Tunis
 _sample_14694_6x3.png Graphic file (type png)
 <use img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Tunis_
@@ -4599,10 +4603,10 @@ sample_14694_6x3.png>
 Package luatex.def Info: img/thesis_figures/try80_appendix_panels/try80_panel_d
 ense_high_ant_Tunis_sample_14694_6x3.png  used on input line 554.
 (luatex.def)             Requested size: 320.95319pt x 588.41415pt.
- [140<./img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Tuni
+ [141<./img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Tuni
 s_sample_14694_6x3.png>]
 Appendix E.
-[141
+[142
 
 
 
@@ -4614,9 +4618,9 @@ Appendix E.
 
 
 
-] [142]
+] [143]
 Appendix F.
-<img/thesis_figures/ckm_generator/ckm_generator_app_controls.png, id=2315, 1606
+<img/thesis_figures/ckm_generator/ckm_generator_app_controls.png, id=2319, 1606
 .0pt x 953.5625pt>
 File: img/thesis_figures/ckm_generator/ckm_generator_app_controls.png Graphic f
 ile (type png)
@@ -4627,10 +4631,10 @@ trols.png  used on input line 669.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [143
+ [144
 
 ]
-<img/thesis_figures/ckm_generator/ckm_generator_app_result_top.png, id=2322, 16
+<img/thesis_figures/ckm_generator/ckm_generator_app_result_top.png, id=2326, 16
 06.0pt x 953.5625pt>
 File: img/thesis_figures/ckm_generator/ckm_generator_app_result_top.png Graphic
  file (type png)
@@ -4641,9 +4645,9 @@ ult_top.png  used on input line 684.
 
 Underfull \vbox (badness 1354) has occurred while \output is active []
 
- [144<./img/thesis_figures/ckm_generator/ckm_generator_app_controls.png><./img/t
+ [145<./img/thesis_figures/ckm_generator/ckm_generator_app_controls.png><./img/t
 hesis_figures/ckm_generator/ckm_generator_app_result_top.png>]
-<img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png, id=2329, 
+<img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png, id=2333, 
 1084.05pt x 375.804pt>
 File: img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png Graph
 ic file (type png)
@@ -4651,8 +4655,8 @@ ic file (type png)
 Package luatex.def Info: img/thesis_figures/ckm_generator/ckm_generator_predict
 ion_joint.png  used on input line 698.
 (luatex.def)             Requested size: 426.79733pt x 147.9564pt.
- [145<./img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png>] [
-146]
+ [146<./img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png>] [
+147]
 Underfull \hbox (badness 1584) in paragraph at lines 835--844
 \TU/DejaVuSansMono(0)/m/n/12 --height\TU/LibertinusSerif(0)/m/n/12 , \TU/DejaVu
 SansMono(0)/m/n/12 --out\TU/LibertinusSerif(0)/m/n/12 , \TU/DejaVuSansMono(0)/m
@@ -4680,8 +4684,8 @@ uSansMono(0)/m/n/12 --image-values-are-metres\TU/LibertinusSerif(0)/m/n/12 , \T
 U/DejaVuSansMono(0)/m/n/12 --meters-per-pixel\TU/LibertinusSerif(0)/m/n/12 ,
  []
 
-[147] [148]
-<img/thesis_figures/ckm_generator/ckm_generator_output_tree.png, id=2350, 2208.
+[148] [149]
+<img/thesis_figures/ckm_generator/ckm_generator_output_tree.png, id=2354, 2208.
 25pt x 1505.625pt>
 File: img/thesis_figures/ckm_generator/ckm_generator_output_tree.png Graphic fi
 le (type png)
@@ -4689,7 +4693,7 @@ le (type png)
 Package luatex.def Info: img/thesis_figures/ckm_generator/ckm_generator_output_
 tree.png  used on input line 991.
 (luatex.def)             Requested size: 426.78262pt x 290.98814pt.
-<img/thesis_figures/ckm_generator/ckm_generator_output_visuals.png, id=2351, 20
+<img/thesis_figures/ckm_generator/ckm_generator_output_visuals.png, id=2355, 20
 67.725pt x 1279.78125pt>
 File: img/thesis_figures/ckm_generator/ckm_generator_output_visuals.png Graphic
  file (type png)
@@ -4700,8 +4704,8 @@ visuals.png  used on input line 1001.
 
 Underfull \vbox (badness 1009) has occurred while \output is active []
 
- [149<./img/thesis_figures/ckm_generator/ckm_generator_output_tree.png>]
-<img/thesis_figures/ckm_generator/ckm_generator_output_metadata.png, id=2357, 1
+ [150<./img/thesis_figures/ckm_generator/ckm_generator_output_tree.png>]
+<img/thesis_figures/ckm_generator/ckm_generator_output_metadata.png, id=2361, 1
 706.375pt x 1154.3125pt>
 File: img/thesis_figures/ckm_generator/ckm_generator_output_metadata.png Graphi
 c file (type png)
@@ -4722,8 +4726,8 @@ Overfull \hbox (33.87508pt too wide) in paragraph at lines 1019--1029
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [150<./img/thesis_figures/ckm_generator/ckm_generator_output_visuals.png><./img
-/thesis_figures/ckm_generator/ckm_generator_output_metadata.png>]) [151] [152
+ [151<./img/thesis_figures/ckm_generator/ckm_generator_output_visuals.png><./img
+/thesis_figures/ckm_generator/ckm_generator_output_metadata.png>]) [152] [153
 
 ] (./TFG.aux)
  ***********
@@ -4731,23 +4735,23 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `TFG.out' has not changed.
-(rerunfilecheck)             Checksum: E768C396B4729DC6999CF647FA4D33A7;33806.
+(rerunfilecheck)             Checksum: 28924CBCBEB7CFC5EFD55C0C5871D4C2;33762.
 Package logreq Info: Writing requests to 'TFG.run.xml'.
 
 \openout1 = TFG.run.xml
 )
 
 Here is how much of LuaTeX's memory you used:
- 94056 strings out of 476081
+ 95545 strings out of 476081
  195455,4101490 words of node,token memory allocated
  2442 words of node memory still in use:
    8 hlist, 2 vlist, 2 rule, 1 local_par, 5 glue, 4 kern, 1 penalty, 4 sub_mlist
 , 3 glyph, 518 attribute, 75 glue_spec, 260 attribute_list, 2 write, 39 pdf_acti
 on nodes
-   avail lists: 1:24,2:14292,3:4761,4:439,5:830,6:199,7:12767,8:121,9:2908,10:43
-,11:956,12:10
- 114183 multiletter control sequences out of 65536+600000
- 183 fonts using 76376923 bytes
+   avail lists: 1:15,2:14327,3:4761,4:437,5:834,6:199,7:12778,8:123,9:2908,10:43
+,11:959,12:10
+ 115671 multiletter control sequences out of 65536+600000
+ 183 fonts using 76376691 bytes
  89i,19n,146p,1195b,2804s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/windows/fonts/dejavusansmono-oblique.ttf><C:/Users/guill/AppData/Local/Progr
 ams/MiKTeX/fonts/opentype/public/libertinus-fonts/LibertinusSerif-BoldItalic.otf
@@ -4766,9 +4770,9 @@ pe/public/libertinus-fonts/LibertinusSerif-Bold.otf><C:/Users/guill/AppData/Loca
 l/Programs/MiKTeX/fonts/opentype/public/libertinus-fonts/LibertinusSans-Regular.
 otf><C:/Users/guill/AppData/Local/Programs/MiKTeX/fonts/opentype/public/libertin
 us-fonts/LibertinusSans-Bold.otf>
-Output written on TFG.pdf (152 pages, 29233016 bytes).
+Output written on TFG.pdf (153 pages, 29233109 bytes).
 
-PDF statistics: 2477 PDF objects out of 2487 (max. 8388607)
- 653 named destinations out of 1000 (max. 1048576)
+PDF statistics: 2481 PDF objects out of 2487 (max. 8388607)
+ 654 named destinations out of 1000 (max. 1048576)
  1208 words of extra memory for PDF output out of 10000 (max. 100000000)
 

@@ -15,7 +15,7 @@ training.
 
 The project is formulated as dense image-to-image regression on
 $513\times513$ pixel city maps. The input is primarily a building-height
-topology map, a LoS/NLoS mask, and the UAV antenna height. The outputs studied
+topology map, a geometrically derived LoS/NLoS mask, and the UAV antenna height. The outputs studied
 through the project are path loss, delay spread, and angular spread. The final
 line of work combines interpretable ML-calibrated priors with deep residual
 models, so the neural network learns corrections around a strong physical
@@ -40,7 +40,7 @@ decisions. A few dB of path-loss RMSE is compatible with practical link-budget
 margins, and tens of ns of delay spread and tens of degrees of angular spread
 stay well inside typical multipath spread values reported by 3GPP TR\,38.901
 for UMa/UMi scenarios. The proposal also fixed a secondary engineering goal,
-namely a 10--100$\times$ reduction in channel-map generation time compared to
+namely a 10 to 100$\times$ reduction in channel-map generation time compared to
 a ray tracer. Chapter~\ref{chap:results} checks this explicitly by comparing
 the measured inference time of the final model with the approximate ray-tracing
 time needed to create the CKM dataset.

@@ -9,10 +9,10 @@ hybrid neural approaches, and (iv)~distributional and multi-target channel
 modelling. A final section frames fair-comparison criteria and positions the final model
 within the literature.
 
-%---------------------------------------------------------------------
+% Section separator
 \section{Channel knowledge maps as the thesis context}
 \label{sec:soa_ckm_context}
-%---------------------------------------------------------------------
+% Section separator
 
 The term channel knowledge map (CKM) refers to a site-specific database of
 location-tagged channel knowledge, such as path loss, channel gain, angles, or
@@ -27,7 +27,7 @@ Recent CKM literature also clarifies why the thesis uses a large offline
 ray-traced dataset rather than sparse field samples. Xu and Zeng
 \cite{ckmdata2024} analyse how CKM construction error depends on spatial sample
 density and on the number of neighbouring samples used for online prediction,
-showing the explicit cost--accuracy trade-off of measurement-driven CKM
+showing the explicit cost/accuracy trade-off of measurement-driven CKM
 construction. For a thesis whose goal is to learn dense \(513\times513\)
 targets under city holdout, this motivates the simulation-first route: it
 provides full supervision everywhere, while the final model is still evaluated
@@ -45,15 +45,15 @@ used in this thesis sits in the same data-driven tradition, but differs in its
 continuous UAV height conditioning, real-city holdout split, and simultaneous
 path-loss, delay-spread, and angular-spread targets.
 
-%---------------------------------------------------------------------
+% Section separator
 \section{Classical propagation models and channel statistics}
 \label{sec:soa_classical}
-%---------------------------------------------------------------------
+% Section separator
 
 \subsection{Free-space and two-ray propagation}
 
 The most fundamental path-loss term is the \emph{free-space path loss} (FSPL),
-which depends only on carrier frequency~$f$ and Tx--Rx distance~$d$:
+which depends only on carrier frequency~$f$ and Tx-Rx distance~$d$:
 \begin{equation}
   \mathrm{PL}_{\mathrm{FSPL}} = 20\log_{10}(d) + 20\log_{10}(f)
     + 20\log_{10}\!\left(\frac{4\pi}{c}\right).
@@ -70,12 +70,12 @@ adding the direct and reflected fields before converting to dB
 where $\Gamma$ is the reflection coefficient and $\Delta\phi$ is the phase
 difference determined by the path-length difference.  A calibrated two-ray model
 fitted to the CKM dataset achieves approximately
-$1.75\,\mathrm{dB}$ RMSE on line-of-sight (LoS) pixels~--- the deterministic
+$1.75\,\mathrm{dB}$ RMSE on line-of-sight (LoS) pixels; the deterministic
 radial structure explains most LoS variance without any neural network.
 
 \subsection{Empirical and semi-empirical models}
 
-Empirical models such as the Okumura--Hata and COST-231/Hata formulas extend
+Empirical models such as the Okumura-Hata and COST-231/Hata formulas extend
 FSPL by incorporating frequency, antenna heights, and city-type correction terms
 \cite{rappaport}.  While computationally cheap, they are calibrated on specific
 frequency bands and morphology types, limiting accuracy when the geometry
@@ -139,10 +139,10 @@ exceeding~40 in several morphology classes.  A Gaussian model cannot represent
 this shape faithfully, motivating the mixture and distributional approach used
 by the final residual GMM-head model.
 
-%---------------------------------------------------------------------
+% Section separator
 \section{Deep learning for radio-map estimation}
 \label{sec:soa_dl}
-%---------------------------------------------------------------------
+% Section separator
 
 \subsection{Image-to-image translation baselines}
 
@@ -163,7 +163,7 @@ Radio Map Prediction Challenge \cite{icassp2023challenge}.  It uses a deep
 encoder-decoder with skip connections, trained and evaluated on the
 RadioMap3DSeer dataset~\cite{dataset2212}.  RadioMap3DSeer consists of
 procedurally generated city maps with transmitters fixed at rooftop height
-(6--20~m) and building interior pixels masked to zero error.
+(6 to 20~m) and building interior pixels masked to zero error.
 
 The challenge metric is RMSE in normalised image units.  The RadioMap3DSeer
 image mapping clips path gain to the range
@@ -202,7 +202,7 @@ These numbers are not directly comparable to the CKM evaluation for three
 structural reasons: (i)~fixed Tx height eliminates the continuous UAV
 height-conditioning challenge; (ii)~same-distribution train/test scenes allow
 implicit generator-pattern memorisation; (iii)~the 36~dB window is much narrower
-than CKM's effective 65--130~dB range, intrinsically compressing RMSE values.
+than CKM's effective 65 to 130~dB range, intrinsically compressing RMSE values.
 The table is therefore useful as a scale reference for modern image-to-image
 radio-map predictors, not as evidence that the final CKM task is solved by those
 architectures. In particular, the final model must predict over unseen real-city
@@ -250,10 +250,10 @@ require massive training corpora and compute budgets well beyond the scope of a
 single CKM dataset.  They are cited here as the horizon against which this thesis
 positions its own contributions.
 
-%---------------------------------------------------------------------
+% Section separator
 \section{Physics-informed and hybrid neural approaches}
 \label{sec:soa_physics}
-%---------------------------------------------------------------------
+% Section separator
 
 \subsection{Geometry-assisted and diffraction-aware deep learning}
 
@@ -311,10 +311,10 @@ TX-centred geometric features and local morphology statistics. The final
 residual GMM-head model unifies all three targets under a single shared network anchored
 to both priors.
 
-%---------------------------------------------------------------------
+% Section separator
 \section{Channel statistics prediction: delay spread and angular spread}
 \label{sec:soa_stats}
-%---------------------------------------------------------------------
+% Section separator
 
 \subsection{Empirical models for spread parameters}
 
@@ -350,8 +350,8 @@ log-domain ridge prior as an anchor before training the residual neural head.
 
 \subsection{Distributional mismatch and the spike-plus-exponential problem}
 
-The spike-plus-exponential shape~--- a Dirac-like concentration near zero
-(the LoS-dominated case) plus a heavy exponential tail (NLoS multipath)~--- was
+The spike-plus-exponential shape, consisting of a Dirac-like concentration near zero
+(the LoS-dominated case) plus a heavy exponential tail (NLoS multipath), was
 confirmed empirically on the CKM dataset.  Skewness exceeds~5 and excess kurtosis
 exceeds~40 for both delay and angular spread in several topology classes.  A
 single Gaussian or even a symmetric loss function does not fit this family.
@@ -369,10 +369,10 @@ under-correction, near-zero correction, and over-correction modes.  This
 motivates the Stage-A distribution head in the path-loss and spread
 predecessors, and the lighter GMM-3 residual head carried into the final model.
 
-%---------------------------------------------------------------------
+% Section separator
 \section{Distribution-aware and multi-target modelling}
 \label{sec:soa_distribution}
-%---------------------------------------------------------------------
+% Section separator
 
 \subsection{Heteroscedastic uncertainty}
 
@@ -424,7 +424,7 @@ Conditional diffusion models applied to radio maps \cite{radiodiff2025} generate
 physically plausible stochastic variations in deep shadow zones rather than
 predicting a single blurry mean.  The iterative denoising procedure can be
 conditioned on topology maps, transmitter locations, and height values.
-RadioDiff reports $0.5$--$2\,\mathrm{dB}$ improvement over deterministic
+RadioDiff reports $0.5$ to $2\,\mathrm{dB}$ improvement over deterministic
 regression baselines, primarily in NLoS-heavy regions where the posterior
 distribution over path loss is genuinely multi-modal.  These models are
 computationally expensive at inference time and are listed as a future-work
@@ -445,10 +445,10 @@ residual, delay-spread residual, and angular-spread residual respectively, all
 anchored to their corresponding physical priors.  The multi-task loss is a
 weighted sum of per-target NLL terms, with weights tuned on the validation set.
 
-%---------------------------------------------------------------------
+% Section separator
 \section{Training stabilisation and regularisation techniques}
 \label{sec:soa_training}
-%---------------------------------------------------------------------
+% Section separator
 
 \subsection{Stochastic weight averaging}
 
@@ -474,16 +474,16 @@ Feature-wise linear modulation (FiLM) \cite{wicopg2025,fmrme2026} conditions
 the activations of a neural network on a scalar or vector input by applying
 learned affine transforms $\gamma(c) \cdot \textbf{h} + \beta(c)$ to
 intermediate feature maps.  Sinusoidal positional encoding of the UAV height
-scalar (using log-spaced frequencies over the full 12--478~m range) is fed into
+scalar (using log-spaced frequencies over the full 12 to 478~m range) is fed into
 FiLM layers at multiple encoder depths.  This ensures that the UAV altitude
 continuously modulates the activation statistics rather than being handled as a
 discrete bin, which is critical when the effective propagation regime changes
 substantially with height.
 
-%---------------------------------------------------------------------
+% Section separator
 \section{Key benchmarks and fair-comparison protocol}
 \label{sec:soa_benchmarks}
-%---------------------------------------------------------------------
+% Section separator
 
 \subsection{Why headline numbers cannot be compared directly}
 
@@ -556,7 +556,7 @@ remain. A fair comparison therefore has to report the target, regime, masking
 policy, and split together; otherwise an apparently lower RMSE can simply mean
 that an easier quantity was measured.
 
-\subsection{Tarhouni et al.\ --- measured suburban path-loss prediction}
+\subsection{Tarhouni et al.: measured suburban path-loss prediction}
 
 Tarhouni et al.\ \cite{tarhouni2025} study machine-learning-based path-loss
 prediction in the sub-\SI{6}{GHz} band using a suburban campus environment.  The
@@ -577,7 +577,7 @@ the same model family looks much better under in-distribution challenge
 conditions. This supports the decision to report the final model under a strict
 city-holdout protocol.
 
-\subsection{AIRMap --- adaptive digital-twin radio maps}
+\subsection{AIRMap: adaptive digital-twin radio maps}
 
 AIRMap \cite{airmap2025} is an adaptive U-Net autoencoder processing
 $512 \times 512$ elevation maps for ultra-low-latency digital-twin
@@ -599,11 +599,11 @@ less mature than AIRMap as a deployable digital-twin system, but it attacks a
 harder multi-target UAV setting and keeps physical priors visible instead of
 using only a black-box elevation-to-path-gain network.
 
-\subsection{Gao et al.\ --- multi-layer segmentation with corridor weighting}
+\subsection{Gao et al.: multi-layer segmentation with corridor weighting}
 
 Gao et al.\ \cite{gao2026} propose a ResNet-based outdoor path-loss predictor
 with Tx depth maps, Rx depth maps, a distance map, and a weighting map that
-emphasises the direct Tx--Rx corridor.  Using the ICASSP~2023 outdoor data,
+emphasises the direct Tx-Rx corridor.  Using the ICASSP~2023 outdoor data,
 Table~III of the paper reports their method at \SI{5.59}{dB} RMSE, compared
 to \SI{8.09}{dB} for PPNet, \SI{9.56}{dB} for RPNet, and \SI{8.72}{dB} for a
 twelve-layer Vision Transformer baseline; Table~II reports \SI{12.19}{dB}
@@ -621,7 +621,7 @@ per-Rx corridor map remains future work because generating one for every
 receiver pixel at \(513\times513\) resolution is substantially more expensive
 than using the current Tx-centred distance and obstruction features.
 
-\subsection{PathFinder --- multi-transmitter domain adaptation}
+\subsection{PathFinder: multi-transmitter domain adaptation}
 
 PathFinder \cite{pathfinder2025} tackles distribution shift via disentangled
 feature encoding and mask-guided low-rank attention, reporting the lowest MSE
@@ -643,8 +643,8 @@ not only on shuffled samples from the same city.
 \subsection{ICASSP 2025 indoor challenge}
 
 The ICASSP 2025 Indoor Pathloss Challenge \cite{icassp2025indoor} presents a
-structurally different problem~--- dense wall-penetration NLoS effects in bounded
-interior spaces~--- but its public results are a useful warning against
+structurally different problem, dense wall-penetration NLoS effects in bounded
+interior spaces, but its public results are a useful warning against
 over-interpreting sub-\SI{2}{dB} outdoor challenge numbers.  The official result
 page reports that the winning SIP2Net submission obtains a weighted-average RMSE
 of \SI{9.411}{dB}; IPP-Net reaches \SI{9.501}{dB}; TerRaIn reaches
@@ -662,12 +662,12 @@ developed precisely because improving that wall required a different
 formulation: strong priors, regime separation, and residual distribution
 modelling.
 
-%---------------------------------------------------------------------
+% Section separator
 \section{Emerging techniques for closing the NLoS gap}
 \label{sec:soa_emerging}
-%---------------------------------------------------------------------
+% Section separator
 
-The $9$--$10\,\mathrm{dB}$ barrier common to both indoor and outdoor NLoS is not
+The $9$ to $10\,\mathrm{dB}$ barrier common to both indoor and outdoor NLoS is not
 a dataset scaling artefact; it reflects the fundamental difficulty of inferring
 volumetric wave propagation from a 2D building height map.  Closing this gap
 requires either richer inputs, stronger physical constraints, or stochastic
@@ -689,14 +689,14 @@ city-holdout protocol to be quantified.}
 1 & Knife-edge diffraction prior channel & \cite{geomDL2024} & Medium \\
 2 & PINN Helmholtz residual loss & ReVeal \cite{reveal2025} & High \\
 3 & Dual LoS/NLoS residual heads & PMHHNet diagnostics & Low \\
-4 & Test-time adaptation on target city & RadioPiT \cite{radiopit2025} & Low--Med \\
+4 & Test-time adaptation on target city & RadioPiT \cite{radiopit2025} & Low to medium \\
 5 & Diffusion-based residual refinement & RadioDiff \cite{radiodiff2025} & High \\
 6 & Foundation-model pre-training & FM-RME \cite{fmrme2026} & Very high \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Items~1--3 already exist in partial form inside the PMHHNet diagnostics. Items~4--6
+Items~1 to 3 already exist in partial form inside the PMHHNet diagnostics. Items~4 to 6
 are roadmap items requiring additional data, compute, or infrastructure beyond
 the scope of a single-GPU training setup.
 
@@ -769,10 +769,10 @@ The final model combines the pieces that survived those comparisons: calibrated 
 explicit regimes, distribution-aware residuals, and a city-holdout evaluation
 contract.
 
-%---------------------------------------------------------------------
+% Section separator
 \section{Position of the Final Model in the Literature}
 \label{sec:soa_position}
-%---------------------------------------------------------------------
+% Section separator
 
 \subsection{What is novel about the final model}
 
@@ -797,8 +797,8 @@ the thesis literature review addresses simultaneously:
         in a pixel-dense city-holdout setting.
 
   \item \textbf{Frozen physics anchors.}  Two independently calibrated
-        physics-based priors~--- the enhanced two-ray model for path
-        loss and the log-space ridge regression for both spreads~--- are
+        physics-based priors, the enhanced two-ray model for path
+        loss and the log-space ridge regression for both spreads, are
         pre-computed and frozen.  The neural network predicts residuals with
         respect to these anchors rather than raw targets.  This reduces the
         effective learning range, improves interpretability, and allows the
@@ -818,9 +818,9 @@ the thesis literature review addresses simultaneously:
 The final model does not claim to replace full ray-tracing in arbitrary scenarios. The
 CKM dataset is a ray-traced simulation, and the thesis target is to reproduce
 its outputs as accurately as possible under a strict generalisation protocol.
-Physical effects that are not represented in the 2D topology inputs~--- such as
+Physical effects that are not represented in the 2D topology inputs, such as
 material-dependent penetration loss, antenna radiation patterns, or atmospheric
-effects~--- are outside the prediction scope.
+effects, are outside the prediction scope.
 
 The thesis also does not claim parity with RadioMap3DSeer challenge numbers.
 As discussed in Section~\ref{sec:soa_benchmarks}, those numbers apply to a

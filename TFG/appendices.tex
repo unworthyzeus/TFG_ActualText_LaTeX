@@ -67,7 +67,7 @@ Try & Public definition \\
 \toprule
 Try & Public definition \\
 \midrule
-23 & Delay/angular multiscale branch, transferring the Try 21--22 multiscale idea to spread-related targets. \\
+23 & Delay/angular multiscale branch, transferring the Try 21/22 multiscale idea to spread-related targets. \\
 24 & Intermediate spread-branch continuation before attention was added; retained as a small internal pivot. \\
 25 & Bottleneck-attention spread/path-loss branch, testing whether global context in the compressed representation helped. \\
 26 & Delay/angular gradient target/loss run, making spread prediction more sensitive to spatial change rather than only absolute value. \\
@@ -131,7 +131,7 @@ Try & Public definition \\
 54 & First full partitioned-expert PMHHNet branch: six topology experts, topology classifier, continuous height conditioning, and no-data head. \\
 55 & Same partitioned PMHHNet layout as Try 54, but with the objective changed toward final-map RMSE plus auxiliary no-data loss and EMA. \\
 56 & Try 26 U-Net family converted into six topology experts, with topology-mask input, no-data output, and stronger configurable dropout. \\
-57 & Partitioned PMHHNet final-map-RMSE branch deployed across the six topology experts after the Try 54--55 objective change. \\
+57 & Partitioned PMHHNet final-map-RMSE branch deployed across the six topology experts after the Try 54 and Try 55 objective change. \\
 58 & Try 26 topology-expert generator-only profile: topology mask, no-data BCE head, stronger dropout, AdamW/EMA defaults, and rewind-to-best. \\
 59 & Second Try 26 topology-expert generator-only pass under the Try 59 branch, later kept as a separate spread/prior source rather than merged with Try 58. \\
 60 & No-prior ablation of the Try 57 family: direct path-loss prediction from topology, LoS, distance, and height without formula/confidence prior channels. \\
@@ -148,7 +148,7 @@ Try & Public definition \\
 71 & Heteroscedastic uncertainty diagnostic; identified hard pixels but did not solve the map error. \\
 72 & Try 70-era open-sparse-lowrise expert continuation, checking whether the multi-scale PMHHNet refinements transferred to the hardest low-rise sparse regime. \\
 73 & Open-sparse-lowrise plus open-sparse-vertical continuation, broadening the Try 72 late-PMHHNet diagnostic to vertical sparse cases. \\
-74 & Band-45--55 all-city LoS/NLoS histogram experts, used to expose distribution mismatch and high-tail underprediction. \\
+74 & Band 45 to 55 all-city LoS/NLoS histogram experts, used to expose distribution mismatch and high-tail underprediction. \\
 75 & All-city small-LoS expert and decisive histogram diagnosis: NLoS path loss and spread tails required distribution-aware modelling. \\
 \bottomrule
 \end{tabularx}
@@ -179,7 +179,7 @@ Try & Public definition \\
 
 \subsection{Early image-to-image baselines}
 
-Tries 1--8 treated CKM prediction as aligned image-to-image regression on the
+Tries 1 to 8 treated CKM prediction as aligned image-to-image regression on the
 same \(513\times513\) grid used by the targets. This was a natural first
 formulation because the input maps and output maps are spatially registered.
 The early U-Net and pix2pix-style cGAN runs established the data pipeline and
@@ -192,13 +192,13 @@ ground mask, not texture realism.
 
 \subsection{Geometry conditioning and artifact control}
 
-Tries 9--14 introduced explicit UAV-height conditioning and LoS/NLoS-aware
+Tries 9 to 14 introduced explicit UAV-height conditioning and LoS/NLoS-aware
 diagnosis. Height could not remain hidden in the sample identity because it
 changes path length and reflection geometry. Likewise, LoS and NLoS pixels
 follow different propagation laws, so mixing them into one global number made
 failure analysis unreliable.
 
-Tries 15--22 then attacked visible artifacts and missing large-scale structure.
+Tries 15 to 22 then attacked visible artifacts and missing large-scale structure.
 GroupNorm was better suited to the small full-resolution batches than
 BatchNorm, distance channels exposed radial geometry directly, Try 20 isolated
 bilinear upsampling, Try 21 isolated multiscale supervision, and Try 22
@@ -209,7 +209,7 @@ pixels.
 
 \subsection{Masking and evaluation contract}
 
-Tries 33--40 are important mainly because they changed the metric contract.
+Tries 33 to 40 are important mainly because they changed the metric contract.
 Pixels inside buildings are not valid receiver locations, so after Try 33 the
 project excluded \(topology\_map \ne 0\) pixels from training loss,
 validation/test metrics, and error-map visualization. This made the task
@@ -223,7 +223,7 @@ than as a homogeneous leaderboard.
 
 \subsection{Prior-guided residual learning}
 
-Tries 41--50 moved from direct prediction toward residual learning over a
+Tries 41 to 50 moved from direct prediction toward residual learning over a
 physical estimate. Try 41 made the residual formulation explicit. The raw
 formula prior was poor, around \SI{67.23}{dB}, but train-only regime-aware
 calibration improved it to about \SI{24.16}{dB}. This showed that physical
@@ -240,7 +240,7 @@ missing scalar correction.
 
 \subsection{PMHHNet and expert-routing phase}
 
-Tries 51--66 expanded the residual idea into PMHHNet and topology-expert
+Tries 51 to 66 expanded the residual idea into PMHHNet and topology-expert
 training. The important knobs were physical channels, height FiLM, high-
 frequency paths, six topology experts, no-data handling, obstruction features,
 coarse-to-fine refinement, and controlled no-prior ablations. The rows in the
@@ -256,7 +256,7 @@ still dominated the physical error.
 
 \subsection{Regularization and distribution diagnosis}
 
-Tries 67--75 tested whether late training refinements could rescue the
+Tries 67 to 75 tested whether late training refinements could rescue the
 PMHHNet family. Geometry-assisted channels, high-frequency-path fixes,
 multi-scale quad heads, uncertainty heads, EMA/SWA-like discipline, and
 histogram-focused experts all helped diagnosis. They made the failure mode
@@ -381,11 +381,11 @@ same prior definition.
 Topic & Location in the main text \\
 \midrule
 Ground-pixel mask and RMSE contract &
-Chapter~3, Eqs.~\ref{eq:ground_mask}--\ref{eq:rmse}. \\
+Chapter~3, Eqs.~\ref{eq:ground_mask} to~\ref{eq:rmse}. \\
 Residual-learning formulation &
 Chapter~3, Eq.~\ref{eq:prior_residual}. \\
 Height conditioning and FiLM modulation &
-Chapter~3, Eqs.~\ref{eq:sin_film}--\ref{eq:film_math}. \\
+Chapter~3, Eqs.~\ref{eq:sin_film} to~\ref{eq:film_math}. \\
 Path-loss LoS prior &
 Section~\ref{sec:try78_detail}, especially Eqs.~\ref{eq:fspl},
 \ref{eq:field_sum}, \ref{eq:c2ray}, and \ref{eq:pl_los}. \\
@@ -426,19 +426,19 @@ The six inspection stages, in order, are:
 
 \begin{enumerate}
 \setlength\itemsep{0.15em}
-  \item \textbf{Ground truth} --- the ray-traced reference field.
-  \item \textbf{Frozen calibrated prior} --- the calibrated analytic prior
+  \item \textbf{Ground truth}: the ray-traced reference field.
+  \item \textbf{Frozen calibrated prior}: the calibrated analytic prior
         that the final residual GMM-head model receives as an input channel and anchors to.
-  \item \textbf{Final residual GMM-head model prediction} --- the residual-over-prior output
-        of the joint model, in the same colour scale as columns 1--2.
-  \item \textbf{Context} --- topology height for the path-loss row, NLoS
+  \item \textbf{Final residual GMM-head model prediction}: the residual-over-prior output
+        of the joint model, in the same colour scale as columns 1 and 2.
+  \item \textbf{Context}: topology height for the path-loss row, NLoS
         support for the delay-spread row, and LoS support for the
         angular-spread row.
-  \item \textbf{Prior error} --- the signed difference
+  \item \textbf{Prior error}: the signed difference
         \(\mathrm{Prior}-\mathrm{GT}\). Red indicates a prior overshoot,
         blue indicates a prior undershoot, and white indicates where the
         analytic prior is already accurate.
-  \item \textbf{Model correction} --- the signed residual
+  \item \textbf{Model correction}: the signed residual
         \(\mathrm{Model}-\mathrm{Prior}\) that the neural head applies on
         top of the prior. If the model has learned a useful residual,
         row~6 should \emph{anti-correlate} with row~5: where the prior
@@ -981,7 +981,7 @@ metadata/
 \end{verbatim}
 }
 
-Figures~\ref{fig:ckm_generator_output_tree}--\ref{fig:ckm_generator_output_metadata}
+Figures~\ref{fig:ckm_generator_output_tree} and~\ref{fig:ckm_generator_output_metadata}
 show the concrete artifacts produced by the example HDF5 run used for the
 appendix screenshots. The tree view makes explicit that the same run contains
 visual outputs, compressed numeric arrays, and metadata.

@@ -157,7 +157,7 @@ e^{-j\left(k\bigl(d_{\mathrm{ref}}(x)-d_{\mathrm{LoS}}(x)\bigr)+\phi(h_{\mathrm{
 \begin{itemize}
 \item $\rho(h_{\mathrm{tx}})$: amplitude of the ground reflection. A value of
       $\rho = 0$ recovers pure FSPL. The fitted values are $\rho \approx
-      0.49$--$0.56$ for heights 10--100 m, consistent with a moderate
+      0.49$ to $0.56$ for heights 10 to 100 m, consistent with a moderate
       ground-reflection coefficient.
 \item $d_{\mathrm{LoS}}(x)/d_{\mathrm{ref}}(x)$: path amplitude ratio. This
       is always $\le 1$ since the reflected path is longer; it corrects for
@@ -540,8 +540,8 @@ $h_{\mathrm{tx}}$ (m) & $\rho^*$ & $\phi^*$ (rad) & $b^*$ (dB)\\
 \end{tabular}
 \end{table}
 
-The dominant pattern is $\rho \approx 0.49$--$0.56$ with $\phi \approx 0$
-for heights 10--100 m, meaning a moderate-amplitude in-phase ground
+The dominant pattern is $\rho \approx 0.49$ to $0.56$ with $\phi \approx 0$
+for heights 10 to 100 m, meaning a moderate-amplitude in-phase ground
 reflection. Biases are near-zero ($< 0.05$ dB) for these bins. At very high
 altitudes ($>140$ m), the increasing positive bias and higher $\rho$ values
 reflect sparser training data; those bins are stabilized by Gaussian
@@ -557,7 +557,7 @@ smoothing.
   xmin=0, xmax=200,
   ymin=0.4, ymax=0.65,
   grid=major,
-  title={Effective reflection amplitude vs.\ UAV height (10--200 m)}
+  title={Effective reflection amplitude vs.\ UAV height (10 to 200 m)}
 ]
 \addplot[mark=*, thick, blue] coordinates {
   (10,0.5605)(20,0.5242)(30,0.4950)(40,0.4721)
@@ -570,7 +570,7 @@ smoothing.
 \caption[Effective ground-reflection amplitude as a function of UAV height.]
 {Effective ground-reflection amplitude $\rho^*$ as a function of UAV
 height, fitted independently per 5 m height bin. Values are stable in the
-range $0.47$--$0.56$ for 10--130 m, then rise slightly at higher altitudes
+range $0.47$ to $0.56$ for 10 to 130 m, then rise slightly at higher altitudes
 where training data is sparser.}
 \label{fig:rho_vs_h}
 \end{figure}

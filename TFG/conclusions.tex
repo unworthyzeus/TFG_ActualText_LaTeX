@@ -12,10 +12,13 @@ separating LoS and NLoS behaviour, and using calibrated priors where the data
 clearly followed a known propagation structure.
 
 The original numerical targets were met by the finished ML-calibrated priors. The path-loss prior
-achieved \SI{1.9246}{dB} overall path-loss RMSE, with \SI{1.7516}{dB} LoS and
-\SI{3.3967}{dB} NLoS on the held-out cities. The spread priors achieved \SI{28.10}{ns}
-delay-spread RMSE and \SI{13.74}{\degree} angular-spread RMSE on the same
-evaluation contract. The final residual GMM-head model then improved those frozen
+achieved \SI{1.9246}{dB} overall path-loss RMSE on its standalone 30\%
+evaluation split (\SI{1.9383}{dB} when re-evaluated as the frozen prior on the
+final 14-city unseen test split), with \SI{1.7516}{dB} LoS and
+\SI{3.3967}{dB} NLoS on the held-out cities. The spread priors achieved
+\SI{28.10}{ns} delay-spread RMSE and \SI{13.74}{\degree} angular-spread RMSE
+on the final 14-city unseen test split. The final residual GMM-head model
+(retaining the GMM-head residual parameterisation) then improved those frozen
 anchors on the unseen test cities, reaching \SI{1.6519}{dB} path-loss RMSE,
 \SI{26.5570}{ns} delay-spread RMSE, and \SI{11.3854}{\degree}
 angular-spread RMSE.
