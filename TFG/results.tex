@@ -929,41 +929,54 @@ for delay spread, and \(20^\circ\) for angular spread.}
 \subsubsection*{Inference-time sanity check}
 
 The secondary runtime objective can be closed with an order-of-magnitude check.
-The appendix benchmark times only model inference on exported \(513\times513\)
-HDF5 samples. On an RTX~3050~Ti Laptop GPU, full-precision fp32 inference takes
-\SIrange{6.94}{6.99}{s} per map, while mixed precision takes
-\SIrange{5.46}{5.61}{s}. The original CKM ray-tracing generation took roughly
-three weeks for 16{,}180 samples; interpreted as 21 days, this is about
-\SI{112.14}{s} per sample.
+The appendix benchmark times the full computational generator path on ten
+exported \(513\times513\) HDF5 samples: mask/prior preparation and final-model
+prediction, excluding only the one-time checkpoint load. The local machine has
+an AMD Ryzen~5~5600H CPU (6 cores, 12 logical threads, PyTorch using 6 compute
+threads) and an RTX~3050~Ti Laptop GPU with 4\,GiB of VRAM and 2{,}560 CUDA
+cores. The original CKM ray-tracing generation took roughly three weeks for
+16{,}180 samples on a desktop RTX~2080~Ti, which has 11\,GiB of VRAM and
+4{,}352 CUDA cores; interpreted as 21 days, this is about \SI{112.14}{s} per
+sample.
 
 \begin{table}[H]
 \centering
-\caption[Inference time and ray-tracing comparison.]
-{Approximate runtime comparison for one \(513\times513\) CKM sample. The ray-tracing
-value is derived from the dataset-generation time, while the model values are
-the measured inference-only timings reported in Appendix~\ref{chap:ckm_generator}.}
+\caption[Full-pipeline runtime and ray-tracing comparison.]
+{Approximate full-pipeline runtime comparison for one \(513\times513\) CKM
+sample. The ray-tracing value is derived from the dataset-generation time, while
+the surrogate values are measured on ten exported HDF5 samples and include
+mask/prior preparation plus model prediction. Checkpoint loading is excluded.}
 \label{tab:inference_time_comparison}
-\small
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.2cm}cc>{\raggedright\arraybackslash}X}
+\scriptsize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.8cm}p{1.45cm}p{2.2cm}cc>{\raggedright\arraybackslash}X}
 \toprule
-Method & Time per map & 16{,}180 maps & Interpretation \\
+Method & Mode & Resource note & Time per map & 16{,}180 maps & Interpretation \\
 \midrule
-Ray tracing, RTX~2080~Ti desktop & \(\approx\)\SI{112.14}{s} & \(\approx\)21 days & Dataset-generation baseline. \\
-Final model, RTX~3050~Ti Laptop GPU, fp32 & \SIrange{6.94}{6.99}{s} & \SIrange{31.19}{31.42}{h} & About \(16.0\) to \(16.2\times\) faster than the ray-tracing baseline. \\
-Final model, RTX~3050~Ti Laptop GPU, mixed precision & \SIrange{5.46}{5.61}{s} & \SIrange{24.54}{25.21}{h} & About \(20.0\) to \(20.5\times\) faster than the ray-tracing baseline. \\
-Final model, CPU & Not benchmarked & N/A & Supported as a fallback runtime, but no CPU speed-up claim is made. \\
+Ray tracing, RTX~2080~Ti desktop & simulator & 11\,GiB VRAM; 4{,}352 CUDA cores & \(\approx\)\SI{112.14}{s} & \(\approx\)21 days & Dataset-generation baseline. \\
+Final model, Ryzen~5~5600H CPU & fp32, \(b=1\) & 6 cores / 12 threads; PyTorch 6 threads & \SIrange{5.60}{6.50}{s} & \SIrange{25.18}{29.20}{h} & CPU fallback, still about \(17\) to \(20\times\) faster than ray tracing. \\
+Final model, RTX~3050~Ti Laptop GPU & fp32, \(b=1\) & 4\,GiB VRAM; \(\approx\)1.79\,GiB peak & \SI{1.40}{s} & \SI{6.27}{h} & About \(80\times\) faster than ray tracing. \\
+Final model, RTX~3050~Ti Laptop GPU & mixed (fp16), \(b=1\) & \(\approx\)1.56\,GiB peak & \SI{1.14}{s} & \SI{5.11}{h} & About \(99\times\) faster than ray tracing; best local setting. \\
+Final model, RTX~3050~Ti Laptop GPU & mixed (fp16), \(b=2\) & \(\approx\)2.65\,GiB peak & \SI{1.17}{s} & \SI{5.25}{h} & No throughput gain on the 4\,GiB laptop GPU. \\
+Final model, RTX~3050~Ti Laptop GPU & mixed (fp16), \(b=4\) & \(\approx\)5.11\,GiB reported peak & \SI{6.36}{s} & \SI{28.57}{h} & Slower because the run exceeds physical VRAM and spills into shared system RAM. \\
 \bottomrule
 \end{tabularx}
 \end{table}
+\normalsize
 
 This comparison excludes the one-time training and calibration cost. It only
 answers the deployment-style question: after training, replacing repeated
 ray-tracing queries by the final surrogate reduces the marginal generation time
-by roughly one order of magnitude, and by about \(16\times\) even in the
-full-precision GPU setting. The comparison is conservative for the surrogate:
-the neural inference was measured on a laptop RTX~3050~Ti, whereas the
-ray-tracing generation used a desktop RTX~2080~Ti. A same-class desktop-GPU
-comparison would likely widen the inference advantage rather than reduce it.
+by at least one order of magnitude, and by nearly two orders of magnitude in the
+best measured local GPU setting. The batch-size stress test is important: larger
+batches are only useful when the whole working set remains in VRAM. On this
+4\,GiB RTX~3050~Ti Laptop GPU, \(b=4\) over-subscribes VRAM and becomes slower
+because data is paged through normal system RAM. The comparison is still
+conservative for the surrogate: the neural pipeline was measured on a laptop
+GPU with 4\,GiB of VRAM and 2{,}560 CUDA cores, whereas the ray-tracing
+generation used a desktop RTX~2080~Ti with 11\,GiB of VRAM and 4{,}352 CUDA
+cores. A same-class desktop-GPU surrogate benchmark would be expected to allow
+larger batches and widen the inference advantage, but it was not available
+locally.
 
 \section{Qualitative Analysis}
 

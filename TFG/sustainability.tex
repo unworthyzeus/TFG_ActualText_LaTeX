@@ -71,6 +71,17 @@ or urban map.
 The surrogate can also be used for fast what-if analyses during planning:
 it is not a replacement for ray tracing in every scenario, but it can evaluate
 many UAV heights or urban alternatives at much lower marginal energy cost.
+The runtime measurements in Chapter~\ref{chap:results} make this concrete for
+the present dataset scale. Generating the 16{,}180 CKM samples with the
+ray-tracing baseline took approximately three weeks on a desktop RTX~2080~Ti
+server. At a rough active-system power of \SI{700}{W}, this corresponds to
+about \SI{350}{kWh}. The trained surrogate can process the same number of
+samples in about \SI{5.1}{h} on the local RTX~3050~Ti laptop in the measured
+mixed (fp16) setting. Even with a simple \SI{80}{W} laptop-power approximation,
+this is only about \SI{0.4}{kWh}. These figures are not a full life-cycle
+assessment, but they show the main sustainability advantage of the approach:
+once the model is trained, repeated CKM generation moves from a multi-week
+desktop-server workload to a same-day laptop workload.
 
 
 \textbf{Risks and limitations.} The environmental benefit depends on reuse. If

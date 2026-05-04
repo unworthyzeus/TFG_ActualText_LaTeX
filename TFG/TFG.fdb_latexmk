@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber TFG"] 1777902412.27807 "TFG.bcf" "TFG.bbl" "TFG" 1777903590.63564 0
-  "TFG.bcf" 1777903588 115653 f4325869c90e1304ec7fff26c6b70fbe "lualatex"
+["biber TFG"] 1777902412.27807 "TFG.bcf" "TFG.bbl" "TFG" 1777906610.54877 0
+  "TFG.bcf" 1777906606 115653 f4325869c90e1304ec7fff26c6b70fbe "lualatex"
   "TFG.bib" 1777293932 16619 f514e1046c8b09039dc1f144c9a94bbb ""
   (generated)
   "TFG.bbl"
   "TFG.blg"
   (rewritten before read)
-["lualatex"] 1777903549.59784 "TFG.tex" "TFG.pdf" "TFG" 1777903590.63657 0
+["lualatex"] 1777906539.77116 "TFG.tex" "TFG.pdf" "TFG" 1777906610.55105 0
   "C:/Program Files/MiKTeX/fonts/tfm/public/cm/cmmi10.tfm" 1136768653 1528 abec98dbc43e172678c11b3b9031252a ""
   "C:/Program Files/MiKTeX/fonts/tfm/public/cm/cmmi12.tfm" 1136768653 1524 4414a8315f39513458b80dfc63bff03a ""
   "C:/Program Files/MiKTeX/fonts/tfm/public/cm/cmmi5.tfm" 1136768653 1508 c4419b1e413bcd6205bf37867d782a47 ""
@@ -408,17 +408,17 @@
   "C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/luatex/lua-uni-algos/lua-uni-parse.lua" 1757240288 2308 aff4e1bb2614ef0261975c5391bf7f84 ""
   "C:/Users/guill/AppData/Local/Programs/MiKTeX/tex/luatex/lua-uni-algos/lua-uni-stage-tables.lua" 1757240288 9371 89eb22947a99a1769dcef3c53305728d ""
   "C:/Users/guill/AppData/Roaming/MiKTeX/tex/generic/config/language.dat" 1777298800 2269 c2be9efecb8e53facf8213ae101f16af ""
-  "TFG.aux" 1777903588 81111 f7e27cd415521644ca33e9b4ef074122 "lualatex"
+  "TFG.aux" 1777906606 81125 21cad872f79a34ad87a38d7475a50d1b "lualatex"
   "TFG.bbl" 1777902423 85331 70f24b0abf7e7eb8b6ee12b8e6074a57 "biber TFG"
-  "TFG.lof" 1777903588 6367 af60e2fb8861ea8b6b4a466dfb74570e "lualatex"
-  "TFG.lot" 1777903588 7418 4a52d9c579a70af3d957147c8af14f77 "lualatex"
-  "TFG.out" 1777903588 33762 28924cbcbeb7cfc5efd55c0c5871d4c2 "lualatex"
-  "TFG.run.xml" 1777903588 2326 940abf726f2f4a9b6aecd266b5df7e02 "lualatex"
+  "TFG.lof" 1777906606 6367 af60e2fb8861ea8b6b4a466dfb74570e "lualatex"
+  "TFG.lot" 1777906606 7425 b7281dcca24d15c1d63640c0c98197e3 "lualatex"
+  "TFG.out" 1777906606 33762 28924cbcbeb7cfc5efd55c0c5871d4c2 "lualatex"
+  "TFG.run.xml" 1777906606 2326 940abf726f2f4a9b6aecd266b5df7e02 "lualatex"
   "TFG.tex" 1777549009 5702 3542371658bc2605d9b1f0745ffe7245 ""
-  "TFG.toc" 1777903588 19869 ab6106c1222b1c865cc798c948bca692 "lualatex"
+  "TFG.toc" 1777906606 19869 3fc3344c59002e2a7cdb5ea1d463da84 "lualatex"
   "acknowlegdements.tex" 1777901945 1155 166236a0bfb2b967a7cba3d518ba4fed ""
   "acronyms.tex" 1777902355 5985 f9a236c08cb53f6d38bedce6e3eb3270 ""
-  "appendices.tex" 1777903543 51341 6206fee2c939549420b83223d87215ec ""
+  "appendices.tex" 1777906292 52605 cf87c9431e35d2aee0f6798b0263a84a ""
   "c:/windows/fonts/dejavusansmono-oblique.ttf" 1469872272 251932 56bfb30701c9368de61ee129118d11d0 ""
   "c:/windows/fonts/dejavusansmono.ttf" 1469872272 340712 10f57e7d2eed49922011f78d5e50845d ""
   "conclusions.tex" 1777902750 12974 c07f1baaa816f1eac55a714ebd5602ff ""
@@ -459,12 +459,12 @@
   "prior_detail_try78.tex" 1777903247 59022 1cfd4c96c671c0433dca8d9ff440c8e7 ""
   "prior_detail_try79.tex" 1777544717 20532 66d7733a34a8193c540626d56ac9f55b ""
   "prior_detail_try80.tex" 1777551536 30506 a3d10b2f7c0ee4917f89fa3c1a3d8f97 ""
-  "results.tex" 1777903199 65369 839e459c254821f78f2b4bcc854d45b0 ""
+  "results.tex" 1777906412 66663 ad035083227d6693d84b9117ab9c7a6f ""
   "revision_history.tex" 1777478799 402 f72fcac120365de0d9af53d50bcf07ee ""
   "revision_history_en.tex" 1777478799 1394 98db8630001fd6d79c9ac64f05f1a974 ""
   "state_of_art.tex" 1777903233 49190 4526d976b05435f1d79388a26e2cb442 ""
   "summary.tex" 1777544566 3797 6f1d28fa74fd6b29a76dc3bdb9d3aa18 ""
-  "sustainability.tex" 1777903021 10674 7b78ee080927e339b3bcd4c50f33f15e ""
+  "sustainability.tex" 1777906488 11482 4f61fe39178514f41751a6cab39f4f10 ""
   (generated)
   "TFG.aux"
   "TFG.bcf"
