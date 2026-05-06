@@ -657,6 +657,24 @@ application is designed for inspection, rapid manual testing, and demonstrations
 with uploaded files. The command-line interface uses the same backend and is
 intended for reproducible scripted runs, validation, and larger batches.
 
+\section{Public source record and checkpoint artifact}
+
+The reproducibility record is split across public repositories. The standalone
+generator is maintained in \texttt{CKMGenerator}; the final training and
+evaluation code is collected in \texttt{Final\_Code\_TFG}; the broader
+experimental history is preserved in
+\texttt{TFGAllProgress\_Tries\_and\_Attempts}; and the thesis source is kept in
+\texttt{TFG\_ActualText\_LaTeX}
+\cite{moreno2026ckmgenerator,moreno2026finalcode,moreno2026tfgprogress,moreno2026tfgtext}.
+
+The final checkpoint loaded by the generator is
+\texttt{models/best\_model.pt}. Since this file is larger than GitHub's regular
+single-file limit for ordinary Git history, it is treated as a large model
+artifact rather than normal source code. The generator therefore accepts either
+the local default checkpoint path or an explicit \texttt{--checkpoint} path,
+while the public source repository remains small enough to clone and inspect
+normally.
+
 \section{Interface overview}
 
 Figure~\ref{fig:ckm_generator_controls} shows the main controls exposed by the

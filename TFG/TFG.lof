@@ -7,7 +7,7 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {3.1}{\ignorespaces Distribution-first path-loss system. Stage A learns global GMM parameters from pooled features and Stage B predicts per-pixel assignments.}}{41}{figure.caption.24}%
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Distribution-first spread-prediction system.}}{42}{figure.caption.25}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Diagnostic target and prediction histograms.}}{45}{figure.caption.29}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Diagnostic target and prediction histograms.}}{44}{figure.caption.29}%
 \contentsline {figure}{\numberline {3.4}{\ignorespaces Overall prior-anchored pipeline with bounded DNN corrections.}}{51}{figure.caption.37}%
 \contentsline {figure}{\numberline {3.5}{\ignorespaces Two-ray geometry.}}{54}{figure.caption.41}%
 \contentsline {figure}{\numberline {3.6}{\ignorespaces Effective ground-reflection amplitude as a function of UAV height.}}{62}{figure.caption.60}%

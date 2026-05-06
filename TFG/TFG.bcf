@@ -2477,6 +2477,14 @@
     <bcf:citekey order="114" intorder="2">izydorczyk2019</bcf:citekey>
     <bcf:citekey order="117" intorder="1">khawaja_survey</bcf:citekey>
     <bcf:citekey order="117" intorder="2">tr38901</bcf:citekey>
+    <bcf:citekey order="118" intorder="1" nocite="1">moreno2026ckmgenerator</bcf:citekey>
+    <bcf:citekey order="119" intorder="2" nocite="1">moreno2026finalcode</bcf:citekey>
+    <bcf:citekey order="120" intorder="3" nocite="1">moreno2026tfgprogress</bcf:citekey>
+    <bcf:citekey order="121" intorder="4" nocite="1">moreno2026tfgtext</bcf:citekey>
+    <bcf:citekey order="122" intorder="1">moreno2026ckmgenerator</bcf:citekey>
+    <bcf:citekey order="122" intorder="2">moreno2026finalcode</bcf:citekey>
+    <bcf:citekey order="122" intorder="3">moreno2026tfgprogress</bcf:citekey>
+    <bcf:citekey order="122" intorder="4">moreno2026tfgtext</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nyt">

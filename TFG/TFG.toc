@@ -66,17 +66,17 @@
 \contentsline {paragraph}{High-Frequency (HF) Stem.}{40}{paragraph*.22}%
 \contentsline {paragraph}{Continuous Sinusoidal FiLM Conditioning.}{40}{paragraph*.23}%
 \contentsline {subsection}{\numberline {3.4.2}Limitations and Legacy}{40}{subsection.3.4.2}%
-\contentsline {section}{\numberline {3.5}Distribution-first modelling}{41}{section.3.5}%
+\contentsline {section}{\numberline {3.5}Distribution-first modelling}{40}{section.3.5}%
 \contentsline {subsection}{\numberline {3.5.1}How to construct a good deep-learning model for radio maps}{42}{subsection.3.5.1}%
 \contentsline {subsubsection}{A prior is useful, but not the core requirement}{42}{subsubsection*.26}%
 \contentsline {subsubsection}{Path loss: LoS has structure, NLoS has a narrow but noisy law with outliers}{43}{subsubsection*.27}%
 \contentsline {subsubsection}{Delay spread and angular spread: NLoS is the important regime}{44}{subsubsection*.28}%
 \contentsline {subsubsection}{Why the cGAN line failed}{45}{subsubsection*.30}%
-\contentsline {subsubsection}{Why PMNet and PMHHNet were not enough}{46}{subsubsection*.31}%
+\contentsline {subsubsection}{Why PMNet and PMHHNet were not enough}{45}{subsubsection*.31}%
 \contentsline {subsubsection}{Design rules that survived}{46}{subsubsection*.32}%
 \contentsline {section}{\numberline {3.6}GMM component count and distribution choice}{47}{section.3.6}%
 \contentsline {section}{\numberline {3.7}Loss functions of the final pipeline}{48}{section.3.7}%
-\contentsline {section}{\numberline {3.8}Training hyperparameters}{49}{section.3.8}%
+\contentsline {section}{\numberline {3.8}Training hyperparameters}{48}{section.3.8}%
 \contentsline {section}{\numberline {3.9}Final residual GMM-head model training progression}{49}{section.3.9}%
 \contentsline {section}{\numberline {3.10}Final priors: overview and literature basis}{50}{section.3.10}%
 \contentsline {subsection}{\numberline {3.10.1}High-level architecture}{51}{subsection.3.10.1}%
@@ -98,7 +98,7 @@
 \contentsline {subsubsection}{Calibrated LoS prior}{57}{subsubsection*.52}%
 \contentsline {subsection}{\numberline {3.11.2}Calibration of the LoS two-ray model}{59}{subsection.3.11.2}%
 \contentsline {subsubsection}{Data preparation}{59}{subsubsection*.54}%
-\contentsline {subsubsection}{Grid search for $(\mitrho , \mitphi )$}{60}{subsubsection*.55}%
+\contentsline {subsubsection}{Grid search for $(\rho , \phi )$}{60}{subsubsection*.55}%
 \contentsline {subsubsection}{Post-fit Gaussian smoothing across height bins}{61}{subsubsection*.56}%
 \contentsline {subsubsection}{Radial residual correction}{61}{subsubsection*.57}%
 \contentsline {subsubsection}{Fitted parameter values}{61}{subsubsection*.58}%
@@ -206,12 +206,13 @@
 \contentsline {section}{\numberline {E.2}Final residual GMM-head model input tensor}{142}{section.E.2}%
 \contentsline {section}{\numberline {E.3}Bounded residual decoder}{142}{section.E.3}%
 \contentsline {chapter}{\numberline {F}CKM Generator Interface and Reproducibility Tool}{144}{appendix.F}%
-\contentsline {section}{\numberline {F.1}Interface overview}{144}{section.F.1}%
-\contentsline {section}{\numberline {F.2}How the tool is run}{146}{section.F.2}%
-\contentsline {section}{\numberline {F.3}Accepted inputs}{146}{section.F.3}%
-\contentsline {section}{\numberline {F.4}Configurable controls}{147}{section.F.4}%
-\contentsline {section}{\numberline {F.5}Image scaling and raw numeric data}{148}{section.F.5}%
-\contentsline {section}{\numberline {F.6}Model-grid fitting and interpolation}{148}{section.F.6}%
-\contentsline {section}{\numberline {F.7}Mask policies}{149}{section.F.7}%
-\contentsline {section}{\numberline {F.8}Outputs}{149}{section.F.8}%
-\contentsline {section}{\numberline {F.9}Performance controls}{152}{section.F.9}%
+\contentsline {section}{\numberline {F.1}Public source record and checkpoint artifact}{144}{section.F.1}%
+\contentsline {section}{\numberline {F.2}Interface overview}{144}{section.F.2}%
+\contentsline {section}{\numberline {F.3}How the tool is run}{146}{section.F.3}%
+\contentsline {section}{\numberline {F.4}Accepted inputs}{146}{section.F.4}%
+\contentsline {section}{\numberline {F.5}Configurable controls}{147}{section.F.5}%
+\contentsline {section}{\numberline {F.6}Image scaling and raw numeric data}{148}{section.F.6}%
+\contentsline {section}{\numberline {F.7}Model-grid fitting and interpolation}{148}{section.F.7}%
+\contentsline {section}{\numberline {F.8}Mask policies}{149}{section.F.8}%
+\contentsline {section}{\numberline {F.9}Outputs}{149}{section.F.9}%
+\contentsline {section}{\numberline {F.10}Performance controls}{152}{section.F.10}%
