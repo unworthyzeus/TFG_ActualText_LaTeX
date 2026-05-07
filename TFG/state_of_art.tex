@@ -77,7 +77,7 @@ radial structure explains most LoS variance without any neural network.
 
 Empirical models such as the Okumura-Hata and COST-231/Hata formulas extend
 FSPL by incorporating frequency, antenna heights, and city-type correction terms
-\cite{rappaport}.  While computationally cheap, they are calibrated on specific
+\cite{rappaport,cost231}.  While computationally cheap, they are calibrated on specific
 frequency bands and morphology types, limiting accuracy when the geometry
 departs from the fitting dataset.
 
@@ -184,7 +184,6 @@ paper \cite{icassp2023challenge,dataset2212}.\protect\footnotemark}
 \toprule
 \textbf{Method} & \textbf{RMSE (norm.)} & \textbf{True RMSE (dB)} \\
 \midrule
-RMTransformer \cite{rmtransformer2025} & 0.0270 & 0.97 \\
 PMNet \cite{pmnet2023} & 0.0383 & 1.38 \\
 PPNet baseline \cite{icassp2023challenge} & 0.0507 & 1.83 \\
 \bottomrule
@@ -219,18 +218,20 @@ setting.
 
 \subsection{Transformers, state-space models, and attention-based encoders}
 
-The RMTransformer \cite{rmtransformer2025} replaced PMNet's convolutional
-encoder with a multi-scale attention mechanism, improving the normalised RMSE on
-RadioMap3DSeer to~0.0270 (true physical: $0.97\,\mathrm{dB}$).  The key
-advantage is a larger receptive field for capturing long-range shadowing
-correlations across wide urban streets.
+The RMTransformer \cite{rmtransformer2025} evaluates a hybrid MaxViT/CNN
+encoder--decoder on the USC/PMNet dataset rather than on the ICASSP challenge
+test set.  It reports a normalised RMSE of~0.007148 versus~0.01046 for PMNet
+under a random 90/10 split on \(256\times256\) maps.  This supports the use of
+attention for long-range urban context, but the score is not inserted in
+Table~\ref{tab:icassp2023corrected} because it is not measured on
+RadioMap3DSeer and cannot be converted with that dataset's \SI{36}{dB}
+normalisation window.
 
-RadioMamba and similar state-space sequence models applied to radio maps
-\cite{wicopg2025,fmrme2026} offer linear complexity attention.  These
-architectures are effective when global context is necessary, such as tracking
-a shadowing corridor across an entire $513 \times 513$ map, but they require
-substantially more data and compute than convolutional methods to reach the same
-local detail quality.
+Recent attention and foundation-model variants extend the effective receptive
+field of radio-map predictors \cite{wicopg2025,fmrme2026}.  They are attractive
+when global context is necessary, such as tracking a shadowing corridor across
+an entire $513 \times 513$ map, but they usually require substantially more data
+and compute than convolutional methods to reach the same local detail quality.
 
 \subsection{Foundation models for radio maps}
 
@@ -239,9 +240,9 @@ foundation models} pre-trained on large heterogeneous datasets before
 task-specific fine-tuning.  WiCo-PG \cite{wicopg2025} uses dual VQGANs and a
 transformer with frequency-guided mixture-of-experts.  It exploits RGB drone
 camera images as an auxiliary modality and achieves an NMSE of~0.012 on its
-proprietary evaluation benchmark.  RadioLAM \cite{radiolam2025} targets fine-grained
-3D radio map estimation with a large-model architecture at millisecond inference
-latency.  FM-RME \cite{fmrme2026} frames radio map estimation as a foundation
+constructed multi-modal U2G benchmark.  RadioLAM \cite{radiolam2025} targets
+fine-grained 3D radio-map estimation from ultra-low sampling rates using a
+large generative model pipeline.  FM-RME \cite{fmrme2026} frames radio map estimation as a foundation
 modelling problem with self-supervised pre-training on simulated propagation
 data.
 
@@ -272,27 +273,26 @@ the method is directly relevant because it explains why a binary visibility
 channel can carry so much of the structure that the neural network otherwise
 has to infer from the height map alone.
 
-Knife-edge diffraction~\cite{geomDL2024} is a deterministic approximation
-to single-edge scattering based on ITU-R~P.526 geometry.  For each pixel, the
-first Fresnel zone obstruction height is computed from the 2D building
-silhouette and converted to a diffraction gain.  This is a classical way of
-injecting a physically meaningful NLoS cue into the input of a
-geometry-assisted CNN. This thesis tested this channel through
-a PMHHNet-style encoder alongside the topology map; the effect on the final pipeline is
-covered by the stronger calibrated NLoS prior rather than by a standalone
-knife-edge ablation.
+Geometry-assisted diffraction features~\cite{geomDL2024} use virtual obstacles,
+multi-screen knife-edge propagation, and scattering-aware local geometry cues to
+inject physically meaningful NLoS information into a deep model.  This is
+closely related to the motivation behind the thesis diffraction-prior
+experiments, although the implementation here is a lightweight per-map channel
+rather than the full geometry model-assisted learning framework of that paper.
+The final pipeline ultimately relies on the stronger calibrated NLoS prior
+rather than on a standalone knife-edge ablation.
 
 \subsection{Physics-informed neural networks}
 
 The ReVeal architecture \cite{reveal2025} operates as a physics-informed neural
-network (PINN) by incorporating the Helmholtz residual as an auxiliary loss term.
-This penalises predictions that violate the wave equation, constraining the
-network to produce physically smooth field maps and reducing corner-transition
-artefacts.  ReVeal achieves~$1.95\,\mathrm{dB}$ RMSE in rural scenarios using
-only 30 training points by leveraging the physical constraint as a strong
-regulariser. The PMHHNet diagnostic phase in this thesis implemented a lightweight analogue:
+network (PINN) by incorporating a second-order PDE residual as an auxiliary loss
+term.  This penalises predictions with inconsistent local spatial curvature
+under the derived propagation constraint, reducing corner-transition artefacts.
+ReVeal achieves~$1.95\,\mathrm{dB}$ RMSE in rural scenarios using only 30
+training points by leveraging the physical constraint as a strong regulariser.
+The PMHHNet diagnostic phase in this thesis implemented a lightweight analogue:
 a masked Laplacian penalty on the residual prediction, which penalises locally
-non-smooth outputs without solving the full Helmholtz operator.
+non-smooth outputs without solving the full ReVeal operator.
 
 \subsection{Prior-residual decomposition}
 
@@ -423,10 +423,10 @@ should contain before the model solves the harder pixel-placement problem.
 Conditional diffusion models applied to radio maps \cite{radiodiff2025} generate
 physically plausible stochastic variations in deep shadow zones rather than
 predicting a single blurry mean.  The iterative denoising procedure can be
-conditioned on topology maps, transmitter locations, and height values.
-RadioDiff reports $0.5$ to $2\,\mathrm{dB}$ improvement over deterministic
-regression baselines, primarily in NLoS-heavy regions where the posterior
-distribution over path loss is genuinely multi-modal.  These models are
+conditioned on topology maps, transmitter locations, and obstacle prompts.
+RadioDiff reports lower normalised RMSE and higher SSIM/PSNR than CNN and
+sequence-model baselines on static and dynamic RadioMapSeer settings, but its
+metrics are image-normalised rather than physical dB values.  These models are
 computationally expensive at inference time and are listed as a future-work
 horizon for this thesis.
 
@@ -470,7 +470,7 @@ validation spikes.
 
 \subsection{Feature-wise linear modulation}
 
-Feature-wise linear modulation (FiLM) \cite{wicopg2025,fmrme2026} conditions
+Feature-wise linear modulation (FiLM) \cite{perez2018film} conditions
 the activations of a neural network on a scalar or vector input by applying
 learned affine transforms $\gamma(c) \cdot \textbf{h} + \beta(c)$ to
 intermediate feature maps.  Sinusoidal positional encoding of the UAV height
@@ -531,7 +531,7 @@ compactly.
 PMNet / ICASSP~2023 \cite{pmnet2023} & No & No & No & No \\
 RMTransformer \cite{rmtransformer2025} & No & No & No & No \\
 Gao et al.\ \cite{gao2026} & No & No & No & No \\
-AIRMap \cite{airmap2025} & Partial & No & Yes & Partial \\
+AIRMap \cite{airmap2025} & Partial & No & No & Partial \\
 Tarhouni et al.\ \cite{tarhouni2025} & No & No & No & Physical ref. \\
 PathFinder \cite{pathfinder2025} & Partial & No & No & Partial \\
 \textbf{Final model (this thesis)} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes}
@@ -580,14 +580,14 @@ city-holdout protocol.
 \subsection{AIRMap: adaptive digital-twin radio maps}
 
 AIRMap \cite{airmap2025} is an adaptive U-Net autoencoder processing
-$512 \times 512$ elevation maps for ultra-low-latency digital-twin
-synchronisation.  It reports under $5\,\mathrm{dB}$ RMSE (path gain), but this
-figure is obtained after lightweight field calibration from 20\,\% of the test
-measurements.  The zero-shot baseline is also stated as under~$5\,\mathrm{dB}$
-on Boston-only training, but the gap is plausibly explained by: (i)~calibrated
-path gain vs.\ uncalibrated absolute path loss, (ii)~single-city training and
-test vs.\ 66-city diversity, and (iii)~fixed terrestrial Tx vs.\ continuous UAV
-height.
+\(200\times200\) elevation maps for ultra-low-latency digital-twin
+synchronisation.  It reports sub-\SI{4}{dB} RMSE against ray-traced path-gain
+maps, and a separate lightweight calibration step using 20\,\% of field
+measurements reduces the median measurement-domain error to about five percent.
+Its strong numbers are not directly comparable to CKM because the target is path
+gain rather than absolute path loss, the input is a single elevation channel,
+and the transmitter configuration is not the continuous UAV-height setting used
+in this thesis.
 
 AIRMap is nevertheless an important citation for this thesis because it shows
 that elevation-only deep surrogates can replace repeated ray tracing for
@@ -667,12 +667,13 @@ modelling.
 \label{sec:soa_emerging}
 % Section separator
 
-The $9$ to $10\,\mathrm{dB}$ barrier common to both indoor and outdoor NLoS is not
-a dataset scaling artefact; it reflects the fundamental difficulty of inferring
-volumetric wave propagation from a 2D building height map.  Closing this gap
-requires either richer inputs, stronger physical constraints, or stochastic
-modelling of the aleatoric uncertainty.  Table~\ref{tab:emerging} summarises the
-techniques with the highest estimated impact for CKM-style evaluation.
+Across the benchmarks reviewed here, the recurring $9$ to $10\,\mathrm{dB}$
+error band in harder NLoS-heavy settings is unlikely to be only a dataset
+scaling artefact; it reflects the fundamental difficulty of inferring volumetric
+wave propagation from a 2D building height map.  Closing this gap requires
+either richer inputs, stronger physical constraints, or stochastic modelling of
+the aleatoric uncertainty.  Table~\ref{tab:emerging} summarises the techniques
+with the highest estimated impact for CKM-style evaluation.
 
 \begin{table}[ht]
 \centering
@@ -687,9 +688,9 @@ city-holdout protocol to be quantified.}
 \textbf{\#} & \textbf{Technique} & \textbf{Key reference} & \textbf{Complexity} \\
 \midrule
 1 & Knife-edge diffraction prior channel & \cite{geomDL2024} & Medium \\
-2 & PINN Helmholtz residual loss & ReVeal \cite{reveal2025} & High \\
+2 & PINN PDE residual loss & ReVeal \cite{reveal2025} & High \\
 3 & Dual LoS/NLoS residual heads & PMHHNet diagnostics & Low \\
-4 & Test-time adaptation on target city & RadioPiT \cite{radiopit2025} & Low to medium \\
+4 & Target-domain TTA from sparse samples & RadioPiT \cite{radiopit2025} & Low to medium \\
 5 & Diffusion-based residual refinement & RadioDiff \cite{radiodiff2025} & High \\
 6 & Foundation-model pre-training & FM-RME \cite{fmrme2026} & Very high \\
 \bottomrule
@@ -863,10 +864,10 @@ this chapter.
                               >{\centering\arraybackslash}p{0.11\textwidth}
                               >{\raggedright\arraybackslash}X}
 \toprule
-\textbf{Benchmark / method} & \textbf{Reported path-loss RMSE} & \textbf{City holdout} & \textbf{Interpretation} \\
+\textbf{Benchmark / method} & \textbf{Reported RMSE / score} & \textbf{City holdout} & \textbf{Interpretation} \\
 \midrule
-ICASSP~2023 best \cite{rmtransformer2025} & 0.97\,dB & No & Different target scaling and benchmark contract. \\
-AIRMap \cite{airmap2025} (calibrated) & $<5$\,dB after calibration from 20\% of test measurements & Partial & Different protocol and path-gain target. \\
+ICASSP~2023 winner PMNet \cite{pmnet2023,icassp2023challenge} & 1.38\,dB & No & Converted from 0.0383 normalised RMSE using the RadioMap3DSeer 36\,dB target window. \\
+AIRMap \cite{airmap2025} & path-gain $<4$\,dB vs.\ ray tracing; field calibration reported as median percentage error & Partial & Different protocol and path-gain target. \\
 Gao et al.\ \cite{gao2026} (multi-layer) & 5.59\,dB on ICASSP~2023 data & No & Relevant corridor-weighting baseline, different protocol. \\
 Tarhouni et al.\ \cite{tarhouni2025} & multi-dB, sub-\SI{6}{GHz} & No & Physical outdoor reference, not dense UAV CKM. \\
 PMHHNet reference (this thesis) & 9.41\,dB & Yes & Internal direct-regression baseline. \\

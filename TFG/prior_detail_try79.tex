@@ -46,11 +46,24 @@ one specialized to a propagation regime.
 \subsection{Raw spread prior in log domain}
 
 \begin{equation}
-z^{(0)}(x) = b_{\mathrm{LoS/NLoS}}(x) + b_{\mathrm{topology}} + a_1\log(1+d_{2D}) + a_2\theta_{\mathrm{inv}} + a_3\rho_{41} + a_4 h_{41} + a_5 n_{41} + a_6 n_{41}\theta_{\mathrm{inv}}
+\begin{aligned}
+z^{(0)}(x)
+={}&
+\log\!\left(1+b^{\mathrm{native}}_{\mathrm{LoS/NLoS}}(x)\right)
++ b_{\mathrm{topology}}
++ a_1\log(1+d_{2D})
++ a_2\theta_{\mathrm{inv}}
+\\
+&+
+a_3\rho_{41}
++ a_4 h_{41}
++ a_5 n_{41}
++ a_6 n_{41}\theta_{\mathrm{inv}} .
+\end{aligned}
 \label{eq:raw_spread}
 \end{equation}
 
-where $\theta_{\mathrm{inv}}(x) = 1 - \theta_{\mathrm{norm}}(x)$ (high value at low elevation). Example coefficients for delay spread: $b_{\mathrm{LoS}} = 4.0$, $b_{\mathrm{NLoS}} = 11.0$, $a_1 = 0.11$, $a_2 = 0.62$, $a_3 = 0.48$, $a_4 = 0.32$, $a_5 = 0.86$, $a_6 = 0.60$.
+where $\theta_{\mathrm{inv}}(x) = 1 - \theta_{\mathrm{norm}}(x)$ (high value at low elevation). Example coefficients for delay spread: the native anchors are $b^{\mathrm{native}}_{\mathrm{LoS}} = 4.0$ ns and $b^{\mathrm{native}}_{\mathrm{NLoS}} = 11.0$ ns, which the implementation converts to $\log(1+4.0)$ and $\log(1+11.0)$ before adding the remaining log-domain terms. The delay coefficients are $a_1 = 0.11$, $a_2 = 0.62$, $a_3 = 0.48$, $a_4 = 0.32$, $a_5 = 0.86$, $a_6 = 0.60$. After Eq.~\eqref{eq:raw_spread}, the raw log prior is clipped to $[0,8]$, inverse transformed with $\exp(\cdot)-1$, and clipped to the metric upper bound.
 
 The raw prior is not a 3GPP formula copied directly into CKM. Instead, it
 takes the 3GPP/WINNER lesson that spread statistics should be separated by
@@ -245,7 +258,7 @@ The regime $r$ for the spread prior is keyed by: metric (DS or AS), topology cla
 
 Valid pixels are subsampled at rate $p = 0.02$ (2\%). The ridge regression:
 \begin{equation}
-\hat{\textbf{w}}^{79}_{r} = \left(\textbf{X}_r^\top \textbf{X}_r + \lambda \textbf{I}_{23}\right)^{-1}\textbf{X}_r^\top \textbf{z}_r,\quad \lambda = 10^{-3}
+\hat{\textbf{w}}^{79}_{r} = \left(\textbf{X}_r^\top \textbf{X}_r + \lambda \textbf{D}^\top\textbf{D}\right)^{-1}\textbf{X}_r^\top \textbf{z}_r,\quad \lambda = 10^{-3}
 \label{eq:ridge}
 \end{equation}
 
@@ -274,8 +287,9 @@ when a regime contains few valid pixels or when two morphology features are
 strongly correlated.
 
 Term by term, \(\textbf{X}_r^\top\textbf{X}_r\) is the feature correlation
-matrix for regime \(r\), \(\lambda\textbf{I}_{23}\) adds a small diagonal
-stabilizer, and \(\textbf{X}_r^\top\textbf{z}_r\) is the feature-target
+matrix for regime \(r\), \(\lambda\textbf{D}^\top\textbf{D}\) adds a small
+diagonal stabilizer while leaving the bias unpenalized, and
+\(\textbf{X}_r^\top\textbf{z}_r\) is the feature-target
 correlation vector in log-spread space. This is ridge regression: it is the
 ordinary least-squares fit plus a penalty that discourages very large
 coefficients. The penalty is important here because many morphology features
@@ -294,7 +308,11 @@ LoS calibration JSON reused by the final model is approximately 200\,000 lines, 
 spread calibration must be rerun separately for delay spread and angular
 spread whenever the feature set changes.
 
-\paragraph{Fallback hierarchy.} If a regime has fewer than $4 \times 23 = 92$ pixels:
+\paragraph{Fallback hierarchy.} During fitting, each sampled pixel updates the
+exact accumulator and the four broader fallback accumulators listed below. A
+coefficient vector is written only for accumulators with at least
+$4 \times 23 = 92$ sampled pixels. During inference, the implementation tries
+the same keys in this order and uses the first one present:
 \begin{enumerate}
 \item exact regime: (metric, topology class, LoS/NLoS, antenna bin),
 \item same topology class + LoS/NLoS + \emph{all} antenna heights,
@@ -377,13 +395,14 @@ dense\_block\_highrise  & 14.64 & 21.33 & 9.78 \\
     input/.style={draw, thick, fill=gray!20, rectangle, minimum width=2.5cm, minimum height=0.8cm, align=center},
     branch/.style={draw, thick, fill=orange!10, rectangle, rounded corners, minimum width=3cm, minimum height=1cm, align=center}
 ]
-\node[input] (inputs) {Geometries \& Local Morphology \\ $d_{2D}, \theta, h_{\mathrm{tx}}, \rho_k, h_k, b_{41}, c_{41}, t_{41}$};
+\node[input] (inputs) {Geometry, masks \& multiscale morphology \\
+$d_{2D}, \theta, h_{\mathrm{tx}}, \rho_{15/41}, h_{15/41}, n_{15/41}, b_{41}, c_{41}, t_{41}$};
 \node[block, below=1.5cm of inputs] (raw_prior) {Stage 1: Raw Log Prior \\ $z^{(0)}(x)$ (Eq.~\ref{eq:raw_spread})};
 \node[block, below=1.5cm of raw_prior] (features) {Stage 2: Feature Vector \\ $\textbf{x}_{79}(x) \in \mathbb{R}^{23}$};
 \node[block, below=1.5cm of features] (ridge) {Stage 3: Regime-wise Ridge Regression \\ $\hat z(x) = \textbf{x}_{79}(x)^\top \hat{\textbf{w}}^{79}_{r}$};
 \node[branch, below=1.5cm of ridge] (invert) {Stage 4: Inverse Transform \\ $\hat y(x) = \exp(\hat z(x)) - 1$};
 \node[input, below=1.5cm of invert] (clip) {Calibrated Spread Prior \\ $\hat y(x)$ (Clipped)};
-\draw[->, thick] (inputs) -- node[right, font=\scriptsize] {$\mathbb{R}^{8 \times H \times W}$} (raw_prior);
+\draw[->, thick] (inputs) -- node[right, font=\scriptsize] {shared spatial maps} (raw_prior);
 \draw[->, thick] (raw_prior) -- node[right, font=\scriptsize] {$\mathbb{R}^{H \times W}$} (features);
 \draw[->, thick] (features) -- node[right, font=\scriptsize] {$\mathbb{R}^{23 \times H \times W}$} (ridge);
 \draw[->, thick] (ridge) -- node[right, font=\scriptsize] {$\mathbb{R}^{H \times W}$} (invert);

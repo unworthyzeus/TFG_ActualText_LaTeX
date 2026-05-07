@@ -79,7 +79,7 @@ The mean of each mixture component is then anchored to the frozen prior:
 \begin{equation}
 \mu^{\mathrm{native}}_{k,r,j}(x)
 =
-y^{\mathrm{prior}}_{k,r}(x)
+y^{\mathrm{prior}}_{k}(x)
 +
 \alpha_{k,r}(x)\Delta_{k,r,j}(x),
 \label{eq:try80_mu}
@@ -87,8 +87,9 @@ y^{\mathrm{prior}}_{k,r}(x)
 
 where:
 \begin{itemize}
-\item \(y^{\mathrm{prior}}_{k,r}(x)\) is the frozen regional prior from
-      the path-loss or spread prior,
+\item \(y^{\mathrm{prior}}_{k}(x)\) is the per-task frozen prior selected inside
+      the shared output loop, then broadcast to the LoS and NLoS residual
+      branches,
 \item \(\delta^{(g)}_{k,r,j}\) is a map-level residual offset for component
       \(j\),
 \item \(\delta^{(\ell)}_{k,r}(x)\) is a per-pixel residual refinement shared
@@ -200,8 +201,8 @@ FiLM projection emits \(2C\) parameters for the larger channel counts.
 The architecture explicitly enforces the separation of global and local effects via a dual-head design for each task:
 
 \begin{itemize}
-\item \textbf{Global Head (Map-Level Context)}: The deepest bottleneck feature map is globally average-pooled to produce a single vector representing the macro-context. This pooled vector, fused with the height condition, is passed through an MLP to predict the non-spatial quantities: mixture probabilities $p_{k,j}$, global offsets $\delta_{\mathrm{global},k,j}$, and global variances $\sigma_{\mathrm{global},k,j}^2$.
-\item \textbf{Local Head (Pixel-Level Refinement)}: The high-resolution output of the decoder is passed through $1\times1$ convolutions to predict the spatially varying fields: $\delta_{\mathrm{local},k}(x)$, $\alpha_k(x)$, and $\tilde\sigma_{\mathrm{local},k}^2(x)$.
+\item \textbf{Global Head (Map-Level Context)}: The deepest bottleneck feature map is globally average-pooled to produce a single vector representing the macro-context. This pooled vector, fused with the height condition, is passed through an MLP to predict the non-spatial quantities: global mixture weights $\pi^{(g)}_{k,r,j}$, global offsets $\delta^{(g)}_{k,r,j}$, and global variances $\sigma^{(g)2}_{k,r,j}$.
+\item \textbf{Local Head (Pixel-Level Refinement)}: The high-resolution output of the decoder is passed through $1\times1$ convolutions to predict the spatially varying fields: local component weights $p_{k,r,j}(x)$, $\delta^{(\ell)}_{k,r}(x)$, $\alpha_{k,r}(x)$, and $\tilde\sigma_{k,r}(x)$.
 \end{itemize}
 
 \begin{figure}[H]
@@ -284,30 +285,31 @@ The architecture explicitly enforces the separation of global and local effects 
 \draw[->, thick] (d0.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{128 \times H \times W}$} (local_head.west);
 
 % Prior Input
-\node[align=center, draw, thick, fill=gray!20, rectangle, minimum height=0.8cm] (prior) at (14, -3) {\textbf{Frozen Prior} \\ $y_k^{\mathrm{prior}}(x)$};
+\node[align=center, draw, thick, fill=gray!20, rectangle, minimum height=0.8cm] (prior) at (14, -3) {\textbf{Per-task Frozen Prior} \\ selected in shared loop \\ $y_k^{\mathrm{prior}}(x)$};
 
 % GMM Assembly
-\node[gmm] (gmm) at (10, -6) {\textbf{GMM Assembly} \\[0.2cm] 
-$\mu_{k,j} = y_k^{\mathrm{prior}} + \alpha_k (\delta_{\mathrm{global},k,j} + \delta_{\mathrm{local},k})$ \\ 
-$\sigma^2_{k,j} = \sigma_{\mathrm{global},k,j}^2 + \tilde\sigma_{\mathrm{local},k}^2$ \\[0.2cm] 
-$\hat y_k = \sum p_{k,j} \mu_{k,j}$};
+\node[gmm] (gmm) at (10, -6) {\textbf{GMM Assembly} \\[0.2cm]
+$\Delta_{k,r,j}=\mathrm{clip}(\delta^{(g)}_{k,r,j}+\delta^{(\ell)}_{k,r},\,\pm\delta_{\max,k,r})$ \\
+$\mu_{k,r,j} = y_k^{\mathrm{prior}} + \alpha_{k,r}\Delta_{k,r,j}$ \\
+$\sigma^2_{k,r,j} = \sigma^{(g)2}_{k,r,j} + \tilde\sigma_{k,r}^2$ \\[0.2cm]
+$\hat y_{k,r} = \sum_j p_{k,r,j} \mu_{k,r,j}$};
 
 % Routing Prior to GMM
-\draw[->, thick] (prior.south) |- node[pos=0.25, right, font=\scriptsize] {$\mathbb{R}^{3 \times H \times W}$} ([yshift=0.5cm]gmm.east);
+\draw[->, thick] (prior.south) |- node[pos=0.25, right, font=\scriptsize] {$\mathbb{R}^{1 \times H \times W}$} ([yshift=0.5cm]gmm.east);
 
 % Pixel Level outputs flowing to GMM
-\draw[->, thick] (local_head.south) -- node[right, align=left, font=\scriptsize] {$\alpha_k(x)$ \\ $\delta_{\mathrm{local},k}(x)$ \\ $\tilde\sigma_{\mathrm{local},k}^2(x)$} (gmm.north);
+\draw[->, thick] (local_head.south) -- node[right, align=left, font=\scriptsize] {$p_{k,r,j}(x)$ \\ $\alpha_{k,r}(x)$ \\ $\delta^{(\ell)}_{k,r}(x)$ \\ $\tilde\sigma_{k,r}(x)$} (gmm.north);
 
 % Map Level outputs flowing to GMM
-\draw[->, thick] (global_head.east) -| node[pos=0.25, above, align=center, font=\scriptsize] {$p_{k,j}$ \\ $\delta_{\mathrm{global},k,j}$ \\ $\sigma_{\mathrm{global},k,j}^2$} ([xshift=-1cm]gmm.south);
+\draw[->, thick] (global_head.east) -| node[pos=0.25, above, align=center, font=\scriptsize] {$\pi^{(g)}_{k,r,j}$ \\ $\delta^{(g)}_{k,r,j}$ \\ $\sigma^{(g)}_{k,r,j}$} ([xshift=-1cm]gmm.south);
 
 % Final Output
 \node[align=center] (final_out) at (14, -8.5) {\textbf{Final Prediction} \\ $\hat y_k(x)$};
-\draw[->, thick] ([yshift=-0.5cm]gmm.east) -| node[pos=0.75, right, font=\scriptsize] {$\mathbb{R}^{3 \times H \times W}$} (final_out.north);
+\draw[->, thick] ([yshift=-0.5cm]gmm.east) -| node[pos=0.75, right, font=\scriptsize] {$\mathbb{R}^{1 \times H \times W}$} (final_out.north);
 
 \end{tikzpicture}
 }
-\caption{Schematic of the final large-capacity shared UNet architecture with FiLM conditioning.}
+\caption{Schematic of the final large-capacity shared UNet architecture with FiLM conditioning. The backbone and decode logic are shared, while each task uses its own heads and frozen prior.}
 \label{fig:try80_arch}
 \end{figure}
 
@@ -365,12 +367,12 @@ f_i
 \draw[condarr] (9.0, -1.8) -- node[above, font=\scriptsize] {$\mathbb{R}^{160}$} (4.0, -1.8) -- (enc2.north);
 \draw[condarr] (9.0, -1.8) -- node[above, font=\scriptsize] {$\mathbb{R}^{160}$} (11.5, -1.8) -- (enc4.north);
 
-\node[featbox] (pool) at (18.0,-3.5) {Global average pool\\deepest map\\$\mathbb{R}^{512\times H_{16}\times W_{16}} \to \mathbb{R}^{512}$};
+\node[featbox] (pool) at (18.0,-3.5) {Global average pool\\deepest map\\$\mathbb{R}^{512\times H_{16}\times W_{16}} \to \mathbb{R}^{512}$\\first 160 entries feed fusion};
 \draw[arr] (enc4.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{512\times H_{16}\times W_{16}}$} (pool.west);
 
 \node[condbox] (fuse) at (18.0,0) {Condition fusion\\concat$\bigl[\textbf{h}_{\mathrm{cond}},\,\textbf{z}_{1:160}\bigr]$\\Linear $320\!\to\!160$\\SiLU\\Linear $160\!\to\!160$\\$\textbf{c}_{\mathrm{fused}}$};
 \draw[arr] (mlp1.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{160}$} (fuse.west);
-\draw[arr] (pool.north) -- node[right, font=\scriptsize] {$\mathbb{R}^{512}$} (fuse.south);
+\draw[arr] (pool.north) -- node[right, font=\scriptsize] {$\mathbb{R}^{160}$} (fuse.south);
 
 \node[featbox] (dec3) at (25.5, 1.5) {Decoder FiLM at Dec3\\feature channels $C=512$};
 \node[featbox] (dec1) at (25.5,-1.0) {Decoder FiLM at Dec1\\feature channels $C=256$};
@@ -429,8 +431,8 @@ $\tilde\sigma_{k,r}(x)$.
 \draw[arr] (locraw) -- node[above, font=\scriptsize] {$\mathbb{R}^{12 \times H \times W}$} (locpars);
 
 \node[mix] (delta) at (12.5,-3.0) {Residual assembly\\$\Delta_{r,j}(x)=\mathrm{clip}\!\left(\delta^{(g)}_{r,j}+\delta^{(\ell)}_{r}(x),\ \pm\delta_{\max,k,r}\right)$};
-\node[prior] (prior) at (0,-6.5) {Frozen regional prior\\$y^{\mathrm{prior}}_{k,r}(x)$};
-\node[mix] (mu) at (17.0,-6.5) {Anchored means\\$\mu_{r,j}(x)=y^{\mathrm{prior}}_{k,r}(x)+\alpha_r(x)\Delta_{r,j}(x)$};
+\node[prior] (prior) at (0,-6.5) {Frozen task prior\\broadcast to regions\\$y^{\mathrm{prior}}_{k}(x)$};
+\node[mix] (mu) at (17.0,-6.5) {Anchored means\\$\mu_{r,j}(x)=y^{\mathrm{prior}}_{k}(x)+\alpha_r(x)\Delta_{r,j}(x)$};
 \node[mix] (sigma) at (21.5,-3.0) {Variance merge\\$\sigma_{r,j}(x)=\sqrt{(\sigma^{(g)}_{r,j})^2+(\tilde\sigma_r(x))^2}$};
 
 \draw[thick] (globpars.south) -- (17.0, 1.8);

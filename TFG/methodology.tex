@@ -897,9 +897,11 @@ prior anchoring, prior guard, RMSE, and MAE. This stage mainly tested whether
 a residual network could improve the frozen priors without degrading them.
 
 \item \textbf{Wide residual model with relaxed residual bounds.} The second stage kept the same
-network capacity but loosened the allowed correction range. The path-loss caps
-increased to \(\pm5\) dB in LoS and \(\pm20\) dB in NLoS, with wider spread
-caps as well. This made the residual head less constrained and produced a
+network capacity but loosened the allowed correction range. In the selected
+fine-tuned configuration, the path-loss caps are \(\pm7\) dB in LoS and
+\(\pm25\) dB in NLoS, the delay-spread caps are \(\pm20\) ns in both regimes,
+and the angular-spread caps are \(\pm17^\circ\) in LoS and \(\pm15^\circ\) in
+NLoS. This made the residual head less constrained and produced a
 clearer, but still limited, improvement.
 
 \item \textbf{Large-capacity residual model.} The third stage increased model

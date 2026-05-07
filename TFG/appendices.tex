@@ -578,14 +578,17 @@ ct3 = macro_topology_class(ct6)
 ant = ant_bin(h_tx)
 
 los_prior = _predict_two_ray_map(h_tx, self._path_los_cal)
-nlos_prior = _compute_path_nlos_map(topology, los_mask, h_tx,
-                                    self._path_nlos_cal)
+nlos_prior = _compute_try78_nlos_map(topology, los_mask, h_tx,
+                                     self._path_nlos_cal)
 path_prior = np.where(los_mask > 0.5, los_prior, nlos_prior)
 
-delay_prior = _compute_spread_metric_prior("delay_spread", ct6, ant,
-                                           los_mask, shared, self._spread_cal)
-angular_prior = _compute_spread_metric_prior("angular_spread", ct6, ant,
-                                             los_mask, shared, self._spread_cal)
+shared = compute_shared_features(topology, los_mask, h_tx)
+delay_prior = _compute_try79_metric_prior(
+    metric="delay_spread", topology_class=ct6, ant_label=ant,
+    los_mask=los_mask, shared=shared, coefs=self._spread_cal)
+angular_prior = _compute_try79_metric_prior(
+    metric="angular_spread", topology_class=ct6, ant_label=ant,
+    los_mask=los_mask, shared=shared, coefs=self._spread_cal)
 \end{verbatim}
 }
 

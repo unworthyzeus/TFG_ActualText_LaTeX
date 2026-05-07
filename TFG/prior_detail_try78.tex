@@ -49,7 +49,7 @@ longer than the direct path.
 \centering
 \begin{tikzpicture}[scale=1.0]
 \draw[thick] (-0.5,0) -- (6.0,0) node[right] {ground};
-\draw[dashed] (-0.5,-2) -- (6.0,-2) node[right, font=\small] {image plane};
+\draw[dashed] (-0.5,-3.5) -- (6.0,-3.5) node[right, font=\small] {image-source height};
 
 \filldraw[blue] (1.0,3.5) circle(3pt) node[above] {UAV ($h_{\mathrm{tx}}$)};
 \filldraw[red]  (5.0,0.5) circle(3pt) node[above right] {Rx ($h_{\mathrm{rx}}$)};
@@ -470,25 +470,29 @@ The best pair is:
 
 After fitting all bins independently, a Gaussian-weighted smooth is applied
 to stabilize sparse high-altitude bins. Let $\{h_k\}$ be the fitted height
-bin centers, $\{(\rho_k^*, b_k^*)\}$ the per-bin fitted values, and $\{N_k\}$
-the pixel counts used in fitting. The smoothed values are:
+bin centers, $\{(\rho_k^*, \phi_k^*, b_k^*)\}$ the per-bin fitted values,
+and $\{N_k\}$ the pixel counts used in fitting. The implementation weights
+each bin by $\sqrt{N_k}$ rather than by $N_k$ itself, so very populated bins
+stabilize the curve without completely dominating neighboring sparse bins.
+The smoothed values are:
 
 \begin{equation}
 \tilde\rho(h)
 =
-\frac{\sum_k w_k(h)\,N_k\,\rho_k^*}{\sum_k w_k(h)\,N_k},
+\frac{\sum_k w_k(h)\sqrt{N_k}\,\rho_k^*}{\sum_k w_k(h)\sqrt{N_k}},
 \qquad
 w_k(h) = \exp\!\left(-\frac{(h - h_k)^2}{2\sigma_h^2}\right),
 \quad \sigma_h = 10\;\mathrm{m}
 \label{eq:gauss_smooth}
 \end{equation}
 
-and similarly for $b$. The phase $\phi$ is always replaced with its smoothed
-version (treating it as effectively constant across heights).
-
-Bins where both $\rho_k^*$ and $b_k^*$ differ noticeably from the smoothed
-global trend are flagged as suspicious (typically high-altitude bins with few
-samples), and their raw fit values are replaced by the smoothed values.
+and similarly for $\phi$ and $b$. The implementation also stores a
+suspicious-bin mask for bins where both $\rho_k^*$ and $b_k^*$ differ
+noticeably from the smoothed global trend, typically high-altitude bins with
+few samples. That mask is diagnostic metadata: the runtime calibration arrays
+used by Try80 are the smoothed $\rho$, $\phi$, and $b$ curves themselves, not
+a mixture of raw values for ordinary bins and smoothed values only for flagged
+ones.
 At inference time the UAV height is not forced to be exactly one of the fitted
 5 m bin centers. The implementation linearly interpolates $\rho(h_{\mathrm{tx}})$,
 $\phi(h_{\mathrm{tx}})$, $b(h_{\mathrm{tx}})$, and the radial residual profile
@@ -498,21 +502,31 @@ instead of introducing discrete jumps every 5 m.
 
 \subsubsection{Radial residual correction}
 
-After fitting the two-ray model, a residual correction is computed:
+After fitting the two-ray model, a residual correction is computed separately
+per height bin and integer radius:
 
 \begin{equation}
-r(d_{2D}) =
+r(r_{\mathrm{px}},h_{\mathrm{tx}})
+=
+\mathrm{clip}\!\left(
 \mathrm{GaussSmooth}_{\sigma_r}\left(
-\mathrm{clip}\left(
-\mu_{\Delta}(d_{2D}),\, -2.5,\, +2.5
+\mathbb{E}_{h\text{-bin},\,r_{\mathrm{px}}}
+\left[
+\mathrm{clip}\!\left(y-\hat y_{\mathrm{2ray}},-2.5,+2.5\right)
+\right]
 \right)
+\!, -2.5,+2.5
 \right)
 \end{equation}
 
-where $\mu_{\Delta}(d_{2D})$ is the empirical mean of $(y - \hat y_{\mathrm{2ray}})$
-averaged over all pixels at horizontal distance $d_{2D}$, $\sigma_r = 1.5$
-pixels is a Gaussian smoothing radius, and clipping limits the correction to
-$\pm 2.5$ dB to prevent over-fitting on noisy radius bins.
+where $r_{\mathrm{px}}$ is the rounded 2D pixel radius from the transmitter,
+$\sigma_r = 1.5$ pixels is the Gaussian smoothing radius, and the $\pm2.5$ dB
+clip is applied both to individual residual samples during accumulation and
+to the interpolated profile used at inference. Radius bins with no samples in
+a height bin fall back to the global radial profile before smoothing. At
+inference, the profile is linearly interpolated across the stored height bins,
+then indexed by the pixel-radius map and added to the coherent two-ray
+prediction.
 
 \subsubsection{Fitted parameter values}
 
@@ -530,22 +544,21 @@ $h_{\mathrm{tx}}$ (m) & $\rho^*$ & $\phi^*$ (rad) & $b^*$ (dB)\\
 \midrule
 10  & 0.5605 & 0.000 & $-$0.037 \\
 20  & 0.5242 & 0.000 & $-$0.042 \\
-30  & 0.4950 & 0.000 & $-$0.046 \\
-50  & 0.5468 & 0.000 & $-$0.014 \\
-80  & 0.5482 & 0.000 & $-$0.027 \\
-100 & 0.5463 & 0.000 & $-$0.017 \\
-140 & 0.5414 & 0.000 & $+$0.255 \\
-460 & 0.8966 & $-$0.047 & $+$1.521 \\
+30  & 0.4950 & 0.000 & $-$0.042 \\
+50  & 0.4632 & 0.000 & $-$0.047 \\
+80  & 0.4958 & 0.000 & $-$0.013 \\
+100 & 0.4926 & 0.000 & $-$0.011 \\
+140 & 0.5308 & 0.000 & $-$0.028 \\
+460 & 0.8966 & $-$0.030 & $+$1.432 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The dominant pattern is $\rho \approx 0.49$ to $0.56$ with $\phi \approx 0$
+The dominant pattern is $\rho \approx 0.46$ to $0.56$ with $\phi \approx 0$
 for heights 10 to 100 m, meaning a moderate-amplitude in-phase ground
 reflection. Biases are near-zero ($< 0.05$ dB) for these bins. At very high
-altitudes ($>140$ m), the increasing positive bias and higher $\rho$ values
-reflect sparser training data; those bins are stabilized by Gaussian
-smoothing.
+altitudes, the fitted $\rho$ and bias increase because training data is sparser;
+those bins are stabilized by Gaussian smoothing.
 
 \begin{figure}[H]
 \centering
@@ -561,17 +574,17 @@ smoothing.
 ]
 \addplot[mark=*, thick, blue] coordinates {
   (10,0.5605)(20,0.5242)(30,0.4950)(40,0.4721)
-  (50,0.5468)(60,0.5407)(70,0.5440)(80,0.5482)
-  (90,0.5548)(100,0.5463)(120,0.5463)(140,0.5414)
-  (160,0.55)(180,0.57)(200,0.58)
+  (50,0.4632)(60,0.4718)(70,0.4860)(80,0.4958)
+  (90,0.4964)(100,0.4926)(120,0.5118)(140,0.5308)
+  (160,0.5346)(180,0.5406)(200,0.5435)
 };
 \end{axis}
 \end{tikzpicture}
 \caption[Effective ground-reflection amplitude as a function of UAV height.]
 {Effective ground-reflection amplitude $\rho^*$ as a function of UAV
 height, fitted independently per 5 m height bin. Values are stable in the
-range $0.47$ to $0.56$ for 10 to 130 m, then rise slightly at higher altitudes
-where training data is sparser.}
+range $0.46$ to $0.56$ for 10 to 200 m, then rise at the sparsely sampled
+very-high-altitude bins used by the calibration.}
 \label{fig:rho_vs_h}
 \end{figure}
 
@@ -586,23 +599,27 @@ where training data is sparser.}
   ymin=70, ymax=130,
   grid=major,
   legend pos=south east,
-  title={FSPL vs.\ calibrated two-ray LoS prior ($h_{\mathrm{tx}} = 60$ m, $f = 7.125$ GHz)}
+  title={FSPL vs.\ coherent two-ray component ($h_{\mathrm{tx}} = 60$ m, $f = 7.125$ GHz)}
 ]
 \addplot[thick, blue, domain=10:2000, samples=200]
-  {32.45 + 20*ln(sqrt(x^2+3481)/1000)/ln(10) + 20*ln(7125)/ln(10)};
+  {32.45 + 20*ln(sqrt(x^2+3422.25)/1000)/ln(10) + 20*ln(7125)/ln(10)};
 \addlegendentry{FSPL}
 \addplot[thick, red, domain=10:2000, samples=200]
-  {32.45 + 20*ln(sqrt(x^2+3481)/1000)/ln(10) + 20*ln(7125)/ln(10)
-   - 20*ln(abs(1 + 0.54 * sqrt(x^2+3481)/sqrt(x^2+3721) *
-   cos(deg(2*3.14159*(sqrt(x^2+3721)-sqrt(x^2+3481))*7125e6/3e8))))/ln(10)};
-\addlegendentry{Two-ray (approx.)}
+  {32.45 + 20*ln(sqrt(x^2+3422.25)/1000)/ln(10) + 20*ln(7125)/ln(10)
+   - 20*ln(sqrt((1 + 0.4718 * sqrt(x^2+3422.25)/sqrt(x^2+3782.25) *
+   cos(deg(2*3.14159*(sqrt(x^2+3782.25)-sqrt(x^2+3422.25))*7125e6/3e8)))^2
+   + (0.4718 * sqrt(x^2+3422.25)/sqrt(x^2+3782.25) *
+   sin(deg(2*3.14159*(sqrt(x^2+3782.25)-sqrt(x^2+3422.25))*7125e6/3e8)))^2))/ln(10)
+   - 0.044};
+\addlegendentry{Coherent two-ray + bias}
 \end{axis}
 \end{tikzpicture}
-\caption[FSPL versus enhanced two-ray model.]%
-{Schematic comparison of FSPL and the enhanced two-ray model for a
-60 m UAV at 7.125 GHz ($h_{\mathrm{rx}} = 1.5$ m). The two-ray model produces
-a characteristic oscillatory pattern around the FSPL baseline, corresponding
-to alternating zones of constructive and destructive interference.}
+\caption[FSPL versus coherent two-ray component.]%
+{Schematic comparison of FSPL and the calibrated coherent two-ray component for
+a 60 m UAV at 7.125 GHz ($h_{\mathrm{rx}} = 1.5$ m). The plotted red curve uses
+the code-loaded 60 m calibration values before adding the radial residual
+profile, so it shows the constructive/destructive interference term rather than
+the full final LoS prior.}
 \label{fig:tworay_pl}
 \end{figure}
 
@@ -638,11 +655,15 @@ height range:
 \label{eq:cost231}
 \end{equation}
 
-where $d_{\mathrm{km}} = d_{2D}(x)/1000$ and the mobile antenna correction
-factor for large cities is:
+where $d_{\mathrm{km}} = \max(d_{2D}(x)/1000, 0.001)$ and the implemented
+mobile antenna correction is the COST-231 small/medium-city correction:
 
 \begin{equation}
-a(h_{\mathrm{rx}}) = 3.2(\log_{10}(11.75\,h_{\mathrm{rx}}))^2 - 4.97
+a(h_{\mathrm{rx}})
+=
+\left(1.1\log_{10}(f_{\mathrm{MHz}})-0.7\right)h_{\mathrm{rx}}
+-
+\left(1.56\log_{10}(f_{\mathrm{MHz}})-0.8\right)
 \label{eq:cost231_a}
 \end{equation}
 
@@ -661,9 +682,10 @@ what adapts that shape to the 7.125 GHz UAV ray-tracing setting used here.
       higher, path loss decreases (better clearance above rooftops). The
       $-13.82$ coefficient is a fitted constant from the Hata empirical
       dataset.
-\item $-a(h_{\mathrm{rx}})$: accounts for the receiver height. For typical
-      pedestrian heights ($h_{\mathrm{rx}} \approx 1.5$ m), $a \approx
-      -0.6$ dB, which is small.
+\item $-a(h_{\mathrm{rx}})$: accounts for the receiver height using the
+      implemented small/medium-city Hata correction. For typical pedestrian
+      heights ($h_{\mathrm{rx}} \approx 1.5$ m), this is a small offset
+      relative to the distance and height terms.
 \item $(44.9 - 6.55\log_{10}(h_{\mathrm{tx}}))\log_{10}(d_{\mathrm{km}})$:
       distance-dependent term. The effective path-loss exponent is
       $(44.9 - 6.55\log_{10}(h_{\mathrm{tx}}))/10$, which decreases as the
@@ -783,10 +805,11 @@ m_{\mathrm{LoS}}(x)\,\mathrm{PL}_{\mathrm{LoS,blend}}(x)
 Since $m_{\mathrm{LoS}}(x)$ is binary, Eq.~\eqref{eq:pl0} is a hard switch:
 it selects the LoS expression on LoS pixels and the NLoS expression on NLoS
 pixels. The auxiliary blend in Eq.~\eqref{eq:los_blend} was used in older
-earlier variants to keep the LoS formula below an A2G envelope. In
-the final frozen path, LoS pixels come directly from the
-enhanced two-ray prior $\mathrm{PL}^{(0)}$, so Eq.~\eqref{eq:pl0} and
-Eq.~\eqref{eq:los_blend} are retained only for historical completeness.
+earlier variants to keep the LoS formula below an A2G envelope. In the final
+frozen path, LoS pixels come directly from the separate enhanced two-ray prior
+\(\mathrm{PL}_{\mathrm{LoS}}\) of Eq.~\eqref{eq:pl_los}; the raw hybrid map
+\(\mathrm{PL}^{(0)}\) in Eq.~\eqref{eq:pl0} is still computed as an input
+feature for the calibrated Try78 NLoS branch.
 The LoS/NLoS mask used here is the explicit CKM mask provided with the
 dataset and treated as an available side channel. A deployment version would
 need to obtain an equivalent visibility mask from deterministic geometry or
@@ -795,19 +818,19 @@ evaluated in this thesis.
 
 \subsubsection{Stage 3: map-derived morphology features}
 
-The enhanced two-ray prior $\mathrm{PL}^{(0)}(x)$ defined in
-Eq.~\eqref{eq:pl0} is the only physical model in the path-loss prior; it depends
-exclusively on $\{h_{\mathrm{tx}},h_{\mathrm{rx}},d,\lambda\}$ and knows
-nothing about buildings, density, obstruction, or shadowing. The feature
-vector $\mathbf{x}_{78}(x)$ defined below is \emph{not} a competing path-loss
-model and \emph{not} an alternative two-ray formulation. It is the
-per-pixel input row of a ridge regressor whose role is to take the amplified
-two-ray prediction and absorb its residual using context that the two-ray
-equation cannot see (urban morphology, NLoS visibility, shadowing,
-elevation geometry). Concretely, the enhanced two-ray prior
-$\mathrm{PL}^{(0)}(x)$ is fed in as the dominant feature, plus a quadratic of
-itself so that the linear fit can bend the prior, and every other entry adds
-a quantity that is invisible to the two-ray model.
+The raw hybrid prior $\mathrm{PL}^{(0)}(x)$ defined in Eq.~\eqref{eq:pl0} is
+the scalar formula input to the calibrated Try78 NLoS branch. It combines the
+legacy FSPL/two-ray LoS path, the A2G envelopes and COST-231, but it still
+knows nothing about the detailed local morphology around each receiver. The
+feature vector $\mathbf{x}_{78}(x)$ defined below is \emph{not} a competing
+path-loss model and \emph{not} an alternative two-ray formulation. It is the
+per-pixel input row of a calibrated linear regressor whose role is to take
+the raw formula prediction and absorb its residual using context that the
+formula cannot see (urban morphology, NLoS visibility, shadowing and
+elevation geometry). Concretely, $\mathrm{PL}^{(0)}(x)$ is fed in as the
+dominant feature, plus a quadratic of itself so that the linear fit can bend
+the prior, and every other entry adds a quantity that is invisible to the raw
+formula.
 
 From $\mathrm{PL}^{(0)}(x)$ and the map topology, a 15-element feature
 vector is computed:
@@ -1163,25 +1186,25 @@ This is different from the per-pixel feature $h_k(x)$ in
 Eq.~\eqref{eq:h_k_interp}, which divides the same numerator by the full
 window area $k^2$ instead of by the number of building pixels.
 
-The six topology classes are assigned by thresholding both quantities:
+For the Try78 path-loss calibration, these two quantities are converted into
+three coarse city types. This is a separate regime label from the later
+six-class topology taxonomy used by the Try79 spread priors and by final
+reporting:
 
 \begin{equation}
-\mathrm{class}_6 =
+\mathrm{class}_{78} =
 \begin{cases}
-\texttt{open\_sparse\_lowrise}   & \bar\rho \le d_1,\; \bar h \le h_1 \\
-\texttt{open\_sparse\_vertical}  & \bar\rho \le d_1,\; \bar h > h_1 \\
-\texttt{dense\_block\_midrise}   & \bar\rho \ge d_2,\; \bar h \le h_2 \\
-\texttt{dense\_block\_highrise}  & \bar\rho \ge d_2,\; \bar h > h_2 \\
-\texttt{mixed\_compact\_lowrise} & d_1 < \bar\rho < d_2,\; \bar h \le h_1 \\
-\texttt{mixed\_compact\_midrise} & d_1 < \bar\rho < d_2,\; \bar h > h_1
+\texttt{dense\_highrise} & \bar\rho \ge d_2\;\text{or}\;\bar h \ge h_2 \\
+\texttt{open\_lowrise} & \bar\rho \le d_1\;\text{and}\;\bar h \le h_1 \\
+\texttt{mixed\_midrise} & \text{otherwise}
 \end{cases}
-\label{eq:topo6}
+\label{eq:topo78}
 \end{equation}
 
-with thresholds $d_1 = 0.12$, $d_2 = 0.28$ (density fractions),
-$h_1 = 12$ m, $h_2 = 28$ m. The three-class label
-(\texttt{open}/\texttt{mixed}/\texttt{dense}) is the prefix of
-$\mathrm{class}_6$ and is used in final-model reporting.
+with thresholds $d_1 = 0.1957$, $d_2 = 0.2549$ (density fractions),
+$h_1 = 10.91$ m, and $h_2 = 15.95$ m. Together with the binary LoS/NLoS
+label and the three UAV-height bins below, this yields the 18 stored Try78
+path-loss calibration keys.
 
 The antenna-height bin is assigned by UAV height tertiles:
 
@@ -1229,9 +1252,13 @@ form solution:
 \end{equation}
 
 where $\textbf{X}_r$ stacks the feature vectors and $\textbf{y}_r$ stacks
-the measured path-loss values. In practice, if the matrix is near-singular
-(sparse regime), a fallback to a less specific regime key is used (see
-the fallback chain in the spread-prior section, which uses the same strategy).
+the measured path-loss values. The runtime code does not refit this model; it
+loads the stored coefficient vectors from
+\texttt{try78\_nlos\_regime\_calibration.json}. At inference, if the exact
+antenna-height key is absent, the implementation only tries alternative
+antenna bins in the order current, mid, low, high while keeping the same
+Try78 city type and LoS/NLoS label. It does not use the broader cross-topology
+fallback hierarchy of the Try79 spread-prior calibration.
 
 The terms in Eq.~\eqref{eq:ols_closed} are standard linear least-squares
 quantities. The matrix \(\textbf{X}_r^\top\textbf{X}_r\) is the
@@ -1316,7 +1343,8 @@ degrees (angular spread), all in the native non-transformed domain.
 
 The headline path-loss numbers for the calibrated prior are reported in the
 results chapter (LoS waterfall in Table~\ref{tab:try78_los_waterfall}): the
-enhanced two-ray prior $\mathrm{PL}^{(0)}$ reaches \SI{1.7516}{dB}
+enhanced LoS two-ray prior $\mathrm{PL}_{\mathrm{LoS}}$ reaches
+\SI{1.7516}{dB}
 pixel-weighted RMSE on LoS pixels, the regime-wise OLS NLoS head reaches
 \SI{3.3967}{dB} on NLoS pixels, and the combined frozen prior that feeds
 the final-model comparison reaches \SI{1.9246}{dB} overall.
