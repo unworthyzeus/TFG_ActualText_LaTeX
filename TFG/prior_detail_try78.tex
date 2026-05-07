@@ -3,7 +3,7 @@
 The LoS prior is not a pure FSPL prior. FSPL is kept because it is the
 direct-ray normalization term of the coherent two-ray model: it gives the
 path loss that would be observed if only the direct ray existed. The deployed
-The LoS branch then adds the fitted ground-reflection interference term,
+LoS branch then adds the fitted ground-reflection interference term,
 a height-dependent bias, and a smoothed radial residual profile. This differs
 from the NLoS branch, which uses a longer pixel-feature vector and a
 regime-wise linear calibration.
@@ -1116,8 +1116,11 @@ screening would scale as $O(n^2)$ runs for a vector with $n$ terms, and each
 run would have to regenerate and inspect large calibration artifacts. The LoS
 two-ray calibration JSON used by the final model, for example, is about
 200\,000 lines long, mostly because it stores height-dependent radial residual
-profiles. For this reason the final vector keeps some correlated terms when
-they improved validation behavior.
+profiles. The NLoS side adds further morphology-dependent calibration through
+building-density, building-height, NLoS-support and antenna-height features.
+For this reason the prior should be read as a calibrated baseline with substantial
+stored structure, not as a single hand-written formula, and the final vector
+keeps some correlated terms when they improved validation behavior.
 
 \subsubsection{Stage 4: regime-wise linear calibration}
 

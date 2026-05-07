@@ -12,6 +12,10 @@ re-evaluated as the baseline for the final residual model on the final
 14-city test split. All final model-versus-prior comparisons use the latter.
 The final model is reported as the final prior-anchored residual GMM-head
 model over the three outputs: path loss, delay spread, and angular spread.
+The prior is therefore not a weak reference included only for comparison. It is
+one of the central results of the thesis: a strong, train-calibrated baseline
+that absorbs the stable part of the map before the residual model is asked to
+solve the harder local errors.
 
 \section{Experimental Evaluation}
 
@@ -44,7 +48,8 @@ Final residual GMM-head model      & Joint prior-anchored residual GMM-head mode
 \endgroup
 \end{table}
 
-The final path-loss prior is the clearest path-loss breakthrough. The enhanced two-ray LoS model
+The final path-loss prior is the clearest evidence that the prior is a strong
+path-loss baseline in its own right. The enhanced two-ray LoS model
 reduced LoS RMSE from roughly \SI{3.95}{dB} with FSPL to
 \SI{1.75}{dB}. The final hybrid prior reached \SI{1.9246}{dB} overall under the
 pixel-weighted metric on its 30\% evaluation holdout.
@@ -156,7 +161,10 @@ only because the neural network became larger. Some larger or more complex
 variants stalled when their objective was not aligned with the physical error.
 The biggest gains came from changing the formulation: masking invalid
 receiver pixels, separating regimes, injecting priors, and eventually making
-the prior itself strong enough to be a useful baseline.
+the prior itself strong enough to be a useful baseline. This is the
+divide-and-conquer result of the thesis: the calibration stage handles the
+repeatable structure, and the neural stage is evaluated only on the residual
+that remains after that baseline has already done substantial work.
 
 Second, RMSE and MAE told different stories during the middle of the project.
 For example, the prior-confidence stage had moderate average absolute error on many samples, but
@@ -195,6 +203,10 @@ the exact key grid alone has \(2\) metrics \(\times\) \(6\) topology classes
 \(\times\) \(2\) LoS/NLoS states \(\times\) \(3\) antenna-height bins, or
 \(72\) exact regimes, and the remaining \(42\) fitted keys are the fallback
 regimes used when an exact key is too sparse.
+The point of this dictionary is not novelty by formula alone, but coverage: the
+baseline is strong because it stores many small regime-specific decisions about
+density, building height, visibility, and antenna height instead of forcing one
+global estimator to explain all pixels.
 
 \begin{table}[H]
 \centering

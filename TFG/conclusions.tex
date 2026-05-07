@@ -22,6 +22,9 @@ on the final 14-city unseen test split. The final residual GMM-head model
 anchors on the unseen test cities, reaching \SI{1.6519}{dB} path-loss RMSE,
 \SI{26.5570}{ns} delay-spread RMSE, and \SI{11.3854}{\degree}
 angular-spread RMSE.
+This means that the prior is not merely a weak baseline placed before the final
+network. It is already a high-performing, train-calibrated estimator, and the
+final model's contribution is measured against that demanding reference.
 
 \subsection{What the final result means}
 
@@ -45,13 +48,14 @@ that the neural residual can add spatial context on top of the calibrated
 distributional priors, but they also confirm that these targets remain less
 deterministic than path loss.
 
-The final model is therefore not a pure neural victory. It is a division of
-labour. Calibrated priors explain the part of the signal that is stable,
-low-variance, and physically structured; the neural model is used where the
-prior is expected to be incomplete. This is the main methodological result of
-the thesis: performance improved when the model stopped trying to learn every
-effect from pixels alone and instead learned bounded residuals around
-interpretable anchors.
+The final model is therefore not a pure neural victory, and the prior is not
+claimed as a revolutionary new propagation law. It is a division of labour.
+Calibrated priors explain the part of the signal that is stable, low-variance,
+and physically structured; the neural model is used where the prior is expected
+to be incomplete. This is the main methodological result of the thesis:
+performance improved when the model stopped trying to learn every effect from
+pixels alone and instead learned bounded residuals around interpretable anchors.
+In practical terms, the thesis validates a divide-and-conquer strategy.
 
 \subsection{Answers to the research questions}
 
@@ -99,7 +103,8 @@ The third contribution is the final prior family. The path-loss prior explains w
 path-loss map has a strong radial structure and why an enhanced two-ray model
 can outperform many neural experiments on that regime. The spread prior extends the same
 principle to spread statistics with log-domain ridge calibration. Together,
-these priors become interpretable anchors for the final joint residual GMM-head model.
+these priors become interpretable anchors for the final joint residual GMM-head model
+and a reusable baseline for later CKM experiments under the same dataset contract.
 
 \subsection{Practical implications and scope}
 

@@ -803,7 +803,10 @@ the thesis literature review addresses simultaneously:
         respect to these anchors rather than raw targets.  This reduces the
         effective learning range, improves interpretability, and allows the
         analytical prior to handle the bulk of the LoS structure without
-        requiring the neural component to re-learn it.
+        requiring the neural component to re-learn it.  The anchors are also a
+        strong baseline in their own right: they encode train-only calibration
+        over visibility, morphology, density, building height, and UAV-height
+        regimes before any residual network is applied.
 
   \item \textbf{Strict city-holdout evaluation with continuous UAV height.}
         All 66 CKM cities appear without repetition in train, validation, and

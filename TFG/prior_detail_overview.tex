@@ -60,6 +60,13 @@ The deterministic or interpretable structure is kept in the prior, and the deep
 model is used only for the residual part that the prior cannot explain.
 Figure~\ref{fig:pipeline} illustrates the overall pipeline.
 
+This prior phase is not presented as a new universal closed-form propagation
+law. Its value is more practical: it turns physics, morphology, visibility, and
+height-dependent calibration into a strong auditable baseline. The final model
+then follows a divide-and-conquer split of responsibility: calibrated priors
+remove the stable component of the targets, and the neural residual model
+focuses on the local errors that remain.
+
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
@@ -145,6 +152,10 @@ effective reflection and local morphology corrections are fitted from CKM. \\
 Learn bounded residuals after the prior &
 The final model is allowed to correct local errors without overwriting the calibrated
 large-scale structure. \\
+Treat calibration artifacts as part of the model &
+Large JSON and coefficient artifacts are not bookkeeping only; they store the
+height-, density-, visibility-, and morphology-specific decisions that make the
+prior a competitive baseline. \\
 \bottomrule
 \end{tabularx}
 \end{table}

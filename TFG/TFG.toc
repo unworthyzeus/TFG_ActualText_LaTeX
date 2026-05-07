@@ -56,7 +56,7 @@
 \contentsline {section}{\numberline {2.10}Position of the Final Model in the Literature}{35}{section.2.10}%
 \contentsline {subsection}{\numberline {2.10.1}What is novel about the final model}{35}{subsection.2.10.1}%
 \contentsline {subsection}{\numberline {2.10.2}What the final model does not claim}{36}{subsection.2.10.2}%
-\contentsline {subsection}{\numberline {2.10.3}Summary of position}{36}{subsection.2.10.3}%
+\contentsline {subsection}{\numberline {2.10.3}Summary of position}{37}{subsection.2.10.3}%
 \contentsline {chapter}{\numberline {3}Methodology / project development}{38}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Dataset protocol}{38}{section.3.1}%
 \contentsline {section}{\numberline {3.2}From U-Net and cGAN to masked baselines}{39}{section.3.2}%
@@ -66,153 +66,153 @@
 \contentsline {paragraph}{High-Frequency (HF) Stem.}{40}{paragraph*.22}%
 \contentsline {paragraph}{Continuous Sinusoidal FiLM Conditioning.}{40}{paragraph*.23}%
 \contentsline {subsection}{\numberline {3.4.2}Limitations and Legacy}{40}{subsection.3.4.2}%
-\contentsline {section}{\numberline {3.5}Distribution-first modelling}{40}{section.3.5}%
+\contentsline {section}{\numberline {3.5}Distribution-first modelling}{41}{section.3.5}%
 \contentsline {subsection}{\numberline {3.5.1}How to construct a good deep-learning model for radio maps}{42}{subsection.3.5.1}%
 \contentsline {subsubsection}{A prior is useful, but not the core requirement}{42}{subsubsection*.26}%
 \contentsline {subsubsection}{Path loss: LoS has structure, NLoS has a narrow but noisy law with outliers}{43}{subsubsection*.27}%
 \contentsline {subsubsection}{Delay spread and angular spread: NLoS is the important regime}{44}{subsubsection*.28}%
 \contentsline {subsubsection}{Why the cGAN line failed}{45}{subsubsection*.30}%
-\contentsline {subsubsection}{Why PMNet and PMHHNet were not enough}{45}{subsubsection*.31}%
+\contentsline {subsubsection}{Why PMNet and PMHHNet were not enough}{46}{subsubsection*.31}%
 \contentsline {subsubsection}{Design rules that survived}{46}{subsubsection*.32}%
 \contentsline {section}{\numberline {3.6}GMM component count and distribution choice}{47}{section.3.6}%
 \contentsline {section}{\numberline {3.7}Loss functions of the final pipeline}{48}{section.3.7}%
-\contentsline {section}{\numberline {3.8}Training hyperparameters}{48}{section.3.8}%
+\contentsline {section}{\numberline {3.8}Training hyperparameters}{49}{section.3.8}%
 \contentsline {section}{\numberline {3.9}Final residual GMM-head model training progression}{49}{section.3.9}%
 \contentsline {section}{\numberline {3.10}Final priors: overview and literature basis}{50}{section.3.10}%
 \contentsline {subsection}{\numberline {3.10.1}High-level architecture}{51}{subsection.3.10.1}%
 \contentsline {subsection}{\numberline {3.10.2}Prior design rules}{52}{subsection.3.10.2}%
-\contentsline {subsection}{\numberline {3.10.3}Literature ingredients and thesis adaptations}{52}{subsection.3.10.3}%
-\contentsline {section}{\numberline {3.11}Path Loss Prior}{53}{section.3.11}%
-\contentsline {subsection}{\numberline {3.11.1}LoS branch: enhanced two-ray model}{53}{subsection.3.11.1}%
-\contentsline {subsubsection}{Geometry and distances}{53}{subsubsection*.40}%
-\contentsline {subsubsection}{Free-space path-loss baseline}{54}{subsubsection*.42}%
+\contentsline {subsection}{\numberline {3.10.3}Literature ingredients and thesis adaptations}{53}{subsection.3.10.3}%
+\contentsline {section}{\numberline {3.11}Path Loss Prior}{54}{section.3.11}%
+\contentsline {subsection}{\numberline {3.11.1}LoS branch: enhanced two-ray model}{54}{subsection.3.11.1}%
+\contentsline {subsubsection}{Geometry and distances}{54}{subsubsection*.40}%
+\contentsline {subsubsection}{Free-space path-loss baseline}{55}{subsubsection*.42}%
 \contentsline {paragraph}{Derivation.}{55}{paragraph*.43}%
 \contentsline {paragraph}{Physical meaning.}{55}{paragraph*.44}%
 \contentsline {subsubsection}{Enhanced two-ray correction}{55}{subsubsection*.45}%
-\contentsline {paragraph}{Term-by-term interpretation.}{55}{paragraph*.46}%
+\contentsline {paragraph}{Term-by-term interpretation.}{56}{paragraph*.46}%
 \contentsline {subsubsection}{Comparison with literature two-ray models}{56}{subsubsection*.47}%
-\contentsline {paragraph}{Physical vs.\ effective parameters.}{56}{paragraph*.48}%
+\contentsline {paragraph}{Physical vs.\ effective parameters.}{57}{paragraph*.48}%
 \contentsline {paragraph}{The $d^4$ approximation.}{57}{paragraph*.49}%
 \contentsline {paragraph}{Search range vs.\ fitted values.}{57}{paragraph*.50}%
 \contentsline {paragraph}{Extra calibrated terms outside the two-ray model.}{57}{paragraph*.51}%
-\contentsline {subsubsection}{Calibrated LoS prior}{57}{subsubsection*.52}%
-\contentsline {subsection}{\numberline {3.11.2}Calibration of the LoS two-ray model}{59}{subsection.3.11.2}%
-\contentsline {subsubsection}{Data preparation}{59}{subsubsection*.54}%
-\contentsline {subsubsection}{Grid search for $(\rho , \phi )$}{60}{subsubsection*.55}%
+\contentsline {subsubsection}{Calibrated LoS prior}{58}{subsubsection*.52}%
+\contentsline {subsection}{\numberline {3.11.2}Calibration of the LoS two-ray model}{60}{subsection.3.11.2}%
+\contentsline {subsubsection}{Data preparation}{60}{subsubsection*.54}%
+\contentsline {subsubsection}{Grid search for $(\mitrho , \mitphi )$}{60}{subsubsection*.55}%
 \contentsline {subsubsection}{Post-fit Gaussian smoothing across height bins}{61}{subsubsection*.56}%
-\contentsline {subsubsection}{Radial residual correction}{61}{subsubsection*.57}%
-\contentsline {subsubsection}{Fitted parameter values}{61}{subsubsection*.58}%
-\contentsline {subsection}{\numberline {3.11.3}NLoS branch}{62}{subsection.3.11.3}%
-\contentsline {subsubsection}{Stage 1: raw NLoS propagation prior}{62}{subsubsection*.62}%
-\contentsline {paragraph}{COST-231 term.}{62}{paragraph*.63}%
-\contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:cost231}.}{63}{paragraph*.64}%
-\contentsline {paragraph}{Elevation-aware UAV envelope.}{63}{paragraph*.65}%
+\contentsline {subsubsection}{Radial residual correction}{62}{subsubsection*.57}%
+\contentsline {subsubsection}{Fitted parameter values}{62}{subsubsection*.58}%
+\contentsline {subsection}{\numberline {3.11.3}NLoS branch}{63}{subsection.3.11.3}%
+\contentsline {subsubsection}{Stage 1: raw NLoS propagation prior}{63}{subsubsection*.62}%
+\contentsline {paragraph}{COST-231 term.}{63}{paragraph*.63}%
+\contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:cost231}.}{64}{paragraph*.64}%
+\contentsline {paragraph}{Elevation-aware UAV envelope.}{64}{paragraph*.65}%
 \contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:a2g_nlos}.}{64}{paragraph*.66}%
-\contentsline {subsubsection}{Stage 2: raw hybrid prior assembly}{64}{subsubsection*.67}%
-\contentsline {subsubsection}{Stage 3: map-derived morphology features}{65}{subsubsection*.68}%
-\contentsline {paragraph}{Base masks.}{66}{paragraph*.70}%
-\contentsline {paragraph}{Quadratic raw-prior feature.}{67}{paragraph*.71}%
-\contentsline {paragraph}{Distance term.}{67}{paragraph*.72}%
-\contentsline {paragraph}{Per-pixel box-mean operator.}{67}{paragraph*.73}%
-\contentsline {paragraph}{Multiscale building density.}{68}{paragraph*.74}%
-\contentsline {paragraph}{Multiscale building height.}{68}{paragraph*.75}%
-\contentsline {paragraph}{Multiscale NLoS-support.}{68}{paragraph*.76}%
-\contentsline {paragraph}{Elevation angle.}{69}{paragraph*.77}%
-\contentsline {paragraph}{Shadowing proxy.}{69}{paragraph*.78}%
-\contentsline {paragraph}{Interaction terms.}{69}{paragraph*.79}%
-\contentsline {subsubsection}{Stage 4: regime-wise linear calibration}{70}{subsubsection*.80}%
-\contentsline {paragraph}{How topology class and antenna bin are computed.}{70}{paragraph*.81}%
-\contentsline {paragraph}{How $\textbf {w}^{78}_{r}$ is fitted.}{71}{paragraph*.82}%
-\contentsline {subsubsection}{Stage 5: region replacement and clipping}{72}{subsubsection*.83}%
-\contentsline {subsection}{\numberline {3.11.4}Evaluation metric: pixel-weighted RMSE}{72}{subsection.3.11.4}%
-\contentsline {subsection}{\numberline {3.11.5}Observed path-loss-prior results}{72}{subsection.3.11.5}%
-\contentsline {section}{\numberline {3.12}Delay and Angular Spread Priors}{73}{section.3.12}%
-\contentsline {subsection}{\numberline {3.12.1}Physical motivation for log-domain modeling}{73}{subsection.3.12.1}%
-\contentsline {subsection}{\numberline {3.12.2}Pixel-wise notation for the spread-prior fit}{74}{subsection.3.12.2}%
-\contentsline {subsection}{\numberline {3.12.3}Raw spread prior in log domain}{74}{subsection.3.12.3}%
-\contentsline {subsection}{\numberline {3.12.4}Calibrated spread prior}{75}{subsection.3.12.4}%
-\contentsline {subsubsection}{Stage 2: 23-feature vector and design matrix}{75}{subsubsection*.85}%
-\contentsline {paragraph}{Normalised transmitter height.}{77}{paragraph*.89}%
-\contentsline {paragraph}{Blocker depth.}{78}{paragraph*.90}%
-\contentsline {paragraph}{Transmitter clearance.}{78}{paragraph*.91}%
-\contentsline {paragraph}{Taller-building fraction.}{78}{paragraph*.92}%
-\contentsline {subsubsection}{Stage 3: regime-wise ridge regression}{78}{subsubsection*.93}%
-\contentsline {paragraph}{Fallback hierarchy.}{79}{paragraph*.94}%
-\contentsline {subsubsection}{Stage 4: inverse transform and clipping}{79}{subsubsection*.95}%
-\contentsline {subsection}{\numberline {3.12.5}Spread-prior results}{80}{subsection.3.12.5}%
-\contentsline {section}{\numberline {3.13}Joint Prior-Anchored Residual GMM-Head Model}{81}{section.3.13}%
-\contentsline {subsection}{\numberline {3.13.1}Experimental protocol and reporting status}{81}{subsection.3.13.1}%
-\contentsline {subsection}{\numberline {3.13.2}Prior-Anchored GMM Residual Model}{82}{subsection.3.13.2}%
-\contentsline {subsection}{\numberline {3.13.3}Architecture: Shared UNet with FiLM}{84}{subsection.3.13.3}%
-\contentsline {paragraph}{Detailed sinusoidal height embedding and FiLM path.}{85}{paragraph*.100}%
-\contentsline {paragraph}{Detailed prior-anchored GMM head.}{85}{paragraph*.102}%
-\contentsline {subsection}{\numberline {3.13.4}Composite Optimization Objective}{86}{subsection.3.13.4}%
-\contentsline {paragraph}{Map negative log-likelihood.}{86}{paragraph*.104}%
-\contentsline {paragraph}{Distributional KL term.}{86}{paragraph*.105}%
-\contentsline {paragraph}{Moment matching.}{87}{paragraph*.106}%
-\contentsline {paragraph}{Anchor and guard terms.}{87}{paragraph*.107}%
-\contentsline {paragraph}{Outlier budget and deterministic losses.}{87}{paragraph*.108}%
-\contentsline {chapter}{\numberline {4}Results}{88}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Experimental Evaluation}{88}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}LoS path-loss prior progression}{89}{subsection.4.1.1}%
-\contentsline {section}{\numberline {4.2}RMSE evolution and interpretation}{89}{section.4.2}%
-\contentsline {paragraph}{Split-comparability note.}{90}{paragraph*.113}%
-\contentsline {subsection}{\numberline {4.2.1}Distribution-first path-loss reference}{92}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Why priors came back after distribution-first modelling}{95}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Distribution-first spread experts}{95}{subsection.4.2.3}%
-\contentsline {paragraph}{Expert nomenclature.}{95}{paragraph*.119}%
-\contentsline {subsection}{\numberline {4.2.4}RMSE by UAV transmitter height}{97}{subsection.4.2.4}%
-\contentsline {subsection}{\numberline {4.2.5}Path-loss prior by topology class}{98}{subsection.4.2.5}%
-\contentsline {subsection}{\numberline {4.2.6}Final joint prior-anchored residual GMM-head model test results}{100}{subsection.4.2.6}%
-\contentsline {section}{\numberline {4.3}Qualitative Analysis}{104}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Limitations}{106}{section.4.4}%
-\contentsline {chapter}{\numberline {5}Sustainability Analysis and Ethical Implications}{110}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Sustainability matrix}{110}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Environmental impact}{110}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Economic impact}{111}{subsection.5.1.2}%
-\contentsline {subsection}{\numberline {5.1.3}Social impact}{112}{subsection.5.1.3}%
-\contentsline {section}{\numberline {5.2}Ethical implications}{113}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Relationship with the Sustainable Development Goals}{113}{section.5.3}%
-\contentsline {chapter}{\numberline {6}Conclusions and Future Work}{114}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Conclusions}{114}{section.6.1}%
-\contentsline {subsection}{\numberline {6.1.1}What the final result means}{114}{subsection.6.1.1}%
-\contentsline {subsection}{\numberline {6.1.2}Answers to the research questions}{115}{subsection.6.1.2}%
-\contentsline {subsection}{\numberline {6.1.3}Main contributions}{115}{subsection.6.1.3}%
-\contentsline {subsection}{\numberline {6.1.4}Practical implications and scope}{116}{subsection.6.1.4}%
-\contentsline {subsection}{\numberline {6.1.5}Negative results}{116}{subsection.6.1.5}%
-\contentsline {subsection}{\numberline {6.1.6}Lessons learned across the development path}{116}{subsection.6.1.6}%
-\contentsline {section}{\numberline {6.2}Future Directions}{117}{section.6.2}%
-\contentsline {paragraph}{Short-medium term.}{117}{paragraph*.146}%
-\contentsline {paragraph}{Medium-long term.}{117}{paragraph*.147}%
-\contentsline {chapter}{Bibliography}{118}{chapter*.148}%
-\contentsline {chapter}{\numberline {A}Detailed Attempt Log}{122}{appendix.A}%
-\contentsline {section}{\numberline {A.1}How to read the attempt numbers}{122}{section.A.1}%
-\contentsline {section}{\numberline {A.2}Try-number map}{123}{section.A.2}%
-\contentsline {section}{\numberline {A.3}Expanded chronological timeline}{126}{section.A.3}%
-\contentsline {subsection}{\numberline {A.3.1}Early image-to-image baselines}{126}{subsection.A.3.1}%
-\contentsline {subsection}{\numberline {A.3.2}Geometry conditioning and artifact control}{126}{subsection.A.3.2}%
-\contentsline {subsection}{\numberline {A.3.3}Masking and evaluation contract}{126}{subsection.A.3.3}%
-\contentsline {subsection}{\numberline {A.3.4}Prior-guided residual learning}{126}{subsection.A.3.4}%
-\contentsline {subsection}{\numberline {A.3.5}PMHHNet and expert-routing phase}{127}{subsection.A.3.5}%
-\contentsline {subsection}{\numberline {A.3.6}Regularization and distribution diagnosis}{127}{subsection.A.3.6}%
-\contentsline {subsection}{\numberline {A.3.7}Distribution-first modelling}{127}{subsection.A.3.7}%
-\contentsline {subsection}{\numberline {A.3.8}Frozen calibrated priors}{127}{subsection.A.3.8}%
-\contentsline {subsection}{\numberline {A.3.9}Final prior-anchored residual GMM-head model}{128}{subsection.A.3.9}%
-\contentsline {chapter}{\numberline {B}Final Residual GMM-Head Model Configuration Summary}{129}{appendix.B}%
-\contentsline {chapter}{\numberline {C}Formula Placement}{130}{appendix.C}%
-\contentsline {chapter}{\numberline {D}Representative Final Residual GMM-Head Model Inspection Panels}{131}{appendix.D}%
-\contentsline {chapter}{\numberline {E}Implementation Snippets}{142}{appendix.E}%
-\contentsline {section}{\numberline {E.1}Frozen prior assembly}{142}{section.E.1}%
-\contentsline {section}{\numberline {E.2}Final residual GMM-head model input tensor}{142}{section.E.2}%
-\contentsline {section}{\numberline {E.3}Bounded residual decoder}{142}{section.E.3}%
-\contentsline {chapter}{\numberline {F}CKM Generator Interface and Reproducibility Tool}{144}{appendix.F}%
-\contentsline {section}{\numberline {F.1}Public source record and checkpoint artifact}{144}{section.F.1}%
-\contentsline {section}{\numberline {F.2}Interface overview}{144}{section.F.2}%
-\contentsline {section}{\numberline {F.3}How the tool is run}{146}{section.F.3}%
-\contentsline {section}{\numberline {F.4}Accepted inputs}{146}{section.F.4}%
-\contentsline {section}{\numberline {F.5}Configurable controls}{147}{section.F.5}%
-\contentsline {section}{\numberline {F.6}Image scaling and raw numeric data}{148}{section.F.6}%
-\contentsline {section}{\numberline {F.7}Model-grid fitting and interpolation}{148}{section.F.7}%
-\contentsline {section}{\numberline {F.8}Mask policies}{149}{section.F.8}%
-\contentsline {section}{\numberline {F.9}Outputs}{149}{section.F.9}%
-\contentsline {section}{\numberline {F.10}Performance controls}{152}{section.F.10}%
+\contentsline {subsubsection}{Stage 2: raw hybrid prior assembly}{65}{subsubsection*.67}%
+\contentsline {subsubsection}{Stage 3: map-derived morphology features}{66}{subsubsection*.68}%
+\contentsline {paragraph}{Base masks.}{67}{paragraph*.70}%
+\contentsline {paragraph}{Quadratic raw-prior feature.}{68}{paragraph*.71}%
+\contentsline {paragraph}{Distance term.}{68}{paragraph*.72}%
+\contentsline {paragraph}{Per-pixel box-mean operator.}{68}{paragraph*.73}%
+\contentsline {paragraph}{Multiscale building density.}{69}{paragraph*.74}%
+\contentsline {paragraph}{Multiscale building height.}{69}{paragraph*.75}%
+\contentsline {paragraph}{Multiscale NLoS-support.}{69}{paragraph*.76}%
+\contentsline {paragraph}{Elevation angle.}{70}{paragraph*.77}%
+\contentsline {paragraph}{Shadowing proxy.}{70}{paragraph*.78}%
+\contentsline {paragraph}{Interaction terms.}{70}{paragraph*.79}%
+\contentsline {subsubsection}{Stage 4: regime-wise linear calibration}{71}{subsubsection*.80}%
+\contentsline {paragraph}{How topology class and antenna bin are computed.}{71}{paragraph*.81}%
+\contentsline {paragraph}{How $\textbf {w}^{78}_{r}$ is fitted.}{72}{paragraph*.82}%
+\contentsline {subsubsection}{Stage 5: region replacement and clipping}{73}{subsubsection*.83}%
+\contentsline {subsection}{\numberline {3.11.4}Evaluation metric: pixel-weighted RMSE}{73}{subsection.3.11.4}%
+\contentsline {subsection}{\numberline {3.11.5}Observed path-loss-prior results}{73}{subsection.3.11.5}%
+\contentsline {section}{\numberline {3.12}Delay and Angular Spread Priors}{74}{section.3.12}%
+\contentsline {subsection}{\numberline {3.12.1}Physical motivation for log-domain modeling}{74}{subsection.3.12.1}%
+\contentsline {subsection}{\numberline {3.12.2}Pixel-wise notation for the spread-prior fit}{75}{subsection.3.12.2}%
+\contentsline {subsection}{\numberline {3.12.3}Raw spread prior in log domain}{75}{subsection.3.12.3}%
+\contentsline {subsection}{\numberline {3.12.4}Calibrated spread prior}{76}{subsection.3.12.4}%
+\contentsline {subsubsection}{Stage 2: 23-feature vector and design matrix}{76}{subsubsection*.85}%
+\contentsline {paragraph}{Normalised transmitter height.}{78}{paragraph*.89}%
+\contentsline {paragraph}{Blocker depth.}{79}{paragraph*.90}%
+\contentsline {paragraph}{Transmitter clearance.}{79}{paragraph*.91}%
+\contentsline {paragraph}{Taller-building fraction.}{79}{paragraph*.92}%
+\contentsline {subsubsection}{Stage 3: regime-wise ridge regression}{79}{subsubsection*.93}%
+\contentsline {paragraph}{Fallback hierarchy.}{80}{paragraph*.94}%
+\contentsline {subsubsection}{Stage 4: inverse transform and clipping}{80}{subsubsection*.95}%
+\contentsline {subsection}{\numberline {3.12.5}Spread-prior results}{81}{subsection.3.12.5}%
+\contentsline {section}{\numberline {3.13}Joint Prior-Anchored Residual GMM-Head Model}{82}{section.3.13}%
+\contentsline {subsection}{\numberline {3.13.1}Experimental protocol and reporting status}{82}{subsection.3.13.1}%
+\contentsline {subsection}{\numberline {3.13.2}Prior-Anchored GMM Residual Model}{83}{subsection.3.13.2}%
+\contentsline {subsection}{\numberline {3.13.3}Architecture: Shared UNet with FiLM}{85}{subsection.3.13.3}%
+\contentsline {paragraph}{Detailed sinusoidal height embedding and FiLM path.}{86}{paragraph*.100}%
+\contentsline {paragraph}{Detailed prior-anchored GMM head.}{86}{paragraph*.102}%
+\contentsline {subsection}{\numberline {3.13.4}Composite Optimization Objective}{87}{subsection.3.13.4}%
+\contentsline {paragraph}{Map negative log-likelihood.}{87}{paragraph*.104}%
+\contentsline {paragraph}{Distributional KL term.}{87}{paragraph*.105}%
+\contentsline {paragraph}{Moment matching.}{88}{paragraph*.106}%
+\contentsline {paragraph}{Anchor and guard terms.}{88}{paragraph*.107}%
+\contentsline {paragraph}{Outlier budget and deterministic losses.}{88}{paragraph*.108}%
+\contentsline {chapter}{\numberline {4}Results}{89}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Experimental Evaluation}{89}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}LoS path-loss prior progression}{90}{subsection.4.1.1}%
+\contentsline {section}{\numberline {4.2}RMSE evolution and interpretation}{90}{section.4.2}%
+\contentsline {paragraph}{Split-comparability note.}{91}{paragraph*.113}%
+\contentsline {subsection}{\numberline {4.2.1}Distribution-first path-loss reference}{93}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Why priors came back after distribution-first modelling}{96}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Distribution-first spread experts}{96}{subsection.4.2.3}%
+\contentsline {paragraph}{Expert nomenclature.}{96}{paragraph*.119}%
+\contentsline {subsection}{\numberline {4.2.4}RMSE by UAV transmitter height}{98}{subsection.4.2.4}%
+\contentsline {subsection}{\numberline {4.2.5}Path-loss prior by topology class}{99}{subsection.4.2.5}%
+\contentsline {subsection}{\numberline {4.2.6}Final joint prior-anchored residual GMM-head model test results}{101}{subsection.4.2.6}%
+\contentsline {section}{\numberline {4.3}Qualitative Analysis}{105}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Limitations}{107}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Sustainability Analysis and Ethical Implications}{111}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Sustainability matrix}{111}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Environmental impact}{111}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Economic impact}{112}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Social impact}{113}{subsection.5.1.3}%
+\contentsline {section}{\numberline {5.2}Ethical implications}{114}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Relationship with the Sustainable Development Goals}{114}{section.5.3}%
+\contentsline {chapter}{\numberline {6}Conclusions and Future Work}{115}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Conclusions}{115}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}What the final result means}{115}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Answers to the research questions}{116}{subsection.6.1.2}%
+\contentsline {subsection}{\numberline {6.1.3}Main contributions}{116}{subsection.6.1.3}%
+\contentsline {subsection}{\numberline {6.1.4}Practical implications and scope}{117}{subsection.6.1.4}%
+\contentsline {subsection}{\numberline {6.1.5}Negative results}{117}{subsection.6.1.5}%
+\contentsline {subsection}{\numberline {6.1.6}Lessons learned across the development path}{118}{subsection.6.1.6}%
+\contentsline {section}{\numberline {6.2}Future Directions}{118}{section.6.2}%
+\contentsline {paragraph}{Short-medium term.}{118}{paragraph*.146}%
+\contentsline {paragraph}{Medium-long term.}{118}{paragraph*.147}%
+\contentsline {chapter}{Bibliography}{119}{chapter*.148}%
+\contentsline {chapter}{\numberline {A}Detailed Attempt Log}{123}{appendix.A}%
+\contentsline {section}{\numberline {A.1}How to read the attempt numbers}{123}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Try-number map}{124}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Expanded chronological timeline}{127}{section.A.3}%
+\contentsline {subsection}{\numberline {A.3.1}Early image-to-image baselines}{127}{subsection.A.3.1}%
+\contentsline {subsection}{\numberline {A.3.2}Geometry conditioning and artifact control}{127}{subsection.A.3.2}%
+\contentsline {subsection}{\numberline {A.3.3}Masking and evaluation contract}{127}{subsection.A.3.3}%
+\contentsline {subsection}{\numberline {A.3.4}Prior-guided residual learning}{127}{subsection.A.3.4}%
+\contentsline {subsection}{\numberline {A.3.5}PMHHNet and expert-routing phase}{128}{subsection.A.3.5}%
+\contentsline {subsection}{\numberline {A.3.6}Regularization and distribution diagnosis}{128}{subsection.A.3.6}%
+\contentsline {subsection}{\numberline {A.3.7}Distribution-first modelling}{128}{subsection.A.3.7}%
+\contentsline {subsection}{\numberline {A.3.8}Frozen calibrated priors}{128}{subsection.A.3.8}%
+\contentsline {subsection}{\numberline {A.3.9}Final prior-anchored residual GMM-head model}{129}{subsection.A.3.9}%
+\contentsline {chapter}{\numberline {B}Final Residual GMM-Head Model Configuration Summary}{130}{appendix.B}%
+\contentsline {chapter}{\numberline {C}Formula Placement}{131}{appendix.C}%
+\contentsline {chapter}{\numberline {D}Representative Final Residual GMM-Head Model Inspection Panels}{132}{appendix.D}%
+\contentsline {chapter}{\numberline {E}Implementation Snippets}{143}{appendix.E}%
+\contentsline {section}{\numberline {E.1}Frozen prior assembly}{143}{section.E.1}%
+\contentsline {section}{\numberline {E.2}Final residual GMM-head model input tensor}{143}{section.E.2}%
+\contentsline {section}{\numberline {E.3}Bounded residual decoder}{143}{section.E.3}%
+\contentsline {chapter}{\numberline {F}CKM Generator Interface and Reproducibility Tool}{145}{appendix.F}%
+\contentsline {section}{\numberline {F.1}Public source record and checkpoint artifact}{145}{section.F.1}%
+\contentsline {section}{\numberline {F.2}Interface overview}{145}{section.F.2}%
+\contentsline {section}{\numberline {F.3}How the tool is run}{147}{section.F.3}%
+\contentsline {section}{\numberline {F.4}Accepted inputs}{147}{section.F.4}%
+\contentsline {section}{\numberline {F.5}Configurable controls}{148}{section.F.5}%
+\contentsline {section}{\numberline {F.6}Image scaling and raw numeric data}{149}{section.F.6}%
+\contentsline {section}{\numberline {F.7}Model-grid fitting and interpolation}{149}{section.F.7}%
+\contentsline {section}{\numberline {F.8}Mask policies}{150}{section.F.8}%
+\contentsline {section}{\numberline {F.9}Outputs}{150}{section.F.9}%
+\contentsline {section}{\numberline {F.10}Performance controls}{153}{section.F.10}%
