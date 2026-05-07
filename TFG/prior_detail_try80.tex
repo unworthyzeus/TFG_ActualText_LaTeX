@@ -198,6 +198,17 @@ The FiLM mechanism and injection points are unchanged between the wide and
 large-capacity variants; only the width of the feature maps changes, so the
 FiLM projection emits \(2C\) parameters for the larger channel counts.
 
+The word ``joint'' in this model refers to shared representation learning and
+joint optimization, not to an autoregressive or cross-output decoder. Path loss,
+delay spread and angular spread all pass through the same encoder, the same
+height-conditioning path, the same decoder feature map and the same
+prior-anchored GMM assembly rule. After these shared features are computed,
+however, the implementation iterates over the three tasks and applies
+task-specific global and local heads. Therefore PL, DS and AS can exchange
+information through the common spatial representation, but the final residual
+parameters, mixture weights and frozen prior anchor are selected independently
+for each task.
+
 The architecture explicitly enforces the separation of global and local effects via a dual-head design for each task:
 
 \begin{itemize}

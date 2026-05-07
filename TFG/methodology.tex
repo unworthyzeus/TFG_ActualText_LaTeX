@@ -894,7 +894,9 @@ vector. Its residual caps were conservative, especially for path loss
 (\(\pm2\) dB in LoS and \(\pm4\) dB in NLoS), and the objective retained the
 complete probabilistic bundle: GMM likelihood, distribution matching,
 prior anchoring, prior guard, RMSE, and MAE. This stage mainly tested whether
-a residual network could improve the frozen priors without degrading them.
+a residual network could improve the frozen priors without degrading them. The
+multi-task sharing was deliberately placed in the encoder-decoder representation;
+the PL, DS and AS residual heads remained task-specific.
 
 \item \textbf{Wide residual model with relaxed residual bounds.} The second stage kept the same
 network capacity but loosened the allowed correction range. In the selected
