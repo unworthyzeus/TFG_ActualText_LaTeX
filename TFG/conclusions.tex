@@ -224,14 +224,15 @@ bandwidth, antenna pattern, and possibly polarization. A natural dataset for
 this stage would simulate the same cities across several radio configurations
 so that the model can separate geometry effects from configuration effects.
 
-A nearer-term training direction is topology-specific adaptation. The
-per-topology analysis suggests that dense high-rise, compact mid-rise, open
-low-rise, and mixed urban layouts do not fail in exactly the same way. A
-practical continuation would therefore be to fine-tune the final prior-anchored
-model on one urban typology at a time, or to train lightweight specialist heads
-on top of the shared backbone. This would test whether topology-specific
-adaptation can recover local structure that a single global city-holdout model
-necessarily smooths over.
+A nearer-term training direction is adaptation to new or under-represented
+topology types. The per-topology analysis suggests that dense high-rise,
+compact mid-rise, open low-rise, mixed urban layouts, and future morphology
+classes do not fail in exactly the same way. A practical continuation would
+therefore be to fine-tune the final prior-anchored model on newly introduced
+urban typologies, or to train lightweight specialist heads on top of the shared
+backbone when only limited examples are available. This would test whether the
+model can recover local structure in topology regimes beyond the original
+training distribution, rather than only specialising to already defined classes.
 
 For delay and angular spreads, another short- to medium-term direction is to
 optimize not only pixel-wise RMSE but also spatial structure. Spread maps can
