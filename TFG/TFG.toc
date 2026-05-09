@@ -47,12 +47,12 @@
 \contentsline {section}{\numberline {2.8}Key benchmarks and fair-comparison protocol}{31}{section.2.8}%
 \contentsline {subsection}{\numberline {2.8.1}Why headline numbers cannot be compared directly}{31}{subsection.2.8.1}%
 \contentsline {subsection}{\numberline {2.8.2}Tarhouni et al.: measured suburban path-loss prediction}{32}{subsection.2.8.2}%
-\contentsline {subsection}{\numberline {2.8.3}AIRMap: adaptive digital-twin radio maps}{32}{subsection.2.8.3}%
+\contentsline {subsection}{\numberline {2.8.3}AIRMap: adaptive digital-twin radio maps}{33}{subsection.2.8.3}%
 \contentsline {subsection}{\numberline {2.8.4}Gao et al.: multi-layer segmentation with corridor weighting}{33}{subsection.2.8.4}%
 \contentsline {subsection}{\numberline {2.8.5}PathFinder: multi-transmitter domain adaptation}{33}{subsection.2.8.5}%
 \contentsline {subsection}{\numberline {2.8.6}ICASSP 2025 indoor challenge}{34}{subsection.2.8.6}%
 \contentsline {section}{\numberline {2.9}Emerging techniques for closing the NLoS gap}{34}{section.2.9}%
-\contentsline {subsection}{\numberline {2.9.1}Synthesis: literature gaps mapped to thesis decisions}{34}{subsection.2.9.1}%
+\contentsline {subsection}{\numberline {2.9.1}Synthesis: literature gaps mapped to thesis decisions}{35}{subsection.2.9.1}%
 \contentsline {section}{\numberline {2.10}Position of the Final Model in the Literature}{35}{section.2.10}%
 \contentsline {subsection}{\numberline {2.10.1}What is novel about the final model}{35}{subsection.2.10.1}%
 \contentsline {subsection}{\numberline {2.10.2}What the final model does not claim}{36}{subsection.2.10.2}%
@@ -107,7 +107,7 @@
 \contentsline {paragraph}{COST-231 term.}{63}{paragraph*.63}%
 \contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:cost231}.}{64}{paragraph*.64}%
 \contentsline {paragraph}{Elevation-aware UAV envelope.}{64}{paragraph*.65}%
-\contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:a2g_nlos}.}{64}{paragraph*.66}%
+\contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:a2g_nlos}.}{65}{paragraph*.66}%
 \contentsline {subsubsection}{Stage 2: raw hybrid prior assembly}{65}{subsubsection*.67}%
 \contentsline {subsubsection}{Stage 3: map-derived morphology features}{66}{subsubsection*.68}%
 \contentsline {paragraph}{Base masks.}{67}{paragraph*.70}%
@@ -183,36 +183,36 @@
 \contentsline {subsection}{\numberline {6.1.6}Lessons learned across the development path}{118}{subsection.6.1.6}%
 \contentsline {section}{\numberline {6.2}Future Directions}{118}{section.6.2}%
 \contentsline {paragraph}{Short-medium term.}{118}{paragraph*.146}%
-\contentsline {paragraph}{Medium-long term.}{118}{paragraph*.147}%
-\contentsline {chapter}{Bibliography}{119}{chapter*.148}%
-\contentsline {chapter}{\numberline {A}Detailed Attempt Log}{123}{appendix.A}%
-\contentsline {section}{\numberline {A.1}How to read the attempt numbers}{123}{section.A.1}%
-\contentsline {section}{\numberline {A.2}Try-number map}{124}{section.A.2}%
-\contentsline {section}{\numberline {A.3}Expanded chronological timeline}{127}{section.A.3}%
-\contentsline {subsection}{\numberline {A.3.1}Early image-to-image baselines}{127}{subsection.A.3.1}%
-\contentsline {subsection}{\numberline {A.3.2}Geometry conditioning and artifact control}{127}{subsection.A.3.2}%
-\contentsline {subsection}{\numberline {A.3.3}Masking and evaluation contract}{127}{subsection.A.3.3}%
-\contentsline {subsection}{\numberline {A.3.4}Prior-guided residual learning}{127}{subsection.A.3.4}%
-\contentsline {subsection}{\numberline {A.3.5}PMHHNet and expert-routing phase}{128}{subsection.A.3.5}%
-\contentsline {subsection}{\numberline {A.3.6}Regularization and distribution diagnosis}{128}{subsection.A.3.6}%
-\contentsline {subsection}{\numberline {A.3.7}Distribution-first modelling}{128}{subsection.A.3.7}%
-\contentsline {subsection}{\numberline {A.3.8}Frozen calibrated priors}{128}{subsection.A.3.8}%
-\contentsline {subsection}{\numberline {A.3.9}Final prior-anchored residual GMM-head model}{129}{subsection.A.3.9}%
-\contentsline {chapter}{\numberline {B}Final Residual GMM-Head Model Configuration Summary}{130}{appendix.B}%
-\contentsline {chapter}{\numberline {C}Formula Placement}{131}{appendix.C}%
-\contentsline {chapter}{\numberline {D}Representative Final Residual GMM-Head Model Inspection Panels}{132}{appendix.D}%
-\contentsline {chapter}{\numberline {E}Implementation Snippets}{143}{appendix.E}%
-\contentsline {section}{\numberline {E.1}Frozen prior assembly}{143}{section.E.1}%
-\contentsline {section}{\numberline {E.2}Final residual GMM-head model input tensor}{143}{section.E.2}%
-\contentsline {section}{\numberline {E.3}Bounded residual decoder}{143}{section.E.3}%
-\contentsline {chapter}{\numberline {F}CKM Generator Interface and Reproducibility Tool}{145}{appendix.F}%
-\contentsline {section}{\numberline {F.1}Public source record and checkpoint artifact}{145}{section.F.1}%
-\contentsline {section}{\numberline {F.2}Interface overview}{145}{section.F.2}%
-\contentsline {section}{\numberline {F.3}How the tool is run}{147}{section.F.3}%
-\contentsline {section}{\numberline {F.4}Accepted inputs}{147}{section.F.4}%
-\contentsline {section}{\numberline {F.5}Configurable controls}{148}{section.F.5}%
-\contentsline {section}{\numberline {F.6}Image scaling and raw numeric data}{149}{section.F.6}%
-\contentsline {section}{\numberline {F.7}Model-grid fitting and interpolation}{149}{section.F.7}%
-\contentsline {section}{\numberline {F.8}Mask policies}{150}{section.F.8}%
-\contentsline {section}{\numberline {F.9}Outputs}{150}{section.F.9}%
-\contentsline {section}{\numberline {F.10}Performance controls}{153}{section.F.10}%
+\contentsline {paragraph}{Medium-long term.}{119}{paragraph*.147}%
+\contentsline {chapter}{Bibliography}{120}{chapter*.148}%
+\contentsline {chapter}{\numberline {A}Detailed Attempt Log}{124}{appendix.A}%
+\contentsline {section}{\numberline {A.1}How to read the attempt numbers}{124}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Try-number map}{125}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Expanded chronological timeline}{128}{section.A.3}%
+\contentsline {subsection}{\numberline {A.3.1}Early image-to-image baselines}{128}{subsection.A.3.1}%
+\contentsline {subsection}{\numberline {A.3.2}Geometry conditioning and artifact control}{128}{subsection.A.3.2}%
+\contentsline {subsection}{\numberline {A.3.3}Masking and evaluation contract}{128}{subsection.A.3.3}%
+\contentsline {subsection}{\numberline {A.3.4}Prior-guided residual learning}{128}{subsection.A.3.4}%
+\contentsline {subsection}{\numberline {A.3.5}PMHHNet and expert-routing phase}{129}{subsection.A.3.5}%
+\contentsline {subsection}{\numberline {A.3.6}Regularization and distribution diagnosis}{129}{subsection.A.3.6}%
+\contentsline {subsection}{\numberline {A.3.7}Distribution-first modelling}{129}{subsection.A.3.7}%
+\contentsline {subsection}{\numberline {A.3.8}Frozen calibrated priors}{129}{subsection.A.3.8}%
+\contentsline {subsection}{\numberline {A.3.9}Final prior-anchored residual GMM-head model}{130}{subsection.A.3.9}%
+\contentsline {chapter}{\numberline {B}Final Residual GMM-Head Model Configuration Summary}{131}{appendix.B}%
+\contentsline {chapter}{\numberline {C}Formula Placement}{132}{appendix.C}%
+\contentsline {chapter}{\numberline {D}Representative Final Residual GMM-Head Model Inspection Panels}{133}{appendix.D}%
+\contentsline {chapter}{\numberline {E}Implementation Snippets}{144}{appendix.E}%
+\contentsline {section}{\numberline {E.1}Frozen prior assembly}{144}{section.E.1}%
+\contentsline {section}{\numberline {E.2}Final residual GMM-head model input tensor}{144}{section.E.2}%
+\contentsline {section}{\numberline {E.3}Bounded residual decoder}{145}{section.E.3}%
+\contentsline {chapter}{\numberline {F}CKM Generator Interface and Reproducibility Tool}{146}{appendix.F}%
+\contentsline {section}{\numberline {F.1}Public source record and checkpoint artifact}{146}{section.F.1}%
+\contentsline {section}{\numberline {F.2}Interface overview}{146}{section.F.2}%
+\contentsline {section}{\numberline {F.3}How the tool is run}{148}{section.F.3}%
+\contentsline {section}{\numberline {F.4}Accepted inputs}{148}{section.F.4}%
+\contentsline {section}{\numberline {F.5}Configurable controls}{149}{section.F.5}%
+\contentsline {section}{\numberline {F.6}Image scaling and raw numeric data}{150}{section.F.6}%
+\contentsline {section}{\numberline {F.7}Model-grid fitting and interpolation}{150}{section.F.7}%
+\contentsline {section}{\numberline {F.8}Mask policies}{151}{section.F.8}%
+\contentsline {section}{\numberline {F.9}Outputs}{151}{section.F.9}%
+\contentsline {section}{\numberline {F.10}Performance controls}{154}{section.F.10}%

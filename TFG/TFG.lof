@@ -11,11 +11,11 @@
 \contentsline {figure}{\numberline {3.4}{\ignorespaces Overall prior-anchored pipeline with bounded DNN corrections.}}{52}{figure.caption.37}%
 \contentsline {figure}{\numberline {3.5}{\ignorespaces Two-ray geometry.}}{55}{figure.caption.41}%
 \contentsline {figure}{\numberline {3.6}{\ignorespaces Effective ground-reflection amplitude as a function of UAV height.}}{63}{figure.caption.60}%
-\contentsline {figure}{\numberline {3.7}{\ignorespaces FSPL versus enhanced two-ray model.}}{63}{figure.caption.61}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces FSPL versus coherent two-ray component.}}{63}{figure.caption.61}%
 \contentsline {figure}{\numberline {3.8}{\ignorespaces Pipeline for the hybrid path-loss prior.}}{74}{figure.caption.84}%
 \contentsline {figure}{\numberline {3.9}{\ignorespaces Feature grouping for the calibrated spread prior.}}{78}{figure.caption.88}%
 \contentsline {figure}{\numberline {3.10}{\ignorespaces Pipeline for the delay and angular spread priors.}}{82}{figure.caption.98}%
-\contentsline {figure}{\numberline {3.11}{\ignorespaces Schematic of the final large-capacity shared UNet architecture with FiLM conditioning.}}{86}{figure.caption.99}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Schematic of the final large-capacity shared UNet architecture with FiLM conditioning. The backbone and decode logic are shared, while each task uses its own heads and frozen prior.}}{86}{figure.caption.99}%
 \contentsline {figure}{\numberline {3.12}{\ignorespaces Detailed sinusoidal height-conditioning path.}}{86}{figure.caption.101}%
 \contentsline {figure}{\numberline {3.13}{\ignorespaces Detailed prior-anchored GMM head used by the final model.}}{87}{figure.caption.103}%
 \contentsline {figure}{\numberline {3.14}{\ignorespaces Composite final loss family}}{88}{figure.caption.109}%
@@ -38,20 +38,20 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {D.1}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, low-antenna validation sample in Segovia.}}{134}{figure.caption.157}%
-\contentsline {figure}{\numberline {D.2}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, mid-antenna validation sample in Segovia.}}{135}{figure.caption.158}%
-\contentsline {figure}{\numberline {D.3}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, high-antenna validation sample in Nazareth.}}{136}{figure.caption.159}%
-\contentsline {figure}{\numberline {D.4}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, low-antenna validation sample in Dubrovnik.}}{137}{figure.caption.160}%
-\contentsline {figure}{\numberline {D.5}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, mid-antenna validation sample in Nice.}}{138}{figure.caption.161}%
-\contentsline {figure}{\numberline {D.6}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, high-antenna validation sample in Nice.}}{139}{figure.caption.162}%
-\contentsline {figure}{\numberline {D.7}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, low-antenna validation sample in Chiang Mai.}}{140}{figure.caption.163}%
-\contentsline {figure}{\numberline {D.8}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, mid-antenna validation sample in Tunis.}}{141}{figure.caption.164}%
-\contentsline {figure}{\numberline {D.9}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, high-antenna validation sample in Tunis.}}{142}{figure.caption.165}%
+\contentsline {figure}{\numberline {D.1}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, low-antenna validation sample in Segovia.}}{135}{figure.caption.157}%
+\contentsline {figure}{\numberline {D.2}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, mid-antenna validation sample in Segovia.}}{136}{figure.caption.158}%
+\contentsline {figure}{\numberline {D.3}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, high-antenna validation sample in Nazareth.}}{137}{figure.caption.159}%
+\contentsline {figure}{\numberline {D.4}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, low-antenna validation sample in Dubrovnik.}}{138}{figure.caption.160}%
+\contentsline {figure}{\numberline {D.5}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, mid-antenna validation sample in Nice.}}{139}{figure.caption.161}%
+\contentsline {figure}{\numberline {D.6}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, high-antenna validation sample in Nice.}}{140}{figure.caption.162}%
+\contentsline {figure}{\numberline {D.7}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, low-antenna validation sample in Chiang Mai.}}{141}{figure.caption.163}%
+\contentsline {figure}{\numberline {D.8}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, mid-antenna validation sample in Tunis.}}{142}{figure.caption.164}%
+\contentsline {figure}{\numberline {D.9}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, high-antenna validation sample in Tunis.}}{143}{figure.caption.165}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {F.1}{\ignorespaces CKM Generator Streamlit interface.}}{146}{figure.caption.166}%
-\contentsline {figure}{\numberline {F.2}{\ignorespaces Generated topology and masks.}}{146}{figure.caption.167}%
-\contentsline {figure}{\numberline {F.3}{\ignorespaces CKM Generator joint prediction output.}}{147}{figure.caption.168}%
-\contentsline {figure}{\numberline {F.4}{\ignorespaces Generated output folder for one run.}}{151}{figure.caption.169}%
-\contentsline {figure}{\numberline {F.5}{\ignorespaces Visual outputs for one generated sample.}}{152}{figure.caption.170}%
-\contentsline {figure}{\numberline {F.6}{\ignorespaces Generated sample metadata and arrays.}}{152}{figure.caption.171}%
+\contentsline {figure}{\numberline {F.1}{\ignorespaces CKM Generator Streamlit interface.}}{147}{figure.caption.166}%
+\contentsline {figure}{\numberline {F.2}{\ignorespaces Generated topology and masks.}}{147}{figure.caption.167}%
+\contentsline {figure}{\numberline {F.3}{\ignorespaces CKM Generator joint prediction output.}}{148}{figure.caption.168}%
+\contentsline {figure}{\numberline {F.4}{\ignorespaces Generated output folder for one run.}}{152}{figure.caption.169}%
+\contentsline {figure}{\numberline {F.5}{\ignorespaces Visual outputs for one generated sample.}}{153}{figure.caption.170}%
+\contentsline {figure}{\numberline {F.6}{\ignorespaces Generated sample metadata and arrays.}}{153}{figure.caption.171}%

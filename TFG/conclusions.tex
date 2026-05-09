@@ -224,6 +224,24 @@ bandwidth, antenna pattern, and possibly polarization. A natural dataset for
 this stage would simulate the same cities across several radio configurations
 so that the model can separate geometry effects from configuration effects.
 
+A nearer-term training direction is topology-specific adaptation. The
+per-topology analysis suggests that dense high-rise, compact mid-rise, open
+low-rise, and mixed urban layouts do not fail in exactly the same way. A
+practical continuation would therefore be to fine-tune the final prior-anchored
+model on one urban typology at a time, or to train lightweight specialist heads
+on top of the shared backbone. This would test whether topology-specific
+adaptation can recover local structure that a single global city-holdout model
+necessarily smooths over.
+
+For delay and angular spreads, another short- to medium-term direction is to
+optimize not only pixel-wise RMSE but also spatial structure. Spread maps can
+look physically more coherent even when small shifts across quantized target
+boundaries are penalized harshly by RMSE. Future fine-tuning should therefore
+test structural objectives, for example gradient consistency, region-wise
+correlation, SSIM-like terms, LoS/NLoS boundary consistency, or topology-aware
+ranking losses, so that the model preserves the correct spread patterns rather
+than only minimizing the average numeric error.
+
 \paragraph{Medium-long term.}
 The final extension is field calibration. The path-loss and spread priors are
 interpretable, which makes them suitable for simulator-to-reality correction
