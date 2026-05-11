@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.24.0 (MiKTeX 26.2) (format=lualatex 2026.4.23)  9 MAY 2026 19:38
+This is LuaHBTeX, Version 1.24.0 (MiKTeX 26.2) (format=lualatex 2026.4.23)  11 MAY 2026 09:31
  restricted system commands enabled.
  file:line:error style messages enabled.
 **TFG.tex
@@ -4057,9 +4057,9 @@ LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/it' will be
 (Font)              scaled to size 10.95pt on input line 121.
  [20] (./img/gantt_diagrama.tex
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
-(Font)              scaled to size 10.95pt on input line 57.
+(Font)              scaled to size 10.95pt on input line 56.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/b/n' will be
-(Font)              scaled to size 10.95pt on input line 57.
+(Font)              scaled to size 10.95pt on input line 56.
 )) (./state_of_art.tex [21] [22]
 Chapter 2.
 
@@ -4868,7 +4868,7 @@ Package logreq Info: Writing requests to 'TFG.run.xml'.
 )
 
 Here is how much of LuaTeX's memory you used:
- 95565 strings out of 476081
+ 95554 strings out of 476081
  195464,4101490 words of node,token memory allocated
  2490 words of node memory still in use:
    8 hlist, 2 vlist, 2 rule, 1 local_par, 5 glue, 4 kern, 1 penalty, 4 sub_mlist
@@ -4876,7 +4876,7 @@ Here is how much of LuaTeX's memory you used:
 on nodes
    avail lists: 1:10,2:14321,3:4761,4:436,5:834,6:201,7:12780,8:124,9:2559,10:42
 ,11:959,12:10
- 115684 multiletter control sequences out of 65536+600000
+ 115673 multiletter control sequences out of 65536+600000
  183 fonts using 75979295 bytes
  89i,19n,146p,1195b,2804s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/guill/AppData/Roaming/MiKTeX/fonts/truetype/public/dejavu/DejaVuSansMo
@@ -4896,7 +4896,7 @@ l/AppData/Roaming/MiKTeX/fonts/opentype/public/libertinus-fonts/LibertinusSerif-
 Bold.otf><C:/Users/guill/AppData/Roaming/MiKTeX/fonts/opentype/public/libertinus
 -fonts/LibertinusSans-Regular.otf><C:/Users/guill/AppData/Roaming/MiKTeX/fonts/o
 pentype/public/libertinus-fonts/LibertinusSans-Bold.otf>
-Output written on TFG.pdf (155 pages, 29255273 bytes).
+Output written on TFG.pdf (155 pages, 29255179 bytes).
 
 PDF statistics: 2515 PDF objects out of 2984 (max. 8388607)
  661 named destinations out of 1000 (max. 1048576)
