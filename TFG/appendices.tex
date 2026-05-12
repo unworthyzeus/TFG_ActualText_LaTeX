@@ -169,7 +169,7 @@ Try & Public definition \\
 77 & Distribution-first spread architecture: delay/angular spread GMM and spike-plus-tail modelling. \\
 78 & Final ML-calibrated path-loss prior: enhanced two-ray LoS branch plus regime-wise linear NLoS calibration with 18 final calibration regimes. \\
 79 & Final ML-calibrated spread priors: log-domain ridge calibration for delay and angular spread, with 36 exact regimes per metric and fallbacks. \\
-80 & Final joint prior-anchored residual GMM-head model: frozen Try 78/79 priors plus a shared neural residual model selected through the wide residual model, relaxed residual bounds, a large-capacity stage, and the final residual fine-tuning stage. \\
+80 & Final joint prior-anchored residual GMM-head model: frozen path-loss and spread priors plus a shared neural residual model selected through the wide residual model, relaxed residual bounds, a large-capacity stage, and the final residual fine-tuning stage. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -661,7 +661,8 @@ residual GMM-head pipeline. The tool was built to make the trained model usable 
 the training scripts: it accepts topology inputs, prepares them with the same
 geometric conventions used in the thesis, computes or imports LoS/NLoS masks,
 evaluates the frozen calibrated priors, optionally runs the final neural model,
-and exports both visual figures and numerical arrays.
+and exports the numerical arrays used for reproducible analysis. It can also
+export visual figures when those optional inspection switches are enabled.
 
 The generator is intentionally available through two front ends. The Streamlit
 application is designed for inspection, rapid manual testing, and demonstrations
@@ -842,15 +843,19 @@ The Streamlit interface exposes the following operational controls:
         \texttt{directml}, or \texttt{cpu}.
   \item \texttt{Mask used by priors/model}: selects \texttt{auto},
         \texttt{provided}, or \texttt{generated}.
-  \item \texttt{Run final model}: disables neural inference when only masks
-        and priors are needed.
+  \item \texttt{Run final residual model}: disables neural inference when only
+        masks and priors are needed.
   \item \texttt{Model batch size}: sends several prepared samples through the
         model in one forward pass when GPU memory allows it.
   \item \texttt{CUDA mixed precision}: enables CUDA autocast inference.
-  \item \texttt{Save numeric arrays (.npz)}: exports all numeric arrays.
-  \item \texttt{Save LoS/NLoS mask PNGs}: exports binary mask images.
+  \item \texttt{Save numeric arrays (.npz)}: exports all numeric arrays; this
+        is the default fast numerical output.
+  \item \texttt{Compress numeric arrays}: writes smaller \texttt{.npz}
+        archives at the cost of slower export.
+  \item \texttt{Save LoS/NLoS mask PNGs}: optionally exports binary mask
+        images for visual inspection.
   \item \texttt{Save visual map PNGs}: exports rendered prior and prediction
-        figures with colour bars.
+        figures with colour bars; it is disabled by default for batch speed.
   \item \texttt{Image max height (m)}: scales image pixel values into metres.
   \item \texttt{Image pixels are already metres}: treats image pixel values as
         physical metre values and bypasses image normalisation.
@@ -864,12 +869,15 @@ The Streamlit interface exposes the following operational controls:
 The command-line interface exposes the same controls through flags such as
 \texttt{--input}, \texttt{--height}, \texttt{--out},
 \texttt{--checkpoint}, \texttt{--device}, \texttt{--mask-source},
+\texttt{--prior-backend},
 \texttt{--skip-model}, \texttt{--batch-size}, \texttt{--mixed-precision},
-\texttt{--save-arrays}, \texttt{--save-masks},
+\texttt{--save-arrays}, \texttt{--compress-arrays}, \texttt{--save-masks},
 \texttt{--save-visual-maps}, \texttt{--los-mask}, \texttt{--nlos-mask},
 \texttt{--topology-max-m}, \texttt{--image-values-are-metres},
 \texttt{--meters-per-pixel}, \texttt{--hdf5-city},
-\texttt{--hdf5-sample}, \texttt{--all-hdf5}, and \texttt{--limit}.
+\texttt{--hdf5-sample}, \texttt{--all-hdf5}, \texttt{--limit},
+\texttt{--los-sample-step-px}, \texttt{--los-clearance-m}, and
+\texttt{--los-building-dilation-px}.
 
 \section{Image scaling and raw numeric data}
 
@@ -1012,16 +1020,18 @@ metadata/
 
 Figures~\ref{fig:ckm_generator_output_tree} and~\ref{fig:ckm_generator_output_metadata}
 show the concrete artifacts produced by the example HDF5 run used for the
-appendix screenshots. The tree view makes explicit that the same run contains
-visual outputs, compressed numeric arrays, and metadata.
+appendix screenshots. The tree view is an expanded visual-output example: the
+current fast default writes the numerical \texttt{.npz} archive and metadata,
+while the mask PNGs, rendered map PNGs, and compressed array export are
+optional switches for inspection or storage-constrained runs.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/ckm_generator_output_tree.png}
 \caption[Generated output folder for one run.]%
 {Generated output folder for one CKM Generator run. The run contains
-binary masks, prior maps, prediction maps, a compressed numerical archive, and
-a JSON metadata file.}
+binary masks, prior maps, prediction maps, a numerical archive, and a JSON
+metadata file; the PNG folders are optional visual exports.}
 \label{fig:ckm_generator_output_tree}
 \end{figure}
 
@@ -1046,8 +1056,10 @@ The metadata records provenance and the resolved mask policy, while the
 \end{figure}
 
 PNG files are visual inspection products. The authoritative numerical output
-is the compressed NumPy archive in \texttt{arrays/}. It stores all arrays on the
-final \(513\times513\) grid. Important keys include:
+is the NumPy archive in \texttt{arrays/}. It is uncompressed by default for
+faster batch export and compressed only when \texttt{Compress numeric arrays}
+or \texttt{--compress-arrays} is enabled. It stores all arrays on the final
+\(513\times513\) grid. Important keys include:
 \texttt{topology}, \texttt{ground\_mask}, \texttt{los\_mask},
 \texttt{nlos\_mask}, \texttt{generated\_los\_mask},
 \texttt{generated\_nlos\_mask}, \texttt{reference\_los\_mask} when available,
@@ -1059,7 +1071,7 @@ final \(513\times513\) grid. Important keys include:
 The JSON metadata stores provenance and bookkeeping: sample id, antenna height,
 source file, checkpoint path, requested and resolved mask source, topology
 class, antenna bin, mask comparison statistics when a reference mask exists,
-and the paths of all generated files.
+the selected save options, save timings, and the paths of all generated files.
 
 \section{Performance controls}
 
@@ -1078,10 +1090,13 @@ mixed precision with batch size 1, the vectorized CUDA LoS/NLoS backend, and
 the torch prior backend took \SI{0.88}{s} per map end to end. The component
 means were \SI{0.30}{s} for LoS/NLoS mask generation, \SI{0.04}{s} for the
 frozen priors, and \SI{0.54}{s} for the final residual GMM-head neural forward
-pass. The
+pass plus the default uncompressed \texttt{.npz} numerical archive export.
+Optional mask PNGs and rendered map PNGs are not part of this timing. The
 mask-generation stage was the previous bottleneck; after vectorization and
 torch prior evaluation, the network forward pass is the largest single
-component.
+component, with the fast \texttt{.npz} export small enough to be absorbed into
+the rounded prediction/export timing rather than reported as a separate
+bottleneck.
 
 The vectorized mask backend was validated as an implementation optimization,
 not as a change in mask definition. On the ten Barcelona configurations and on
@@ -1098,7 +1113,8 @@ full-resolution Barcelona sample on the same laptop. The local MATLAB
 installation did not include Parallel Computing Toolbox, so the ray tracer ran
 on CPU, while the surrogate used the available CUDA runtime through PyTorch.
 The resulting measured speed-up is \(113.7\times\) for the complete non-RT
-generation path, including priors.
+generation path, including masks, priors, predictions, and the default
+numerical \texttt{.npz} export.
 
 The mixed-precision numerical difference remains negligible. On the full
 Barcelona subset, the RMSE between mixed precision and fp32 predictions was
@@ -1108,7 +1124,9 @@ scale of the model. Its benefit is speed: with the torch prior backend and
 provided masks, the same 50-sample validation path took \SI{0.72}{s} per map in
 fp32 and \SI{0.62}{s} per map with CUDA mixed precision.
 
-For batch export, disabling \texttt{Save visual map PNGs} avoids Matplotlib
-rendering and keeps only numeric arrays, masks, and metadata. Disabling
-\texttt{Run final model} is useful when the goal is only to validate
-topologies, masks, and prior generation.
+For batch export, keeping \texttt{Save visual map PNGs},
+\texttt{Save LoS/NLoS mask PNGs}, and \texttt{Compress numeric arrays}
+disabled avoids Matplotlib rendering and compression overhead while preserving
+the masks, priors, predictions, and metadata in the numerical archive.
+Disabling \texttt{Run final residual model} is useful when the goal is only to
+validate topologies, masks, and prior generation.

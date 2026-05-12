@@ -957,8 +957,10 @@ heights. It includes the complete non-RT generation path after the checkpoint is
 loaded once: geometric LoS/NLoS mask generation from the height map, the final
 ML-calibrated path-loss prior, the final ML-calibrated delay-spread and
 angular-spread priors, and mixed-precision inference with the final joint
-prior-anchored residual GMM-head model. The only excluded costs are the
-one-time checkpoint load and the one-time CUDA warm-up.
+prior-anchored residual GMM-head model, including the default uncompressed
+\texttt{.npz} numerical archive export. The excluded costs are the one-time
+checkpoint load, the one-time CUDA warm-up, and optional PNG exports for masks
+or rendered maps.
 
 \begin{table}[H]
 \centering
@@ -966,7 +968,9 @@ one-time checkpoint load and the one-time CUDA warm-up.
 {Full-pipeline runtime comparison for one \(513\times513\) Barcelona CKM sample.
 Both rows are measured on the same laptop. The surrogate row includes geometric
 mask generation, prior computation, and prediction of path loss, delay spread,
-and angular spread. Checkpoint loading and one-time CUDA warm-up are excluded.}
+and angular spread, including the default numerical \texttt{.npz} export.
+Checkpoint loading, one-time CUDA warm-up, and optional PNG exports are
+excluded.}
 \label{tab:inference_time_comparison}
 \scriptsize
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.35cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{2.25cm}cc}
@@ -974,7 +978,7 @@ and angular spread. Checkpoint loading and one-time CUDA warm-up are excluded.}
 Method & Timed path & Resource note & Time per sample & Dataset-scale extrapolation \\
 \midrule
 MATLAB ray tracing & Pixel-level receivers outside buildings; PL, DS and AS parsed from paths & Ryzen~5~5600H CPU; GPU off, PCT unavailable & \SI{99.89}{s} & \SI{448.96}{h} (\(\approx\)18.7 days), \(1\times\) \\
-Final prior-anchored generator & Generated LoS/NLoS masks, final calibrated priors, and PL/DS/AS prediction & RTX~3050~Ti Laptop GPU; mixed fp16, \(b=1\) & \SI{0.88}{s} & \SI{3.95}{h}, \(113.7\times\) faster \\
+Final prior-anchored generator & Generated LoS/NLoS masks, final calibrated priors, PL/DS/AS prediction, and default \texttt{.npz} export & RTX~3050~Ti Laptop GPU; mixed fp16, \(b=1\) & \SI{0.88}{s} & \SI{3.95}{h}, \(113.7\times\) faster \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -983,8 +987,9 @@ Final prior-anchored generator & Generated LoS/NLoS masks, final calibrated prio
 The ten ray-traced samples contain 156{,}088 and 115{,}825 valid receiver
 pixels in the two Barcelona layouts, respectively. The measured average is
 \SI{99.89}{s} per full-resolution sample for ray tracing and \SI{0.88}{s} per
-sample for the complete final prior-anchored generator, including masks and
-priors. The
+sample for the complete final prior-anchored generator, including masks,
+priors, predictions, and the default numerical \texttt{.npz} archive export,
+but not optional PNG exports. The
 resulting \(113.7\times\) speed-up exceeds the original 10 to 100\(\times\)
 runtime goal and should therefore be read as a
 deployment-style marginal runtime result after training and calibration, not as
@@ -996,7 +1001,8 @@ a comparison of the full research cost of developing the model.
 {Mean component timing for the final prior-anchored generator on the same ten Barcelona
 samples. The LoS/NLoS mask is generated with the vectorized CUDA backend,
 which was checked to produce zero difference with the original GT ray-caster
-on these samples.}
+on these samples. The default numerical \texttt{.npz} export is included in
+the measured path; optional PNG exports are outside this component timing.}
 \label{tab:try80_runtime_breakdown}
 \scriptsize
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xcc}
@@ -1006,7 +1012,7 @@ Component & Mean time per sample & Share of final-generator path \\
 Topology preparation & \SI{0.002}{s} & \(<0.2\%\) \\
 Geometric LoS/NLoS mask generation & \SI{0.30}{s} & \(33.9\%\) \\
 Torch computation of final calibrated path-loss and spread priors & \SI{0.04}{s} & \(4.7\%\) \\
-Final residual GMM-head neural prediction for PL, DS and AS & \SI{0.54}{s} & \(61.2\%\) \\
+Final residual GMM-head neural prediction for PL, DS and AS, plus default \texttt{.npz} export & \SI{0.54}{s} & \(61.2\%\) \\
 \midrule
 Complete final-generator path & \SI{0.88}{s} & \(100\%\) \\
 \bottomrule
@@ -1020,7 +1026,10 @@ the CUDA backend it falls to \SI{0.30}{s} per sample and is no longer the
 bottleneck. The final neural forward pass is now the largest single component,
 while the final calibrated priors drop from the previous NumPy cost to
 \SI{0.04}{s} per sample after moving the same formulas to torch. The
-vectorized mask path
+default uncompressed \texttt{.npz} archive export is included in the
+\SI{0.88}{s} speed calculation; in the current fast export mode it is small
+enough to be absorbed into the rounded prediction/export line rather than
+reported as a separate bottleneck. The vectorized mask path
 was checked against the original GT ray-caster with zero LoS/NLoS differences
 on the ten Barcelona samples and on 100 exported CKM samples; the optimization
 therefore changes runtime only, not the mask definition used by the generator.
@@ -1042,8 +1051,8 @@ target distribution was multi-modal.
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{img/thesis_figures/distribution_histograms/target_prediction_histograms.png}
-\caption[Late Try 74/75 path-loss diagnostic histograms.]%
-{Late Try~74/75 path-loss diagnostic histograms on the validation samples with UAV
+\caption[Late path-loss diagnostic histograms.]%
+{Late diagnostic path-loss histograms on the validation samples with UAV
 heights between \SI{45}{m} and \SI{55}{m}. This stage exposed the NLoS
 path-loss mode collapse that motivated the distribution-first and
 prior-anchored final attempts. The binned curves are lightly smoothed for

@@ -76,7 +76,9 @@ the present dataset scale. On the Barcelona benchmark, pixel-level MATLAB ray
 tracing took \SI{99.89}{s} per full-resolution CKM sample, while the complete
 final prior-anchored generator took \SI{0.88}{s} per sample including
 geometric LoS/NLoS mask generation, torch computation of the calibrated
-path-loss and spread priors, and PL/DS/AS prediction.
+path-loss and spread priors, and PL/DS/AS prediction, excluding optional PNG
+export. The default numerical \texttt{.npz} archive export is part of the
+speed calculation.
 Extrapolated to 16{,}180 samples, this is \SI{448.96}{h} for ray tracing versus
 \SI{3.95}{h} for the surrogate. Under the simple same-laptop full-load
 assumption of \SI{100}{W}, the energy figures are approximately

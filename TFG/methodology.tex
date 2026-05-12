@@ -538,33 +538,33 @@ diffracted, reflected, and scattered components. A high delay spread or a wide
 angular spread is not merely an error-prone outlier; it is the physical signal
 that multipath has become important.
 
-The Try~74/75 histogram study, previous to the final attempts, makes this
-visible. As recorded in Appendix~A, this stage corresponds to Try~74's band 45
-to 55 all-city LoS/NLoS histogram experts and Try~75's all-city small-LoS and
-decisive histogram diagnosis. At the plotted-row level, the LoS path-loss
-prediction is the Try~75 all-city LoS row, the NLoS path-loss prediction is the
-Try~74 band-45-to-55 all-city NLoS row.
+The late diagnostic histogram study, previous to the final attempts, makes
+this visible. As recorded in Appendix~A, this stage combines the band-45-to-55
+all-city LoS/NLoS histogram experts with the all-city small-LoS histogram
+diagnosis. At the plotted-row level, the LoS path-loss prediction is the
+all-city small-LoS row, while the NLoS path-loss prediction is the
+band-45-to-55 all-city NLoS row.
 Figure~\ref{fig:target_prediction_histograms} aggregates the validation
 path-loss histograms used in that diagnosis, restricted to the
 \SIrange{45}{55}{m} height band. Path-loss NLoS shows the old mode-collapse
 failure: the target NLoS mass sits around \SI{107}{dB}, while the old prediction
 histogram puts too much mass at much smaller values. The same diagnostic export
-also contained the Try~75 spread-diagnostic rows. Those rows showed that
-delay-spread target \(p_{99}\) was about \SI{162}{ns}, while the corresponding
-prediction \(p_{99}\) was only about \SI{49}{ns}; angular-spread target
-\(p_{99}\) was about \(81^\circ\), while the prediction \(p_{99}\) was about
-\(45^\circ\).
+also contained the spread-diagnostic rows from that late study. Those rows
+showed that delay-spread target \(p_{99}\) was about \SI{162}{ns}, while the
+corresponding prediction \(p_{99}\) was only about \SI{49}{ns};
+angular-spread target \(p_{99}\) was about \(81^\circ\), while the prediction
+\(p_{99}\) was about \(45^\circ\).
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{img/thesis_figures/distribution_histograms/target_prediction_histograms.png}
 \caption[Diagnostic path-loss target and prediction histograms.]%
-{Aggregated path-loss target and prediction histograms from the Try~74/75 diagnostic
+{Aggregated path-loss target and prediction histograms from the late diagnostic
 histogram study, previous to the final attempts, restricted to validation
 samples with UAV heights between \SI{45}{m} and \SI{55}{m}. The plotted
-prediction rows are the Try~75 all-city LoS path-loss row, the Try~74
-band-45-to-55 all-city NLoS path-loss row, and the corresponding target rows
-from the diagnostic set recorded in Appendix~A. The vertical scale is
+prediction rows are the all-city small-LoS path-loss row, the band-45-to-55
+all-city NLoS path-loss row, and the corresponding target rows from the
+diagnostic set recorded in Appendix~A. The vertical scale is
 logarithmic and the binned curves are lightly smoothed for readability.}
 \label{fig:target_prediction_histograms}
 \end{figure}

@@ -142,14 +142,15 @@ like-for-like full-resolution setup. Pixel-level MATLAB ray tracing took
 \SI{99.89}{s} per CKM sample, while the complete final-generator path took
 \SI{0.88}{s} on the same local laptop, including geometric LoS/NLoS mask
 generation, the final calibrated path-loss and spread priors, and the PL/DS/AS
-neural prediction. The
+neural prediction, as well as the default numerical \texttt{.npz} export.
+Optional PNG exports are not included. The
 resulting \(113.7\times\) reduction exceeds the original 10 to 100\(\times\)
 runtime goal. It uses a vectorized CUDA LoS/NLoS backend that
 was checked to produce zero difference with the original GT ray-caster on the
 Barcelona and exported CKM samples, plus a torch implementation of the frozen
 calibrated priors. After these optimizations, the mask step takes \SI{0.30}{s},
-the priors \SI{0.04}{s}, and the mixed-precision residual GMM-head inference
-itself about \SI{0.54}{s} per sample.
+the priors \SI{0.04}{s}, and the mixed-precision residual GMM-head
+prediction plus default \texttt{.npz} export about \SI{0.54}{s} per sample.
 
 For deployment-oriented work, the main value of the pipeline is transparency.
 The priors expose the physical assumptions, the residual caps bound how much

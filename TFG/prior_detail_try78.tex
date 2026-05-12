@@ -490,7 +490,7 @@ and similarly for $\phi$ and $b$. The implementation also stores a
 suspicious-bin mask for bins where both $\rho_k^*$ and $b_k^*$ differ
 noticeably from the smoothed global trend, typically high-altitude bins with
 few samples. That mask is diagnostic metadata: the runtime calibration arrays
-used by Try80 are the smoothed $\rho$, $\phi$, and $b$ curves themselves, not
+used by Try~80 are the smoothed $\rho$, $\phi$, and $b$ curves themselves, not
 a mixture of raw values for ordinary bins and smoothed values only for flagged
 ones.
 At inference time the UAV height is not forced to be exactly one of the fitted
@@ -809,7 +809,7 @@ earlier variants to keep the LoS formula below an A2G envelope. In the final
 frozen path, LoS pixels come directly from the separate enhanced two-ray prior
 \(\mathrm{PL}_{\mathrm{LoS}}\) of Eq.~\eqref{eq:pl_los}; the raw hybrid map
 \(\mathrm{PL}^{(0)}\) in Eq.~\eqref{eq:pl0} is still computed as an input
-feature for the calibrated Try78 NLoS branch.
+feature for the calibrated Try~78 NLoS branch.
 The LoS/NLoS mask used here is the explicit CKM mask provided with the
 dataset and treated as an available side channel. A deployment version would
 need to obtain an equivalent visibility mask from deterministic geometry or
@@ -819,7 +819,7 @@ evaluated in this thesis.
 \subsubsection{Stage 3: map-derived morphology features}
 
 The raw hybrid prior $\mathrm{PL}^{(0)}(x)$ defined in Eq.~\eqref{eq:pl0} is
-the scalar formula input to the calibrated Try78 NLoS branch. It combines the
+the scalar formula input to the calibrated Try~78 NLoS branch. It combines the
 legacy FSPL/two-ray LoS path, the A2G envelopes and COST-231, but it still
 knows nothing about the detailed local morphology around each receiver. The
 feature vector $\mathbf{x}_{78}(x)$ defined below is \emph{not} a competing
@@ -1186,9 +1186,9 @@ This is different from the per-pixel feature $h_k(x)$ in
 Eq.~\eqref{eq:h_k_interp}, which divides the same numerator by the full
 window area $k^2$ instead of by the number of building pixels.
 
-For the Try78 path-loss calibration, these two quantities are converted into
+For the Try~78 path-loss calibration, these two quantities are converted into
 three coarse city types. This is a separate regime label from the later
-six-class topology taxonomy used by the Try79 spread priors and by final
+six-class topology taxonomy used by the Try~79 spread priors and by final
 reporting:
 
 \begin{equation}
@@ -1203,7 +1203,7 @@ reporting:
 
 with thresholds $d_1 = 0.1957$, $d_2 = 0.2549$ (density fractions),
 $h_1 = 10.91$ m, and $h_2 = 15.95$ m. Together with the binary LoS/NLoS
-label and the three UAV-height bins below, this yields the 18 stored Try78
+label and the three UAV-height bins below, this yields the 18 stored Try~78
 path-loss calibration keys.
 
 The antenna-height bin is assigned by UAV height tertiles:
@@ -1257,8 +1257,8 @@ loads the stored coefficient vectors from
 \texttt{try78\_nlos\_regime\_calibration.json}. At inference, if the exact
 antenna-height key is absent, the implementation only tries alternative
 antenna bins in the order current, mid, low, high while keeping the same
-Try78 city type and LoS/NLoS label. It does not use the broader cross-topology
-fallback hierarchy of the Try79 spread-prior calibration.
+Try~78 city type and LoS/NLoS label. It does not use the broader cross-topology
+fallback hierarchy of the Try~79 spread-prior calibration.
 
 The terms in Eq.~\eqref{eq:ols_closed} are standard linear least-squares
 quantities. The matrix \(\textbf{X}_r^\top\textbf{X}_r\) is the
