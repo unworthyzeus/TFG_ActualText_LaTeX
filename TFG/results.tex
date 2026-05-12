@@ -974,7 +974,7 @@ and angular spread. Checkpoint loading and one-time CUDA warm-up are excluded.}
 Method & Timed path & Resource note & Time per sample & Dataset-scale extrapolation \\
 \midrule
 MATLAB ray tracing & Pixel-level receivers outside buildings; PL, DS and AS parsed from paths & Ryzen~5~5600H CPU; GPU off, PCT unavailable & \SI{99.89}{s} & \SI{448.96}{h} (\(\approx\)18.7 days), \(1\times\) \\
-Final Try~80 generator & Generated LoS/NLoS masks, frozen priors, and PL/DS/AS prediction & RTX~3050~Ti Laptop GPU; mixed fp16, \(b=1\) & \SI{5.61}{s} & \SI{25.20}{h}, \(17.8\times\) faster \\
+Final Try~80 generator & Generated LoS/NLoS masks, frozen priors, and PL/DS/AS prediction & RTX~3050~Ti Laptop GPU; mixed fp16, \(b=1\) & \SI{1.22}{s} & \SI{5.47}{h}, \(82.0\times\) faster \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -982,9 +982,9 @@ Final Try~80 generator & Generated LoS/NLoS masks, frozen priors, and PL/DS/AS p
 
 The ten ray-traced samples contain 156{,}088 and 115{,}825 valid receiver
 pixels in the two Barcelona layouts, respectively. The measured average is
-\SI{99.89}{s} per full-resolution sample for ray tracing and \SI{5.61}{s} per
+\SI{99.89}{s} per full-resolution sample for ray tracing and \SI{1.22}{s} per
 sample for the complete Try~80 generator, including masks and priors. The
-resulting \(17.8\times\) speed-up should therefore be read as a
+resulting \(82.0\times\) speed-up should therefore be read as a
 deployment-style marginal runtime result after training and calibration, not as
 a comparison of the full research cost of developing the model.
 
@@ -992,31 +992,35 @@ a comparison of the full research cost of developing the model.
 \centering
 \caption[Try~80 runtime component breakdown.]
 {Mean component timing for the Try~80 generator on the same ten Barcelona
-samples. The LoS/NLoS mask step dominates the non-RT pipeline; the neural
-forward pass itself is much smaller.}
+samples. The LoS/NLoS mask is generated with the vectorized CUDA backend,
+which was checked to produce zero difference with the original GT ray-caster
+on these samples.}
 \label{tab:try80_runtime_breakdown}
 \scriptsize
 \begin{tabularx}{0.86\textwidth}{>{\raggedright\arraybackslash}Xcc}
 \toprule
 Component & Mean time per sample & Share of Try~80 path \\
 \midrule
-Topology preparation & \SI{0.002}{s} & \(<0.1\%\) \\
-Geometric LoS/NLoS mask generation & \SI{4.71}{s} & \(84.0\%\) \\
-Frozen Try~78/79 prior computation used by Try~80 & \SI{0.35}{s} & \(6.3\%\) \\
-Try~80 neural prediction for PL, DS and AS & \SI{0.54}{s} & \(9.6\%\) \\
+Topology preparation & \SI{0.002}{s} & \(<0.2\%\) \\
+Geometric LoS/NLoS mask generation & \SI{0.30}{s} & \(24.5\%\) \\
+Frozen Try~78/79 prior computation used by Try~80 & \SI{0.38}{s} & \(31.2\%\) \\
+Try~80 neural prediction for PL, DS and AS & \SI{0.54}{s} & \(44.2\%\) \\
 \midrule
-Complete Try~80 generation path & \SI{5.61}{s} & \(100\%\) \\
+Complete Try~80 generation path & \SI{1.22}{s} & \(100\%\) \\
 \bottomrule
 \end{tabularx}
 \end{table}
 \normalsize
 
-This breakdown is important for interpreting the result. The network forward
-pass is not the bottleneck: generating the LoS/NLoS mask from geometry takes
-about \(8.7\times\) longer than the Try~80 inference step itself. In contrast,
-the frozen priors add only \SI{0.35}{s} per sample, so including them does not
-change the conclusion that most non-RT runtime is spent before the neural
-model.
+This breakdown is important for interpreting the result. Before vectorization,
+generating the LoS/NLoS mask from geometry was the dominant non-RT cost; with
+the CUDA backend it falls to \SI{0.30}{s} per sample and is no longer the
+bottleneck. The Try~80 neural forward pass is now the largest single component,
+while the frozen Try~78/79 priors add \SI{0.38}{s} per sample and remain part
+of the reported end-to-end time. The vectorized mask path was checked against
+the original GT ray-caster with zero LoS/NLoS differences on the ten Barcelona
+samples and on 100 exported CKM samples; the optimization therefore changes
+runtime only, not the mask definition used by the generator.
 
 \section{Qualitative Analysis}
 

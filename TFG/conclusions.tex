@@ -136,11 +136,13 @@ more defensible one.
 The final Barcelona runtime benchmark supports the acceleration claim under a
 like-for-like full-resolution setup. Pixel-level MATLAB ray tracing took
 \SI{99.89}{s} per CKM sample, while the complete Try~80 generation path took
-\SI{5.61}{s} on the same local laptop, including geometric LoS/NLoS mask
+\SI{1.22}{s} on the same local laptop, including geometric LoS/NLoS mask
 generation, frozen Try~78/79 priors, and the PL/DS/AS neural prediction. The
-resulting \(17.8\times\) reduction is not caused mainly by a faster neural
-forward pass; most of the surrogate time is spent generating the LoS/NLoS mask,
-while the Try~80 inference itself is about \SI{0.54}{s} per sample.
+resulting \(82.0\times\) reduction uses a vectorized CUDA LoS/NLoS backend that
+was checked to produce zero difference with the original GT ray-caster on the
+Barcelona and exported CKM samples. After that optimization, the mask step takes
+\SI{0.30}{s}, the frozen priors \SI{0.38}{s}, and the Try~80 inference itself
+about \SI{0.54}{s} per sample.
 
 For deployment-oriented work, the main value of the pipeline is transparency.
 The priors expose the physical assumptions, the residual caps bound how much

@@ -1065,17 +1065,24 @@ a \(513\times513\) full-resolution map. The timed Try~80 path starts after the
 checkpoint has been loaded once and includes geometric LoS/NLoS mask
 generation, frozen Try~78/79 prior computation, and neural prediction of path
 loss, delay spread, and angular spread. On the RTX~3050~Ti Laptop GPU, CUDA
-mixed precision with batch size 1 took \SI{5.61}{s} per map end to end. The
-component means were \SI{4.71}{s} for LoS/NLoS mask generation,
-\SI{0.35}{s} for the frozen priors, and \SI{0.54}{s} for the Try~80 neural
-forward pass. The mask-generation stage is therefore the bottleneck, not the
-network itself.
+mixed precision with batch size 1 and the vectorized CUDA LoS/NLoS backend
+took \SI{1.22}{s} per map end to end. The component means were \SI{0.30}{s}
+for LoS/NLoS mask generation, \SI{0.38}{s} for the frozen priors, and
+\SI{0.54}{s} for the Try~80 neural forward pass. The mask-generation stage was
+the previous bottleneck; after vectorization, the network forward pass is the
+largest single component.
+
+The vectorized mask backend was validated as an implementation optimization,
+not as a change in mask definition. On the ten Barcelona configurations and on
+100 exported CKM samples, it produced zero LoS/NLoS differences with the
+original GT ray-caster; the optimization only changes how the same visibility
+test is evaluated.
 
 For comparison, the MATLAB ray-tracing script took \SI{99.89}{s} per
 full-resolution Barcelona sample on the same laptop. The local MATLAB
 installation did not include Parallel Computing Toolbox, so the ray tracer ran
 on CPU, while the surrogate used the available CUDA runtime through PyTorch.
-The resulting measured speed-up is \(17.8\times\) for the complete non-RT
+The resulting measured speed-up is \(82.0\times\) for the complete non-RT
 generation path, including priors.
 
 The mixed-precision numerical difference remains negligible. On the sampled

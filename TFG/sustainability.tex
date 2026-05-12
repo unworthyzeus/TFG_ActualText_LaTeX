@@ -74,16 +74,16 @@ many UAV heights or urban alternatives at much lower marginal energy cost.
 The runtime measurements in Chapter~\ref{chap:results} make this concrete for
 the present dataset scale. On the Barcelona benchmark, pixel-level MATLAB ray
 tracing took \SI{99.89}{s} per full-resolution CKM sample, while the complete
-Try~80 generator took \SI{5.61}{s} per sample including geometric LoS/NLoS mask
+Try~80 generator took \SI{1.22}{s} per sample including geometric LoS/NLoS mask
 generation, Try~78/79 prior computation, and PL/DS/AS prediction. Extrapolated
 to 16{,}180 samples, this is \SI{448.96}{h} for ray tracing versus
-\SI{25.20}{h} for the surrogate. Under the simple same-laptop full-load
+\SI{5.47}{h} for the surrogate. Under the simple same-laptop full-load
 assumption of \SI{100}{W}, the energy figures are approximately
-\SI{44.9}{kWh} and \SI{2.5}{kWh}, respectively. These figures are not a full
+\SI{44.9}{kWh} and \SI{0.55}{kWh}, respectively. These figures are not a full
 life-cycle assessment, but they show the main sustainability advantage of the
 approach: once the model is trained, repeated CKM generation is about
-\(17.8\times\) faster and, under the same power-envelope assumption, about
-\(17.8\times\) more energy efficient.
+\(82.0\times\) faster and, under the same power-envelope assumption, about
+\(82.0\times\) more energy efficient.
 
 
 \textbf{Risks and limitations.} The environmental benefit depends on reuse. If
