@@ -940,55 +940,83 @@ for delay spread, and \(20^\circ\) for angular spread.}
 
 \subsubsection*{Inference-time sanity check}
 
-The secondary runtime objective can be closed with an order-of-magnitude check.
-The appendix benchmark times the full computational generator path on ten
-exported \(513\times513\) HDF5 samples: mask/prior preparation and final-model
-prediction, excluding only the one-time checkpoint load. The local machine has
-an AMD Ryzen~5~5600H CPU (6 cores, 12 logical threads, PyTorch using 6 compute
-threads) and an RTX~3050~Ti Laptop GPU with 4\,GiB of VRAM and 2{,}560 CUDA
-cores. The original CKM ray-tracing generation took roughly three weeks for
-16{,}180 samples on a desktop RTX~2080~Ti, which has 11\,GiB of VRAM and
-4{,}352 CUDA cores; interpreted as 21 days, this is about \SI{112.14}{s} per
-sample.
+The secondary runtime objective was checked on the Barcelona geometry supplied
+with the MATLAB ray-tracing script. The benchmark uses the same local laptop as
+the final generator: an AMD Ryzen~5~5600H CPU and an RTX~3050~Ti Laptop GPU
+with 4\,GiB of VRAM. The ray-tracing run was configured at
+\SI{1}{m} receiver spacing, so each non-building pixel of the \(513\times513\)
+area is represented by a receiver at \SI{1.5}{m}. Two Barcelona layouts and five
+UAV heights per layout give ten full-resolution CKM samples. The local MATLAB
+installation does not include Parallel Computing Toolbox, so the ray tracer was
+run on CPU with the same propagation settings as the supplied script:
+one reflection, no diffraction, \SI{7.125}{GHz}, and extraction of path loss,
+delay spread, and angular spread from the ray-tracing paths.
+
+The surrogate timing uses the same ten Barcelona topologies and antenna
+heights. It includes the complete non-RT generation path after the checkpoint is
+loaded once: geometric LoS/NLoS mask generation from the height map, frozen
+Try~78 path-loss prior computation, frozen Try~79 delay-spread and
+angular-spread prior computation as used by Try~80, and mixed-precision Try~80
+inference for the three outputs. The only excluded costs are the one-time
+checkpoint load and the one-time CUDA warm-up.
 
 \begin{table}[H]
 \centering
 \caption[Full-pipeline runtime and ray-tracing comparison.]
-{Approximate full-pipeline runtime comparison for one \(513\times513\) CKM
-sample. The ray-tracing value is derived from the dataset-generation time, while
-the surrogate values are measured on ten exported HDF5 samples and include
-mask/prior preparation plus model prediction. Checkpoint loading is excluded.}
+{Full-pipeline runtime comparison for one \(513\times513\) Barcelona CKM sample.
+Both rows are measured on the same laptop. The surrogate row includes geometric
+mask generation, prior computation, and prediction of path loss, delay spread,
+and angular spread. Checkpoint loading and one-time CUDA warm-up are excluded.}
 \label{tab:inference_time_comparison}
 \scriptsize
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.8cm}p{1.45cm}p{2.2cm}cc>{\raggedright\arraybackslash}X}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.35cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{2.25cm}cc}
 \toprule
-Method & Mode & Resource note & Time per map & 16{,}180 maps & Interpretation \\
+Method & Timed path & Resource note & Time per sample & Dataset-scale extrapolation \\
 \midrule
-Ray tracing, RTX~2080~Ti desktop & simulator & 11\,GiB VRAM; 4{,}352 CUDA cores & \(\approx\)\SI{112.14}{s} & \(\approx\)21 days & Dataset-generation baseline. \\
-Final model, Ryzen~5~5600H CPU & fp32, \(b=1\) & 6 cores / 12 threads; PyTorch 6 threads & \SIrange{5.60}{6.50}{s} & \SIrange{25.18}{29.20}{h} & CPU fallback, still about \(17\) to \(20\times\) faster than ray tracing. \\
-Final model, RTX~3050~Ti Laptop GPU & fp32, \(b=1\) & 4\,GiB VRAM; \(\approx\)1.79\,GiB peak & \SI{1.40}{s} & \SI{6.27}{h} & About \(80\times\) faster than ray tracing. \\
-Final model, RTX~3050~Ti Laptop GPU & mixed (fp16), \(b=1\) & \(\approx\)1.56\,GiB peak & \SI{1.14}{s} & \SI{5.11}{h} & About \(99\times\) faster than ray tracing; best local setting. \\
-Final model, RTX~3050~Ti Laptop GPU & mixed (fp16), \(b=2\) & \(\approx\)2.65\,GiB peak & \SI{1.17}{s} & \SI{5.25}{h} & No throughput gain on the 4\,GiB laptop GPU. \\
-Final model, RTX~3050~Ti Laptop GPU & mixed (fp16), \(b=4\) & \(\approx\)5.11\,GiB reported peak & \SI{6.36}{s} & \SI{28.57}{h} & Slower because the run exceeds physical VRAM and spills into shared system RAM. \\
+MATLAB ray tracing & Pixel-level receivers outside buildings; PL, DS and AS parsed from paths & Ryzen~5~5600H CPU; GPU off, PCT unavailable & \SI{99.89}{s} & \SI{448.96}{h} (\(\approx\)18.7 days), \(1\times\) \\
+Final Try~80 generator & Generated LoS/NLoS masks, frozen priors, and PL/DS/AS prediction & RTX~3050~Ti Laptop GPU; mixed fp16, \(b=1\) & \SI{5.61}{s} & \SI{25.20}{h}, \(17.8\times\) faster \\
 \bottomrule
 \end{tabularx}
 \end{table}
 \normalsize
 
-This comparison excludes the one-time training and calibration cost. It only
-answers the deployment-style question: after training, replacing repeated
-ray-tracing queries by the final surrogate reduces the marginal generation time
-by at least one order of magnitude, and by nearly two orders of magnitude in the
-best measured local GPU setting. The batch-size stress test is important: larger
-batches are only useful when the whole working set remains in VRAM. On this
-4\,GiB RTX~3050~Ti Laptop GPU, \(b=4\) over-subscribes VRAM and becomes slower
-because data is paged through normal system RAM. The comparison is still
-conservative for the surrogate: the neural pipeline was measured on a laptop
-GPU with 4\,GiB of VRAM and 2{,}560 CUDA cores, whereas the ray-tracing
-generation used a desktop RTX~2080~Ti with 11\,GiB of VRAM and 4{,}352 CUDA
-cores. A same-class desktop-GPU surrogate benchmark would be expected to allow
-larger batches and widen the inference advantage, but it was not available
-locally.
+The ten ray-traced samples contain 156{,}088 and 115{,}825 valid receiver
+pixels in the two Barcelona layouts, respectively. The measured average is
+\SI{99.89}{s} per full-resolution sample for ray tracing and \SI{5.61}{s} per
+sample for the complete Try~80 generator, including masks and priors. The
+resulting \(17.8\times\) speed-up should therefore be read as a
+deployment-style marginal runtime result after training and calibration, not as
+a comparison of the full research cost of developing the model.
+
+\begin{table}[H]
+\centering
+\caption[Try~80 runtime component breakdown.]
+{Mean component timing for the Try~80 generator on the same ten Barcelona
+samples. The LoS/NLoS mask step dominates the non-RT pipeline; the neural
+forward pass itself is much smaller.}
+\label{tab:try80_runtime_breakdown}
+\scriptsize
+\begin{tabularx}{0.86\textwidth}{>{\raggedright\arraybackslash}Xcc}
+\toprule
+Component & Mean time per sample & Share of Try~80 path \\
+\midrule
+Topology preparation & \SI{0.002}{s} & \(<0.1\%\) \\
+Geometric LoS/NLoS mask generation & \SI{4.71}{s} & \(84.0\%\) \\
+Frozen Try~78/79 prior computation used by Try~80 & \SI{0.35}{s} & \(6.3\%\) \\
+Try~80 neural prediction for PL, DS and AS & \SI{0.54}{s} & \(9.6\%\) \\
+\midrule
+Complete Try~80 generation path & \SI{5.61}{s} & \(100\%\) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\normalsize
+
+This breakdown is important for interpreting the result. The network forward
+pass is not the bottleneck: generating the LoS/NLoS mask from geometry takes
+about \(8.7\times\) longer than the Try~80 inference step itself. In contrast,
+the frozen priors add only \SI{0.35}{s} per sample, so including them does not
+change the conclusion that most non-RT runtime is spent before the neural
+model.
 
 \section{Qualitative Analysis}
 

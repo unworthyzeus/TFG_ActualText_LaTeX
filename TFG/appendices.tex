@@ -1059,28 +1059,24 @@ CUDA is the preferred runtime when available. The app and CLI can also use CPU
 or DirectML. The model batch size can increase throughput on GPUs with enough
 VRAM, while keeping batch size 1 remains the safest option on smaller cards.
 
-The final benchmark was repeated on ten exported HDF5 samples using the full
-generator computation after the checkpoint had been loaded once. The timed path
-therefore includes mask/prior preparation and neural prediction, but not the
-one-time checkpoint load. The CPU fallback was measured on an AMD
-Ryzen~5~5600H with 6 physical cores, 12 logical threads, and 6 PyTorch compute
-threads. It took \SIrange{5.60}{6.50}{s} per map, with a mean of
-\SI{5.95}{s}. On the RTX~3050~Ti Laptop GPU, which has 4\,GiB of VRAM and
-2{,}560 CUDA cores, the fp32 batch-1 pipeline took \SI{1.40}{s} per map.
-CUDA mixed precision (fp16 autocast) with batch size 1 reduced this to
-\SI{1.14}{s} per map.
+The final benchmark was repeated on the same ten Barcelona configurations used
+for the MATLAB ray-tracing check: two layouts, five UAV heights per layout, and
+a \(513\times513\) full-resolution map. The timed Try~80 path starts after the
+checkpoint has been loaded once and includes geometric LoS/NLoS mask
+generation, frozen Try~78/79 prior computation, and neural prediction of path
+loss, delay spread, and angular spread. On the RTX~3050~Ti Laptop GPU, CUDA
+mixed precision with batch size 1 took \SI{5.61}{s} per map end to end. The
+component means were \SI{4.71}{s} for LoS/NLoS mask generation,
+\SI{0.35}{s} for the frozen priors, and \SI{0.54}{s} for the Try~80 neural
+forward pass. The mask-generation stage is therefore the bottleneck, not the
+network itself.
 
-The batch-size behaviour was limited by memory rather than arithmetic. Mixed
-precision (fp16 autocast) with batch size 2 used about 2.65\,GiB of peak
-allocated GPU memory and took \SI{1.17}{s} per map, so it did not improve
-throughput on this laptop GPU. Mixed precision (fp16 autocast) with batch
-size 4 reported about 5.11\,GiB of peak allocated GPU memory on a 4\,GiB device
-and slowed to \SI{6.36}{s} per map. This indicates Windows/CUDA
-over-subscribing VRAM and spilling part of the working set into shared system
-RAM. The RTX~2080~Ti used for the
-ray-tracing generation has 11\,GiB of VRAM and 4{,}352 CUDA cores, so a
-same-class desktop GPU would be expected to fit larger batches and expose more
-parallelism; that hardware was not available for a direct surrogate benchmark.
+For comparison, the MATLAB ray-tracing script took \SI{99.89}{s} per
+full-resolution Barcelona sample on the same laptop. The local MATLAB
+installation did not include Parallel Computing Toolbox, so the ray tracer ran
+on CPU, while the surrogate used the available CUDA runtime through PyTorch.
+The resulting measured speed-up is \(17.8\times\) for the complete non-RT
+generation path, including priors.
 
 The mixed-precision numerical difference remains negligible. On the sampled
 outputs, the RMSE between mixed precision and fp32 predictions was

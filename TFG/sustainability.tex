@@ -72,16 +72,18 @@ The surrogate can also be used for fast what-if analyses during planning:
 it is not a replacement for ray tracing in every scenario, but it can evaluate
 many UAV heights or urban alternatives at much lower marginal energy cost.
 The runtime measurements in Chapter~\ref{chap:results} make this concrete for
-the present dataset scale. Generating the 16{,}180 CKM samples with the
-ray-tracing baseline took approximately three weeks on a desktop RTX~2080~Ti
-server. At a rough active-system power of \SI{700}{W}, this corresponds to
-about \SI{350}{kWh}. The trained surrogate can process the same number of
-samples in about \SI{5.1}{h} on the local RTX~3050~Ti laptop in the measured
-mixed (fp16) setting. Even with a simple \SI{80}{W} laptop-power approximation,
-this is only about \SI{0.4}{kWh}. These figures are not a full life-cycle
-assessment, but they show the main sustainability advantage of the approach:
-once the model is trained, repeated CKM generation moves from a multi-week
-desktop-server workload to a same-day laptop workload.
+the present dataset scale. On the Barcelona benchmark, pixel-level MATLAB ray
+tracing took \SI{99.89}{s} per full-resolution CKM sample, while the complete
+Try~80 generator took \SI{5.61}{s} per sample including geometric LoS/NLoS mask
+generation, Try~78/79 prior computation, and PL/DS/AS prediction. Extrapolated
+to 16{,}180 samples, this is \SI{448.96}{h} for ray tracing versus
+\SI{25.20}{h} for the surrogate. Under the simple same-laptop full-load
+assumption of \SI{100}{W}, the energy figures are approximately
+\SI{44.9}{kWh} and \SI{2.5}{kWh}, respectively. These figures are not a full
+life-cycle assessment, but they show the main sustainability advantage of the
+approach: once the model is trained, repeated CKM generation is about
+\(17.8\times\) faster and, under the same power-envelope assumption, about
+\(17.8\times\) more energy efficient.
 
 
 \textbf{Risks and limitations.} The environmental benefit depends on reuse. If
