@@ -24,13 +24,17 @@ anchor instead of rediscovering the whole propagation law from scratch.
 \section{Work goals}
 
 The initial technical targets were defined in physical units and were kept as
-the main success criteria throughout the project:
+the main success criteria throughout the project. The proposal also included a
+runtime objective, because a surrogate is only useful if it is clearly faster
+than generating the same maps through ray tracing:
 
 \begin{itemize}
   \item path-loss RMSE below \SI{5}{dB};
   \item delay-spread RMSE below \SI{50}{ns};
   \item angular-spread RMSE below \SI{20}{\degree};
   \item separate reporting for global, LoS, and NLoS regions.
+  \item a 10 to 100\(\times\) reduction in channel-map generation time compared
+        with ray tracing.
 \end{itemize}
 
 These numerical targets were set in the project proposal and kept unchanged
@@ -39,11 +43,9 @@ which a ray-tracing surrogate starts being useful for planning and coverage
 decisions. A few dB of path-loss RMSE is compatible with practical link-budget
 margins, and tens of ns of delay spread and tens of degrees of angular spread
 stay well inside typical multipath spread values reported by 3GPP TR\,38.901
-for UMa/UMi scenarios. The proposal also fixed a secondary engineering goal,
-namely a 10 to 100$\times$ reduction in channel-map generation time compared to
-a ray tracer. Chapter~\ref{chap:results} checks this explicitly by comparing
-the measured inference time of the final model with the approximate ray-tracing
-time needed to create the CKM dataset.
+for UMa/UMi scenarios. Chapter~\ref{chap:results} checks the runtime target
+explicitly by comparing the measured final-generator time with the measured
+MATLAB ray-tracing time on the same Barcelona geometry and hardware.
 
 The most important methodological objective was not only to obtain a low
 average RMSE, but to do so under a strict city-holdout protocol. In this

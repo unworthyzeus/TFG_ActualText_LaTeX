@@ -97,7 +97,11 @@ histograms showed that the previous PMHHNet family was not merely underpowered;
 it was being asked to regress multi-modal and spike-plus-tail targets with
 losses that reward a single central estimate. The distribution-first predecessors converted that
 diagnosis into GMM-based dense predictors and demonstrated why marginal target
-shape must guide the model head.
+shape must guide the model head. The final validation histograms reported in
+Chapter~\ref{chap:results} close that loop: the selected prior-anchored
+residual GMM-head no longer shows the severe NLoS path-loss mode collapse,
+while the spread statistics keep the remaining high-tail underestimation
+visible.
 
 The third contribution is the final prior family. The path-loss prior explains why the LoS
 path-loss map has a strong radial structure and why an enhanced two-ray model
@@ -135,15 +139,17 @@ more defensible one.
 
 The final Barcelona runtime benchmark supports the acceleration claim under a
 like-for-like full-resolution setup. Pixel-level MATLAB ray tracing took
-\SI{99.89}{s} per CKM sample, while the complete Try~80 generation path took
+\SI{99.89}{s} per CKM sample, while the complete final-generator path took
 \SI{0.88}{s} on the same local laptop, including geometric LoS/NLoS mask
-generation, frozen Try~78/79 priors, and the PL/DS/AS neural prediction. The
-resulting \(113.7\times\) reduction uses a vectorized CUDA LoS/NLoS backend that
+generation, the final calibrated path-loss and spread priors, and the PL/DS/AS
+neural prediction. The
+resulting \(113.7\times\) reduction exceeds the original 10 to 100\(\times\)
+runtime goal. It uses a vectorized CUDA LoS/NLoS backend that
 was checked to produce zero difference with the original GT ray-caster on the
 Barcelona and exported CKM samples, plus a torch implementation of the frozen
-Try~78/79 priors. After these optimizations, the mask step takes \SI{0.30}{s},
-the priors \SI{0.04}{s}, and the mixed-precision Try~80 inference itself about
-\SI{0.54}{s} per sample.
+calibrated priors. After these optimizations, the mask step takes \SI{0.30}{s},
+the priors \SI{0.04}{s}, and the mixed-precision residual GMM-head inference
+itself about \SI{0.54}{s} per sample.
 
 For deployment-oriented work, the main value of the pipeline is transparency.
 The priors expose the physical assumptions, the residual caps bound how much

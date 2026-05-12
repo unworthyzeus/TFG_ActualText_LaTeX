@@ -345,9 +345,14 @@ dimension 160. \\
 Residual distribution & Three mixture components per task/region head. \\
 Residual limits & PL: 7 dB LoS, 25 dB NLoS; DS: 20 ns LoS/NLoS; AS:
 \(17^\circ\) LoS, \(15^\circ\) NLoS. \\
-Main losses & Final fine-tune weights: RMSE 1.0, MAE 0.05, anchor 0.01,
-prior-guard 0.02. NLL, KL, moments and outlier terms remain implemented but
-have zero final weight. \\
+Pre-fine-tune losses & Large-model stage
+\texttt{try80\_joint\_huge\_relaxed\_residuals}: NLL 1.0, KL 0.25,
+moments 0.1, anchor 0.05, prior-guard 0.1, RMSE 1.5, MAE 0.1, outlier
+budget 0.02. \\
+Final fine-tune losses & Selected stage
+\texttt{try80\_joint\_huge\_pathloss\_finetune}: RMSE 1.0, MAE 0.05,
+anchor 0.01, prior-guard 0.02. NLL, KL, moments and outlier terms remain
+implemented but have zero final weight. \\
 Training & AdamW, \(5\times10^{-5}\) learning rate, 0.01 weight decay, 40
 fine-tune epochs, batch size 1, accumulation 8, cosine \texttt{LambdaLR} after
 one warmup epoch. \\
@@ -364,6 +369,9 @@ The final prediction for each task \(t\) has the same conceptual form:
 This is the central safety mechanism. The network is allowed to improve the
 prior, but the residual is bounded and gated. The prior-guard term then
 penalizes cases where the model moves away from the prior and becomes worse.
+The non-fine-tuned large-model weights are listed separately because the final
+fine-tune changes the optimization objective while keeping the same large
+architecture and relaxed residual caps.
 
 \chapter{Formula Placement}
 
@@ -1061,14 +1069,16 @@ VRAM, while keeping batch size 1 remains the safest option on smaller cards.
 
 The final benchmark was repeated on the same ten Barcelona configurations used
 for the MATLAB ray-tracing check: two layouts, five UAV heights per layout, and
-a \(513\times513\) full-resolution map. The timed Try~80 path starts after the
-checkpoint has been loaded once and includes geometric LoS/NLoS mask
-generation, frozen Try~78/79 prior computation, and neural prediction of path
-loss, delay spread, and angular spread. On the RTX~3050~Ti Laptop GPU, CUDA
+a \(513\times513\) full-resolution map. The timed final-generator path starts
+after the checkpoint has been loaded once and includes geometric LoS/NLoS mask
+generation, frozen path-loss and spread-prior computation, and neural
+prediction of path loss, delay spread, and angular spread. On the
+RTX~3050~Ti Laptop GPU, CUDA
 mixed precision with batch size 1, the vectorized CUDA LoS/NLoS backend, and
 the torch prior backend took \SI{0.88}{s} per map end to end. The component
 means were \SI{0.30}{s} for LoS/NLoS mask generation, \SI{0.04}{s} for the
-frozen priors, and \SI{0.54}{s} for the Try~80 neural forward pass. The
+frozen priors, and \SI{0.54}{s} for the final residual GMM-head neural forward
+pass. The
 mask-generation stage was the previous bottleneck; after vectorization and
 torch prior evaluation, the network forward pass is the largest single
 component.
