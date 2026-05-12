@@ -7,7 +7,7 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {3.1}{\ignorespaces Distribution-first path-loss system. Stage A learns global GMM parameters from pooled features and Stage B predicts per-pixel assignments.}}{41}{figure.caption.24}%
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Distribution-first spread-prediction system.}}{42}{figure.caption.25}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Diagnostic target and prediction histograms.}}{45}{figure.caption.29}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Diagnostic path-loss target and prediction histograms.}}{45}{figure.caption.29}%
 \contentsline {figure}{\numberline {3.4}{\ignorespaces Overall prior-anchored pipeline with bounded DNN corrections.}}{52}{figure.caption.37}%
 \contentsline {figure}{\numberline {3.5}{\ignorespaces Two-ray geometry.}}{55}{figure.caption.41}%
 \contentsline {figure}{\numberline {3.6}{\ignorespaces Effective ground-reflection amplitude as a function of UAV height.}}{63}{figure.caption.60}%
@@ -26,32 +26,34 @@
 \contentsline {figure}{\numberline {4.4}{\ignorespaces Distribution-first spread RMSE by target.}}{98}{figure.caption.122}%
 \contentsline {figure}{\numberline {4.5}{\ignorespaces Path-loss prior by topology class.}}{101}{figure.caption.126}%
 \contentsline {figure}{\numberline {4.6}{\ignorespaces Final result against original numerical targets.}}{104}{figure.caption.134}%
-\contentsline {figure}{\numberline {4.7}{\ignorespaces Final model compared with prior and GMM references.}}{106}{figure.caption.136}%
-\contentsline {figure}{\numberline {4.8}{\ignorespaces Final model versus frozen priors by split.}}{106}{figure.caption.137}%
-\contentsline {figure}{\numberline {4.9}{\ignorespaces Final test RMSE against frozen priors.}}{106}{figure.caption.138}%
-\contentsline {figure}{\numberline {4.10}{\ignorespaces Final test RMSE by LoS and NLoS regime.}}{107}{figure.caption.139}%
-\contentsline {figure}{\numberline {4.11}{\ignorespaces All-city RMSE deltas by prior subexpert.}}{107}{figure.caption.140}%
-\contentsline {figure}{\numberline {4.12}{\ignorespaces Representative final-model inspection panel.}}{110}{figure.caption.141}%
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Final model compared with prior and GMM references.}}{106}{figure.caption.139}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Late path-loss diagnostic histograms.}}{107}{figure.caption.137}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Final validation histograms on the same 45--55 m subset.}}{107}{figure.caption.138}%
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Final model versus frozen priors by split.}}{108}{figure.caption.140}%
+\contentsline {figure}{\numberline {4.11}{\ignorespaces Final test RMSE against frozen priors.}}{108}{figure.caption.141}%
+\contentsline {figure}{\numberline {4.12}{\ignorespaces Final test RMSE by LoS and NLoS regime.}}{108}{figure.caption.142}%
+\contentsline {figure}{\numberline {4.13}{\ignorespaces All-city RMSE deltas by prior subexpert.}}{109}{figure.caption.143}%
+\contentsline {figure}{\numberline {4.14}{\ignorespaces Representative final-model inspection panel.}}{111}{figure.caption.144}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {D.1}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, low-antenna validation sample in Segovia.}}{135}{figure.caption.157}%
-\contentsline {figure}{\numberline {D.2}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, mid-antenna validation sample in Segovia.}}{136}{figure.caption.158}%
-\contentsline {figure}{\numberline {D.3}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, high-antenna validation sample in Nazareth.}}{137}{figure.caption.159}%
-\contentsline {figure}{\numberline {D.4}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, low-antenna validation sample in Dubrovnik.}}{138}{figure.caption.160}%
-\contentsline {figure}{\numberline {D.5}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, mid-antenna validation sample in Nice.}}{139}{figure.caption.161}%
-\contentsline {figure}{\numberline {D.6}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, high-antenna validation sample in Nice.}}{140}{figure.caption.162}%
-\contentsline {figure}{\numberline {D.7}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, low-antenna validation sample in Chiang Mai.}}{141}{figure.caption.163}%
-\contentsline {figure}{\numberline {D.8}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, mid-antenna validation sample in Tunis.}}{142}{figure.caption.164}%
-\contentsline {figure}{\numberline {D.9}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, high-antenna validation sample in Tunis.}}{143}{figure.caption.165}%
+\contentsline {figure}{\numberline {D.1}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, low-antenna validation sample in Segovia.}}{136}{figure.caption.160}%
+\contentsline {figure}{\numberline {D.2}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, mid-antenna validation sample in Segovia.}}{137}{figure.caption.161}%
+\contentsline {figure}{\numberline {D.3}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for an open, high-antenna validation sample in Nazareth.}}{138}{figure.caption.162}%
+\contentsline {figure}{\numberline {D.4}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, low-antenna validation sample in Dubrovnik.}}{139}{figure.caption.163}%
+\contentsline {figure}{\numberline {D.5}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, mid-antenna validation sample in Nice.}}{140}{figure.caption.164}%
+\contentsline {figure}{\numberline {D.6}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a mixed, high-antenna validation sample in Nice.}}{141}{figure.caption.165}%
+\contentsline {figure}{\numberline {D.7}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, low-antenna validation sample in Chiang Mai.}}{142}{figure.caption.166}%
+\contentsline {figure}{\numberline {D.8}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, mid-antenna validation sample in Tunis.}}{143}{figure.caption.167}%
+\contentsline {figure}{\numberline {D.9}{\ignorespaces Final residual GMM-head model \(6\times 3\) inspection panel for a dense, high-antenna validation sample in Tunis.}}{144}{figure.caption.168}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {F.1}{\ignorespaces CKM Generator Streamlit interface.}}{147}{figure.caption.166}%
-\contentsline {figure}{\numberline {F.2}{\ignorespaces Generated topology and masks.}}{147}{figure.caption.167}%
-\contentsline {figure}{\numberline {F.3}{\ignorespaces CKM Generator joint prediction output.}}{148}{figure.caption.168}%
-\contentsline {figure}{\numberline {F.4}{\ignorespaces Generated output folder for one run.}}{152}{figure.caption.169}%
-\contentsline {figure}{\numberline {F.5}{\ignorespaces Visual outputs for one generated sample.}}{153}{figure.caption.170}%
-\contentsline {figure}{\numberline {F.6}{\ignorespaces Generated sample metadata and arrays.}}{153}{figure.caption.171}%
+\contentsline {figure}{\numberline {F.1}{\ignorespaces CKM Generator Streamlit interface.}}{148}{figure.caption.169}%
+\contentsline {figure}{\numberline {F.2}{\ignorespaces Generated topology and masks.}}{148}{figure.caption.170}%
+\contentsline {figure}{\numberline {F.3}{\ignorespaces CKM Generator joint prediction output.}}{149}{figure.caption.171}%
+\contentsline {figure}{\numberline {F.4}{\ignorespaces Generated output folder for one run.}}{154}{figure.caption.172}%
+\contentsline {figure}{\numberline {F.5}{\ignorespaces Visual outputs for one generated sample.}}{154}{figure.caption.173}%
+\contentsline {figure}{\numberline {F.6}{\ignorespaces Generated sample metadata and arrays.}}{155}{figure.caption.174}%

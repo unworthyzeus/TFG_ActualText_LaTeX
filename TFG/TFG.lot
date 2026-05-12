@@ -43,23 +43,24 @@
 \contentsline {table}{\numberline {4.16}{\ignorespaces Final-model LoS/NLoS improvement by split.}}{103}{table.caption.132}%
 \contentsline {table}{\numberline {4.17}{\ignorespaces All-city final-model deltas by prior subexpert.}}{104}{table.caption.133}%
 \contentsline {table}{\numberline {4.18}{\ignorespaces Full-pipeline runtime and ray-tracing comparison.}}{105}{table.caption.135}%
-\contentsline {table}{\numberline {4.19}{\ignorespaces Approximate RMSE floor from target quantisation.}}{108}{table.caption.142}%
+\contentsline {table}{\numberline {4.19}{\ignorespaces Final-generator runtime component breakdown.}}{105}{table.caption.136}%
+\contentsline {table}{\numberline {4.20}{\ignorespaces Approximate RMSE floor from target quantisation.}}{110}{table.caption.145}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces Sustainability matrix summary for the thesis.}}{111}{table.caption.143}%
-\contentsline {table}{\numberline {5.2}{\ignorespaces Indicative economic cost of the BT development.}}{113}{table.caption.144}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces Sustainability matrix summary for the thesis.}}{112}{table.caption.146}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Indicative economic cost of the BT development.}}{114}{table.caption.147}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {6.1}{\ignorespaces Main lessons learned across the development path.}}{118}{table.caption.145}%
+\contentsline {table}{\numberline {6.1}{\ignorespaces Main lessons learned across the development path.}}{119}{table.caption.148}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces Try-number map, early image-regression phase.}}{125}{table.caption.149}%
-\contentsline {table}{\numberline {A.2}{\ignorespaces Try-number map, spread branches, masks, and first priors.}}{126}{table.caption.150}%
-\contentsline {table}{\numberline {A.3}{\ignorespaces Try-number map, prior-residual and PMNet-style phase.}}{126}{table.caption.151}%
-\contentsline {table}{\numberline {A.4}{\ignorespaces Try-number map, PMHHNet, regularization, and distribution diagnosis.}}{127}{table.caption.152}%
-\contentsline {table}{\numberline {A.5}{\ignorespaces Try-number map, final distribution, prior, and joint model phase.}}{127}{table.caption.153}%
+\contentsline {table}{\numberline {A.1}{\ignorespaces Try-number map, early image-regression phase.}}{126}{table.caption.152}%
+\contentsline {table}{\numberline {A.2}{\ignorespaces Try-number map, spread branches, masks, and first priors.}}{127}{table.caption.153}%
+\contentsline {table}{\numberline {A.3}{\ignorespaces Try-number map, prior-residual and PMNet-style phase.}}{127}{table.caption.154}%
+\contentsline {table}{\numberline {A.4}{\ignorespaces Try-number map, PMHHNet, regularization, and distribution diagnosis.}}{128}{table.caption.155}%
+\contentsline {table}{\numberline {A.5}{\ignorespaces Try-number map, final distribution, prior, and joint model phase.}}{128}{table.caption.156}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {B.1}{\ignorespaces Main final residual GMM-head model configuration values.}}{131}{table.caption.154}%
+\contentsline {table}{\numberline {B.1}{\ignorespaces Main final residual GMM-head model configuration values.}}{132}{table.caption.157}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {C.1}{\ignorespaces Location of the main mathematical definitions.}}{132}{table.caption.155}%
+\contentsline {table}{\numberline {C.1}{\ignorespaces Location of the main mathematical definitions.}}{133}{table.caption.158}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {D.1}{\ignorespaces Final-model appendix panel index.}}{134}{table.caption.156}%
+\contentsline {table}{\numberline {D.1}{\ignorespaces Final-model appendix panel index.}}{135}{table.caption.159}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }

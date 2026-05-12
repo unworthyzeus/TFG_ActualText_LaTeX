@@ -160,11 +160,12 @@ by a map head that assigns pixels to distribution components. The same idea was
 then applied to delay and angular spreads, where spike-plus-tail behaviour is
 even more visible.
 
-The final stage changed the role of deep learning again. The path-loss prior built a strong
-interpretable path-loss prior from FSPL, enhanced two-ray LoS propagation, and
-calibrated NLoS corrections. The spread-prior module built log-domain ridge-calibrated priors
-for delay and angular spread. The final residual GMM-head model then combined these frozen priors with a
-shared multi-task residual GMM-head network.
+In the final stage, deep learning changed role again. The path-loss branch
+provided a strong interpretable prior from FSPL, enhanced two-ray LoS
+propagation, and calibrated NLoS corrections. The spread-prior module provided
+log-domain ridge-calibrated priors for delay and angular spread. The final model
+then combined these frozen priors with a shared multi-task residual GMM-head
+network.
 
 \section{Work plan}
 \label{sec:workplan}

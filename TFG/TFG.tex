@@ -22,7 +22,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%% Please UNCOMMENT and/or provide suitable information to the macros below
-%%% Si us plau, DESCOMENTEU i/o ompliu les macros segÃ¼ents amb la informaciÃ³ adient.
+%%% Si us plau, DESCOMENTEU i/o ompliu les macros següents amb la informació adient.
 
 %%% Specify the document language
 %%%   1: Catalan
@@ -40,7 +40,7 @@
 \setAuthor{Guillem Moreno Garcia}
 
 %%% Degree's name. Uncomment the "setDegree" macro and set its argument to one:
-%%% Nom del Grau. Descomenteu la macro Â«setDegreeÂ» i passeu-li un d'aquests parÃ metres:
+%%% Nom del Grau. Descomenteu la macro «setDegree» i passeu-li un d'aquests paràmetres:
 %%%   \GEF     - Physics Engineering            <<<< DON'T USE THIS, as the template is not approved by the GEF faculty yet
 %%%   \GREELEC - Electronics Engineering
 %%%   \GRETST  - Telecommunications Engineering
@@ -84,12 +84,12 @@
 \input{summary}
 
 
-%%%% DEDICATION PAGE / PÃ€GINA DE DEDICATÃ’RIA %%%%
+%%%% DEDICATION PAGE / PÀGINA DE DEDICATÒRIA %%%%
 \input{dedication}
 
 
-%%%% ACKNOWLEDGEMENTS / AGRAÃMENTS %%%%
-\input{acknowlegdements}
+%%%% ACKNOWLEDGEMENTS / AGRAÏMENTS %%%%
+\input{acknowledgements}
 
 
 %%%% REVISION HISTORY TABLE %%%% <<<<<< Please read the instructions inside the "revision_history.tex" file.
@@ -99,25 +99,25 @@
 %%%% INDEX %%%%
 \clearpage
 \phantomsection
-\addcontentsline{toc}{section}{\ifcase\doclanguage\or Ãndex\or Ãndice\else Contents\fi}
+\addcontentsline{toc}{section}{\ifcase\doclanguage\or Índex\or Índice\else Contents\fi}
 \tableofcontents
 
 
 %%%% LISTS %%%%
 \clearpage
 \phantomsection
-\addcontentsline{toc}{section}{\ifcase\doclanguage\or Ãndex de figures \or Lista de figuras \else List of figures\fi}
+\addcontentsline{toc}{section}{\ifcase\doclanguage\or Índex de figures \or Lista de figuras \else List of figures\fi}
 \listoffigures
 \clearpage
 \phantomsection
-\addcontentsline{toc}{section}{\ifcase\doclanguage\or Ãndex de taules \or Ãndice de cuadros \else List of tables\fi}
+\addcontentsline{toc}{section}{\ifcase\doclanguage\or Índex de taules \or Índice de cuadros \else List of tables\fi}
 \listoftables
 %\lstlistoflistings
 
 
 %%%% ACRONYMS %%%% <<<<<< PLEASE DEFINE YOUR ACRONYMS IN "acronyms.tex"
 \clearpage
-\newcommand\AbbrvName{\ifcase\doclanguage\or Sigles i acrÃ²nims\or Siglas y acrÃ³nimos\else Abbreviations\fi}
+\newcommand\AbbrvName{\ifcase\doclanguage\or Sigles i acrònims\or Siglas y acrónimos\else Abbreviations\fi}
 \chapter*{\AbbrvName}
 \markboth{\AbbrvName}{\AbbrvName}
 \phantomsection

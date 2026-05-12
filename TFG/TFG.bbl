@@ -1791,10 +1791,10 @@
       \field{title}{{RadioDiff}: An Effective Generative Diffusion Model for Sampling-Free Dynamic Radio Map Construction}
       \field{year}{2025}
       \verb{urlraw}
-      \verb https://github.com/UNIC-Lab/RadioDiff
+      \verb https://arxiv.org/abs/2408.08593
       \endverb
       \verb{url}
-      \verb https://github.com/UNIC-Lab/RadioDiff
+      \verb https://arxiv.org/abs/2408.08593
       \endverb
     \endentry
     \entry{ckmimagenet2025}{misc}{}{}
