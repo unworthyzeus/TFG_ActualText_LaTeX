@@ -1065,31 +1065,38 @@ a \(513\times513\) full-resolution map. The timed Try~80 path starts after the
 checkpoint has been loaded once and includes geometric LoS/NLoS mask
 generation, frozen Try~78/79 prior computation, and neural prediction of path
 loss, delay spread, and angular spread. On the RTX~3050~Ti Laptop GPU, CUDA
-mixed precision with batch size 1 and the vectorized CUDA LoS/NLoS backend
-took \SI{1.22}{s} per map end to end. The component means were \SI{0.30}{s}
-for LoS/NLoS mask generation, \SI{0.38}{s} for the frozen priors, and
-\SI{0.54}{s} for the Try~80 neural forward pass. The mask-generation stage was
-the previous bottleneck; after vectorization, the network forward pass is the
-largest single component.
+mixed precision with batch size 1, the vectorized CUDA LoS/NLoS backend, and
+the torch prior backend took \SI{0.88}{s} per map end to end. The component
+means were \SI{0.30}{s} for LoS/NLoS mask generation, \SI{0.04}{s} for the
+frozen priors, and \SI{0.54}{s} for the Try~80 neural forward pass. The
+mask-generation stage was the previous bottleneck; after vectorization and
+torch prior evaluation, the network forward pass is the largest single
+component.
 
 The vectorized mask backend was validated as an implementation optimization,
 not as a change in mask definition. On the ten Barcelona configurations and on
 100 exported CKM samples, it produced zero LoS/NLoS differences with the
 original GT ray-caster; the optimization only changes how the same visibility
-test is evaluated.
+test is evaluated. The torch prior backend was validated separately on the full
+50-sample Barcelona city subset with stored targets. Relative to the NumPy
+prior backend, full-precision RMSE changed only in the fourth decimal place:
+\SI{1.7417}{dB}, \SI{32.9652}{ns}, and \SI{11.0164}{\degree} for path loss,
+delay spread, and angular spread.
 
 For comparison, the MATLAB ray-tracing script took \SI{99.89}{s} per
 full-resolution Barcelona sample on the same laptop. The local MATLAB
 installation did not include Parallel Computing Toolbox, so the ray tracer ran
 on CPU, while the surrogate used the available CUDA runtime through PyTorch.
-The resulting measured speed-up is \(82.0\times\) for the complete non-RT
+The resulting measured speed-up is \(113.7\times\) for the complete non-RT
 generation path, including priors.
 
-The mixed-precision numerical difference remains negligible. On the sampled
-outputs, the RMSE between mixed precision and fp32 predictions was
-\SI{0.0016}{dB} for path loss, \SI{0.0034}{ns} for delay spread, and
-\SI{0.0030}{\degree} for angular spread, which is far below the validation RMSE
-scale of the model.
+The mixed-precision numerical difference remains negligible. On the full
+Barcelona subset, the RMSE between mixed precision and fp32 predictions was
+\SI{0.0014}{dB} for path loss, \SI{0.0028}{ns} for delay spread, and
+\SI{0.0025}{\degree} for angular spread, which is far below the validation RMSE
+scale of the model. Its benefit is speed: with the torch prior backend and
+provided masks, the same 50-sample validation path took \SI{0.72}{s} per map in
+fp32 and \SI{0.62}{s} per map with CUDA mixed precision.
 
 For batch export, disabling \texttt{Save visual map PNGs} avoids Matplotlib
 rendering and keeps only numeric arrays, masks, and metadata. Disabling
