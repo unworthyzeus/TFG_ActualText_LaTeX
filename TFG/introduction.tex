@@ -53,7 +53,7 @@ setting, complete cities are reserved for validation and testing. This is a
 harder and more deployment-relevant condition than random pixel or random tile
 splits, because the model must extrapolate to urban layouts it has never seen.
 
-\section{Research questions and contributions}
+\section{Research questions, answers and contributions}
 
 The thesis is organised around three research questions, which also define
 the three main scientific claims of the final pipeline:
@@ -71,6 +71,16 @@ the three main scientific claims of the final pipeline:
         architecture able to cover the full height range without per-height
         retraining?
 \end{itemize}
+
+In the final version of the project these questions can be answered directly.
+RQ1 is answered positively for the fixed CKM simulation contract: the selected
+prior-anchored residual model predicts all three dense targets on unseen cities
+below the original error targets. RQ2 is answered by a division of labour:
+stable radial and visibility-dependent structure is handled by frozen calibrated
+priors, while the neural network learns bounded residual corrections. RQ3 is
+answered by the height-bin analysis: the same architecture covers the full UAV
+height range, but low-altitude and NLoS-heavy regimes remain the hardest cases
+and therefore require explicit reporting rather than a single global RMSE.
 
 The main contributions corresponding to these questions are:
 
@@ -109,7 +119,7 @@ GMM. The results chapter reports the quantitative outcomes: the LoS waterfall,
 per-expert and per-height breakdowns, spread-prior results, and the final test evaluation on
 unseen cities. The sustainability and conclusions chapters close the thesis,
 followed by the appendices with the representative validation panels and the final
-configuration summary.
+CKM generator documentation.
 
 \section{Requirements and specifications}
 

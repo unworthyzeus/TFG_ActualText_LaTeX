@@ -137,20 +137,12 @@ fast predictor when the dataset contract is fixed and the predictor is anchored
 to interpretable propagation structure. This is a narrower claim, but it is a
 more defensible one.
 
-The final Barcelona runtime benchmark supports the acceleration claim under a
-like-for-like full-resolution setup. Pixel-level MATLAB ray tracing took
-\SI{99.89}{s} per CKM sample, while the complete final-generator path took
-\SI{0.88}{s} on the same local laptop, including geometric LoS/NLoS mask
-generation, the final calibrated path-loss and spread priors, and the PL/DS/AS
-neural prediction, as well as the default numerical \texttt{.npz} export.
-Optional PNG exports are not included. The
+The final Barcelona runtime benchmark also supports the acceleration claim:
+pixel-level MATLAB ray tracing took \SI{99.89}{s} per CKM sample, while the
+complete final-generator path took \SI{0.88}{s} on the same local laptop. The
 resulting \(113.7\times\) reduction exceeds the original 10 to 100\(\times\)
-runtime goal. It uses a vectorized CUDA LoS/NLoS backend that
-was checked to produce zero difference with the original GT ray-caster on the
-Barcelona and exported CKM samples, plus a torch implementation of the frozen
-calibrated priors. After these optimizations, the mask step takes \SI{0.30}{s},
-the priors \SI{0.04}{s}, and the mixed-precision residual GMM-head
-prediction plus default \texttt{.npz} export about \SI{0.54}{s} per sample.
+runtime goal; Chapter~\ref{chap:results} gives the full component breakdown and
+validation of the optimized mask and prior backends.
 
 For deployment-oriented work, the main value of the pipeline is transparency.
 The priors expose the physical assumptions, the residual caps bound how much

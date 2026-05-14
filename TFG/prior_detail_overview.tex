@@ -1,48 +1,9 @@
-This section provides the technical documentation for the ML-calibrated physical
-path-loss and spread priors and the final joint residual GMM-head model
-architecture. It serves as a bridge between the high-level development history
-and the numerical results, explaining the exact mathematical transformations,
-how every parameter was fitted in practice, and what is genuinely new in the
-final residual GMM-head model approach.
-
-\begin{table}[H]
-\centering
-\small
-\begin{tabularx}{\textwidth}{p{2.2cm} p{3.1cm} p{4.0cm} X}
-\toprule
-\textbf{Block} & \textbf{Literature basis} & \textbf{CKM adaptation} &
-\textbf{Role in the final model} \\
-\midrule
-Path-loss LoS & FSPL and enhanced two-ray propagation &
-Effective height-dependent reflection parameters and radial residuals fitted
-from CKM LoS pixels &
-Frozen LoS prior, injected as an input channel and used as the anchor for
-bounded residual learning. \\
-\addlinespace
-Path-loss NLoS & COST-231/Hata-style urban loss and A2G elevation envelopes &
-Regime-wise calibration with local density, height, shadowing and elevation
-features &
-Frozen NLoS prior selected by the explicit LoS/NLoS geometry mask. \\
-\addlinespace
-Delay and angular spread & Log-domain large-scale spread modelling and
-LoS/NLoS separation &
-Regime-wise ridge regression in \(\log(1+y)\) space using multiscale
-morphology and obstruction features &
-Frozen spread priors used as anchors for the multi-task residual model. \\
-\addlinespace
-Final residual GMM-head model & Probabilistic regression and mixture-density
-ideas &
-Prior-anchored per-pixel GMM with residual caps, anchor gates, explicit
-region masks and shared multi-task trunk &
-Learns residual uncertainty and local corrections without replacing the
-interpretable priors. \\
-\bottomrule
-\end{tabularx}
-\caption{One-page summary of what is inherited from the literature, what is
-adapted to CKM, and what is reused or newly assembled in the final
-residual GMM-head model.}
-\label{tab:executive_summary}
-\end{table}
+This section provides the compact main-text documentation for the
+ML-calibrated physical path-loss and spread priors and the final joint
+residual GMM-head model architecture. The detailed mathematical derivations and
+implementation-level fitting notes are moved to Appendix~\ref{app:formula_details}
+so that the methodology chapter explains the design without duplicating the
+appendix.
 
 \subsection{High-level architecture}
 
@@ -163,9 +124,10 @@ prior a competitive baseline. \\
 \subsection{Literature ingredients and thesis adaptations}
 
 The final pipeline is a hybrid between classical propagation models,
-distribution-aware regression, and dataset-specific calibration. Table
-~\ref{tab:prior_literature_mapping} keeps the mapping explicit; the detailed
-equations and fitting procedures follow in the dedicated prior and residual-model subsections.
+distribution-aware regression, and dataset-specific calibration.
+Table~\ref{tab:prior_literature_mapping} keeps the mapping explicit; the
+detailed equations and fitting procedures are collected in
+Appendix~\ref{app:formula_details}.
 
 \begin{table}[H]
 \centering
