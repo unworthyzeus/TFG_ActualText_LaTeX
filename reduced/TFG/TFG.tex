@@ -1,0 +1,222 @@
+% These are "magic" comments understood by the "TeXStudio" editor
+% !TeX encoding = UTF-8
+% !TeX TS-program = lualatex
+% !TeX TXS-program:bibliography = biber
+% Document title: ETSETB TFG LaTeX Template
+% Version: 5.1
+% Author: 2023 Orestes Mas Casals
+% License: ETSETB TFG LaTeX Template by Orestes Mas is marked with CC0 1.0 Universal
+
+\documentclass[a4paper,twoside,12pt]{report}
+
+% Load auxiliary packages for various tasks
+\input{config/packages.tex}
+
+% Document style definitions. Change styles there.
+\input{config/styles.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%                                                                %%%
+%%%              DADES DEL DOCUMENT / DOCUMENT DATA                %%%
+%%%                                                                %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Please UNCOMMENT and/or provide suitable information to the macros below
+%%% Si us plau, DESCOMENTEU i/o ompliu les macros següents amb la informació adient.
+
+%%% Specify the document language
+%%%   1: Catalan
+%%%   2: Spanish
+%%%   3: English
+\newcommand{\doclanguage}{3}
+
+% Set-up language and load language-related cover page macros
+\input{config/lang.tex}
+
+%%% Thesis title
+\setTitle{Channel Knowledge Map Prediction with Deep Learning for 6G UAV-Enabled Networks}
+
+%%% Name of the thesis author
+\setAuthor{Guillem Moreno Garcia}
+
+%%% Degree's name. Uncomment the "setDegree" macro and set its argument to one:
+%%% Nom del Grau. Descomenteu la macro «setDegree» i passeu-li un d'aquests paràmetres:
+%%%   \GEF     - Physics Engineering            <<<< DON'T USE THIS, as the template is not approved by the GEF faculty yet
+%%%   \GREELEC - Electronics Engineering
+%%%   \GRETST  - Telecommunications Engineering
+\setDegree{\GRETST}
+
+%%% Name of the Thesis Advisor / Director
+\setAdvisor{Sergi Abadal, Evgenii Vinogradov}
+
+%%% Name of the thesis reviewer / ponent
+%%% No reviewer is shown on the cover for this submission.
+
+%%% Document's date (\TFGdate by default)
+\setDate{\TFGdate}
+
+\hypersetup{
+  pdftitle={Channel Knowledge Map Prediction with Deep Learning for 6G UAV-Enabled Networks},
+  pdfauthor={Guillem Moreno Garcia},
+  pdfsubject={Bachelor thesis on channel knowledge map prediction for 6G UAV-enabled networks},
+  pdfkeywords={channel knowledge map, deep learning, UAV, 6G, path loss, delay spread, angular spread}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%% PREAMBLE ENDS - DOCUMENT BEGINS %%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%% FRONT COVER %%%%%%%%%%%%%%%%%%%%%%%%%
+\input{cover}
+
+% Restore default page geometry (modified by cover page code)
+%\restoregeometry
+\loadgeometry{main}
+
+%%%%%%%%%%%%%%%%%%%%%%%%% PREAMBLE BEGINS %%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{plain}
+
+
+%%%% SUMMARY / RESUM %%%%
+\input{summary}
+
+
+%%%% DEDICATION PAGE / PÀGINA DE DEDICATÒRIA %%%%
+\input{dedication}
+
+
+%%%% ACKNOWLEDGEMENTS / AGRAÏMENTS %%%%
+\input{acknowledgements}
+
+
+%%%% REVISION HISTORY TABLE %%%% <<<<<< Please read the instructions inside the "revision_history.tex" file.
+\input{revision_history}
+
+
+%%%% INDEX %%%%
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{\ifcase\doclanguage\or Índex\or Índice\else Contents\fi}
+\tableofcontents
+
+
+%%%% LISTS %%%%
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{\ifcase\doclanguage\or Índex de figures \or Lista de figuras \else List of figures\fi}
+\listoffigures
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{\ifcase\doclanguage\or Índex de taules \or Índice de cuadros \else List of tables\fi}
+\listoftables
+%\lstlistoflistings
+
+
+%%%% ACRONYMS %%%% <<<<<< PLEASE DEFINE YOUR ACRONYMS IN "acronyms.tex"
+\clearpage
+\newcommand\AbbrvName{\ifcase\doclanguage\or Sigles i acrònims\or Siglas y acrónimos\else Abbreviations\fi}
+\chapter*{\AbbrvName}
+\markboth{\AbbrvName}{\AbbrvName}
+\phantomsection
+\addcontentsline{toc}{section}{\AbbrvName}
+\printacronyms[
+  heading=none,
+  display=all,
+  include=abbrev,
+  name=\AbbrvName,
+]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% MAIN PART BEGINS %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Starts normal numbering for the rest of the document
+%\mainmatter  (valid/useful only if using the "book" class instead of "report" in the very first line)
+\pagestyle{main}
+
+\newcommand{\usecompactmainbody}{%
+  \setlength{\parskip}{3.5pt plus 1pt minus 0.5pt}%
+  \titlespacing*{\section}{0pt}{1.05ex plus .3ex minus .2ex}{0.45ex plus .15ex}%
+  \titlespacing*{\subsection}{0pt}{0.95ex plus .25ex minus .15ex}{0.35ex plus .12ex}%
+  \titlespacing*{\subsubsection}{0pt}{0.8ex plus .2ex minus .15ex}{0.25ex plus .1ex}%
+  \setlength{\abovedisplayskip}{5pt plus 1pt minus 1pt}%
+  \setlength{\belowdisplayskip}{5pt plus 1pt minus 1pt}%
+  \setlength{\abovedisplayshortskip}{3pt plus 1pt minus 1pt}%
+  \setlength{\belowdisplayshortskip}{3pt plus 1pt minus 1pt}%
+  \setlength{\textfloatsep}{6pt plus 1pt minus 1pt}%
+  \setlength{\floatsep}{6pt plus 1pt minus 1pt}%
+  \setlength{\intextsep}{6pt plus 1pt minus 1pt}%
+  \captionsetup{font=footnotesize,skip=2pt}%
+}
+\newcommand{\userelaxedappendixspacing}{%
+  \setlength{\parskip}{6pt plus 2pt minus 1pt}%
+  \titlespacing*{\section}{0pt}{1.6ex plus .4ex minus .2ex}{0.9ex plus .2ex}%
+  \titlespacing*{\subsection}{0pt}{1.4ex plus .3ex minus .2ex}{0.7ex plus .2ex}%
+  \titlespacing*{\subsubsection}{0pt}{1.2ex plus .3ex minus .2ex}{0.6ex plus .2ex}%
+  \setlength{\abovedisplayskip}{8pt plus 2pt minus 2pt}%
+  \setlength{\belowdisplayskip}{8pt plus 2pt minus 2pt}%
+  \setlength{\abovedisplayshortskip}{5pt plus 2pt minus 1pt}%
+  \setlength{\belowdisplayshortskip}{5pt plus 2pt minus 1pt}%
+  \setlength{\textfloatsep}{8pt plus 2pt minus 2pt}%
+  \setlength{\floatsep}{8pt plus 2pt minus 2pt}%
+  \setlength{\intextsep}{8pt plus 2pt minus 2pt}%
+  \captionsetup{font=small,skip=4pt}%
+}
+\usecompactmainbody
+
+% Introduction.
+\input{introduction}
+
+
+% State of the art chapter.
+\input{state_of_art}
+
+
+% Methodology chapter.
+\input{methodology}
+
+
+%%%% RESULTS %%%%
+% Results chapter.
+\input{results}
+
+
+% Budget is integrated into the sustainability analysis chapter.
+
+
+%%%% SUSTAINABILITY REPORT %%%%    <<<<<<<<<<<<<<<< NEW !!
+% Sustainability chapter.
+\input{sustainability}
+
+
+%%%% CONCLUSIONS AND FUTURE WORK %%%%
+% Conclusions chapter.
+\input{conclusions}
+
+
+%%%% BIBLIOGRAPHY %%%%
+\userelaxedappendixspacing
+% Bibliography intro
+\defbibnote{bib-intro}{%
+References used for the propagation models, neural-network baselines, training
+techniques, and evaluation methods cited in this thesis.
+}
+\nocite{moreno2026ckmgenerator,moreno2026finalcode,moreno2026tfgprogress,moreno2026tfgtext}
+\printbibliography[heading=bibintoc,prenote={bib-intro}]
+
+
+%%%% ANNEXES %%%%
+% All chapters AFTER the \appendix command wil be considered appendices and numbered by letter
+\appendix
+\input{appendices}
+
+%%%% FINAL CLOSING BLANK PAGE %%%%
+\clearpage
+\thispagestyle{empty}
+~
+
+\end{document}

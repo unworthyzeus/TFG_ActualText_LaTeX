@@ -1,0 +1,207 @@
+\chapter{Sustainability Analysis and Ethical Implications}
+
+This chapter follows the ETSETB sustainability guide structure: first a
+sustainability matrix, then the ethical implications, and finally the relation
+with the Sustainable Development Goals. The analysis separates the Development
+of BT stage from the hypothetical execution of the project, because this thesis
+does not manufacture a physical product. Its deployable result is a software
+pipeline for faster CKM prediction.
+
+\section{Sustainability matrix}
+
+\begin{table}[ht]
+\centering
+\caption{Sustainability matrix summary for the thesis.}
+\label{tab:sustainability_matrix}
+\begin{tabularx}{\textwidth}{lXXX}
+\toprule
+Perspective & Development of BT & Project execution & Risks and limitations \\
+\midrule
+Environmental &
+GPU training, laptop use, storage, and writing. &
+Reduced need for repeated ray-tracing simulations. &
+Extra retraining, larger models, or poor reuse of cached priors could increase footprint. \\
+Economic &
+Student and supervision time, plus shared HPC use. &
+Lower planning cost if the surrogate replaces repeated simulations. &
+Real deployment needs field validation and maintenance. \\
+Social &
+Skills gained in wireless modelling, ML, and scientific reporting. &
+Faster UAV coverage planning for temporary or emergency networks. &
+Bias toward represented city morphologies and risk of overclaiming simulated results. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Environmental impact}
+
+\textbf{Development of BT.} The main environmental cost of the academic
+work was electricity for computation. The final residual GMM-head model line used four RTX~2080
+Ti GPUs for approximately \SI{12}{h}, consuming about \SI{18}{kWh}.
+The 12-expert distribution-first training also used the
+same four-GPU node, adding roughly \SI{18}{h} of GPU time and about
+\SI{27}{kWh}. The ML-calibrated priors are lighter than the residual GMM-head
+training, but they are not free: their calibration and evaluation still take
+several hours, either on a single GPU/DirectML workstation or on CPU. The
+``distribution/prior phase'' in Table~\ref{tab:sustainability_budget} therefore
+includes both the distribution-first GMM work and the hours spent calibrating
+and validating the priors, while the main carbon cost still comes from the
+deep-learning stages. The complete exploratory project exceeded
+\SI{400}{GPU-h}; at the same approximation of \SI{1.5}{kW} per four-GPU node,
+this corresponds to roughly \SI{150}{kWh} and approximately
+\SI{30}{kgCO2e} at an illustrative factor of 0.2~kgCO2e/kWh (a rough
+order-of-magnitude based on public grid-mix references for Spain in~2024).
+This exploratory footprint is a one-time research overhead, not the marginal
+cost of using the final system in deployment.
+
+Several decisions reduced avoidable impact: using city-holdout validation
+instead of repeated full retraining for every diagnostic, reusing calibration
+artifacts from the calibrated priors in the final model, plotting from saved histories, and
+keeping final priors frozen rather than recomputing them blindly in every
+experiment.
+
+\textbf{Project execution.} In operation, a trained CKM surrogate can reduce
+the number of ray-tracing simulations required during planning. A ray tracer is
+still needed to generate reliable training data and to validate new regimes,
+but that cost is concentrated in dataset creation and periodic recalibration
+rather than in every planning query. For the simulated FR3 UAV setting studied
+in this thesis, centred on \SI{7.125}{GHz}, the surrogate can generalise across
+the held-out cities without launching a new ray-tracing run for each UAV height
+or urban map.
+The surrogate can also be used for fast what-if analyses during planning:
+it is not a replacement for ray tracing in every scenario, but it can evaluate
+many UAV heights or urban alternatives at much lower marginal energy cost.
+The runtime measurements in Chapter~\ref{chap:results} make this concrete for
+the present dataset scale. On the Barcelona benchmark, pixel-level MATLAB ray
+tracing took \SI{99.89}{s} per full-resolution CKM sample, while the complete
+final prior-anchored generator took \SI{0.88}{s} per sample including
+geometric LoS/NLoS mask generation, torch computation of the calibrated
+path-loss and spread priors, and PL/DS/AS prediction, excluding optional PNG
+export. The default numerical \texttt{.npz} archive export is part of the
+speed calculation.
+Extrapolated to 16{,}180 samples, this is \SI{448.96}{h} for ray tracing versus
+\SI{3.95}{h} for the surrogate. Under the simple same-laptop full-load
+assumption of \SI{100}{W}, the energy figures are approximately
+\SI{44.9}{kWh} and \SI{0.39}{kWh}, respectively. These figures are not a full
+life-cycle assessment, but they show the main sustainability advantage of the
+approach: once the model is trained, repeated CKM generation is about
+\(113.7\times\) faster and, under the same power-envelope assumption, about
+\(113.7\times\) more energy efficient.
+
+
+\textbf{Risks and limitations.} The environmental benefit depends on reuse. If
+the model is retrained from scratch for every new city or frequency, the energy
+advantage becomes weaker. This is most likely when the deployment environment
+differs substantially from the simulated cities, frequency, antenna assumptions,
+or propagation conditions used in this thesis.
+The analysis also does not include the embodied carbon of the GPUs or the data-centre infrastructure,
+because the project used existing shared equipment.
+
+\subsection{Economic impact}
+
+\textbf{Development of BT.} Table~\ref{tab:sustainability_budget} gives an
+indicative professional-cost view. It is not a billed project budget, but it
+answers the guide's request to quantify human and material resources.
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.1}
+\caption{Indicative economic cost of the BT development.}
+\label{tab:sustainability_budget}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrr>{\raggedright\arraybackslash}p{3cm}}
+\toprule
+Task or resource & Quantity & Unit cost & Cost & Notes \\
+\midrule
+Literature review and proposal     & 60\,h         & 12\,EUR/h        &    720\,EUR & Initial scope and SOA \\
+Dataset and baseline implementation & 90\,h        & 12\,EUR/h        & 1\,080\,EUR & HDF5, U-Net/cGAN, masking \\
+Experiment design and debugging    & 180\,h        & 12\,EUR/h        & 2\,160\,EUR & Priors, experts, evaluation \\
+Writing and figures                & 120\,h        & 12\,EUR/h        & 1\,440\,EUR & Thesis text and diagrams \\
+Supervision meetings and supervisors' time for dataset generation from simulation & 50\,h         & 40\,EUR/h        & 2\,000\,EUR & Advisor time \\
+GPU compute, final residual GMM-head model    & 48\,GPU-h     & 0.25\,EUR/GPU-h  &    12\,EUR  & 4$\times$ RTX\,2080\,Ti, 12\,h \\
+GPU compute, distribution/prior phase & 72\,GPU-h  & 0.25\,EUR/GPU-h  &    18\,EUR  & Distribution-first GMM plus ML-prior calibration \\
+Exploratory compute                & $\approx$400\,GPU-h & 0.25\,EUR/GPU-h & $\approx$100\,EUR & Research iterations \\
+Electricity                        & N/A           & incl.\ in GPU-h  &     0\,EUR  & Covered by GPU rental rate \\
+Storage and code hosting           & N/A           & free             &     0\,EUR  & GitHub \\
+\midrule
+\textbf{Total indicative cost}     &               &                  & \textbf{$\approx$7\,530\,EUR} & \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Project execution.} The project is economically attractive if the
+trained surrogate reduces repeated ray-tracing runs during network planning.
+The main future costs would be dataset generation for new frequencies or
+regions, occasional recalibration with field data, model maintenance, and
+quality assurance before operational use.
+
+\textbf{Risks and limitations.} The largest economic risk is a simulator-to-real
+gap. If real measurements show that the ray-traced dataset does not transfer,
+additional field campaigns and recalibration would be necessary. Another risk
+is scope growth: making a frequency-general outdoor CKM model requires new
+simulations, larger storage, and more validation.
+
+\subsection{Social impact}
+
+\textbf{Development of BT.} The work had a positive educational impact: it
+required combining propagation theory, machine learning, HPC workflows,
+scientific writing, and reproducible evaluation. The thesis also required
+continuous critical review of failed approaches, which is a useful professional
+practice. Inclusive language is used where applicable, and the work does not
+assign technical roles or expected users by gender.
+
+\textbf{Project execution.} Faster CKM prediction can help plan temporary UAV
+coverage for public events, emergency response, rural extensions, or
+infrastructure restoration. The direct beneficiaries would be network planners
+and, indirectly, users who receive more reliable wireless coverage.
+
+\textbf{Risks and limitations.} The project could negatively affect users if
+coverage decisions were made from overconfident simulated predictions without
+field validation. There is also a representativeness risk: the 66-city dataset
+is broad, but no dataset covers every urban morphology, construction material,
+or socioeconomic context. Future systems should monitor errors by city type,
+height bin, and LoS/NLoS regime rather than using one global RMSE as the only
+quality indicator.
+
+\section{Ethical implications}
+
+The work addresses the need for faster and more transparent radio-map
+prediction in UAV-enabled networks. That need was initially defined by the
+project proposal and refined through experiment results: pure deep learning was
+not enough, so the final method keeps interpretable priors and reports
+regime-level errors.
+
+The main ethical obligation is honesty about validity. The dataset is simulated
+through ray tracing, so the thesis must not claim real-world deployment
+performance without field measurements. The final residual GMM-head model results are reported
+from a single selected model state on the city-holdout protocol, so the relevant
+caveat is no longer incompleteness but scope: the results show simulator-level
+generalisation to unseen cities, not certified real-world deployment
+performance.
+
+The project aligns with professional engineering ethics by documenting
+assumptions, avoiding data leakage between cities, reporting limitations, and
+making the evaluation contract explicit. A future operational system should
+also include human review before coverage decisions affect public-service or
+emergency deployments.
+
+\section{Relationship with the Sustainable Development Goals}
+
+The thesis is most closely aligned with:
+
+\begin{itemize}
+  \item \textbf{SDG 9: Industry, Innovation and Infrastructure.} The project
+  develops a method for faster planning and evaluation of wireless
+  infrastructure.
+  \item \textbf{SDG 11: Sustainable Cities and Communities.} Better radio-map
+  prediction can support temporary and resilient urban connectivity while
+  reducing the resources needed to evaluate alternative wireless-infrastructure
+  plans.
+  \item \textbf{SDG 13: Climate Action.} The method can reduce repeated
+  high electricity (hence carbon) costs of simulation once a validated surrogate is available, although this
+  benefit depends on responsible reuse and avoiding unnecessary retraining.
+\end{itemize}
+
+The contribution is indirect: this thesis does not deploy infrastructure by
+itself, but it can reduce planning cost and help future UAV network tools make
+coverage decisions faster and with clearer uncertainty reporting.

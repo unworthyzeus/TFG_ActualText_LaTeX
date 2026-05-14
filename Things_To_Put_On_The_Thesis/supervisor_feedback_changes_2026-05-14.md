@@ -34,16 +34,13 @@ so the restructure is traceable.
 
 ## Additional compacted-version pass
 
-After recompiling the pulled thesis, a separate compacted current version was
-kept in `C:\TFG\FINAL_THESIS` while the previous git version was preserved in
-`C:\TFG\FINAL_THESIS_PREVIOUS_GIT_e86fa44`.
-
-Compiled version outputs were copied to `C:\TFG\THESIS_VERSION_OUTPUTS_2026-05-14`:
+After recompiling the pulled thesis, the repository was reorganised into two
+root-level version folders:
 
 | Version | Source | PDF | Pages |
 | --- | --- | --- | --- |
-| Previous git version | `C:\TFG\FINAL_THESIS_PREVIOUS_GIT_e86fa44` at commit `e86fa44` | `TFG_previous_git_e86fa44.pdf` | 157 |
-| Compacted current version | `C:\TFG\FINAL_THESIS` at `eae5003` plus local compacting and SOA-comparison edits | `TFG_compacted_current.pdf` | 148 |
+| Previous git version | `old_version/TFG` from commit `e86fa44` | `old_version/TFG_old_version.pdf` | 157 |
+| Reduced current version | `reduced/TFG` after local compacting and SOA-comparison edits | `reduced/TFG_reduced.pdf` | 148 |
 
 Additional removals/changes in the compacted current version:
 
@@ -73,8 +70,8 @@ Additional SOA comparison update after supervisor follow-up:
 
 Version folders now kept inside the same repository:
 
-- `Thesis_Versions/previous_git_e86fa44`
-- `Thesis_Versions/compacted_current`
+- `old_version`
+- `reduced`
 
 ## Moved to appendices
 
