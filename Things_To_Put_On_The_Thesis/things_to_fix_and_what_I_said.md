@@ -107,3 +107,39 @@ Minor but worth noting
 
 
 Also, one more fix you didn't mention , the try 80 figures with 18 plots should be better labeled, fix the script. The 2 columns to the right are the GT vs prior, and prior vs prediction, which isn't specified. Also depending on where you include them, consider rotating them from 6x3 to 3x6. Maybe make a script that without regenerating them just takes the chunks from the images and put them in another way.
+
+
+#### Continued after LaTeX pull - 2026-05-14:
+
+This section supersedes the old TODO interpretation above when it conflicts with
+the current LaTeX. Keep the earlier text as history of the supervisor-feedback
+conversation; use this section for the next editing pass.
+
+## Already handled in the pulled thesis
+
+- Pulled latest `main` from the LaTeX repo: commit `eae5003` (`Reduce thesis body and restructure appendices`).
+- Main body was reduced to about 67 pages before appendices. The detailed log is in `reduction_restructure_changes_2026-05-14.md`.
+- `introduction.tex` now has explicit project targets, research questions, direct answers, contributions, and a thesis outline.
+- Try 80 placeholders are no longer current. `summary.tex`, `results.tex`, `state_of_art.tex`, `conclusions.tex`, and `appendices.tex` now describe the final Try 80 checkpoint instead of an in-flight placeholder.
+- Current headline final Try 80 test numbers are: `1.6519 dB` path loss, `26.5570 ns` delay spread, and `11.3854 deg` angular spread on the 14-city unseen test split.
+- The old duplicate-label worry about `prior_detail_try78_los.tex` and `prior_detail_try78_nlos.tex` is obsolete in the current tree: those files are gone/not referenced. The active inputs are `prior_detail_overview.tex`, `prior_detail_try78.tex`, and `prior_detail_try80.tex`.
+- `results.tex` now includes the main missing evidence that was requested earlier: Try 76 per-expert path-loss results, Try 77 spread results, Try 78/79 prior results, UAV-height breakdowns, topology/regime breakdowns, and final Try 80 model-versus-prior tables.
+- The Try 76 -> Try 78 narrative contradiction is now explicitly bridged: distribution-first modelling showed the target was learnable, then the calibrated prior was used because it was cheaper, more auditable, and already very strong for LoS path loss.
+- SOA fixes mostly landed: the PMNet 36 dB conversion footnote exists, Gao et al. is tied to the 5.59 dB table result, the Try 80 row reports final unseen-city results, and the knife-edge improvement claim is softened into a design option rather than a hard unsupported number.
+
+## Still open / worth doing next
+
+- Full PDF compilation is still blocked locally by a MiKTeX `biber`/`biblatex` mismatch. The pulled log says a TeX-only compile works and the source-reference check found no missing or duplicate labels, but the final PDF should still be built in a clean TeX setup before submission.
+- Per-city holdout table is still the highest-value remaining quantitative addition. Now that Try 80 final artifacts exist, make a compact table with sample counts and PL/DS/AS RMSE by held-out city, ideally top-N cities plus a rest aggregate.
+- Delay/angular spread high-tail diagnostic is still worth adding if there is time. The thesis now says high-tail/outlier diagnostics matter; a small figure/table showing tail contribution by split, city, height bin, or subexpert would make that claim harder to challenge.
+- Try 80 18-panel figure labels still need a visual check. If the columns are still unclear, add a small script that relabels/reflows the exported panels without rerunning inference. The important labels are `GT vs prior` and `prior vs prediction`.
+- `per_city_holdout_and_try80_freeze.md`, `static_audit_2026-04-26.md`, `summary.md`, and `thesis_completion_checklist.md` contain historical placeholder language. Do not treat those lines as current unless cross-checked against `try80_placeholder_cleanup_2026-04-28.md` and the current `.tex` files.
+- Give the AirMap/calibration wording one final human skim. The nearby SOA fairness fixes are present, but I did not re-check the original AirMap source in this pass.
+- If there is time after the per-city table, add a short "what changed after supervisor review" paragraph to the revision/history or internal notes: body reduced, final results frozen, detailed formula material moved to appendices, and the final story kept as priors plus bounded residual learning.
+
+## What I would tell the supervisor now
+
+- The thesis no longer depends on future Try 80 results. The final checkpoint is frozen and reported on unseen test cities.
+- The body has been reduced without deleting the detailed derivations; detailed prior/formula material moved to appendices.
+- The final narrative is now cleaner: early neural models exposed the failure modes, Try 76/77 showed distribution-first modelling could fix target statistics, Try 78/79 built strong calibrated priors, and Try 80 uses a residual neural model only where it improves those priors.
+- The remaining weakness is not the main story but auditability by city/outlier case. A per-city table and one high-tail diagnostic would be the best final polish.

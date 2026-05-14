@@ -1,0 +1,15 @@
+# Local LaTeX build products and scratch checks.
+*.aux
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.synctex(busy)
+build/
+tmp_pdf_check*/

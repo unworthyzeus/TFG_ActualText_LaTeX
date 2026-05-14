@@ -1,0 +1,193 @@
+\chapter{Introduction}
+
+Reliable radio coverage prediction is a central requirement for future 6G
+systems in which UAVs may act as aerial base stations, relays, or temporary
+coverage nodes. A classical ray-tracing simulator can produce detailed channel
+knowledge maps, but this is too expensive to repeat every time the transmitter
+height, the city morphology, or the deployment assumptions change. In the 6G
+literature, a channel knowledge map is a site-specific, location-tagged
+repository of channel information that can support environment-aware planning
+and reduce online channel-acquisition overhead
+\cite{zengx2021ckm,ckmtutorial2024}. This thesis studies whether a learned
+surrogate can predict dense channel maps directly from urban geometry while
+preserving enough physical structure to generalize to cities not seen during
+training.
+
+The project is formulated as dense image-to-image regression on
+$513\times513$ pixel city maps. The input is primarily a building-height
+topology map, a geometrically derived LoS/NLoS mask, and the UAV antenna height. The outputs studied
+through the project are path loss, delay spread, and angular spread. The final
+line of work combines interpretable ML-calibrated priors with deep residual
+models, so the neural network learns corrections around a strong physical
+anchor instead of rediscovering the whole propagation law from scratch.
+
+\section{Work goals}
+
+The initial technical targets were defined in physical units and were kept as
+the main success criteria throughout the project. The proposal also included a
+runtime objective, because a surrogate is only useful if it is clearly faster
+than generating the same maps through ray tracing:
+
+\begin{itemize}
+  \item path-loss RMSE below \SI{5}{dB};
+  \item delay-spread RMSE below \SI{50}{ns};
+  \item angular-spread RMSE below \SI{20}{\degree};
+  \item separate reporting for global, LoS, and NLoS regions;
+  \item a 10 to 100\(\times\) reduction in channel-map generation time compared
+        with ray tracing.
+\end{itemize}
+
+These numerical targets were set in the project proposal and kept unchanged
+throughout the thesis. They are meant to match the order of magnitude at
+which a ray-tracing surrogate starts being useful for planning and coverage
+decisions. A few dB of path-loss RMSE is compatible with practical link-budget
+margins, and tens of ns of delay spread and tens of degrees of angular spread
+stay well inside typical multipath spread values reported by 3GPP TR\,38.901
+for UMa/UMi scenarios. Chapter~\ref{chap:results} checks the runtime target
+explicitly by comparing the measured final-generator time with the measured
+MATLAB ray-tracing time on the same Barcelona geometry and hardware.
+
+The most important methodological objective was not only to obtain a low
+average RMSE, but to do so under a strict city-holdout protocol. In this
+setting, complete cities are reserved for validation and testing. This is a
+harder and more deployment-relevant condition than random pixel or random tile
+splits, because the model must extrapolate to urban layouts it has never seen.
+
+\section{Research questions and contributions}
+
+The thesis is organised around three research questions, which also define
+the three main scientific claims of the final pipeline:
+
+\begin{itemize}
+  \item \textbf{RQ1.} Can a single deep-learning surrogate predict per-pixel
+        path loss, delay spread, and angular spread on \(513\times513\)
+        channel-knowledge maps, under strict city-holdout evaluation, with
+        errors compatible with the thesis targets?
+  \item \textbf{RQ2.} Which part of the prediction should be left to a
+        calibrated analytic prior and which part should be left to the neural
+        network, so that the hybrid model is both accurate and interpretable?
+  \item \textbf{RQ3.} How does the continuous UAV transmitter height
+        (\SIrange{12}{478}{m}) affect the prediction error, and is the same
+        architecture able to cover the full height range without per-height
+        retraining?
+\end{itemize}
+
+The main contributions corresponding to these questions are:
+
+\begin{itemize}
+  \item A reproducible pipeline for dense \(513\times513\) CKM prediction on
+        the FR3 UAV dataset, with ground-only masking, city-holdout splits,
+        and sinusoidal FiLM conditioning on continuous UAV altitude.
+  \item An ML-calibrated path-loss prior based on an
+        enhanced two-ray LoS model and a regime-wise OLS NLoS head,
+        achieving \SI{1.75}{dB} LoS and \SI{3.40}{dB} NLoS RMSE under
+        city-holdout evaluation.
+  \item An ML-calibrated spread prior combining
+        log-domain ridge regression with geometry and morphology features,
+        reaching \SI{28.10}{ns} delay-spread RMSE and
+        \ang{13.74} angular-spread RMSE on the same split.
+  \item A prior-anchored joint neural residual GMM-head model that shares
+        a single backbone across the three targets, conditioned on the frozen
+        path-loss and spread priors.
+  \item A distribution-first diagnosis of the previous PMHHNet family
+        that identifies NLoS mode collapse and motivates the
+        distribution-first GMM architecture. The distribution analysis is released as
+        supporting documentation alongside the code.
+\end{itemize}
+
+\section{Thesis outline}
+
+The state-of-the-art chapter surveys cGAN and U-Net image-to-image baselines,
+the PMNet and RMTransformer families on the ICASSP~2023 challenge,
+physics-hybrid and PINN approaches, AIRMap, Gao et al., PathFinder, and
+distribution-aware and heteroscedastic methods; it closes with the fairness
+axes along which the final model is positioned. The methodology chapter describes the
+CKM dataset, the ground-mask protocol, the shared
+PMHHNet architecture with sinusoidal height conditioning, and the four
+prior-detail subsections for the path-loss prior, spread priors, and residual
+GMM. The results chapter reports the quantitative outcomes: the LoS waterfall,
+per-expert and per-height breakdowns, spread-prior results, and the final test evaluation on
+unseen cities. The sustainability and conclusions chapters close the thesis,
+followed by the appendices with the representative validation panels and the final
+configuration summary.
+
+\section{Requirements and specifications}
+
+The project uses the CKM HDF5 dataset
+\texttt{CKM\_Dataset\_270326.h5}. The canonical dataset contains 66 real-city
+scenarios and 16180 samples. Each sample is a $513\times513$ pixel raster with
+the following fields:
+
+\begin{table}[ht]
+\centering
+\caption{Main CKM dataset fields used in the thesis.}
+\label{tab:dataset_fields_intro}
+\begin{tabularx}{\textwidth}{lllX}
+\toprule
+Field & Shape & Type & Role \\
+\midrule
+\texttt{topology\_map} & $513^2$ & float32 & Building height in metres. Pixels with buildings are not valid receiver locations. \\
+\texttt{los\_mask} & $513^2$ & uint8 & Binary LoS/NLoS visibility mask. \\
+\texttt{path\_loss} & $513^2$ & uint8 & Ray-traced path loss in dB, quantized at approximately \SI{1}{dB}. \\
+\texttt{delay\_spread} & $513^2$ & uint16 & Delay-spread target, stored as integers and evaluated in ns after decoding. \\
+\texttt{angular\_spread} & $513^2$ & uint8 & Angular-spread target, stored as integers and evaluated in degrees after decoding. \\
+\texttt{uav\_height} & scalar & float32 & UAV transmitter height, used for conditioning and physical priors. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+All losses and metrics are computed only on ground pixels. Building pixels are
+kept in the input topology because they explain propagation, but they are
+excluded from error accumulation because the receiver is assumed to be on the
+ground. The fixed receiver height used in the analytic priors is
+\SI{1.5}{m}. The transmitter is the UAV antenna, whose height varies
+continuously across the dataset.
+
+\section{Methods and procedures}
+
+The work started from a U-Net and pix2pix-style cGAN baseline
+\cite{isola2017pix2pix}. This was a natural first approach because the task is
+dense map prediction, but the adversarial component did not solve the physical
+errors that mattered most. Later experiments changed decoder upsampling, added
+multi-scale supervision, separated metrics and regimes, introduced physical
+prior channels, and finally moved to topology-partitioned experts.
+
+The largest methodological change came after the models repeatedly failed on
+NLoS tails. Histogram analysis showed that the path-loss distribution in NLoS
+regions is not well described by a single Gaussian-like target. This motivated
+the distribution-first architecture: a sample-level GMM head followed
+by a map head that assigns pixels to distribution components. The same idea was
+then applied to delay and angular spreads, where spike-plus-tail behaviour is
+even more visible.
+
+In the final stage, deep learning changed role again. The path-loss branch
+provided a strong interpretable prior from FSPL, enhanced two-ray LoS
+propagation, and calibrated NLoS corrections. The spread-prior module provided
+log-domain ridge-calibrated priors for delay and angular spread. The final model
+then combined these frozen priors with a shared multi-task residual GMM-head
+network.
+
+\section{Work plan}
+\label{sec:workplan}
+
+The original work plan assumed a mostly linear path: literature review, dataset
+preparation, baseline U-Net/cGAN training, model improvement, evaluation, and
+writing. The actual project became more experimental because each stage exposed
+a different limitation. Figure~\ref{fig:gantt} therefore shows the plan as the
+major technical phases rather than as all 80 individual experiments.
+
+\begin{figure}[ht]
+  \centering
+  \input{img/gantt_diagrama}
+  \caption[Project's Gantt diagram]{Gantt diagram of the project, grouped by
+  the main architectural phases rather than by individual experiments.}
+  \label{fig:gantt}
+\end{figure}
+
+The main deviation from the initial plan was the discovery that a standard
+image-to-image CNN could look plausible in LoS-dominated regions while still
+failing badly in NLoS regions. This forced several changes: stricter ground-only
+masking, regime-level diagnostics, topology experts, physical priors, and
+finally the distribution-first and prior-anchored designs. The result is a
+project whose final method is more hybrid and more interpretable than the
+initial proposal anticipated.
