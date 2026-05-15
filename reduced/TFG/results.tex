@@ -512,8 +512,11 @@ ridge calibration.}
 
 \subsection{RMSE by UAV transmitter height}
 
-The CKM dataset covers UAV heights from about \SI{12}{m} to almost
-\SI{478}{m}, so the conditional error at a single aggregate RMSE can hide
+The CKM dataset covers stored UAV heights from about \SI{12}{m} to almost
+\SI{478}{m}, while the closest nominal beta law has support up to
+\SI{500}{m}. The absence of samples above \SI{478}{m} is statistically normal
+for this finite draw, because the expected count above that height is only
+0.52. Therefore the conditional error at a single aggregate RMSE can hide
 strong altitude-dependent structure. Tables~\ref{tab:try78_by_height} and
 \ref{tab:try79_by_height} therefore break the path-loss prior and the spread-prior
 delay-spread and angular-spread priors into four UAV-height bins, using the
@@ -568,7 +571,11 @@ shrink. Path-loss NLoS RMSE drops from \SI{3.76}{dB} at low altitudes to
 \SI{35}{ns} to under \SI{3}{ns} in the same comparison. The opposite is true
 for the absolute number of samples: the dataset is dominated by the
 \SI{50}{\mathrm{-}}\SI{150}{m} band, so the global aggregate RMSE reflects that
-regime more than the higher-altitude extremes. A practical consequence for
+regime more than the higher-altitude extremes. Together with the empirical HDF5
+histogram of Eq.~\ref{eq:height_empirical_histogram} and the counts reported in
+Chapter~\ref{chap:methodology}, this means the high-altitude rows are better
+despite having much less training support, not because they are
+over-represented in the dataset. A practical consequence for
 the final residual model is that the neural residual head has less to correct at high altitudes,
 where the path-loss prior is already close to the quantisation floor. The
 remaining headroom lives in the low-altitude, NLoS-heavy bin, which is exactly

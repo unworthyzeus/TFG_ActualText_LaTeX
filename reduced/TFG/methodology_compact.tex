@@ -20,6 +20,32 @@ non-building pixel is an active receiver at
 \(h_{\mathrm{rx}}=\SI{1.5}{m}\). Building pixels are not receiver locations and
 are removed from the loss and metrics.
 
+The antenna-height distribution is skewed rather than uniform. Reading the
+stored \texttt{uav\_height} field from the HDF5 database gives an empirical
+range of \SIrange{11.61}{477.54}{m}. The closest tested nominal beta-mixture
+sampler is approximately
+\(h_{\mathrm{design}}\approx 10+490X\), with
+\(X\sim0.75\,\mathrm{Beta}(3,23)+0.25\,\mathrm{Beta}(4,4)\), but the realized
+database distribution is represented by the \SI{3}{m} empirical density below.
+The value \SI{477.54}{m} is the largest sampled height, not a hard endpoint of
+the approximate beta law; drawing no samples above \SI{478}{m} is statistically
+normal because the expected count above that height is only 0.52:
+\begin{equation}
+  \hat f_{\Delta h}(h) = d_k,\quad
+  d_k=\frac{n_k}{N\Delta h},\quad
+  h\in[10+3k,\,13+3k),\quad
+  \Delta h=\SI{3}{m},\quad N=16180 ,
+  \label{eq:height_empirical_histogram}
+\end{equation}
+where \(n_k\) is the number of stored heights in bin \(k\). Display curves
+linearly interpolate between bin centres. The all-database counts are 3972
+samples below \SI{50}{m}, 8456 from \SIrange{50}{150}{m}, 2490 from
+\SIrange{150}{300}{m}, and 1262 above \SI{300}{m}; in the training cities the
+same bins contain 2676, 5654, 1644, and only 866 samples. Thus the
+high-altitude bins later showing lower RMSE are easier despite having fewer
+training samples, mainly because they contain fewer blocked links and weaker
+spread tails.
+
 \begin{table}[htbp]
 \centering
 \scriptsize

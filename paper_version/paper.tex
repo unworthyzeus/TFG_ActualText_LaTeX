@@ -22,6 +22,8 @@
 \usepackage{xurl}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 \usepackage[hidelinks]{hyperref}
 \urlstyle{same}
 \hypersetup{
@@ -177,6 +179,7 @@ random splits would allow the model to see nearly identical urban morphology
 during training and testing. The final held-out test split contains 2590
 samples from cities not used to optimize model weights. Validation is used for
 model selection; test is used only for the final generalization claim.
+Table~\ref{tab:split-city-assignment} lists the exact city assignment.
 
 \begin{table}[!t]
 \centering
@@ -190,7 +193,7 @@ Item & Setting \\
 \midrule
 Map resolution & \(513\times513\), \SI{1}{m}\(\times\)\SI{1}{m} pixels \\
 Carrier / receiver & \SI{7.125}{GHz}; \(h_{\mathrm{rx}}=\SI{1.5}{m}\) \\
-Transmitter & One centred UAV; \(h_{\mathrm{tx}}\approx\SIrange{12}{478}{m}\) \\
+Transmitter & One centred UAV; stored \(h_{\mathrm{tx}}\approx\SIrange{12}{478}{m}\), nominal beta law \(\SIrange{10}{500}{m}\) \\
 Inputs & Topology, ground/visibility masks, frozen priors, scalar height code \\
 Targets & PL (dB), DS (ns), AS (deg), one dense map per target \\
 Metric mask & Non-building ground receivers only; building pixels excluded \\
@@ -199,6 +202,98 @@ Samples & Train 10840; validation 2750; test 2590; all 16180 \\
 \bottomrule
 \end{tabularx}
 \end{table}
+
+\begin{table*}[!t]
+\centering
+\caption{City-holdout assignment used by the distribution-first and final neural models.}
+\label{tab:split-city-assignment}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{lrrX}
+\toprule
+Split & Samples & Cities & City names \\
+\midrule
+Train & 10840 & 37 & Abidjan, Abu Dhabi, Alexandria, Antigua Guatemala,
+Athens, Bangalore, Bangkok, Bath, Berlin, Bratislava, Brugge, Buenos Aires,
+Canberra, Chefchaouen, Dalian, Hanoi, Ho Chi Minh City, Hyderabad, Kinshasa,
+Leuven, Ljubljana, Luanda, Lyon, Manaus, Minsk, Nagpur, Paris,
+Rio de Janeiro, Santiago, Shanghai, Siem Reap, St.~Louis, Thane, Toledo,
+Valparaiso, Venice, Vienna. \\
+Validation & 2750 & 15 & Bilbao, Chiang Mai, Cleveland, Dhaka, Dubrovnik,
+Fortaleza, Marrakesh, Mexico City, Munich, Nazareth, Nice, Salvador, Segovia,
+Tunis, Victoria. \\
+Test & 2590 & 14 & Barcelona, Beijing, Carcassonne, Copenhagen, Halifax,
+Jaipur, Johannesburg, Key West, Kuala Lumpur, Osaka, Phuket, Pune, Surat,
+Vancouver. \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+The transmitter-height distribution is intentionally non-uniform. Direct
+comparison against the stored HDF5 histogram shows that the closest tested
+affine version of the approximate double-beta sampler is the original
+\(h_{\mathrm{design}}\approx 10+490X\), with
+\[
+X\sim 0.75\,\mathrm{Beta}(3,23)+0.25\,\mathrm{Beta}(4,4),
+\]
+and nominal support \SIrange{10}{500}{m}. The results below use the empirical
+HDF5 realization rather than the ideal continuous law. Across the 16180
+samples, the stored \(h_{\mathrm{tx}}\) values span
+\SIrange{11.61}{477.54}{m}, with mean \SI{114.02}{m} and median
+\SI{75.66}{m}. Under the same \(10+490X\) law, heights above \SI{478}{m}
+are possible but very rare: \(P(h_{\mathrm{tx}}>\SI{478}{m})=3.19\times10^{-5}\)
+per draw, or only 0.52 expected samples in \(N=16180\). Drawing no samples
+above \SI{478}{m} has probability about 0.60, making it a statistically normal
+finite-sampling outcome. The HDF5 maximum \SI{477.54}{m} is therefore
+consistent with the sampler rather than evidence of truncation. Let
+\(\Delta h=\SI{3}{m}\),
+\(B_k=[10+3k,\,13+3k)\), and \(h_i\) be the stored height of sample
+\(i\). The actual distribution used for reporting is the empirical
+three-meter histogram
+\begin{equation}
+  \begin{aligned}
+  \hat f_{\Delta h}(h) &= d_k,\quad h\in B_k,\\
+  d_k &= \frac{n_k}{N\Delta h},\quad
+  n_k = \sum_{i=1}^{N}\mathbf{1}\{h_i\in B_k\},\quad N=16180 .
+  \end{aligned}
+  \label{eq:height-empirical-hist}
+\end{equation}
+For readability in Fig.~\ref{fig:height-density}, the plotted curve linearly
+interpolates between the bin-centre values \((c_k,d_k)\), with
+\(c_k=11.5+3k\).
+The all-database height counts are 3972 samples below \SI{50}{m}, 8456 from
+\SIrange{50}{150}{m}, 2490 from
+\SIrange{150}{300}{m}, and 1262 above \SI{300}{m}; the corresponding training
+counts are 2676, 5654, 1644, and 866 samples.
+
+\begin{figure}[!t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.97\linewidth,
+    height=4.0cm,
+    xlabel={UAV height \(h_{\mathrm{tx}}\) (m)},
+    ylabel={Density (1/m)},
+    xmin=0, xmax=500,
+    ymin=0, ymax=0.014,
+    xtick={0,50,150,300,500},
+    scaled y ticks=false,
+    yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=3},
+    axis lines=left,
+    grid=major,
+    tick label style={font=\scriptsize},
+    label style={font=\scriptsize}
+]
+\addplot+[no marks, color=blue!70!black, thick]
+table[x=mid_m,y=density,col sep=comma]{data/uav_height_histogram_3m.csv};
+\end{axis}
+\end{tikzpicture}
+\caption{Empirical UAV transmitter-height density read directly from the CKM
+HDF5 database using the \SI{3}{m} histogram of
+Eq.~\ref{eq:height-empirical-hist}, linearly interpolated between bin centres
+for display. Most training support lies in the low and mid-altitude bands.}
+\label{fig:height-density}
+\end{figure}
 
 \subsection{Quantized Targets and Continuous Outputs}
 
@@ -1277,6 +1372,11 @@ local urban structure, while high UAVs see fewer deep shadow pockets.
 Table~\ref{tab:spread-prior-height} shows the matching spread-prior pattern.
 Delay spread in particular collapses with altitude, from \SI{39.90}{ns}
 overall in the lowest bin to \SI{3.70}{ns} above \SI{300}{m}.
+Combined with the empirical HDF5 histogram in Fig.~\ref{fig:height-density},
+this means the high-altitude rows are not better because they have more
+training support; the training split contains only 866 samples above
+\SI{300}{m}. They are better despite that scarcity, which indicates a
+physically easier regime with fewer blocked links and weaker spread tails.
 
 \begin{table}[!t]
 \centering
