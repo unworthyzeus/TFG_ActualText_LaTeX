@@ -1,0 +1,60 @@
+\chapter{Sustainability Analysis and Ethical Implications}
+
+This chapter keeps the ETSETB sustainability structure but removes manual-style
+detail. The thesis does not manufacture a physical product; its deployable result
+is a software pipeline for faster CKM prediction.
+
+\section{Sustainability summary}
+
+\begin{table}[htbp]
+\centering
+\caption{Compact sustainability matrix for the thesis.}
+\label{tab:sustainability_matrix}
+\scriptsize
+\begin{tabularx}{\textwidth}{lXXX}
+\toprule
+Perspective & Development of BT & Project execution & Risks and limitations \\
+\midrule
+Environmental & GPU training, laptop use, storage and writing. The exploratory
+project exceeded roughly \SI{400}{GPU-h}, about \SI{150}{kWh} under the simple
+four-GPU-node estimate. & Once trained, the generator can replace many repeated
+ray-tracing queries. On the Barcelona benchmark it runs in \SI{0.88}{s} versus
+\SI{99.89}{s} for the local MATLAB ray-tracing path. & Benefits depend on reuse;
+full retraining for every new city, frequency or antenna configuration would
+reduce the advantage. \\
+Economic & Student/supervision time and shared HPC use. The original detailed
+budget estimates the academic development at about 7530 EUR. & Lower marginal
+planning cost if the surrogate is reused for many UAV-height or city-layout
+queries. & Simulator-to-real gaps would require field measurements, calibration
+and maintenance. \\
+Social & Training in propagation, ML, HPC, reproducibility and scientific
+reporting. & Faster planning for temporary, emergency or rural UAV coverage. &
+Coverage decisions should not be based on overconfident simulated predictions or
+one global RMSE. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The environmental result is therefore mixed but defensible. Training the whole
+research line had a non-negligible cost, especially the failed and exploratory
+models. The final model is useful only if that cost is amortized through reuse:
+the same frozen priors and checkpoint can generate many dense PL/DS/AS maps at
+much lower marginal cost than repeated ray tracing under the studied setup.
+
+\section{Ethical implications and SDGs}
+
+The main ethical obligation is to state the scope accurately. The labels come
+from ray tracing, so the reported result is simulator-level generalization to
+unseen cities, not certified field performance. The model is also conditioned on
+one fixed CKM contract: frequency, simulator assumptions, receiver height and
+antenna conventions are not varied in the final evaluation. Future operational
+use would require field validation and human review, especially for emergency or
+public-service deployments.
+
+The work aligns most directly with SDG 9 (industry, innovation and
+infrastructure) because it develops a faster wireless-planning tool, SDG 11
+(sustainable cities and communities) because it can support temporary and
+resilient connectivity planning, and SDG 13 (climate action) because a validated
+surrogate can reduce repeated simulation energy. These contributions are
+indirect: the thesis provides a reproducible method and generator, not an
+operational deployment by itself.

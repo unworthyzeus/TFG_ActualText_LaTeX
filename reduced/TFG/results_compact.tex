@@ -1,0 +1,290 @@
+\chapter{Results}
+\label{chap:results}
+
+This compact results chapter keeps the quantitative evidence needed for the
+final claim and moves the diagnostic gallery to Appendix~\ref{app:qualitative_diagnostics}.
+The main reported model is the final prior-anchored residual GMM-head model,
+evaluated on 2590 samples from 14 unseen test cities. All model-versus-prior
+rows use the same held-out split and the same ground-only receiver mask.
+
+\section{Milestones and prior quality}
+
+Table~\ref{tab:timeline_results} condenses the experimental evolution. The
+early rows are diagnostic, not directly comparable leaderboard entries, because
+the mask contract and target formulation evolved during the project.
+
+\begin{table}[htbp]
+\centering
+\caption{Representative experimental milestones retained in the compact TFG.}
+\label{tab:timeline_results}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{p{0.24\textwidth}p{0.36\textwidth}X}
+\toprule
+Family & Lesson & Representative result \\
+\midrule
+Early U-Net/cGAN & Dense image-to-image prediction was feasible, but visual realism did not control physical RMSE. & Best clean pre-prior baseline around \SI{16.72}{dB}. \\
+Ground-mask reset & Building pixels are not receivers and must be excluded. & Later metrics use the ground-only mask. \\
+PMNet/PMHHNet & Height FiLM, physical channels and experts helped LoS, but NLoS tails remained poorly modelled. & PMHHNet reference: \SI{9.41}{dB} overall, \SI{3.75}{dB} LoS, \SI{31.48}{dB} NLoS. \\
+Distribution-first GMM & The hard NLoS problem was distributional, not just architectural. & NLoS PL pixel-weighted RMSE around \SI{3.34}{dB} without explicit priors. \\
+Frozen priors & Train-only calibrated priors became strong baselines in their own right. & \SI{1.9246}{dB} standalone PL prior; \SI{28.10}{ns} DS; \(13.74^\circ\) AS. \\
+Final residual GMM head & A bounded neural residual improves already strong priors. & Test: \SI{1.6519}{dB} PL, \SI{26.5570}{ns} DS, \(11.3854^\circ\) AS. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The final path-loss prior is the most important baseline. Its LoS branch is not
+FSPL alone: the enhanced two-ray calibration reduces LoS RMSE from about
+\SI{3.95}{dB} to \SI{1.75}{dB}. The full hybrid prior reaches
+\SI{1.9246}{dB} overall on its 30\% analytic-prior evaluation holdout
+(Table~\ref{tab:try78_results}). When re-evaluated on the final 14-city test
+split as the frozen anchor for the neural model, the path-loss prior is
+\SI{1.9383}{dB}.
+
+\begin{table}[htbp]
+\centering
+\caption{Standalone calibrated path-loss prior on its 30\% city-holdout evaluation split.}
+\label{tab:try78_results}
+\scriptsize
+\begin{tabular}{lcc}
+\toprule
+Region & RMSE & Unit \\
+\midrule
+LoS & 1.7516 & dB \\
+NLoS & 3.3967 & dB \\
+Overall & 1.9246 & dB \\
+\bottomrule
+\end{tabular}
+\hfill
+\begin{tabular}{lcc}
+\toprule
+LoS prior stage & LoS RMSE & Gain \\
+\midrule
+FSPL only & 3.9540 & N/A \\
+FSPL + radial residual & 3.7086 & -0.25 \\
+Enhanced two-ray & 1.7516 & -1.96 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The spread priors are also strong enough to anchor the neural model. They are
+fitted in \(\log(1+y)\) space and use the 114-key DS/AS regime dictionary
+described in Chapter~3.
+
+\begin{table}[htbp]
+\centering
+\caption{Calibrated spread-prior test results, pixel-weighted RMSE.}
+\label{tab:try79_results}
+\scriptsize
+\begin{tabular}{lccc}
+\toprule
+Metric & Overall & LoS & NLoS \\
+\midrule
+Delay spread (ns) & 28.10 & 27.49 & 29.62 \\
+Angular spread (\(^\circ\)) & 13.74 & 15.28 & 8.66 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Final unseen-city test results}
+
+Table~\ref{tab:try80_final_test_overall} is the main thesis result. Negative
+\(\Delta\) means that the final residual model improves the frozen prior. The
+model improves RMSE for all three targets. Path loss is the cleanest success
+case because both RMSE and MAE improve. Delay spread improves RMSE while MAE
+increases slightly, consistent with reducing rare high-delay errors while
+introducing small shifts in common low-delay regions. Angular spread improves
+RMSE substantially and is essentially neutral in MAE.
+
+\begin{table}[htbp]
+\centering
+\caption{Final model test results on 14 unseen cities.}
+\label{tab:try80_final_test_overall}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrrrrl}
+\toprule
+Target & Model RMSE & Prior RMSE & \(\Delta\)RMSE & Model MAE & Prior MAE & \(\Delta\)MAE & Unit \\
+\midrule
+Path loss & 1.6519 & 1.9383 & -0.2865 & 0.9298 & 1.2319 & -0.3020 & dB \\
+Delay spread & 26.5570 & 28.1023 & -1.5453 & 7.9897 & 7.3033 & +0.6864 & ns \\
+Angular spread & 11.3854 & 13.7416 & -2.3562 & 5.0088 & 4.9890 & +0.0198 & deg \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The original project targets were \SI{5}{dB}, \SI{50}{ns} and
+\(20^\circ\). The final model clears all three on unseen cities, while using
+one joint network for PL, DS and AS.
+
+\begin{table}[htbp]
+\centering
+\caption{Final test RMSE separated by geometric visibility.}
+\label{tab:try80_final_test_los_nlos}
+\scriptsize
+\begin{tabular}{llrrr}
+\toprule
+Target & Scope & Model & Prior & \(\Delta\) \\
+\midrule
+PL & LoS & 1.4675 & 1.7519 & -0.2844 \\
+PL & NLoS & 3.1482 & 3.5143 & -0.3661 \\
+DS & LoS & 25.4419 & 27.4851 & -2.0432 \\
+DS & NLoS & 29.2045 & 29.6157 & -0.4112 \\
+AS & LoS & 12.3510 & 15.2818 & -2.9308 \\
+AS & NLoS & 8.4424 & 8.6614 & -0.2191 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The LoS/NLoS split matters because a global improvement could hide a failure in
+the physically hard subset. Table~\ref{tab:try80_final_test_los_nlos} shows
+that the residual correction improves both visibility regimes for all targets.
+
+\begin{table}[htbp]
+\centering
+\caption{Validation versus test check for the selected final checkpoint.}
+\label{tab:try80_val_test_sanity}
+\scriptsize
+\begin{tabular}{lrrrr}
+\toprule
+Split & Samples & PL RMSE & DS RMSE & AS RMSE \\
+\midrule
+Validation & 2750 & 1.6157 & 22.1061 & 11.3782 \\
+Test & 2590 & 1.6519 & 26.5570 & 11.3854 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The delay-spread test value is worse than validation mainly because the test
+city mix contains harder high-delay cases; the frozen delay prior worsens in
+the same direction, so this is a split composition effect rather than a change
+in evaluator.
+
+\section{Height, topology and split audits}
+
+Height is not a cosmetic metadata field. It changes direct distance,
+two-ray phase, elevation angle, blocker clearance and the selected calibration
+regime. Table~\ref{tab:height_topology_audit} keeps the height audit compact,
+and Table~\ref{tab:split_group_audit} keeps the residual audit across splits
+and morphology/height groups.
+
+\begin{table}[htbp]
+\centering
+\caption{Compact height audit. Values are prior-only RMSE.}
+\label{tab:height_topology_audit}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrr}
+\toprule
+Height bin & PL prior & DS prior & AS prior & Samples \\
+\midrule
+12--50 m & 2.180 & 39.90 & 15.69 & 1211 \\
+50--150 m & 1.936 & 27.17 & 14.19 & 2634 \\
+150--300 m & 1.680 & 8.70 & 10.39 & 786 \\
+300--500 m & 1.627 & 3.70 & 8.85 & 362 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Low UAV heights are hardest, especially for delay spread; the highest bin has
+much smaller spread values because the centred UAV sees over more local clutter.
+
+\begin{table}[htbp]
+\centering
+\caption{Compact residual audit. Values are model-minus-prior RMSE deltas; negative is better.}
+\label{tab:split_group_audit}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrr}
+\toprule
+Scope & Samples & PL & DS & AS \\
+\midrule
+Train & 10840 & -0.2895 & -2.0157 & -2.3578 \\
+Validation & 2750 & -0.2758 & -1.3433 & -2.4396 \\
+Test & 2590 & -0.2865 & -1.5453 & -2.3562 \\
+All-city group range & 1250--2156 & -0.2363 to -0.3602 & -0.5428 to -3.1170 & -1.2874 to -2.8587 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The final group audit is kept as a range rather than nine separate rows because
+all entries have the same interpretation: the same residual model improves the
+frozen priors across open, mixed and dense morphology families and low, mid and
+high antenna bins. The detailed per-group rows are retained in
+\texttt{results.tex} and the generated cluster outputs.
+
+\section{Comparison with nearby SOA metrics}
+
+Table~\ref{tab:soa_result_comparison} uses the same compact framing as the
+paper. The table is not a formal leaderboard because datasets, transmitters,
+split policies and target definitions differ. It is a scale check for the
+path-loss number and a reminder that the PL/DS/AS joint task is less commonly
+reported.
+
+\begin{table}[htbp]
+\centering
+\caption{Compact comparison with nearby path-loss-side metrics.}
+\label{tab:soa_result_comparison}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{p{0.25\textwidth}p{0.25\textwidth}X}
+\toprule
+Reference & PL-side metric & Reading / caveat \\
+\midrule
+RadioUNet \cite{radiounet2020} & \SI{1.6}{dB}--\SI{3.1}{dB} equivalent PL RMSE & Final PL is in this band; no UAV height or spread targets. \\
+RadioGUNet \cite{radiogunet2025} & \SI{1.304}{dB} DPM; \SI{1.936}{dB} IRT & Final PL lies between those values in a different outdoor setting. \\
+PMNet / ICASSP \cite{pmnet2023,icassp2023challenge} & \SI{1.38}{dB} converted score & Final PL is close but higher under a different benchmark contract; scale context only. \\
+ReVeal \cite{reveal2025} & \SI{1.95}{dB} outdoor sparse-measurement RMSE & Final PL is in the same range; sparse mapping rather than dense generation. \\
+RMTransformer / PathFinder \cite{rmtransformer2025,pathfinder2025} & \(\approx\SI{1.82}{dB}\) / \(\approx\SI{1.19}{dB}\) converted references & Useful scale checks under different split assumptions. \\
+AIRMap \cite{airmap2025} & Path-gain error \(<\SI{4}{dB}\) against ray tracing & Same digital-twin motivation, different target and map size. \\
+\textbf{Final model} & \textbf{\SI{1.6519}{dB} PL; \SI{26.5570}{ns} DS; \(11.3854^\circ\) AS} & \textbf{Strict CKM city holdout, centred variable-height UAV, dense \(513\times513\) PL/DS/AS.} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Runtime}
+
+The generator was benchmarked against the supplied MATLAB ray-tracing path on
+Barcelona layouts at full \(513\times513\) resolution. Both rows use the same
+laptop hardware: AMD Ryzen~5~5600H CPU and NVIDIA RTX~3050~Ti Laptop GPU. The
+surrogate includes LoS/NLoS mask generation, frozen priors, final neural
+prediction and default numeric export after the checkpoint has been loaded.
+
+\begin{table}[htbp]
+\centering
+\caption{Runtime comparison for one full-resolution Barcelona CKM sample.}
+\label{tab:inference_time_comparison}
+\scriptsize
+\begin{tabularx}{\textwidth}{lXr}
+\toprule
+Method & Timed path & Time \\
+\midrule
+MATLAB RT & Pixel receivers outside buildings; PL/DS/AS parsed from paths; CPU path & \SI{99.89}{s} \\
+Final generator & Masks, priors, PL/DS/AS prediction, numeric export; CUDA mixed precision & \SI{0.88}{s} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+This is a \(113.7\times\) speed-up under the measured setup. The result is not
+only a neural-network forward-pass benchmark; it measures the usable generator
+path, including priors and export.
+
+\section{Limitations}
+\label{sec:limitations}
+
+The CKM labels are quantized, especially for spread targets. The model outputs
+continuous values, but the ground truth contains staircase-like maps and
+integer-valued spread levels. For path loss, a final MAE of
+\SI{0.9298}{dB} is already close to the \SI{1}{dB} label step; the RMSE of
+\SI{1.6519}{dB} remains higher because it emphasizes the remaining tails.
+Thus \SI{0.93}{dB} MAE on a dataset quantized at roughly \SI{1}{dB} is a
+strong result, and a cleaner or less quantized dataset would likely reveal more
+of the continuous surrogate's resolution. This caveat does not invalidate the
+reported metrics, but it limits how much meaning should be assigned to very
+small residual changes near quantized boundaries.
+
+The spread outputs are less mature than path loss. The final model improves
+spread RMSE over the frozen priors, but delay-spread MAE increases slightly and
+the remaining errors are concentrated in rare high-spread events. Future work
+should therefore evaluate explicit tail metrics and probabilistic calibration,
+not only RMSE and MAE.

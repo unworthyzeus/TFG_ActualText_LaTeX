@@ -965,15 +965,19 @@ Equation~\eqref{eq:boxmean} is evaluated efficiently using a
 \emph{2D summed-area table} (integral image). Let $I(i,j)=\sum_{i'\le
 i, j'\le j} f_{\mathrm{padded}}(i',j')$ be the prefix-sum array. Then:
 
-\begin{equation}
-\sum_{i'=i-p}^{i+p}\sum_{j'=j-p}^{j+p} f_{\mathrm{padded}}(i',j')
-=
+\begin{align}
+S_k(i,j)
+&=
+\sum_{i'=i-p}^{i+p}\sum_{j'=j-p}^{j+p}
+f_{\mathrm{padded}}(i',j') \notag\\
+&=
 I(i+p,\,j+p)
--I(i-p-1,\,j+p)
+-I(i-p-1,\,j+p) \notag\\
+&\quad
 -I(i+p,\,j-p-1)
 +I(i-p-1,\,j-p-1)
 \label{eq:sat}
-\end{equation}
+\end{align}
 
 This reduces each per-pixel evaluation to four table lookups, making the
 full-map computation $O(HW)$ regardless of $k$. In the implementation,

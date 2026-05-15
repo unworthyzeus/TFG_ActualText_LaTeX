@@ -12,6 +12,5 @@
 *.synctex.gz
 *.synctex(busy)
 texput.log
-**/TFG/TFG.pdf
 build/
 tmp_pdf_check*/

@@ -1,0 +1,97 @@
+\chapter{Introduction}
+
+Reliable radio coverage prediction is a central requirement for future 6G
+systems in which UAVs may act as aerial base stations, relays, or temporary
+coverage nodes. Ray tracing can produce detailed channel knowledge maps, but it
+is too expensive to repeat for every transmitter height, city morphology or
+deployment hypothesis. This thesis studies whether a learned surrogate can
+predict dense channel maps directly from urban geometry while preserving enough
+physical structure to generalize to cities not seen during training.
+
+The project is formulated as dense prediction on \(513\times513\) city maps.
+Inputs include building-height topology, geometric LoS/NLoS masks and the UAV
+antenna height. The outputs are path loss, delay spread and angular spread. The
+final line of work combines train-only calibrated priors with a residual
+deep-learning model, so the neural network corrects a strong physical/statistical
+anchor instead of learning the entire propagation field from pixels alone.
+
+\section{Goals and research questions}
+
+The original success targets were kept throughout the project:
+path-loss RMSE below \SI{5}{dB}, delay-spread RMSE below \SI{50}{ns},
+angular-spread RMSE below \(20^\circ\), separate LoS/NLoS reporting, and a clear
+runtime gain over ray tracing. The final model meets those targets on unseen
+test cities, reaching \SI{1.6519}{dB}, \SI{26.5570}{ns} and \(11.3854^\circ\)
+RMSE for PL, DS and AS, respectively.
+
+The thesis answers three questions:
+\begin{itemize}
+  \item \textbf{RQ1.} Can one dense surrogate predict PL, DS and AS under strict
+        city holdout? Yes, within the fixed CKM simulation contract, using a
+        shared prior-anchored residual GMM-head model.
+  \item \textbf{RQ2.} What should be handled by priors and what by deep
+        learning? Stable radial, visibility and height structure is best handled
+        by frozen calibrated priors; the network is most useful as a bounded
+        residual corrector.
+  \item \textbf{RQ3.} Can continuous UAV height be handled by one model? Yes,
+        provided height is explicit in the priors, FiLM conditioning and
+        evaluation; low-altitude and NLoS-heavy cases remain the hard regimes.
+\end{itemize}
+
+The main contributions are a reproducible city-holdout CKM evaluation contract,
+a height-aware calibrated path-loss prior, log-domain calibrated DS/AS priors,
+and a joint residual GMM-head model that improves those frozen anchors.
+
+\section{Dataset and evaluation contract}
+
+The project uses the CKM HDF5 dataset \texttt{CKM\_Dataset\_270326.h5}, with 66
+real-city scenarios and 16180 samples. Each sample is a \(513\times513\) raster
+at \SI{1}{m}/pixel. The UAV transmitter is horizontally centred, but its
+antenna height varies continuously from about \SI{12}{m} to \SI{478}{m}. Every
+non-building pixel is treated as a receiver at \(h_{\mathrm{rx}}=\SI{1.5}{m}\);
+building pixels remain as propagation context but are excluded from losses and
+metrics.
+
+\begin{table}[htbp]
+\centering
+\caption{Main CKM fields used by the thesis.}
+\label{tab:dataset_fields_intro}
+\scriptsize
+\begin{tabularx}{\textwidth}{lllX}
+\toprule
+Field & Shape & Type & Role \\
+\midrule
+\texttt{topology\_map} & \(513^2\) & float32 & Building height and ground mask source. \\
+\texttt{los\_mask} & \(513^2\) & uint8 & Geometric LoS/NLoS visibility. \\
+\texttt{path\_loss} & \(513^2\) & uint8 & PL in dB, approximately \SI{1}{dB}-quantized. \\
+\texttt{delay\_spread} & \(513^2\) & uint16 & DS target, decoded/evaluated in ns. \\
+\texttt{angular\_spread} & \(513^2\) & uint8 & AS target, decoded/evaluated in degrees. \\
+\texttt{uav\_height} & scalar & float32 & UAV height for priors and FiLM conditioning. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The key methodological choice is the city split. Complete cities are reserved
+for validation and test, so the model must transfer to unseen layouts instead of
+memorizing similar tiles from the same city. This contract is used for all final
+model-versus-prior comparisons.
+
+\section{Development route and thesis structure}
+
+The initial plan was a standard image-to-image pipeline: literature review,
+dataset preparation, U-Net/cGAN baselines, model improvement and evaluation. The
+actual route became more diagnostic. Early CNNs produced plausible maps but did
+not control physical RMSE; the ground-mask reset changed the metric; PMHHNet and
+topology experts improved LoS but not NLoS tails; distribution-first GMM heads
+showed that the target distributions were multi-modal or spike-plus-tail; and
+the final solution returned to strong frozen priors plus bounded neural
+residuals.
+
+Chapter~2 positions this work against dense radio-map prediction, hybrid
+propagation models and distribution-aware heads. Chapter~3 gives the compact
+methodology, including the detailed Try 78/79 priors and Try 80 residual GMM
+head. Chapter~4 reports final unseen-city results, LoS/NLoS diagnostics,
+height/topology audits, SOA context and runtime. The remaining chapters cover
+sustainability, conclusions and compact appendices; longer attempt logs,
+manual-style generator documentation and full qualitative galleries remain in
+the source archive.

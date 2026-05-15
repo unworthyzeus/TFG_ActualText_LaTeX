@@ -40,9 +40,11 @@
       \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
+      \field{note}{Specification archive, accessed 15 May 2026}
       \field{number}{TR 38.901}
       \field{title}{Study on Channel Model for Frequencies from 0.5 to 100 {GHz}}
       \field{type}{techreport}
+      \field{year}{2026}
       \verb{urlraw}
       \verb https://www.3gpp.org/ftp/Specs/archive/38_series/38.901/
       \endverb
@@ -362,158 +364,6 @@
       \endverb
       \verb{url}
       \verb https://arxiv.org/abs/2601.08436
-      \endverb
-    \endentry
-    \entry{moreno2026ckmgenerator}{misc}{}{}
-      \name{author}{1}{}{%
-        {{hash=a34106ea34041a3c8cef571d514439c1}{%
-           family={Garcia},
-           familyi={G\bibinitperiod},
-           given={Guillem\bibnamedelima Moreno},
-           giveni={G\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
-      }
-      \list{publisher}{1}{%
-        {GitHub}%
-      }
-      \strng{namehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{fullhash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{fullhashraw}{a34106ea34041a3c8cef571d514439c1}
-      \strng{bibnamehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authorbibnamehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authornamehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authorfullhash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authorfullhashraw}{a34106ea34041a3c8cef571d514439c1}
-      \field{extraname}{1}
-      \field{sortinit}{G}
-      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{Public GitHub repository}
-      \field{title}{{CKMGenerator}: Generator of Path Loss, Delay Spread and Angular Spread}
-      \field{urlday}{6}
-      \field{urlmonth}{5}
-      \field{urlyear}{2026}
-      \field{year}{2026}
-      \field{urldateera}{ce}
-      \verb{urlraw}
-      \verb https://github.com/unworthyzeus/CKMGenerator
-      \endverb
-      \verb{url}
-      \verb https://github.com/unworthyzeus/CKMGenerator
-      \endverb
-    \endentry
-    \entry{moreno2026finalcode}{misc}{}{}
-      \name{author}{1}{}{%
-        {{hash=a34106ea34041a3c8cef571d514439c1}{%
-           family={Garcia},
-           familyi={G\bibinitperiod},
-           given={Guillem\bibnamedelima Moreno},
-           giveni={G\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
-      }
-      \list{publisher}{1}{%
-        {GitHub}%
-      }
-      \strng{namehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{fullhash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{fullhashraw}{a34106ea34041a3c8cef571d514439c1}
-      \strng{bibnamehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authorbibnamehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authornamehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authorfullhash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authorfullhashraw}{a34106ea34041a3c8cef571d514439c1}
-      \field{extraname}{2}
-      \field{sortinit}{G}
-      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{Public GitHub repository}
-      \field{title}{{Final\_Code\_TFG}: Final Training and Evaluation Code}
-      \field{urlday}{6}
-      \field{urlmonth}{5}
-      \field{urlyear}{2026}
-      \field{year}{2026}
-      \field{urldateera}{ce}
-      \verb{urlraw}
-      \verb https://github.com/unworthyzeus/Final_Code_TFG
-      \endverb
-      \verb{url}
-      \verb https://github.com/unworthyzeus/Final_Code_TFG
-      \endverb
-    \endentry
-    \entry{moreno2026tfgtext}{misc}{}{}
-      \name{author}{1}{}{%
-        {{hash=a34106ea34041a3c8cef571d514439c1}{%
-           family={Garcia},
-           familyi={G\bibinitperiod},
-           given={Guillem\bibnamedelima Moreno},
-           giveni={G\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
-      }
-      \list{publisher}{1}{%
-        {GitHub}%
-      }
-      \strng{namehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{fullhash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{fullhashraw}{a34106ea34041a3c8cef571d514439c1}
-      \strng{bibnamehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authorbibnamehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authornamehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authorfullhash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authorfullhashraw}{a34106ea34041a3c8cef571d514439c1}
-      \field{extraname}{3}
-      \field{sortinit}{G}
-      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{Public GitHub repository}
-      \field{title}{{TFG\_ActualText\_LaTeX}: Thesis Source}
-      \field{urlday}{6}
-      \field{urlmonth}{5}
-      \field{urlyear}{2026}
-      \field{year}{2026}
-      \field{urldateera}{ce}
-      \verb{urlraw}
-      \verb https://github.com/unworthyzeus/TFG_ActualText_LaTeX
-      \endverb
-      \verb{url}
-      \verb https://github.com/unworthyzeus/TFG_ActualText_LaTeX
-      \endverb
-    \endentry
-    \entry{moreno2026tfgprogress}{misc}{}{}
-      \name{author}{1}{}{%
-        {{hash=a34106ea34041a3c8cef571d514439c1}{%
-           family={Garcia},
-           familyi={G\bibinitperiod},
-           given={Guillem\bibnamedelima Moreno},
-           giveni={G\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
-      }
-      \list{publisher}{1}{%
-        {GitHub}%
-      }
-      \strng{namehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{fullhash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{fullhashraw}{a34106ea34041a3c8cef571d514439c1}
-      \strng{bibnamehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authorbibnamehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authornamehash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authorfullhash}{a34106ea34041a3c8cef571d514439c1}
-      \strng{authorfullhashraw}{a34106ea34041a3c8cef571d514439c1}
-      \field{extraname}{4}
-      \field{sortinit}{G}
-      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{Public GitHub repository}
-      \field{title}{{TFGAllProgress\_Tries\_and\_Attempts}: Development History and Experimental Attempts}
-      \field{urlday}{6}
-      \field{urlmonth}{5}
-      \field{urlyear}{2026}
-      \field{year}{2026}
-      \field{urldateera}{ce}
-      \verb{urlraw}
-      \verb https://github.com/unworthyzeus/TFGAllProgress_Tries_and_Attempts
-      \endverb
-      \verb{url}
-      \verb https://github.com/unworthyzeus/TFGAllProgress_Tries_and_Attempts
       \endverb
     \endentry
     \entry{goldsmith}{book}{}{}
@@ -1311,6 +1161,158 @@
       \endverb
       \verb{url}
       \verb https://dspace.networks.imdea.org/handle/20.500.12761/886
+      \endverb
+    \endentry
+    \entry{moreno2026ckmgenerator}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=328d93fb4ba03cd3a6d556797a814ba9}{%
+           family={Moreno\bibnamedelima Garcia},
+           familyi={M\bibinitperiod\bibinitdelim G\bibinitperiod},
+           given={Guillem},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {GitHub}%
+      }
+      \strng{namehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{fullhash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{fullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{bibnamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorbibnamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authornamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorfullhash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorfullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
+      \field{extraname}{1}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Public GitHub repository}
+      \field{title}{{CKMGenerator}: Generator of Path Loss, Delay Spread and Angular Spread}
+      \field{urlday}{6}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/unworthyzeus/CKMGenerator
+      \endverb
+      \verb{url}
+      \verb https://github.com/unworthyzeus/CKMGenerator
+      \endverb
+    \endentry
+    \entry{moreno2026finalcode}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=328d93fb4ba03cd3a6d556797a814ba9}{%
+           family={Moreno\bibnamedelima Garcia},
+           familyi={M\bibinitperiod\bibinitdelim G\bibinitperiod},
+           given={Guillem},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {GitHub}%
+      }
+      \strng{namehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{fullhash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{fullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{bibnamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorbibnamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authornamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorfullhash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorfullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
+      \field{extraname}{2}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Public GitHub repository}
+      \field{title}{{Final\_Code\_TFG}: Final Training and Evaluation Code}
+      \field{urlday}{6}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/unworthyzeus/Final_Code_TFG
+      \endverb
+      \verb{url}
+      \verb https://github.com/unworthyzeus/Final_Code_TFG
+      \endverb
+    \endentry
+    \entry{moreno2026tfgtext}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=328d93fb4ba03cd3a6d556797a814ba9}{%
+           family={Moreno\bibnamedelima Garcia},
+           familyi={M\bibinitperiod\bibinitdelim G\bibinitperiod},
+           given={Guillem},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {GitHub}%
+      }
+      \strng{namehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{fullhash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{fullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{bibnamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorbibnamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authornamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorfullhash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorfullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
+      \field{extraname}{3}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Public GitHub repository}
+      \field{title}{{TFG\_ActualText\_LaTeX}: Thesis Source}
+      \field{urlday}{6}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/unworthyzeus/TFG_ActualText_LaTeX
+      \endverb
+      \verb{url}
+      \verb https://github.com/unworthyzeus/TFG_ActualText_LaTeX
+      \endverb
+    \endentry
+    \entry{moreno2026tfgprogress}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=328d93fb4ba03cd3a6d556797a814ba9}{%
+           family={Moreno\bibnamedelima Garcia},
+           familyi={M\bibinitperiod\bibinitdelim G\bibinitperiod},
+           given={Guillem},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {GitHub}%
+      }
+      \strng{namehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{fullhash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{fullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{bibnamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorbibnamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authornamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorfullhash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorfullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
+      \field{extraname}{4}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Public GitHub repository}
+      \field{title}{{TFGAllProgress\_Tries\_and\_Attempts}: Development History and Experimental Attempts}
+      \field{urlday}{6}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/unworthyzeus/TFGAllProgress_Tries_and_Attempts
+      \endverb
+      \verb{url}
+      \verb https://github.com/unworthyzeus/TFGAllProgress_Tries_and_Attempts
       \endverb
     \endentry
     \entry{perez2018film}{inproceedings}{}{}

@@ -138,7 +138,8 @@ A.~Al-Hourani, S.~Kandeepan, and S.~Lardner, ``Optimal {LAP} altitude for
 \bibitem{tr38901}
 \BIBentryALTinterwordspacing
 {3GPP}, ``Study on channel model for frequencies from 0.5 to 100 {GHz},'' 3rd
-  Generation Partnership Project, Tech. Rep. TR 38.901. [Online]. Available:
+  Generation Partnership Project, Tech. Rep. TR 38.901, 2026, specification
+  archive, accessed 15 May 2026. [Online]. Available:
   \url{https://www.3gpp.org/ftp/Specs/archive/38_series/38.901/}
 \BIBentrySTDinterwordspacing
 
@@ -216,6 +217,35 @@ E.~Perez, F.~Strub, H.~de~Vries, V.~Dumoulin, and A.~Courville, ``{FiLM}:
   Visual reasoning with a general conditioning layer,'' in \emph{Proceedings of
   the AAAI Conference on Artificial Intelligence}, 2018. [Online]. Available:
   \url{https://arxiv.org/abs/1709.07871}
+\BIBentrySTDinterwordspacing
+
+\bibitem{moreno2026ckmgenerator}
+\BIBentryALTinterwordspacing
+G.~Moreno~Garcia, ``{CKMGenerator}: Generator of path loss, delay spread and
+  angular spread,'' Public GitHub repository, 2026. [Online]. Available:
+  \url{https://github.com/unworthyzeus/CKMGenerator}
+\BIBentrySTDinterwordspacing
+
+\bibitem{moreno2026finalcode}
+\BIBentryALTinterwordspacing
+G.~Moreno~Garcia, ``{Final\_Code\_TFG}: Final training and evaluation code,''
+  Public GitHub repository, 2026. [Online]. Available:
+  \url{https://github.com/unworthyzeus/Final_Code_TFG}
+\BIBentrySTDinterwordspacing
+
+\bibitem{moreno2026tfgprogress}
+\BIBentryALTinterwordspacing
+G.~Moreno~Garcia, ``{TFGAllProgress\_Tries\_and\_Attempts}: Development history
+  and experimental attempts,'' Public GitHub repository, 2026. [Online].
+  Available:
+  \url{https://github.com/unworthyzeus/TFGAllProgress_Tries_and_Attempts}
+\BIBentrySTDinterwordspacing
+
+\bibitem{moreno2026tfgtext}
+\BIBentryALTinterwordspacing
+G.~Moreno~Garcia, ``{TFG\_ActualText\_LaTeX}: Thesis source,'' Public GitHub
+  repository, 2026. [Online]. Available:
+  \url{https://github.com/unworthyzeus/TFG_ActualText_LaTeX}
 \BIBentrySTDinterwordspacing
 
 \end{thebibliography}

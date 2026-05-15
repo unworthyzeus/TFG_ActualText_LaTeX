@@ -1,4 +1,5 @@
 \chapter{Methodology / project development}
+\label{chap:methodology}
 
 This chapter is structured as the route that would be followed if the project
 were started again with the final evidence already known. The detailed
@@ -471,7 +472,7 @@ targets used in this thesis, aggregated across all cities. The table uses the
 target-side (ground-truth) histograms, because the distribution-head objective
 is defined against the ground-truth marginal, not the current prediction.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption[Best-fit parametric family by target.]%
 {Best-fit parametric family for each target distribution on the CKM
@@ -550,7 +551,7 @@ composite masked loss
 \end{equation}
 All sums are restricted to valid receiver pixels.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{Active loss settings in the final residual GMM-head model stages.}
 \label{tab:try80_loss_settings}
@@ -609,7 +610,7 @@ rather than as file-path artifacts. Older runs are reported more compactly
 because the final thesis line inherits only the architectural lessons from
 them, not the training stack.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption[Training configuration of the final pipeline.]%
 {Training configuration of the final pipeline. Unless otherwise

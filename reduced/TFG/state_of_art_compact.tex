@@ -1,0 +1,134 @@
+\chapter[State of the Art]{State of the Art and Technical Background}
+
+This chapter keeps the state of the art in the same role it has in the paper:
+it defines the nearest research families and the fair-comparison caveats, rather
+than providing an encyclopaedic survey of every adjacent radio-map method. The
+longer survey draft remains in \texttt{state\_of\_art.tex} as source material,
+but the compiled thesis now keeps only the material needed to justify the final
+prior-anchored CKM model.
+
+\section{Channel knowledge maps and dense radio-map prediction}
+\label{sec:soa_ckm_context}
+
+Channel knowledge maps (CKMs) store location-indexed radio information that can
+be queried without running a full ray tracer or a new measurement campaign for
+every candidate link \cite{zengx2021ckm}. Dense path-loss maps are the most
+common target, but the same idea extends naturally to delay spread and angular
+spread when the map is used to reason about wideband or spatial channel quality.
+The thesis problem is therefore closer to dense radio-map generation than to a
+single-link path-loss regression task: one input topology and one UAV antenna
+height must produce a full \(513\times513\) map.
+
+Classical propagation models supply the physical vocabulary used by the final
+method. Free-space path loss and two-ray propagation describe the LoS radial
+structure; COST231/Hata-like and A2G models provide empirical NLoS attenuation
+shapes; 3GPP and WINNER-style models motivate log-domain treatment of spread
+statistics and their dependence on visibility, range, elevation and local
+clutter \cite{rappaport,goldsmith,cost231,alhourani2014,tr38901,winner2}.
+These models are not accurate enough as fixed formulas for the CKM dataset, but
+they are useful as calibrated priors once the coefficients are fitted only on
+training cities.
+
+\section{Deep learning, hybrid models and distribution-aware heads}
+\label{sec:soa_dl}
+
+Deep radio-map prediction is usually formulated as image-to-image regression.
+RadioUNet \cite{radiounet2020}, PMNet \cite{pmnet2023}, RadioGUNet
+\cite{radiogunet2025}, RMTransformer \cite{rmtransformer2025}, PathFinder
+\cite{pathfinder2025}, ReVeal \cite{reveal2025}, and AIRMap
+\cite{airmap2025} are the closest methodological neighbours. They show that
+CNN, graph, attention, and digital-twin approaches can produce accurate radio
+maps when the geometry and split assumptions match the task. However, most of
+these references focus on path loss or received power only, often with fixed or
+terrestrial transmitter settings, and do not simultaneously predict dense
+path loss, delay spread and angular spread for a centred but variable-height
+UAV.
+
+Physics-informed and hybrid models are relevant because pure image regression
+can waste capacity relearning radial propagation laws. Prior-residual learning
+instead writes the prediction as
+\[
+  \hat y(x) = p(x) + \Delta_\theta(x),
+\]
+where \(p(x)\) is a frozen physical or calibrated prior and
+\(\Delta_\theta\) is a learned residual. This idea only helps when the prior is
+strong and auditable; otherwise the network inherits a poor bias. The final
+method therefore calibrates the priors on training cities, freezes them, and
+then asks the neural model to improve the residual.
+
+Distribution-aware prediction is the other essential ingredient. A single MSE
+head assumes that the conditional target is well summarized by its mean. The
+late project diagnostics showed that this was false: LoS and NLoS path-loss
+marginals are different, and delay/angular spread maps contain a near-zero LoS
+spike plus NLoS-heavy tails. Heteroscedastic losses, mixture-density networks,
+GMM heads and diffusion-style generative models all address this mismatch in
+different ways \cite{kendall2017uncertainties,saleh2021probabilistic,
+garciamarti2020mixture,radiodiff2025}. The final model keeps the practical
+part of that lesson: a prior-anchored residual GMM head predicts a distribution
+around the frozen prior and then exports the mixture expectation as the
+continuous map.
+
+\section{Fair comparison protocol}
+\label{sec:soa_benchmarks}
+
+Headline RMSE values across radio-map papers are not directly interchangeable.
+The reported number changes with target definition, map size, frequency,
+transmitter setting, split discipline, whether building pixels are counted, and
+whether the task is dense map generation or sparse reconstruction. Table
+\ref{tab:fairness} lists the comparison axes that matter for this thesis.
+
+\begin{table}[htbp]
+\centering
+\caption{Axes required for a fair reading of radio-map metrics.}
+\label{tab:fairness}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{p{0.24\textwidth}X}
+\toprule
+Axis & Why it matters here \\
+\midrule
+Target and units & PL in dB, DS in ns and AS in degrees have different scales and target distributions. \\
+Dense vs sparse input & Dense generation from topology is harder to compare with sparse-measurement interpolation. \\
+Split policy & City-holdout is stricter than random sample or random pixel splits because it tests new urban layouts. \\
+Receiver mask & Building pixels are not receiver locations; including them can make metrics artificially easier. \\
+Transmitter setting & The thesis uses a horizontally centred UAV with variable antenna height, not arbitrary terrestrial transmitters. \\
+Height handling & UAV height changes distance, reflection, elevation and local clearance; it is a core variable, not metadata. \\
+Runtime path & A surrogate must be compared against a clearly specified ray-tracing path and hardware. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Position of the final model}
+\label{sec:soa_position}
+
+The closest state-of-the-art references are useful as scale checks, not as a
+single leaderboard. The final result is strongest when stated narrowly: under
+the CKM city-holdout protocol, a prior-anchored residual GMM model improves
+strong frozen priors for dense PL/DS/AS maps, while keeping a fast generator
+path. Table~\ref{tab:position} summarizes that position.
+
+\begin{table}[htbp]
+\centering
+\caption{Compact state-of-the-art positioning.}
+\label{tab:position}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{p{0.23\textwidth}p{0.25\textwidth}X}
+\toprule
+Family / reference & Relevant metric or capability & Caveat for this thesis \\
+\midrule
+RadioUNet \cite{radiounet2020} & Dense radio-map CNN, about \SI{1.6}{dB}--\SI{3.1}{dB} PL-scale error in its setting & No variable-height UAV and no DS/AS targets. \\
+PMNet / ICASSP \cite{pmnet2023,icassp2023challenge} & Strong outdoor path-loss-map baseline, about \SI{1.38}{dB} after score conversion & Different benchmark and no joint spread prediction. \\
+RadioGUNet \cite{radiogunet2025} & Graph/U-Net radio maps, \SI{1.304}{dB} DPM and \SI{1.936}{dB} IRT reported & Outdoor RadioMapSeer setting; not the CKM UAV protocol. \\
+ReVeal \cite{reveal2025} & Outdoor sparse-measurement mapping, \SI{1.95}{dB} RMSE & Sparse reconstruction rather than dense topology-only generation. \\
+RMTransformer / PathFinder \cite{rmtransformer2025,pathfinder2025} & Attention/domain-adaptation radio-map references around the same PL scale & Different split and transmitter assumptions. \\
+AIRMap \cite{airmap2025} & Digital-twin radio-map generation with path-gain error below \SI{4}{dB} & Different target, map size and evaluation path. \\
+\textbf{Final model (this thesis)} & \textbf{\SI{1.6519}{dB} PL, \SI{26.5570}{ns} DS, \(11.3854^\circ\) AS} & \textbf{Strict city holdout, \(513\times513\) dense maps, centred variable-height UAV and joint PL/DS/AS output.} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The novelty is therefore not that a CNN is used for radio maps. The novelty is
+the combination of train-only height-aware priors, dense UAV CKM targets,
+LoS/NLoS and morphology regime handling, and a residual GMM head that improves
+rather than replaces the frozen estimators.

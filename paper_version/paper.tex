@@ -1,7 +1,17 @@
-\documentclass[conference]{IEEEtran}
+% !TeX program = pdflatex
+% !BIB program = bibtex
+\documentclass[journal]{IEEEtran}
 
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else
+  \usepackage{fontspec}
+  \setmainfont{TeX Gyre Termes}
+  \setsansfont{TeX Gyre Heros}
+  \setmonofont{TeX Gyre Cursor}
+\fi
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage{booktabs}
@@ -12,15 +22,22 @@
 \usepackage{xurl}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage[hidelinks]{hyperref}
+\urlstyle{same}
 
-\graphicspath{{../reduced/TFG/}}
+\graphicspath{{./}}
 \sisetup{detect-all=true}
 
 \title{Prior-Anchored Deep Learning for Dense UAV Air-to-Ground Channel Knowledge Maps}
 
-\author{\IEEEauthorblockN{Guillem Moreno Garcia, Evgenii Vinogradov, Sergi Abadal}}
+\author{Guillem Moreno Garcia, Evgenii Vinogradov, and Sergi Abadal%
+\thanks{G. Moreno Garcia, E. Vinogradov, and S. Abadal are with the
+Universitat Politecnica de Catalunya (UPC), Barcelona, Spain. Contact:
+guillem.moreno.garcia@estudiantat.upc.edu.}%
+}
 
 \begin{document}
+\bstctlcite{IEEEexample:BSTcontrol}
 \maketitle
 
 \begin{abstract}
@@ -33,8 +50,8 @@ priors, and a bounded residual neural model with a Gaussian-mixture residual
 head. The final model predicts \(513\times513\) dense maps from topology,
 geometric masks, UAV height, and frozen priors. On held-out cities it reaches
 \SI{1.6519}{dB} path-loss RMSE, \SI{26.5570}{ns} delay-spread RMSE, and
-\(11.3854^\circ\) angular-spread RMSE, improving the frozen priors for all
-targets. The result supports a hybrid design principle: use calibrated priors
+\(11.3854^\circ\) angular-spread RMSE, reducing RMSE relative to the frozen
+priors for all three targets. The result supports a hybrid design principle: use calibrated priors
 for stable radial and visibility-dependent structure, and reserve neural
 capacity for bounded local residuals and target-distribution mismatch.
 \end{abstract}
@@ -59,7 +76,7 @@ hide hard propagation regimes behind a single global score.
 The thesis behind this paper began as a generic dense image-to-image learning
 problem, but that formulation was not sufficient. Early U-Net and cGAN models
 could draw plausible maps, yet their physical errors remained large under a
-ground-only metric. PMNet/PMHHNet-style backbones improved smooth LoS structure
+ground-only metric. PMNet-inspired and U-Net-style backbones improved smooth LoS structure
 but did not solve NLoS mode collapse or the spike-plus-tail nature of spread
 targets. The final design therefore moved away from ``bigger backbone first''
 and toward a hybrid sequence:
@@ -70,8 +87,7 @@ and toward a hybrid sequence:
 \item train a bounded residual model around those frozen priors.
 \end{enumerate}
 
-The contribution is not a new propagation law or a claim of universal benchmark
-dominance. It is a defensible dense CKM recipe for one fixed UAV simulation
+The contribution is a defensible dense CKM recipe for one fixed UAV simulation
 contract: strict city holdout, valid-receiver masking, explicit LoS/NLoS and
 height reporting, and a final prior-anchored neural correction.
 
@@ -153,6 +169,28 @@ during training and testing. The final held-out test split contains 2590
 samples from cities not used to optimize model weights. Validation is used for
 model selection; test is used only for the final generalization claim.
 
+\begin{table}[!t]
+\centering
+\caption{Experimental contract used for all reported final numbers.}
+\label{tab:experimental-contract}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\linewidth}{p{0.31\linewidth}X}
+\toprule
+Item & Setting \\
+\midrule
+Map resolution & \(513\times513\), \SI{1}{m}\(\times\)\SI{1}{m} pixels \\
+Carrier / receiver & \SI{7.125}{GHz}; \(h_{\mathrm{rx}}=\SI{1.5}{m}\) \\
+Transmitter & One centred UAV; \(h_{\mathrm{tx}}\approx\SIrange{12}{478}{m}\) \\
+Inputs & Topology, ground/visibility masks, frozen priors, scalar height code \\
+Targets & PL (dB), DS (ns), AS (deg), one dense map per target \\
+Metric mask & Non-building ground receivers only; building pixels excluded \\
+Split policy & City holdout; validation selects the checkpoint, test is final only \\
+Samples & Train 10840; validation 2750; test 2590; all 16180 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
 \subsection{Quantized Targets and Continuous Outputs}
 
 The released CKM targets are not ideal real-valued measurements. Path loss is
@@ -187,18 +225,57 @@ target distribution is represented correctly. The priors are reintroduced
 because they are cheaper, more stable, and more auditable for the predictable
 part of the map.
 
+\begin{table}[!t]
+\centering
+\caption{Design path behind the final model. Historical diagnostics are included
+to explain the choice of head and prior, not as the final leaderboard.}
+\label{tab:design-path}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{p{0.24\linewidth}p{0.22\linewidth}X}
+\toprule
+Stage & Role & Main lesson \\
+\midrule
+Direct dense CNNs / cGANs &
+Early baselines &
+Could draw plausible CKM texture, but did not reliably solve NLoS tails or
+spread quantization under the ground-only city-holdout metric. \\
+Earlier no-prior GMM heads &
+Distribution diagnostic &
+Worse than the final system, but showed that PL, DS, and AS are jointly
+predictable when the head represents LoS/NLoS and heavy-tailed targets. \\
+Frozen PL/DS/AS priors &
+Structured anchor &
+Captured most radial, visibility, height, and spread-scale structure using
+train-only calibration. \\
+Final prior-anchored residual GMM &
+Reported model &
+Keeps the distribution-aware head, but moves it into bounded residual space
+around the frozen priors and then fine-tunes the deterministic expectation. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+In this paper, a \emph{prior} means a frozen estimator fitted only on training
+cities, not a hand-tuned curve evaluated on the test set. The prior sees the
+same support information available at deployment: centred transmitter geometry,
+UAV height, topology-derived morphology, and the geometric LoS/NLoS mask. Once
+its coefficients and fallback tables are stored, no gradient update is applied
+to it inside the neural training loop. This separation is important because it
+lets the final residual model be judged against a demanding baseline: the model
+must improve an already calibrated predictor rather than merely beat FSPL.
+
 \begin{figure*}[t]
 \centering
 \resizebox{0.96\textwidth}{!}{%
 \begin{tikzpicture}[
-  >=stealth,
   font=\scriptsize,
   box/.style={draw, thick, rounded corners=2pt, rectangle, minimum width=2.75cm, minimum height=0.78cm, align=center},
   input/.style={box, fill=gray!15},
   prior/.style={box, fill=blue!8},
   cal/.style={box, fill=green!10},
   model/.style={box, fill=orange!12},
-  arr/.style={->, thick}
+  arr/.style={-{Stealth[length=2.1mm]}, thick, rounded corners=3pt}
 ]
 \node[input] (support) at (0,0) {Centred UAV\\variable \(h_{\mathrm{tx}}\)\\topology + masks};
 \node[prior] (los) at (3.4,1.45) {LoS PL branch\\FSPL + coherent two-ray\\\(\rho,\phi,b,r\) by height};
@@ -209,13 +286,15 @@ part of the map.
 \node[model] (net) at (10.2,0) {Shared residual model\\FiLM height conditioning\\prior-anchored GMM heads};
 \node[input, fill=orange!18] (out) at (13.6,0) {Continuous outputs\\PL, DS, AS};
 
-\draw[arr] (support.east) -- (los.west);
-\draw[arr] (support.east) -- (nlos.west);
-\draw[arr] (support.east) -- (spread.west);
-\draw[arr] (los.east) -- (switch.west);
-\draw[arr] (nlos.east) -- (switch.west);
+\coordinate (supportsplit) at (1.55,0);
+\draw[arr] (support.east) -- (supportsplit);
+\draw[arr] (supportsplit) |- (los.west);
+\draw[arr] (supportsplit) -- (nlos.west);
+\draw[arr] (supportsplit) |- (spread.west);
+\draw[arr] (los.east) -- ([yshift=0.20cm]switch.west);
+\draw[arr] (nlos.east) -- ([yshift=-0.20cm]switch.west);
 \draw[arr] (switch.south) -- (stack.north);
-\draw[arr] (spread.east) -- (stack.west);
+\draw[arr] (spread.east) -- ([yshift=-0.15cm]stack.west);
 \draw[arr] (stack.east) -- (net.west);
 \draw[arr] (net.east) -- (out.west);
 \end{tikzpicture}}
@@ -228,10 +307,23 @@ then used as channels for the final prior-anchored residual GMM model.}
 \subsection{Frozen Priors}
 
 The path-loss prior combines a coherent two-ray LoS branch with a calibrated
-NLoS branch. The LoS side follows the textbook direct-plus-ground-reflected
-field structure \cite{rappaport,goldsmith}; the NLoS side uses empirical
-urban and A2G attenuation shapes as a starting point \cite{cost231,
-alhourani2014,khawaja_survey,tr38901}. The UAV remains horizontally centred,
+NLoS branch. More precisely, Eq.~\eqref{eq:fspl-paper} is the Friis/free-space
+dB term and Eq.~\eqref{eq:tworay-paper} is the standard coherent direct plus
+ground-reflected image-source construction \cite{rappaport,goldsmith}, also
+used in low-altitude A2G two-ray modeling \cite{wocc2021}. The fitted
+\(\rho,\phi,b\), and \(r\) curves are not taken from those references; they are
+CKM train-split calibration terms wrapped around that two-ray structure. The
+NLoS branch uses the COST231/Hata urban-macro expression as a coarse blocked
+link trend \cite{cost231}, combines it with an Al-Hourani-style
+elevation-dependent A2G excess-loss envelope \cite{alhourani2014}, and keeps
+the LoS/NLoS regime separation used in UAV and standardized channel-model
+literature \cite{khawaja_survey,tr38901}. The spread priors use the
+log-domain treatment of large-scale delay/angle spread parameters from
+3GPP/WINNER-style models \cite{tr38901,winner2}; the UAV empirical literature
+motivates the elevation and angular-spread terms rather than supplying the CKM
+coefficients directly \cite{cai2019,izydorczyk2019}. These references define
+the shape assumptions; all numerical coefficients used here are still fitted on
+the training cities only. The UAV remains horizontally centred,
 so \(d_{2D}\) is the per-pixel distance from the centre transmitter to each
 receiver. The height \(h_{\mathrm{tx}}\), however, changes from sample to
 sample and is one of the main physical degrees of freedom in the method. For
@@ -297,8 +389,18 @@ the actual \(h_{\mathrm{tx}}\) selects/interpolates these calibration curves,
 so the LoS prior changes continuously with antenna height even though the UAV
 horizontal coordinate remains fixed at the map centre.
 
+The reason for keeping this branch so explicit is diagnostic. In the CKM maps,
+many LoS errors appear as rings around the centred transmitter rather than as
+building-edge artifacts. A generic CNN can approximate those rings, but it must
+spend capacity on a mostly one-dimensional height/radius phenomenon. The
+two-ray-plus-radial table removes that component before the residual model sees
+the sample, leaving the network to focus on local corrections near visibility
+transitions and morphology-dependent errors.
+
 The NLoS prior starts from the maximum of COST231-like and A2G-NLoS raw
-terms. The COST/Hata-shaped term is used as an urban-macro shape prior,
+terms. The first term below is the COST231/Hata urban-macro formula adapted as
+a shape prior for the CKM geometry, not as an assertion that the original model
+is directly valid at every UAV height:
 \begin{equation}
 \begin{aligned}
 \mathrm{PL}_{C}
@@ -314,7 +416,9 @@ terms. The COST/Hata-shaped term is used as an urban-macro shape prior,
 \end{equation}
 where \(C\) denotes the COST231-shaped branch,
 \(d_{\mathrm{km}}=\max(d_{2D}/1000,0.001)\), and \(a(h_{\mathrm{rx}})\)
-is the usual mobile-height correction. The A2G envelope is
+is the usual mobile-height correction. The second term is an A2G
+elevation-dependent NLoS envelope: it keeps the altitude/elevation structure of
+coverage-oriented A2G models, but its constants are fitted for this dataset:
 \begin{equation}
 \begin{aligned}
 \mathrm{PL}_{\mathrm{A2G,NLoS}}
@@ -351,9 +455,9 @@ The NLoS side uses the raw blocked-link prior only as one feature in a
 \begin{equation}
 \begin{aligned}
 \mathbf{x}_{78}=[&
-P_0^2,P_0,\log(1+d_{2D}),\rho_{15},\rho_{41},h_{15},h_{41},\\
-&\rho_{41}h_{41},\rho_{41}\log(1+d_{2D}),n_{15},n_{41},
-s,\theta,n_{41}\theta,1]^{\top},
+P_0^2,P_0,\log(1+d_{2D}),\rho_{15},\rho_{41},\\
+&h_{15},h_{41},\rho_{41}\log(1+d_{2D}),n_{15},\\
+&n_{41},n_{41}\log(1+d_{2D}),s,\theta,n_{41}\theta,1]^{\top},
 \end{aligned}
 \label{eq:x78-paper}
 \end{equation}
@@ -362,9 +466,9 @@ fractions of building pixels in \(15\times15\) and \(41\times41\) windows,
 \(h_{15}\) and \(h_{41}\) are local building-height summaries, \(n_{15}\) and
 \(n_{41}\) summarize local NLoS support, \(s\) is a shadow/blocker proxy, and
 \(\theta\) is the normalized elevation-angle feature. The interaction
-\(\rho_{41}h_{41}\) lets dense tall neighborhoods differ from sparse tall
-ones, \(\rho_{41}\log(1+d_{2D})\) lets density matter differently with range,
-and \(n_{41}\theta\) activates when obstruction and elevation jointly matter.
+\(\rho_{41}\log(1+d_{2D})\) lets density matter differently with range,
+\(n_{41}\log(1+d_{2D})\) lets local blockage support vary with range, and
+\(n_{41}\theta\) activates when obstruction and elevation jointly matter.
 The constant \(1\) is the regime-wise bias term. The
 deployed path-loss prior is selected by the geometric visibility mask:
 \begin{equation}
@@ -380,28 +484,163 @@ few training pixels. Thus the prior is auditable: one can inspect the raw
 blocked estimate \(P_0\), the local morphology terms, the selected regime, and
 the final linear correction separately.
 
+This NLoS branch is intentionally less physical than the LoS branch. The
+visibility mask says that the direct ray is blocked, but it does not say which
+street canyon, rooftop edge, or local clutter feature dominates the strongest
+remaining path. The calibrated feature vector therefore treats COST/A2G values
+as one input among morphology summaries. It is a compromise between a fully
+analytic blocked-link law, which was too rigid, and a deep model, which was less
+transparent when trained from scratch.
+
+Table~\ref{tab:prior-term-meanings} makes this provenance explicit. The only
+pieces taken directly as literature structures are the Friis/two-ray geometry,
+the COST231/Hata urban trend, the A2G elevation-loss shape, and the log-domain
+spread convention. The reflection curves, radial residuals, OLS/ridge weights,
+fallback hierarchy, and morphology windows are fitted or computed inside this
+CKM dataset pipeline.
+
 \begin{table*}[!t]
 \centering
-\caption{Term-by-term interpretation of the main frozen-prior quantities.}
+\caption{Term-by-term provenance of the main frozen-prior quantities.}
 \label{tab:prior-term-meanings}
 \scriptsize
-\begin{tabularx}{\textwidth}{p{0.16\textwidth}p{0.22\textwidth}X}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{p{0.13\textwidth}p{0.19\textwidth}p{0.29\textwidth}X}
 \toprule
-Term & Prior block & Interpretation \\
+Term & Prior block & Source & Role in this paper \\
 \midrule
-\(d_{\mathrm{LoS}}\) & LoS PL & 3D direct transmitter--receiver distance; sets the FSPL baseline. \\
-\(d_{\mathrm{ref}}\) & LoS PL & Image-source reflected distance; gives the length and attenuation of the single ground-reflected ray. \\
-\(C_{\mathrm{2ray}}\) & LoS PL & Coherent direct-plus-reflected correction; negative values mean constructive gain over FSPL and positive values mean fading loss. \\
-\(\rho(h_{\mathrm{tx}}),\phi(h_{\mathrm{tx}})\) & LoS PL & Height-interpolated effective reflection amplitude and phase, calibrated from CKM rather than assumed from a fixed material. \\
-\(b(h_{\mathrm{tx}})\) & LoS PL & Height-dependent dB offset remaining after the coherent two-ray fit. \\
-\(r(d_{2D},h_{\mathrm{tx}})\) & LoS PL & Smoothed radial residual profile; removes systematic range-dependent error left by the two-ray model. \\
-\(P_0\) & NLoS PL & Raw blocked-link path-loss prior before morphology calibration. \\
-\(\rho_k,h_k,n_k\) & NLoS PL and spreads & Local building density, local building height, and local NLoS support in a \(k\times k\) window. \\
-\(b_{41},c_{41},t_{41}\) & Spreads & Blocker depth, transmitter clearance, and fraction of buildings taller than the link-line proxy. \\
-\(\theta_{\mathrm{norm}},\theta_{\mathrm{inv}}\) & Spreads & Elevation angle and its low-elevation complement; low elevation is where street-canyon and rooftop interactions are stronger. \\
+\multicolumn{4}{l}{\emph{Literature formula structures}} \\
+\(d_{\mathrm{LoS}}\) & LoS PL & CKM geometry + Friis distance term
+\cite{rappaport,goldsmith} & Direct transmitter--receiver distance used in FSPL. \\
+\(d_{\mathrm{ref}}\) & LoS PL & Image-source two-ray geometry
+\cite{rappaport,goldsmith,wocc2021} & Length of the single ground-reflected ray. \\
+\(C_{\mathrm{2ray}}\) & LoS PL & Coherent direct/reflected field sum
+\cite{rappaport,goldsmith} & Constructive/destructive radial rings before learned correction. \\
+\(P_0\) & NLoS PL & COST231/Hata trend \cite{cost231} + A2G elevation envelope
+\cite{alhourani2014,khawaja_survey} & Raw blocked-link scale before morphology OLS calibration. \\
+\addlinespace[1pt]
+\multicolumn{4}{l}{\emph{CKM deterministic geometry and morphology features}} \\
+\(\rho_k,h_k,n_k\) & NLoS PL and spreads & Topology and LoS/NLoS masks & Local density, building height, and NLoS support in a \(k\times k\) window. \\
+\(b_{41},c_{41},t_{41}\) & Spreads & Obstruction features motivated by A2G clutter behavior
+\cite{khawaja_survey,cai2019,izydorczyk2019} & Blocker depth, transmitter clearance, and taller-building fraction. \\
+\(\theta_{\mathrm{norm}},\theta_{\mathrm{inv}}\) & Spreads & Geometry + A2G elevation dependence
+\cite{alhourani2014,khawaja_survey,tr38901} & Elevation angle and low-elevation complement for blocked/spread-prone regimes. \\
+\addlinespace[1pt]
+\multicolumn{4}{l}{\emph{CKM train-split fitted calibration}} \\
+\(\rho(h_{\mathrm{tx}}),\phi(h_{\mathrm{tx}})\) & LoS PL & Train-split fit & Effective reflection amplitude and phase; not material constants. \\
+\(b(h_{\mathrm{tx}})\) & LoS PL & Train-split fit & Height-dependent offset left after coherent two-ray fitting. \\
+\(r(d_{2D},h_{\mathrm{tx}})\) & LoS PL & Train-split fit & Smoothed radial residual left by two-ray plus bias. \\
 \bottomrule
 \end{tabularx}
 \end{table*}
+
+\begin{table*}[!t]
+\centering
+\caption{Frozen-prior estimators used by the final model. All coefficients are
+fitted on training cities and frozen before neural residual training; citations
+indicate the literature basis of each starting structure.}
+\label{tab:prior-branches}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{p{0.13\textwidth}p{0.23\textwidth}p{0.27\textwidth}X}
+\toprule
+Target/regime & Starting structure & Train-only calibration & Deployed prior map \\
+\midrule
+PL LoS &
+FSPL plus coherent direct/reflected two-ray correction
+\cite{rappaport,goldsmith,wocc2021} &
+\(\rho(h_{\mathrm{tx}})\), \(\phi(h_{\mathrm{tx}})\), \(b(h_{\mathrm{tx}})\),
+and radial residual \(r(d_{2D},h_{\mathrm{tx}})\) in smoothed
+\SI{5}{m} height bins &
+LoS path-loss map carrying the dominant height/radius rings before any neural
+residual is added. \\
+PL NLoS &
+Conservative envelope of COST231-shaped urban loss and an elevation-aware
+A2G-NLoS term \cite{cost231,alhourani2014,khawaja_survey,tr38901} &
+Regime-wise OLS over \(\mathbf{x}_{78}\), selected by morphology,
+visibility, and antenna-height group with fallback keys and output clipping &
+NLoS path-loss map that stores blocked-link scale, local density, blocker, and
+elevation effects. \\
+DS / AS &
+Log-domain raw spike-plus-tail scale from visibility, range, elevation, and
+local morphology \cite{tr38901,winner2,cai2019,izydorczyk2019} &
+Ridge calibration over \(\mathbf{x}_{79}\) per metric/regime, with
+height-collapsed, topology-wide, visibility-wide, and global fallbacks &
+Delay- and angular-spread maps in native units after \(\exp(\hat z)-1\),
+used as frozen statistical anchors. \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+\begin{figure*}[!t]
+\centering
+\resizebox{0.97\textwidth}{!}{%
+\begin{tikzpicture}[
+  font=\scriptsize,
+  box/.style={draw, thick, rounded corners=2pt, rectangle, minimum width=2.9cm, minimum height=0.78cm, align=center},
+  data/.style={box, fill=gray!14},
+  fit/.style={box, fill=blue!8},
+  store/.style={box, fill=green!10},
+  deploy/.style={box, fill=orange!12},
+  arr/.style={-{Stealth[length=2.0mm]}, thick, rounded corners=3pt}
+]
+\node[data] (train) at (0,1.25) {Training cities only\\ground pixels + masks};
+\node[fit] (losfit) at (3.8,2.25) {LoS PL fit\\\(\rho,\phi,b\) grid\\radial residual};
+\node[fit] (nlosfit) at (3.8,1.25) {NLoS PL fit\\\(\mathbf{x}_{78}\) OLS\\regime fallbacks};
+\node[fit] (spreadfit) at (3.8,0.25) {DS/AS fit\\\(\mathbf{x}_{79}\) ridge\\log-domain};
+\node[store] (frozen) at (7.5,1.25) {Frozen calibration files\\two-ray curves\\OLS/ridge tables};
+\node[data] (sample) at (0,-1.15) {Held-out or new city\\topology + \(h_{\mathrm{tx}}\)\\LoS/NLoS mask};
+\node[deploy] (features) at (3.8,-1.15) {Deterministic features\\distance, elevation\\morphology windows};
+\node[deploy] (maps) at (7.5,-1.15) {Prior maps\\PL LoS / PL NLoS\\DS / AS};
+\node[deploy] (residual) at (11.0,-1.15) {Final residual model\\bounded GMM correction};
+
+\draw[arr] (train.east) -- ++(0.55,0) |- (losfit.west);
+\draw[arr] (train.east) -- (nlosfit.west);
+\draw[arr] (train.east) -- ++(0.55,0) |- (spreadfit.west);
+\draw[arr] (losfit.east) -- ([yshift=0.32cm]frozen.west);
+\draw[arr] (nlosfit.east) -- (frozen.west);
+\draw[arr] (spreadfit.east) -- ([yshift=-0.32cm]frozen.west);
+\draw[arr] (sample.east) -- (features.west);
+\draw[arr] (features.east) -- (maps.west);
+\draw[arr] (frozen.south) -- ([yshift=0.28cm]maps.north);
+\draw[arr] (maps.east) -- (residual.west);
+\end{tikzpicture}}
+\caption{Train-only prior calibration and deployment. The upper row fits and
+stores the prior parameters using training cities only. The lower row applies
+those frozen tables to a held-out sample before the neural residual model is
+called.}
+\label{fig:prior-calibration}
+\end{figure*}
+
+The LoS two-ray parameters are fitted by a small grid search rather than by a
+neural optimizer. For each \SI{5}{m} height bin \(B_h\), candidate values
+\(\hat\rho\in\{0,0.05,\ldots,1.5\}\) and
+\(\hat\phi\in[-\pi,\pi)\) on a 48-point phase grid are evaluated on valid LoS
+training pixels. For each candidate pair, the dB bias has the closed-form value
+\begin{equation}
+\hat b(\hat\rho,\hat\phi)
+=\frac{1}{|B_h|}\sum_{i\in B_h}
+\left[y_i-\mathrm{FSPL}_i-C_{\mathrm{2ray},i}(\hat\rho,\hat\phi)\right],
+\label{eq:los-bias-fit}
+\end{equation}
+and the selected pair minimizes the corresponding RMSE. The fitted
+\(\rho\), \(\phi\), and \(b\) curves are then smoothed across neighbouring
+height bins, weighted by bin support, and linearly interpolated at inference.
+
+The NLoS branch uses the same train-only principle but with a linear morphology
+calibrator. For every supported regime \(r\), the calibration weights solve
+\begin{equation}
+\hat{\mathbf{w}}_{78,r}
+=
+\operatorname*{arg\,min}_{\mathbf{w}}
+\sum_{i\in r}
+\left(\mathbf{x}_{78,i}^{\top}\mathbf{w}-y_i\right)^2,
+\label{eq:nlos-ols-fit}
+\end{equation}
+with fallback to broader topology/height/visibility groups when the exact
+regime has too few pixels. At deployment, the same deterministic features select
+one stored coefficient vector and produce the clipped NLoS prior in
+Eq.~\eqref{eq:nlos-prior-paper}.
 
 The delay-spread and angular-spread priors are fitted in a transformed domain,
 \begin{equation}
@@ -414,7 +653,10 @@ because both standard channel models and the CKM histograms make spread
 quantities more regular in log space \cite{tr38901,winner2}. The released
 spread maps have a near-zero mass plus a long tail: LoS direct-path pixels
 cluster near zero, while blocked or rooftop-scattered pixels create rare but
-important large values. Their raw prior is
+important large values. The standardized models justify the log-domain
+large-scale variable; the particular range, elevation, density, height, and
+NLoS-support terms below are CKM-specific deterministic covariates chosen to
+make that log variable depend on observable map geometry. Their raw prior is
 \begin{equation}
 \begin{aligned}
 z^{(0)}
@@ -473,6 +715,15 @@ raw prior unless the training residuals consistently justify a correction. In
 practice this matters for the spread targets: a flexible unregularized fit can
 chase rare high-spread pixels, whereas the ridge fit keeps the near-zero LoS
 bulk and the NLoS tail connected to the same physical features.
+
+The spread prior should be read as a statistical prior rather than as a
+ray-by-ray multipath model. It does not attempt to reconstruct individual
+reflections. Instead, it predicts the expected scale of a dense spread map from
+height, range, LoS/NLoS state, and local morphology. The log transform makes
+the near-zero mass and the long tail share one regression space, while the
+regime fallbacks prevent small calibration subsets from inventing unsupported
+high-spread behaviour.
+
 All calibrations use training cities only. The spread-prior dictionary contains 114
 fitted regime keys, but this number is not one Cartesian product. Per spread
 metric, the exact grid contributes \(6\) topology classes \(\times\) \(2\)
@@ -486,11 +737,29 @@ and spread branches use discrete antenna-height regimes with fallback keys;
 the spread model also keeps continuous height, clearance, and taller-building
 features inside \(\mathbf{x}_{79}\). This heavy calibration is the point: the prior stores many small
 decisions about morphology, visibility, and height before the neural residual
-is trained. The same-protocol frozen-prior results are \SI{1.7516}{dB} LoS PL,
-\SI{3.3967}{dB} NLoS PL, \SI{1.9246}{dB} overall PL, \SI{28.10}{ns} DS, and
-\(13.74^\circ\) AS. The final neural model receives only the resulting prior
-maps as channels; the handcrafted features remain inside the frozen prior
-estimators rather than becoming additional learned inputs.
+is trained. On the final held-out test split, the deployed prior anchors are
+summarized in Table~\ref{tab:prior-only-anchor}. The final neural model
+receives only the resulting prior maps as channels; the handcrafted features
+remain inside the frozen prior estimators rather than becoming additional
+learned inputs.
+
+\begin{table}[!t]
+\centering
+\caption{Frozen-prior-only RMSE on the final held-out test split. These are the
+anchors that the residual model must improve.}
+\label{tab:prior-only-anchor}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrl}
+\toprule
+Target & Overall & LoS & NLoS & Unit \\
+\midrule
+Path loss & 1.9383 & 1.7519 & 3.5143 & dB \\
+Delay spread & 28.1023 & 27.4851 & 29.6157 & ns \\
+Angular spread & 13.7416 & 15.2818 & 8.6614 & deg \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Prior-Anchored Residual Model}
 
@@ -503,6 +772,14 @@ continuously between the calibrated height regimes instead of learning one
 height-agnostic correction. The backbone is a shared U-Net-style
 encoder-decoder with GroupNorm, FiLM conditioning, and task-specific residual
 heads.
+
+The actual final model is therefore not a replacement for the priors. Its
+input tensor already contains the deployed path-loss and spread estimates, and
+its output head is constrained to make bounded corrections around them. This
+choice changes the learning problem: the encoder-decoder does not need to infer
+absolute free-space attenuation, altitude trends, or the average spread scale
+from pixels alone. It learns where the frozen estimates are locally biased and
+how the remaining residual distribution should be placed across the map.
 
 The height path mirrors the detailed thesis implementation. The scalar
 \(h_{\mathrm{tx}}\) is expanded to a 32-dimensional sinusoidal code using
@@ -528,22 +805,24 @@ Encoder FiLM uses the height condition directly; decoder FiLM and the global
 task heads use a fused condition formed from the height code and the pooled
 bottleneck context. Thus the same centred topology can receive different
 residual corrections when the UAV is at \SI{30}{m}, \SI{150}{m}, or
-\SI{350}{m}.
+\SI{350}{m}. The height-aware results in Sec.~V show that this is not only an
+architectural convenience: sinusoidal height embeddings with FiLM modulation are
+sufficient for one model to cover the full varying-height range without
+training a separate network per altitude bin.
 
 \begin{figure*}[!t]
 \centering
 \resizebox{0.98\textwidth}{!}{%
 \begin{tikzpicture}[
-  >=stealth,
   font=\scriptsize,
   block/.style={draw, thick, rounded corners=2pt, rectangle, minimum width=1.75cm, minimum height=0.74cm, align=center, fill=blue!8},
   cond/.style={draw, thick, rounded corners=2pt, rectangle, minimum width=1.95cm, minimum height=0.74cm, align=center, fill=orange!14},
   head/.style={draw, thick, rounded corners=2pt, rectangle, minimum width=2.2cm, minimum height=0.82cm, align=center, fill=green!10},
   gmm/.style={draw, thick, rounded corners=2pt, rectangle, minimum width=2.75cm, minimum height=1.0cm, align=center, fill=purple!10},
   prior/.style={draw, thick, rounded corners=2pt, rectangle, minimum width=2.35cm, minimum height=0.82cm, align=center, fill=gray!15},
-  arr/.style={->, thick},
-  condarr/.style={->, thick, dashed, orange!85!black},
-  skiparr/.style={->, thick, dashed, blue!65}
+  arr/.style={-{Stealth[length=2.0mm]}, thick, rounded corners=3pt},
+  condarr/.style={-{Stealth[length=1.8mm]}, thick, dashed, orange!85!black, rounded corners=3pt},
+  skiparr/.style={<->, thick, dashed, blue!65}
 ]
 \node[prior] (input) at (0,0.8) {9-channel input\\topology, masks\\frozen priors};
 \node[block] (stem) at (2.35,0.8) {Stem\\128 ch};
@@ -557,51 +836,59 @@ residual corrections when the UAV is at \SI{30}{m}, \SI{150}{m}, or
 \node[block] (up1) at (18.55,0.8) {Up 1\\128 ch\\FiLM};
 \node[head] (local) at (21.15,0.8) {Local heads\\\(1\times1\) conv\\\(p,\delta^{(\ell)},\alpha,\tilde\sigma\)};
 
-\draw[arr] (input) -- (stem);
-\draw[arr] (stem) -- (down1);
-\draw[arr] (down1) -- (down2);
-\draw[arr] (down2) -- (down3);
-\draw[arr] (down3) -- (bott);
-\draw[arr] (bott) -- (up4);
-\draw[arr] (up4) -- (up3);
-\draw[arr] (up3) -- (up2);
-\draw[arr] (up2) -- (up1);
-\draw[arr] (up1) -- (local);
+\draw[arr] (input.east) -- (stem.west);
+\draw[arr] (stem.east) -- (down1.west);
+\draw[arr] (down1.east) -- (down2.west);
+\draw[arr] (down2.east) -- (down3.west);
+\draw[arr] (down3.east) -- (bott.west);
+\draw[arr] (bott.east) -- (up4.west);
+\draw[arr] (up4.east) -- (up3.west);
+\draw[arr] (up3.east) -- (up2.west);
+\draw[arr] (up2.east) -- (up1.west);
+\draw[arr] (up1.east) -- (local.west);
 
 \node[cond] (height) at (0,-1.35) {Scalar height\\\(h_{\mathrm{tx}}\)};
 \node[cond] (embed) at (2.65,-1.35) {Sin/cos code\\32 dim.};
 \node[cond] (hmlp) at (5.35,-1.35) {Height MLP\\\(\mathbf{c}\in\mathbb{R}^{160}\)};
-\node[head] (global) at (11.0,-1.75) {Global heads\\GAP bottleneck\\+\ height code\\\(\delta^{(g)},\sigma^{(g)}\)};
+\node[head] (global) at (11.0,-1.75) {Global heads\\GAP bottleneck\\+\ height code\\\(\pi^{(g)},\delta^{(g)},\sigma^{(g)}\)};
 \node[prior] (taskprior) at (15.0,-2.55) {Per-task frozen\\prior map\\\(y_k^{\mathrm{prior}}\)};
 \node[gmm] (assembly) at (19.3,-1.75) {Prior-anchored\\GMM assembly\\LoS/NLoS branches};
 \node[prior, fill=orange!18] (out) at (22.8,-1.75) {Continuous maps\\PL, DS, AS};
 
-\draw[arr] (height) -- (embed);
-\draw[arr] (embed) -- (hmlp);
-\draw[condarr] (hmlp.north) |- (down2.south);
-\draw[condarr] (hmlp.north) |- (bott.south);
-\draw[condarr] (hmlp.east) -- ++(2.0,0) |- (global.west);
-\draw[condarr] (hmlp.east) -- ++(5.4,0) |- (up4.south);
-\draw[condarr] (hmlp.east) -- ++(10.4,0) |- (up1.south);
+\draw[arr] (height.east) -- (embed.west);
+\draw[arr] (embed.east) -- (hmlp.west);
+\coordinate (filmbusA) at (5.35,-0.18);
+\coordinate (filmbusC) at (9.70,-0.18);
+\coordinate (filmbusD) at (11.20,-0.18);
+\coordinate (filmbusB) at (18.55,-0.18);
+\draw[condarr] (hmlp.north) -- (filmbusA) -- (filmbusC);
+\draw[condarr] (filmbusD) -- (filmbusB);
+\draw[condarr] (6.35,-0.18) -- (down2.south);
+\draw[condarr] (9.70,-0.18) -- ([xshift=-0.24cm]bott.south);
+\draw[condarr] (12.55,-0.18) -- (up4.south);
+\draw[condarr] (18.55,-0.18) -- (up1.south);
+\draw[condarr] (11.20,-0.18) -- ([xshift=0.30cm]global.north);
 
-\draw[arr] (bott.south) -- (global.north);
-\draw[arr] (global.east) -- (assembly.west);
-\draw[arr] (local.south) |- (assembly.north);
-\draw[arr] (taskprior.east) -- (assembly.south west);
+\draw[arr] ([xshift=0.32cm]bott.south) -- ++(0,-0.70) -| ([xshift=-0.30cm]global.north);
+\draw[arr] (global.east) -- ([yshift=0.20cm]assembly.west);
+\draw[arr] (local.south) -- ++(0,-0.85) -| (assembly.north);
+\draw[arr] (taskprior.east) -- ([yshift=-0.22cm]assembly.west);
 \draw[arr] (assembly.east) -- (out.west);
 
 \node[prior, fill=blue!4, minimum width=5.2cm] (skip) at (10.9,2.15)
 {U-Net skip concatenations preserve high-resolution morphology};
-\draw[skiparr] (down1.north) |- (skip.west);
-\draw[skiparr] (down2.north) -- (skip.south west);
-\draw[skiparr] (skip.south east) -- (up3.north);
-\draw[skiparr] (skip.east) -| (up1.north);
+\draw[skiparr] ([yshift=0.18cm]down1.north) -- ([yshift=0.18cm]up1.north);
+\draw[blue!65, thick, dashed] (skip.south) -- ++(0,-0.28);
 \end{tikzpicture}}
 \caption{Final shared deep-learning architecture adapted from the thesis
 diagram. The map stack carries topology, masks, and frozen priors; the scalar
-UAV height is encoded separately and injected through FiLM. A shared U-Net
-produces local residual fields, pooled bottleneck features produce global GMM
-parameters, and the prior-anchored GMM assembly emits continuous PL/DS/AS maps.}
+UAV height is encoded separately and injected through FiLM. Encoder FiLM uses
+the height code; decoder FiLM and global heads use the fused height/bottleneck
+context. A shared U-Net produces local residual fields, pooled bottleneck
+features produce global GMM parameters, and the prior-anchored GMM assembly
+emits continuous PL/DS/AS maps.
+The dashed skip arrow summarizes the four encoder--decoder concatenations used
+in the implementation.}
 \label{fig:dl-architecture}
 \end{figure*}
 
@@ -646,18 +933,19 @@ lee2024timevarying}. The native residual is clipped by target and visibility:
 \label{eq:delta-paper}
 \end{equation}
 with caps of \(7/25\) dB for PL LoS/NLoS, \(20/20\) ns for DS, and
-\(17^\circ/15^\circ\) for AS. The component mean is anchored to the frozen
-prior:
+\(17^\circ/15^\circ\) for AS. Omitting indices for compactness, the component
+mean is anchored to the frozen prior in the same transformed space used by the
+implementation:
 \begin{equation}
 \begin{aligned}
-\mu^{\mathrm{native}}_{k,r,j}(p)
-&=y^{\mathrm{prior}}_k(p)
-+\alpha_{k,r}(p)\Delta_{k,r,j}(p),\\
-0&\leq \alpha_{k,r}(p)\leq 1.
+u&=y^{\mathrm{prior}}+\alpha\Delta,\\
+\mu&=u,\qquad k=\mathrm{PL},\\
+\mu&=\log(1+[u]_+),\qquad k\in\{\mathrm{DS},\mathrm{AS}\}.
 \end{aligned}
 \label{eq:mu-paper}
 \end{equation}
-PL is modeled in native dB space, while DS and AS use the log transform in
+where \([u]_+=\max(u,0)\) and \(0\leq\alpha_{k,r}(p)\leq1\). PL is modeled in
+native dB space, while DS and AS use the log transform in
 Eq.~\eqref{eq:spread-transform-paper}. The deterministic map used for RMSE is
 the mixture expectation:
 \begin{equation}
@@ -709,11 +997,17 @@ histogram and compares it with the histogram implied by
 global branch is pressured to put mixture mass where the map residuals actually
 live.
 
+This head is useful even when the final reported number is a deterministic
+RMSE. The probabilistic stage teaches the network that a hard NLoS region can
+contain several plausible residual levels, while the anchor gate decides how
+far the prediction may move from the frozen estimate. The final expectation is
+therefore not an unconstrained average of arbitrary map values; it is the mean
+of a small residual mixture whose components remain tied to the prior.
+
 \begin{figure*}[!t]
 \centering
 \resizebox{0.96\textwidth}{!}{%
 \begin{tikzpicture}[
-  >=stealth,
   font=\scriptsize,
   box/.style={draw, thick, rounded corners=2pt, rectangle, minimum width=2.9cm, minimum height=0.84cm, align=center},
   global/.style={box, fill=green!12},
@@ -721,27 +1015,27 @@ live.
   prior/.style={box, fill=gray!15},
   mix/.style={box, fill=purple!10},
   outbox/.style={box, fill=orange!12},
-  arr/.style={->, thick}
+  arr/.style={-{Stealth[length=2.0mm]}, thick, rounded corners=3pt}
 ]
 \node[global] (g0) at (0,1.6) {Global context\\pooled bottleneck\\+\ height code};
 \node[global] (g1) at (3.9,1.6) {Global GMM params\\\(\pi^{(g)}_{r,j}\), \(\delta^{(g)}_{r,j}\),\\\(\sigma^{(g)}_{r,j}\)};
 \node[local] (l0) at (0,-0.2) {Local decoder map\\\(\mathbf{F}(x)\)};
 \node[local] (l1) at (3.9,-0.2) {Local pixel params\\\(p_{r,j}(x)\), \(\delta^{(\ell)}_r(x)\),\\\(\alpha_r(x)\), \(\tilde\sigma_r(x)\)};
 \node[mix] (resid) at (7.9,0.7) {Bounded residual\\\(\Delta_{r,j}(x)=\mathrm{clip}(\delta^{(g)}+\delta^{(\ell)},\pm\delta_{\max})\)};
-\node[prior] (p0) at (7.9,-1.35) {Frozen task prior\\\(y^{\mathrm{prior}}_k(x)\)};
-\node[mix] (mu) at (12.3,0.7) {Anchored means\\\(\mu_{r,j}=y^{\mathrm{prior}}_k+\alpha_r\Delta_{r,j}\)};
+\node[prior] (p0) at (7.9,-1.35) {Frozen task prior\\\(y^{\mathrm{prior}}_k(x)\)\\DS/AS use \(\log(1+y)\)};
+\node[mix] (mu) at (12.3,0.7) {Anchored means\\PL: \(y^{\mathrm{prior}}+\alpha\Delta\)\\DS/AS: \(\log(1+[y^{\mathrm{prior}}+\alpha\Delta]_+)\)};
 \node[mix] (expv) at (12.3,-1.35) {Pixel expectation\\\(\hat y_{k,r}=\sum_j p_{r,j}\mu_{r,j}\)};
 \node[outbox] (sel) at (16.1,-0.3) {LoS/NLoS\\mask selection};
 \node[outbox] (out) at (19.4,-0.3) {Final map\\\(\hat y_k(x)\)};
 
-\draw[arr] (g0) -- (g1);
-\draw[arr] (l0) -- (l1);
-\draw[arr] (g1.east) -- (resid.west);
-\draw[arr] (l1.east) -- (resid.west);
-\draw[arr] (resid) -- (mu);
-\draw[arr] (p0.east) -- (mu.south west);
+\draw[arr] (g0.east) -- (g1.west);
+\draw[arr] (l0.east) -- (l1.west);
+\draw[arr] (g1.east) -- ([yshift=0.24cm]resid.west);
+\draw[arr] (l1.east) -- ([yshift=-0.24cm]resid.west);
+\draw[arr] (resid.east) -- (mu.west);
+\draw[arr] (p0.east) -- ([xshift=-0.15cm,yshift=-0.18cm]mu.south west);
 \draw[arr] (mu.south) -- (expv.north);
-\draw[arr] (l1.south east) -- (expv.west);
+\draw[arr] (l1.south) -- ++(0,-1.35) -| (expv.south);
 \draw[arr] (expv.east) -- (sel.west);
 \draw[arr] (sel.east) -- (out.west);
 \end{tikzpicture}}
@@ -864,13 +1158,21 @@ Learning rate & \(2\times10^{-4}\) & \(5\times10^{-5}\) \\
 \end{tabularx}
 \end{table}
 
+The practical role of the two stages is simple. The first stage makes the head
+behave like a residual density model: it learns where residual mass lies and
+discourages the old single-mode collapse. The final fine-tuning stage keeps the
+same architecture but shifts the optimization weight toward the deterministic
+metrics used for the paper tables. The anchor and guard terms remain active at
+small weight so the fine-tuned model cannot gain average RMSE by damaging large
+regions where the frozen prior was already accurate.
+
 \section{Experimental Results}
 
 \subsection{Main Test Results}
 
 Table~\ref{tab:main-results} reports the final unseen-city test metrics. The
-model improves the frozen prior for all three targets. Path loss is the cleanest
-success case because both RMSE and MAE improve. Delay spread improves RMSE
+model reduces RMSE relative to the frozen prior for all three targets. Path loss
+is the cleanest success case because both RMSE and MAE improve. Delay spread improves RMSE
 while MAE slightly increases; this is consistent with reducing rare high-delay
 errors while introducing small local shifts. Angular spread improves RMSE
 strongly and is approximately neutral in MAE.
@@ -951,6 +1253,12 @@ Test & 2590 & 1.6519 & 26.5570 & 11.3854 \\
 The frozen priors are strong enough to deserve their own reporting. They are
 not simply baselines for the final neural model; they encode most of the stable
 geometry and therefore determine what residual problem the network sees.
+Because these prior calibrations are deterministic, non-DL estimators, they do
+not require a validation split for early stopping or checkpoint selection.
+Their standalone audit therefore pools the validation and test cities after
+fitting on training cities only: Tables~\ref{tab:pl-prior-height} and
+\ref{tab:spread-prior-height} are evaluated on the 29-city validation+test
+prior-evaluation split.
 Table~\ref{tab:pl-prior-height} shows the height dependence of the calibrated
 path-loss prior. This is not post-hoc stratification: UAV height is part of the
 estimator itself through the centred geometry, elevation angle, height-binned
@@ -963,7 +1271,8 @@ overall in the lowest bin to \SI{3.70}{ns} above \SI{300}{m}.
 
 \begin{table}[!t]
 \centering
-\caption{Calibrated path-loss prior RMSE by UAV height.}
+\caption{Calibrated path-loss prior RMSE by UAV height on the 29-city
+validation+test prior-evaluation split.}
 \label{tab:pl-prior-height}
 \scriptsize
 \begin{tabular}{lrrrr}
@@ -980,7 +1289,8 @@ Height bin & Overall & LoS & NLoS & Samples \\
 
 \begin{table}[!t]
 \centering
-\caption{Calibrated spread-prior RMSE by UAV height.}
+\caption{Calibrated spread-prior RMSE by UAV height on the same 29-city
+validation+test prior-evaluation split.}
 \label{tab:spread-prior-height}
 \scriptsize
 \begin{tabular}{llrrr}
@@ -1031,19 +1341,23 @@ All & 16180 & -0.2867 & -1.8406 & -2.3710 \\
 \end{tabular}
 \end{table}
 
-The all-city subexpert audit groups samples by morphology
-(\texttt{open}, \texttt{mixed}, \texttt{dense}) and antenna-height bin. It is
-a stricter check than the global row because it asks whether the residual model
-helps across the deployed prior regimes rather than only in one easy subset.
-Table~\ref{tab:subexpert-delta} reports RMSE deltas for the nine groups. All
-entries are negative, so the residual correction improves every morphology and
-height group for all three targets.
+The all-city morphology/height audit groups samples by broad urban form
+(\texttt{open}, \texttt{mixed}, \texttt{dense}) and antenna-height bin
+(\texttt{low}, \texttt{mid}, \texttt{high}). These rows are not nine separately
+trained final neural networks. They are evaluation buckets that mirror the
+regime structure used by the frozen priors and fallback tables: morphology is
+derived from building-density/height thresholds, and the height tag comes from
+the UAV altitude range. This is a stricter check than the global row because it
+asks whether the same residual model helps across the deployed prior regimes
+rather than only in one easy subset. Table~\ref{tab:audit-delta} reports
+RMSE deltas for the nine groups. All entries are negative, so the residual
+correction improves every morphology and height group for all three targets.
 
 \begin{table}[!t]
 \centering
-\caption{All-city final-model RMSE deltas by morphology/height subexpert.
+\caption{All-city final-model RMSE deltas by morphology/height audit group.
 Negative values mean the final model improves the frozen prior.}
-\label{tab:subexpert-delta}
+\label{tab:audit-delta}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{lrrrr}
@@ -1072,9 +1386,9 @@ that the NLoS collapse was not inevitable. The final model keeps this lesson
 but anchors the residual around explicit priors.
 
 The internal diagnostic numbers are kept as scale references, not as final
-claims. The distribution-first path-loss GMM experts reached \SI{4.43}{dB} LoS
+claims. The earlier distribution-first path-loss GMM fits reached \SI{4.43}{dB} LoS
 and \SI{3.34}{dB} NLoS pixel-aggregate RMSE, showing that NLoS collapse was a
-modeling choice rather than a necessity. The distribution-first spread experts
+modeling choice rather than a necessity. The earlier distribution-first spread fits
 reached \SI{30.96}{ns} delay-spread RMSE and \(11.78^\circ\) angular-spread
 RMSE, motivating log-domain and mixture-aware treatment of spread targets. The
 frozen priors then provided stronger anchors: \SI{1.9246}{dB} path-loss RMSE,
@@ -1083,7 +1397,7 @@ frozen priors then provided stronger anchors: \SI{1.9246}{dB} path-loss RMSE,
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png}
-\caption{Path-loss target GMM fits by topology expert. The diagnostic exposed
+\caption{Path-loss target GMM fits by topology group. The diagnostic exposed
 different LoS/NLoS marginals and motivated distribution-aware heads before
 returning to prior-anchored residual learning.}
 \label{fig:gmm-fit}
@@ -1121,10 +1435,10 @@ RadioGUNet \cite{radiogunet2025} &
 Final PL is between those values; outdoor RadioMapSeer setting. \\
 PMNet / ICASSP \cite{pmnet2023,icassp2023challenge} &
 \SI{1.38}{dB} converted score &
-Final PL is \(1.20\times\) worse; scale context only, no joint spread prediction. \\
+Final PL is close but higher under a different benchmark contract; scale context only, no joint spread prediction. \\
 ReVeal \cite{reveal2025} &
 \SI{1.95}{dB} outdoor sparse-measurement RMSE &
-Final PL is \(1.18\times\) better; sparse mapping rather than dense generation. \\
+Final PL is in the same range; sparse mapping rather than dense generation. \\
 RMTransformer / PathFinder \cite{rmtransformer2025,pathfinder2025} &
 \(\approx\SI{1.82}{dB}\) / \(\approx\SI{1.19}{dB}\) converted references &
 Useful scale checks, but random/specialized splits and different assumptions. \\
@@ -1192,11 +1506,18 @@ Final generator & Masks, priors, PL/DS/AS prediction, numeric export; CUDA mixed
 
 \section{Discussion}
 
-The paper version reveals what the full thesis should preserve. The core
-argument is not the 80-attempt chronology. It is the chain: strict evaluation
-contract, distribution diagnosis, calibrated priors, bounded residual
-correction, and held-out-city evidence. Most development history is valuable
-only when it supports one of those links.
+The final result is best interpreted as evidence for a hybrid CKM design rather
+than as a claim that one backbone solves radio mapping in general. The strongest
+technical signal is that the residual model improves a high-quality frozen
+prior across train, validation, test, and every morphology/height audit
+group. That makes the gain harder to dismiss as overfitting to a single easy
+city mix. At the same time, the modest size of the delay-spread gain is a useful
+warning: once the calibrated prior has absorbed the large geometry trend, the
+remaining spread error is dominated by rare tails and target quantization, not
+by a smooth missing term. The residual errors that remain are most likely where
+low UAV elevation, dense local clutter, and NLoS support coincide, because
+those pixels depend on the particular blocked/scattered path selected by the
+ray tracer rather than only on broad radial or morphology statistics.
 
 Several limitations remain. First, the labels come from ray tracing rather than
 field measurements, so the result is simulator agreement, not over-the-air
@@ -1210,20 +1531,59 @@ city-holdout split and one final training seed. Fourth, the dataset fixes
 frequency, antenna pattern, and simulator assumptions; deployment would require
 conditioning or calibration across those variables.
 
+\section{Code Availability}
+
+The reproducibility record is public as live source repositories. For archival
+submission, these repositories should be pinned to release tags or DOI-backed
+snapshots; the citations below identify the current public source locations.
+The standalone CKM Generator repository contains the Streamlit interface,
+command-line generator, frozen calibration files, final-model runtime code, and
+the published checkpoint path used by the demonstrator
+\cite{moreno2026ckmgenerator}; it is the inference/demo entry point. The final training and evaluation
+implementation is collected separately in the final-code repository
+\cite{moreno2026finalcode}; it is the source record for reproducing the paper
+metrics. For traceability, the broader development history
+and the LaTeX thesis source are also archived in public repositories
+\cite{moreno2026tfgprogress,moreno2026tfgtext}. Large data and model artifacts
+are treated as external artifacts or Git LFS objects rather than ordinary
+source files.
+
 \section{Conclusion}
 
-A dense UAV CKM predictor should not be designed as a generic image generator.
-In this setting, the best final result came from a hybrid prior-anchored
-formulation: frozen calibrated priors model stable radial, visibility, and
-spread-statistical structure; a shared neural model learns bounded residuals
-for the remaining local errors. The final model improves the frozen priors on
-unseen cities for path loss, delay spread, and angular spread, and produces a
-fast full-resolution generator. As a compression of the thesis, this paper
-suggests that the full document can be shortened aggressively by keeping the
-final design chain and moving most chronological attempt detail to appendices
-or repository documentation.
+This paper reports the final thesis result as a dense UAV CKM surrogate under a
+strict city-holdout contract. The answer to the first research question is
+positive within that contract, but the path to that answer matters. The earlier
+distribution-aware GMM heads without frozen priors were not the best final
+predictors; they were worse than the final prior-anchored system. Their value
+was diagnostic: they showed that the earlier failures were not caused by
+path loss, delay spread, and angular spread being impossible dense targets, but
+by using output heads and losses that collapsed multi-modal or spike-plus-tail
+distributions. The final shared model then closes RQ1 by predicting all three
+maps jointly in one generator, reaching \SI{1.6519}{dB},
+\SI{26.5570}{ns}, and \(11.3854^\circ\) on unseen cities.
+
+The answer to the second question is that the useful split is not ``physics or
+neural'', but calibrated physics/statistics first and bounded neural residuals
+second. Frozen priors explain most radial, visibility, height, and spread-scale
+structure; the final model improves those priors by \SI{0.2865}{dB},
+\SI{1.5453}{ns}, and \(2.3562^\circ\) RMSE on the held-out test set. The
+answer to the height question is also positive but conditional: continuous UAV
+height can be handled by height-aware priors plus sinusoidal embeddings and
+FiLM modulation, so one model can cover the varying-height range without
+per-altitude retraining, but low-altitude and NLoS-heavy cases remain the
+regimes that require explicit reporting.
+
+The main practical conclusion is therefore narrow and useful. For this fixed
+ray-traced CKM simulation contract, a prior-anchored residual GMM-head model is
+accurate, fast, and interpretable enough to replace repeated map generation for
+many planning experiments, achieving a measured \(113.7\times\) speed-up over
+the local MATLAB ray-tracing path. The result is a reproducible surrogate for a
+defined dataset, split, carrier, antenna setup, and receiver mask, and its
+clearest lesson is methodological: diagnose the target distribution, freeze the
+stable structure in auditable priors, and spend neural capacity on the residual
+uncertainty that the priors cannot explain.
 
 \bibliographystyle{IEEEtran}
-\bibliography{../reduced/TFG/TFG}
+\bibliography{TFG}
 
 \end{document}

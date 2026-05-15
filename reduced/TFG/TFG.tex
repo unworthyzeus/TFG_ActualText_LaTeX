@@ -100,6 +100,7 @@
 \clearpage
 \phantomsection
 \addcontentsline{toc}{section}{\ifcase\doclanguage\or Índex\or Índice\else Contents\fi}
+\setcounter{tocdepth}{2}
 \tableofcontents
 
 
@@ -122,12 +123,16 @@
 \markboth{\AbbrvName}{\AbbrvName}
 \phantomsection
 \addcontentsline{toc}{section}{\AbbrvName}
+\begingroup
+\small
+\setlength{\parskip}{1pt plus 0.5pt minus 0.2pt}
 \printacronyms[
   heading=none,
   display=all,
   include=abbrev,
   name=\AbbrvName,
 ]
+\endgroup
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -166,23 +171,35 @@
   \setlength{\intextsep}{8pt plus 2pt minus 2pt}%
   \captionsetup{font=small,skip=4pt}%
 }
+\newif\ifcompacttfg
+% The *_compact chapters are kept as a last-resort reduction path in case the
+% committee asks for a much shorter manuscript. The normal TFG build uses the
+% full chapters below; switch this to \compacttfgtrue only for that fallback.
+\compacttfgfalse
+\newcommand{\inputmainchapter}[2]{%
+  \ifcompacttfg
+    \input{#1}%
+  \else
+    \input{#2}%
+  \fi
+}
 \usecompactmainbody
 
 % Introduction.
-\input{introduction}
+\inputmainchapter{introduction_compact}{introduction}
 
 
 % State of the art chapter.
-\input{state_of_art}
+\inputmainchapter{state_of_art_compact}{state_of_art}
 
 
 % Methodology chapter.
-\input{methodology}
+\inputmainchapter{methodology_compact}{methodology}
 
 
 %%%% RESULTS %%%%
 % Results chapter.
-\input{results}
+\inputmainchapter{results_compact}{results}
 
 
 % Budget is integrated into the sustainability analysis chapter.
@@ -190,33 +207,34 @@
 
 %%%% SUSTAINABILITY REPORT %%%%    <<<<<<<<<<<<<<<< NEW !!
 % Sustainability chapter.
-\input{sustainability}
+\inputmainchapter{sustainability_compact}{sustainability_balanced}
 
 
 %%%% CONCLUSIONS AND FUTURE WORK %%%%
 % Conclusions chapter.
-\input{conclusions}
+\inputmainchapter{conclusions_compact}{conclusions}
 
 
 %%%% BIBLIOGRAPHY %%%%
-\userelaxedappendixspacing
+\usecompactmainbody
 % Bibliography intro
 \defbibnote{bib-intro}{%
 References used for the propagation models, neural-network baselines, training
 techniques, and evaluation methods cited in this thesis.
 }
 \nocite{moreno2026ckmgenerator,moreno2026finalcode,moreno2026tfgprogress,moreno2026tfgtext}
+\begingroup
+\small
+\setlength{\bibitemsep}{1pt plus 0.3pt}
+\setlength{\emergencystretch}{3em}
 \printbibliography[heading=bibintoc,prenote={bib-intro}]
+\endgroup
 
 
 %%%% ANNEXES %%%%
 % All chapters AFTER the \appendix command wil be considered appendices and numbered by letter
 \appendix
-\input{appendices}
-
-%%%% FINAL CLOSING BLANK PAGE %%%%
-\clearpage
-\thispagestyle{empty}
-~
+\userelaxedappendixspacing
+\input{appendices_compact}
 
 \end{document}

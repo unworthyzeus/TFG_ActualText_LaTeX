@@ -1,0 +1,420 @@
+\chapter{Methodology / project development}
+\label{chap:methodology}
+
+This compact methodology follows the paper structure while keeping the thesis
+evidence that matters: the experimental contract, the development lessons that
+justify the final route, the detailed frozen-prior formulas, and the final
+prior-anchored residual GMM head. The longer derivation files
+\texttt{methodology.tex}, \texttt{prior\_detail\_try78.tex},
+\texttt{prior\_detail\_try79.tex} and \texttt{prior\_detail\_try80.tex}
+remain in the repository as source-level mathematical notes; the compiled text
+below keeps the same formulas in a shorter paper-style form.
+
+\section{Dataset and evaluation contract}
+
+Each sample is a complete \(513\times513\) CKM with
+\SI{1}{m}\(\times\)\SI{1}{m} pixels. The UAV transmitter is always
+horizontally centred in the map, but its antenna height \(h_{\mathrm{tx}}\)
+varies by sample and is one of the main physical conditioning variables. Every
+non-building pixel is an active receiver at
+\(h_{\mathrm{rx}}=\SI{1.5}{m}\). Building pixels are not receiver locations and
+are removed from the loss and metrics.
+
+\begin{table}[htbp]
+\centering
+\scriptsize
+\caption{City-holdout assignment used by the distribution-first and final neural models.}
+\label{tab:split_city_assignment}
+\begin{tabularx}{\textwidth}{lrrX}
+\toprule
+Split & Samples & Cities & City names \\
+\midrule
+Train & 10840 & 37 & Abidjan, Abu Dhabi, Alexandria, Antigua Guatemala,
+Athens, Bangalore, Bangkok, Bath, Berlin, Bratislava, Brugge, Buenos Aires,
+Canberra, Chefchaouen, Dalian, Hanoi, Ho Chi Minh City, Hyderabad, Kinshasa,
+Leuven, Ljubljana, Luanda, Lyon, Manaus, Minsk, Nagpur, Paris,
+Rio de Janeiro, Santiago, Shanghai, Siem Reap, St.~Louis, Thane, Toledo,
+Valparaiso, Venice, Vienna. \\
+Validation & 2750 & 15 & Bilbao, Chiang Mai, Cleveland, Dhaka, Dubrovnik,
+Fortaleza, Marrakesh, Mexico City, Munich, Nazareth, Nice, Salvador, Segovia,
+Tunis, Victoria. \\
+Test & 2590 & 14 & Barcelona, Beijing, Carcassonne, Copenhagen, Halifax,
+Jaipur, Johannesburg, Key West, Kuala Lumpur, Osaka, Phuket, Pune, Surat,
+Vancouver. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The receiver-valid mask is
+\begin{equation}
+  m_{\mathrm{ground}}(i,j)=
+  \begin{cases}
+    1,& \mathrm{topology}(i,j)=0,\\
+    0,& \mathrm{otherwise},
+  \end{cases}
+  \label{eq:ground_mask}
+\end{equation}
+so all reported pixel errors are pooled over the non-building receivers:
+\begin{equation}
+  \mathrm{RMSE}
+  =
+  \sqrt{
+  \frac{\sum_{s,i,j} m_s(i,j)(\hat y_s(i,j)-y_s(i,j))^2}
+       {\sum_{s,i,j} m_s(i,j)}
+  }.
+  \label{eq:rmse}
+\end{equation}
+The split is city-level, not random-pixel or random-crop. This is essential:
+the model is evaluated on unseen urban layouts rather than on other samples
+from cities already seen during training.
+
+\section{Development lessons retained from the attempt history}
+
+The methodology changed in exposition, not in the final experimental contract.
+The long chronological version recorded many intermediate attempts; the
+compact version keeps only the evolution that explains why the final method is
+structured as it is.
+
+\begin{enumerate}
+\setlength\itemsep{0.15em}
+\item Direct U-Net and cGAN baselines validated the aligned image-to-image
+pipeline, but adversarial visual realism did not solve physical error.
+\item The ground-mask correction made building pixels invalid for training and
+reporting; older numbers became historical trend markers rather than a single
+leaderboard.
+\item PMNet/PMHHNet-style residual learning showed that height conditioning,
+LoS/NLoS diagnosis and physical channels help, but point regression still
+collapsed hard NLoS tails.
+\item Distribution-first GMM models proved that the NLoS error was not
+inevitable: representing the target distribution fixed much of the collapse
+even without explicit physical priors.
+\item The final path-loss and spread priors showed that large parts of the
+problem are better handled by train-only calibrated estimators.
+\item The final model combines both lessons: frozen priors explain stable
+structure and a residual GMM head learns bounded local corrections.
+\end{enumerate}
+
+Thus the prior is useful but not magical. It is not external knowledge that
+solves the task by itself; it is a strong, frozen, auditable estimator of the
+part of the map that is easier to calibrate than to relearn. LoS path loss,
+NLoS path loss, delay spread and angular spread are treated differently because
+their empirical distributions are different.
+
+\section{Final pipeline}
+\label{sec:priors_overview}
+
+\begin{figure}[htbp]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+  font=\scriptsize,
+  box/.style={draw, thick, rounded corners=2pt, rectangle, minimum width=2.75cm, minimum height=0.75cm, align=center},
+  input/.style={box, fill=gray!15},
+  prior/.style={box, fill=blue!8},
+  cal/.style={box, fill=green!10},
+  model/.style={box, fill=orange!12},
+  arr/.style={-{Stealth[length=2.1mm]}, thick, rounded corners=3pt}
+]
+\node[input] (support) at (0,0) {Topology + masks\\centred UAV\\variable \(h_{\mathrm{tx}}\)};
+\node[prior] (los) at (3.4,1.35) {LoS PL\\FSPL + two-ray\\height-bin curves};
+\node[prior] (nlos) at (3.4,0) {NLoS PL\\COST/A2G envelope\\\(\mathbf{x}_{78}\) OLS};
+\node[prior] (spread) at (3.4,-1.35) {DS/AS\\\(\log(1+y)\) raw prior\\\(\mathbf{x}_{79}\) ridge};
+\node[cal] (stack) at (6.9,0) {Frozen prior maps\\PL, DS, AS};
+\node[model] (net) at (10.2,0) {Shared U-Net\\FiLM height conditioning\\residual GMM heads};
+\node[input, fill=orange!18] (out) at (13.4,0) {Continuous PL, DS, AS};
+\draw[arr] (support.east) -- ++(0.45,0) |- (los.west);
+\draw[arr] (support.east) -- (nlos.west);
+\draw[arr] (support.east) -- ++(0.45,0) |- (spread.west);
+\draw[arr] (los.east) -- ([yshift=0.28cm]stack.west);
+\draw[arr] (nlos.east) -- (stack.west);
+\draw[arr] (spread.east) -- ([yshift=-0.28cm]stack.west);
+\draw[arr] (stack.east) -- (net.west);
+\draw[arr] (net.east) -- (out.west);
+\end{tikzpicture}}
+\caption{Final prior-anchored CKM pipeline. Frozen height-aware priors are
+computed first and then used as input channels for the residual GMM model.}
+\label{fig:pipeline}
+\end{figure}
+
+The model receives nine aligned channels: topology, LoS mask, NLoS mask,
+ground mask, combined path-loss prior, LoS path-loss prior, NLoS path-loss
+prior, delay-spread prior and angular-spread prior. The scalar
+\(h_{\mathrm{tx}}\) is encoded with sinusoidal features and injected through
+FiLM modulation \cite{perez2018film}. The network therefore learns a residual
+around already height-aware priors instead of inferring all height effects from
+pixels alone.
+
+\section{Path-loss prior}
+\label{sec:try78_detail}
+
+The path-loss prior (Try 78 in the implementation records) has two branches.
+The LoS branch is a coherent two-ray model plus calibrated height/radius
+corrections. For each receiver pixel, with \(d_{2D}\) measured from the centred
+transmitter,
+\begin{equation}
+\begin{aligned}
+d_{\mathrm{LoS}}&=\sqrt{d_{2D}^2+(h_{\mathrm{tx}}-h_{\mathrm{rx}})^2},\\
+d_{\mathrm{ref}}&=\sqrt{d_{2D}^2+(h_{\mathrm{tx}}+h_{\mathrm{rx}})^2}.
+\end{aligned}
+\label{eq:d_los_ref_compact}
+\end{equation}
+The free-space term is
+\begin{equation}
+\mathrm{FSPL}
+=32.45+20\log_{10}\!\left(\frac{d_{\mathrm{LoS}}}{1000}\right)
++20\log_{10}(f_{\mathrm{MHz}}).
+\label{eq:fspl}
+\end{equation}
+The coherent reflection correction is
+\begin{equation}
+C_{\mathrm{2ray}}
+=-20\log_{10}\!\left|
+1+\rho(h_{\mathrm{tx}})\frac{d_{\mathrm{LoS}}}{d_{\mathrm{ref}}}
+e^{-j(k(d_{\mathrm{ref}}-d_{\mathrm{LoS}})+\phi(h_{\mathrm{tx}}))}
+\right|.
+\label{eq:c2ray}
+\end{equation}
+The deployed LoS prior is
+\begin{equation}
+\mathrm{PL}_{\mathrm{LoS}}
+=\mathrm{FSPL}+C_{\mathrm{2ray}}+b(h_{\mathrm{tx}})
++r(d_{2D},h_{\mathrm{tx}}).
+\label{eq:pl_los}
+\end{equation}
+Here \(\rho\) and \(\phi\) are effective reflection amplitude and phase,
+fitted in \SI{5}{m} height bins, smoothed across bins and interpolated to the
+actual UAV height. The term \(b\) removes a remaining height-dependent offset
+and \(r\) is a smoothed radial residual table. These extra terms are outside
+the textbook two-ray formula; they make the prior match the CKM dataset while
+keeping the ring-like LoS structure explicit and auditable.
+
+The NLoS branch begins with a conservative raw blocked-link prior. A
+COST231-shaped urban term is
+\begin{equation}
+\begin{aligned}
+\mathrm{PL}_{C}
+={}&46.3+33.9\log_{10}(f_{\mathrm{MHz}})
+-13.82\log_{10}(h_{\mathrm{tx}})-a(h_{\mathrm{rx}})\\
+&+\left(44.9-6.55\log_{10}(h_{\mathrm{tx}})\right)
+\log_{10}(d_{\mathrm{km}})+3,
+\end{aligned}
+\label{eq:cost231}
+\end{equation}
+and an elevation-aware A2G-NLoS envelope is
+\begin{equation}
+\mathrm{PL}_{\mathrm{A2G,NLoS}}
+=\lambda_0(h_{\mathrm{tx}},f)+\beta_{\mathrm{NLoS}}
++A_{\mathrm{NLoS}}\exp\!\left(-\frac{90-\theta^\circ}{\tau_{\mathrm{NLoS}}}\right),
+\label{eq:a2g_nlos}
+\end{equation}
+with \(\lambda_0=20\log_{10}(4\pi h_{\mathrm{tx}}f/c)\). The raw NLoS prior is
+\begin{equation}
+P_0=\max(\mathrm{PL}_{C},\mathrm{PL}_{\mathrm{A2G,NLoS}}).
+\label{eq:nlos_raw}
+\end{equation}
+The final NLoS estimate is not this raw formula. It is a regime-wise linear
+calibration over morphology and height features:
+\begin{equation}
+\mathrm{PL}_{\mathrm{NLoS}}
+=\operatorname{clip}(\mathbf{x}_{78}^{\top}\mathbf{w}_{78,r},20,180),
+\label{eq:pl_nlos_final}
+\end{equation}
+where
+\begin{equation}
+\begin{aligned}
+\mathbf{x}_{78}=[&
+P_0^2,P_0,\log(1+d_{2D}),\rho_{15},\rho_{41},h_{15},h_{41},\\
+&\rho_{41}h_{41},\rho_{41}\log(1+d_{2D}),n_{15},n_{41},
+s,\theta,n_{41}\theta,1]^{\top}.
+\end{aligned}
+\label{eq:x78}
+\end{equation}
+\(\rho_k\) is local building density in a \(k\times k\) window, \(h_k\) is a
+local building-height statistic, \(n_k\) is local NLoS support, \(s\) is a
+shadow/blocker proxy and \(\theta\) is normalized elevation. The interaction
+terms let dense tall areas differ from sparse tall areas and let obstruction
+matter differently at different ranges and elevations. The coefficient vector
+\(\mathbf{w}_{78,r}\) is fitted on training cities only, with \(r\) selected
+from topology, LoS/NLoS and antenna-height regime fallbacks.
+
+The deployed path-loss prior is selected by the geometric visibility mask:
+\begin{equation}
+\mathrm{PL}_{\mathrm{prior}}
+=m_{\mathrm{LoS}}\mathrm{PL}_{\mathrm{LoS}}
++(1-m_{\mathrm{LoS}})\mathrm{PL}_{\mathrm{NLoS}}.
+\label{eq:pl_hybrid}
+\end{equation}
+
+\section{Delay and angular spread priors}
+\label{sec:try79_detail}
+
+The spread priors (Try 79 in the implementation records) are fitted in
+\(\log(1+y)\) space:
+\begin{equation}
+z=\log(1+y),
+\qquad
+\hat y=\exp(\hat z)-1.
+\label{eq:log_transform_79}
+\end{equation}
+This is necessary because delay spread and angular spread have a LoS spike near
+zero plus NLoS-heavy tails. The raw log prior is
+\begin{equation}
+\begin{aligned}
+z^{(0)}
+={}&\log(1+b^{\mathrm{nat}}_q)
++b_{\mathrm{top}}
++a_1\log(1+d_{2D})+a_2\theta_{\mathrm{inv}}\\
+&+a_3\rho_{41}+a_4h_{41}+a_5n_{41}
++a_6n_{41}\theta_{\mathrm{inv}},
+\end{aligned}
+\label{eq:raw_spread}
+\end{equation}
+where \(q\) is the LoS/NLoS state, \(b^{\mathrm{nat}}_q\) sets a native LoS or
+NLoS scale, \(b_{\mathrm{top}}\) is a topology-class shift,
+\(\theta_{\mathrm{inv}}\) is the low-elevation complement, and the morphology
+terms describe local density, height and NLoS support.
+
+The calibrated spread feature vector is
+\begin{equation}
+\begin{aligned}
+\mathbf{x}_{79}=[&
+(z^{(0)})^2,z^{(0)},\log(1+d_{2D}),\theta_{\mathrm{norm}},
+\theta_{\mathrm{inv}},h,h^2,\\
+&\rho_{15},\rho_{41},h_{15},h_{41},n_{15},n_{41},
+n_{41}\log(1+d_{2D}),\\
+&\rho_{41}\theta_{\mathrm{inv}},b_{41},1,c_{41},t_{41},
+\theta_{\mathrm{norm}}\rho_{41},\\
+&c_{41}\theta_{\mathrm{inv}},t_{41}\rho_{41},t_{41}n_{41}]^{\top}.
+\end{aligned}
+\label{eq:x79}
+\end{equation}
+Here \(h\) is normalized UAV height, \(b_{41}\) is blocker depth,
+\(c_{41}\) is transmitter clearance over nearby buildings, and \(t_{41}\) is
+the fraction of locally taller buildings. These terms make antenna height a
+first-class feature: the prior can distinguish a UAV above the local skyline
+from one near rooftop level.
+
+For each metric and regime, ridge calibration solves
+\begin{equation}
+\hat{\mathbf{w}}_{79,r}
+=
+\left(\mathbf{X}^{\top}\mathbf{X}
++\lambda\mathbf{D}^{\top}\mathbf{D}\right)^{-1}
+\mathbf{X}^{\top}\mathbf{z}.
+\label{eq:ridge}
+\end{equation}
+The spread dictionary contains 114 fitted keys, but this is not a single
+Cartesian product. For each spread metric, \(6\) topology classes times \(2\)
+visibility states times \(3\) height bins give \(36\) exact keys. The
+implementation adds \(12\) height-collapsed topology/visibility fallbacks,
+\(6\) topology-wide fallbacks, \(2\) global visibility fallbacks and \(1\)
+fully global fallback, for \(57\) keys per metric and \(114\) across DS and AS.
+
+\section{Prior-anchored residual GMM-head model}
+\label{sec:try80_detail}
+
+The final model (Try 80 in file names and JSON logs) predicts residual
+distributions around the frozen priors. For target
+\(t\in\{\mathrm{PL},\mathrm{DS},\mathrm{AS}\}\), visibility regime \(q\) and
+pixel \(x\), the head predicts mixture weights and bounded residual offsets:
+\begin{equation}
+\mu_{t,k}(x)
+=
+p_t(x)+c_{t,q(x)}\tanh r_{t,k}(x),
+\label{eq:try80_mu}
+\end{equation}
+where \(p_t(x)\) is the frozen prior, \(c_{t,q}\) is the residual cap for the
+target/regime and \(r_{t,k}\) is the learned raw residual. The deterministic
+map exported for metrics is the mixture expectation
+\begin{equation}
+\hat y_t(x)
+=
+\sum_{k=1}^{K}\pi_{t,k}(x)\,\mu_{t,k}(x),
+\qquad K=3 \text{ in the final residual head.}
+\label{eq:try80_point}
+\end{equation}
+The GMM head therefore has two roles: it represents residual uncertainty during
+training and it produces a continuous pixel-wise prediction at inference.
+
+\begin{figure}[htbp]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+  font=\scriptsize,
+  box/.style={draw, thick, rounded corners=2pt, rectangle, minimum width=2.9cm, minimum height=0.72cm, align=center},
+  inp/.style={box, fill=gray!14},
+  enc/.style={box, fill=blue!8},
+  head/.style={box, fill=orange!12},
+  arr/.style={-{Stealth[length=2.0mm]}, thick, rounded corners=3pt}
+]
+\node[inp] (x) at (0,0) {9 map channels\\+ \(h_{\mathrm{tx}}\) code};
+\node[enc] (stem) at (3.2,0) {Shared U-Net\\GroupNorm + FiLM};
+\node[head] (pl) at (6.6,1.1) {PL residual GMM\\\(\pi,\mu,\sigma\)};
+\node[head] (ds) at (6.6,0) {DS residual GMM\\\(\pi,\mu,\sigma\)};
+\node[head] (as) at (6.6,-1.1) {AS residual GMM\\\(\pi,\mu,\sigma\)};
+\node[inp, fill=green!10] (out) at (10.1,0) {Mixture expectation\\dense PL/DS/AS maps};
+\draw[arr] (x.east) -- (stem.west);
+\draw[arr] (stem.east) -- ++(0.3,0) |- (pl.west);
+\draw[arr] (stem.east) -- (ds.west);
+\draw[arr] (stem.east) -- ++(0.3,0) |- (as.west);
+\draw[arr] (pl.east) -- ++(0.25,0) |- (out.west);
+\draw[arr] (ds.east) -- (out.west);
+\draw[arr] (as.east) -- ++(0.25,0) |- (out.west);
+\end{tikzpicture}}
+\caption{Final residual GMM-head structure. The shared network predicts
+task-specific residual distributions; the pixel-wise output is the expectation
+of each anchored mixture.}
+\label{fig:try80_arch}
+\end{figure}
+
+\section{Objective and training settings}
+\label{sec:try80_objective}
+
+The full objective can include mixture NLL, empirical-distribution KL,
+moment matching, prior anchor, prior guard, outlier budget and deterministic
+RMSE/MAE terms:
+\begin{equation}
+\begin{aligned}
+\mathcal{L}
+=\sum_t w_t(&
+\lambda_{\mathrm{NLL}}\mathcal{L}_{\mathrm{NLL},t}
++\lambda_{\mathrm{KL}}\mathcal{L}_{\mathrm{KL},t}
++\lambda_{\mathrm{mom}}\mathcal{L}_{\mathrm{mom},t}\\
+&+\lambda_{\mathrm{anchor}}\mathcal{L}_{\mathrm{anchor},t}
++\lambda_{\mathrm{guard}}\mathcal{L}_{\mathrm{guard},t}
++\lambda_{\mathrm{out}}\mathcal{L}_{\mathrm{out},t}\\
+&+\lambda_{\mathrm{RMSE}}\mathcal{L}_{\mathrm{RMSE},t}
++\lambda_{\mathrm{MAE}}\mathcal{L}_{\mathrm{MAE},t}).
+\end{aligned}
+\label{eq:try80_total_loss}
+\end{equation}
+All terms are masked by \(m_{\mathrm{ground}}\). The final selected checkpoint
+is the result of a deterministic RMSE-dominant fine-tuning stage, so the
+probabilistic head is part of the architecture but the final claim is an RMSE
+improvement over frozen priors, not a calibrated uncertainty claim.
+
+\begin{table}[htbp]
+\centering
+\caption{Active loss and training settings in the final model family.}
+\label{tab:try80_loss_settings}
+\scriptsize
+\begin{tabularx}{\textwidth}{lXX}
+\toprule
+Setting & Residual/GMM stage & Final fine-tuning \\
+\midrule
+NLL / KL / moment / outlier & 1.00 / 0.25 / 0.10 / 0.02 & 0 / 0 / 0 / 0 \\
+RMSE / MAE & 1.50 / 0.10 & 1.00 / 0.05 \\
+Anchor / guard & 0.05 / 0.10 & 0.01 / 0.02 \\
+Task weights & PL 1.0, DS 1.0, AS 1.0 & PL 1.0, DS 0.25, AS 0.25 \\
+Learning rate & \(2\times10^{-4}\) & \(5\times10^{-5}\) \\
+Backbone & 128 base channels, 160-dimensional condition vector & same architecture \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The practical sequence was: wide residual model, relaxed residual caps,
+large-capacity residual model, and final RMSE-dominant fine-tuning. Older
+PMHHNet training devices such as SWA, EMA, CutMix, label noise and many
+auxiliary losses were intentionally not part of the final selected stage. The
+final design is simpler: train-only priors first, then a bounded residual model
+whose gains are measured against those priors on unseen cities.
