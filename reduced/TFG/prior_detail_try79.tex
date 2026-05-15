@@ -222,7 +222,11 @@ h_{\mathrm{norm}} =
 This compresses UAV height on a log scale and saturates it in \([0,1]\), using
 \(\log(401)\) as the scale associated with a 400 m height difference. Samples
 above that relative height are assigned \(h_{\mathrm{norm}}=1\), matching the
-implementation. The vector also includes \(h_{\mathrm{norm}}^2\), which is an
+implementation. This cap is intentional: the transmitter-height distribution has
+only a small high-altitude tail, so after splitting samples into
+topology-specific experts there is not enough support above 400 m to estimate a
+separate high-altitude response reliably. The vector also includes
+\(h_{\mathrm{norm}}^2\), which is an
 intentionally correlated basis expansion that lets the linear model learn a
 curved height effect.
 
