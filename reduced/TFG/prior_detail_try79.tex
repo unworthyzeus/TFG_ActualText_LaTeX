@@ -213,12 +213,16 @@ The new features beyond those in \(\textbf{x}_{78}\) are:
 
 \paragraph{Normalised transmitter height.}
 \begin{equation}
-h_{\mathrm{norm}} = \frac{\log\!\left(1+\max(h_{\mathrm{tx}}-h_{\mathrm{rx}},0)\right)}{\log(401)}
+h_{\mathrm{norm}} =
+\min\!\left\{1,\,
+\frac{\log\!\left(1+\max(h_{\mathrm{tx}}-h_{\mathrm{rx}},0)\right)}{\log(401)}
+\right\}
 \label{eq:hnorm}
 \end{equation}
-This compresses UAV height into \([0,1]\) on a log scale, using
-\(\log(401)\) as the normalizer for an expected maximum height difference of
-about 400 m. The vector also includes \(h_{\mathrm{norm}}^2\), which is an
+This compresses UAV height on a log scale and saturates it in \([0,1]\), using
+\(\log(401)\) as the scale associated with a 400 m height difference. Samples
+above that relative height are assigned \(h_{\mathrm{norm}}=1\), matching the
+implementation. The vector also includes \(h_{\mathrm{norm}}^2\), which is an
 intentionally correlated basis expansion that lets the linear model learn a
 curved height effect.
 
