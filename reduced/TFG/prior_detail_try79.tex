@@ -19,7 +19,9 @@ z_a-z_b
 Thus, a fixed error in \(z\) corresponds approximately to a fixed
 multiplicative error in \(1+y\). This is more appropriate than native-space
 least squares for spreads because large NLoS tails would otherwise dominate
-the fit and the near-zero LoS mass would be ignored.
+the fit and the near-zero LoS mass would be ignored. The calibrated spread
+prior is still a deterministic log-domain ridge estimator; it is not claiming
+to estimate the full spike-plus-tail probability distribution.
 
 \subsection{Pixel-wise notation for the spread-prior fit}
 

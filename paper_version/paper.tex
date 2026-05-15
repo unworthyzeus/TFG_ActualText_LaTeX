@@ -523,7 +523,8 @@ where \(C\) denotes the COST231-shaped branch,
 \(d_{\mathrm{km}}=\max(d_{2D}/1000,0.001)\), and \(a(h_{\mathrm{rx}})\)
 is the usual mobile-height correction. The second term is an A2G
 elevation-dependent NLoS envelope: it keeps the altitude/elevation structure of
-coverage-oriented A2G models, but its constants are fitted for this dataset:
+coverage-oriented A2G models, with fixed excess-loss constants later corrected
+by the train-only NLoS calibration:
 \begin{equation}
 \begin{aligned}
 \mathrm{PL}_{\mathrm{A2G,NLoS}}
@@ -533,7 +534,10 @@ coverage-oriented A2G models, but its constants are fitted for this dataset:
 \end{aligned}
 \label{eq:a2g-paper}
 \end{equation}
-with \(\lambda_0=20\log_{10}(4\pi h_{\mathrm{tx}}f/c)\). The raw blocked-link
+with \(\lambda_0=20\log_{10}(4\pi h_{\mathrm{tx}}f/c)\),
+\(\beta_{\mathrm{NLoS}}=-16.16\) dB,
+\(A_{\mathrm{NLoS}}=12.0436\), and
+\(\tau_{\mathrm{NLoS}}=7.52^\circ\). The raw blocked-link
 prior is the conservative envelope
 \begin{equation}
 P_0
@@ -555,8 +559,9 @@ regime-wise linear calibration:
 The path-loss prior is therefore not one formula with a small correction. It
 is two different calibrated feature extractors. The LoS side calibrates
 height-binned two-ray amplitude/phase, height bias, and radial residual curves.
-The NLoS side uses the raw blocked-link prior only as one feature in a
-15-term morphology vector:
+The NLoS side adds height-, building-topology-, and density-dependent
+calibration, using the raw blocked-link prior as only one feature in a 15-term
+morphology vector:
 \begin{equation}
 \begin{aligned}
 \mathbf{x}_{78}=[&

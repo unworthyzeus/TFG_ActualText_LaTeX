@@ -718,10 +718,13 @@ where:
 \label{eq:lambda0}
 \end{align}
 
-The fitted constants are:
+The fixed A2G-envelope constants used by the implementation are:
 $\beta_{\mathrm{NLoS}} = -16.16$ dB,
 $A_{\mathrm{NLoS}} = 12.0436$,
 $\tau_{\mathrm{NLoS}} = 7.52$ deg.
+These A2G constants are implementation constants in the Try~78/80 prior code
+rather than entries in the calibration JSON files; the JSON artifacts store the
+fitted LoS two-ray curves and the regime-wise NLoS calibration coefficients.
 
 \paragraph{Interpretation of Eq.~\eqref{eq:a2g_nlos}.}
 \begin{itemize}
@@ -729,16 +732,20 @@ $\tau_{\mathrm{NLoS}} = 7.52$ deg.
       frequency~\cite{khawaja_survey,wocc2021}. The CKM dataset uses
       $f = 7.125$ GHz (FR3 6G frequency band); for
       $h_{\mathrm{tx}} = 50$ m at that frequency, $\lambda_0 \approx 83.5$ dB.
-\item $\beta_{\mathrm{NLoS}} = -16.16$ dB: a baseline NLoS attenuation
-      offset relative to $\lambda_0$.
+\item $\beta_{\mathrm{NLoS}} = -16.16$ dB: a fixed baseline offset relative
+      to $\lambda_0$ in the raw A2G envelope.
 \item $A_{\mathrm{NLoS}}\exp(-\ldots)$: an exponential modulation with
       $(90 - \theta^\circ)$. When the elevation angle $\theta^\circ$ is high
       (UAV nearly overhead, $\theta^\circ \to 90^\circ$), the exponent
-      vanishes and the term goes to $A_{\mathrm{NLoS}}$. When $\theta^\circ$
-      is low (grazing incidence), the exponent is large and the term
-      approaches zero. The effect is that NLoS path loss \emph{decreases} as
-      the UAV moves overhead, consistent with improved clearance above
-      buildings.
+      vanishes and the term goes to \(A_{\mathrm{NLoS}}\). When
+      \(\theta^\circ\) is low (grazing incidence), the exponent is large and
+      the term approaches zero. With the current positive
+      \(A_{\mathrm{NLoS}}=12.0436\), this raw envelope therefore adds a larger
+      A2G offset at high elevation. The later
+      \(\max(\mathrm{COST231},\mathrm{A2G})\) switch and the regime-wise NLoS
+      calibration decide whether that branch is active in the final raw prior;
+      it should be read as a fitted conservative envelope, not as a standalone
+      monotonic law saying all overhead NLoS links have lower loss.
 \item $\tau_{\mathrm{NLoS}} = 7.52^\circ$: the characteristic angular scale.
       A low value means the transition from grazing to overhead happens
       sharply within a small elevation range.
@@ -766,10 +773,12 @@ source model is fully valid on its own.
 \subsubsection{Stage 2: raw hybrid prior assembly}
 
 The NLoS construction above defines only the obstructed branch. The full raw
-prior used by the calibration stage is assembled only after both branch
-estimates are available: the calibrated two-ray/A2G LoS branch from
+formula map used by the NLoS calibration stage is assembled only after both
+legacy branch estimates are available: the auxiliary LoS blend from
 Eq.~\eqref{eq:los_blend}, and the conservative NLoS branch from
-Eq.~\eqref{eq:nlos_raw}.
+Eq.~\eqref{eq:nlos_raw}. This auxiliary LoS blend is not the final enhanced
+two-ray LoS prior; it is retained only because \(\mathrm{PL}^{(0)}\) is one
+input feature of the calibrated NLoS branch.
 
 The legacy LoS blend is defined as:
 
@@ -803,13 +812,13 @@ m_{\mathrm{LoS}}(x)\,\mathrm{PL}_{\mathrm{LoS,blend}}(x)
 \end{equation}
 
 Since $m_{\mathrm{LoS}}(x)$ is binary, Eq.~\eqref{eq:pl0} is a hard switch:
-it selects the LoS expression on LoS pixels and the NLoS expression on NLoS
-pixels. The auxiliary blend in Eq.~\eqref{eq:los_blend} was used in older
-earlier variants to keep the LoS formula below an A2G envelope. In the final
-frozen path, LoS pixels come directly from the separate enhanced two-ray prior
-\(\mathrm{PL}_{\mathrm{LoS}}\) of Eq.~\eqref{eq:pl_los}; the raw hybrid map
-\(\mathrm{PL}^{(0)}\) in Eq.~\eqref{eq:pl0} is still computed as an input
-feature for the calibrated NLoS path-loss branch.
+it selects the auxiliary LoS expression on LoS pixels and the NLoS expression
+on NLoS pixels. The auxiliary blend in Eq.~\eqref{eq:los_blend} was used in
+older variants to keep the LoS formula below an A2G envelope. In the final
+frozen path, LoS output pixels come directly from the separate enhanced
+two-ray prior \(\mathrm{PL}_{\mathrm{LoS}}\) of Eq.~\eqref{eq:pl_los}; the raw
+hybrid map \(\mathrm{PL}^{(0)}\) in Eq.~\eqref{eq:pl0} is still computed only
+as an input feature for the calibrated NLoS path-loss branch.
 The LoS/NLoS mask used here is the explicit CKM mask provided with the
 dataset and treated as an available side channel. A deployment version would
 need to obtain an equivalent visibility mask from deterministic geometry or
@@ -1143,8 +1152,9 @@ screening would scale as $O(n^2)$ runs for a vector with $n$ terms, and each
 run would have to regenerate and inspect large calibration artifacts. The LoS
 two-ray calibration JSON used by the final model, for example, is about
 200\,000 lines long, mostly because it stores height-dependent radial residual
-profiles. The NLoS side adds further morphology-dependent calibration through
-building-density, building-height, NLoS-support and antenna-height features.
+profiles. The NLoS side adds further height-, building-topology-, and
+density-dependent morphology calibration through building-density,
+building-height, NLoS-support and antenna-height features.
 For this reason the prior should be read as a calibrated baseline with substantial
 stored structure, not as a single hand-written formula, and the final vector
 keeps some correlated terms when they improved validation behavior.
