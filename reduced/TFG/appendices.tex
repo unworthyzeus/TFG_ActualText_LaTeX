@@ -939,8 +939,9 @@ not change the mathematical definition of the generator.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png}
-\caption[Path-loss GMM target fits by topology expert.]%
-{Five-component Gaussian-mixture fits of the LoS and NLoS path-loss targets,
+\caption[Full non-residual DL GMM-head model for PL.]%
+{Full non-residual DL GMM-head model for path loss (PL): five-component
+Gaussian-mixture fits of the LoS and NLoS path-loss targets,
 shown separately for the six topology experts. This is the distribution seen
 by the specialised expert models, and is therefore more faithful than a single
 collapsed global curve. Per expert, the target is treated as a GMM rather than
@@ -948,7 +949,7 @@ as a perfect Gaussian: the LoS and NLoS marginals contain asymmetric shoulders,
 tails and rare outliers, including values outside the visible
 \SIrange{72}{128}{dB} plotting window. The solid curves show the total mixture
 density and the faint dotted curves show the individual Gaussian components.
-The dashed line marks the per-expert marginal mean.}
+The dashed lines mark the per-expert LoS and NLoS marginal means.}
 \label{fig:try76_los_vs_nlos_distribution}
 \end{figure}
 

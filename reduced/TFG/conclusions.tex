@@ -73,18 +73,20 @@ instead of forcing every target into a single smooth estimate.
 
 \subsection{Answers to the research questions}
 
-\textbf{RQ1: dense prediction under city holdout.} Dense CKM prediction is
-feasible under the strict protocol used in this thesis. The final model
-predicts PL, DS, and AS jointly on unseen cities and clears the original
+\textbf{RQ1. Can a single deep-learning surrogate predict per-pixel path loss,
+delay spread, and angular spread on \(513\times513\) channel-knowledge maps,
+under strict city-holdout evaluation, with errors compatible with the thesis
+targets?} Yes, within the fixed CKM contract used in this thesis. The final
+model predicts PL, DS, and AS jointly on unseen cities and clears the original
 targets: \SI{1.6519}{dB} path-loss RMSE, \SI{26.5570}{ns} delay-spread RMSE,
 and \SI{11.3854}{\degree} angular-spread RMSE. The result should be understood
-within the fixed CKM contract: one carrier frequency, one centred UAV, valid
-ground receivers only, and city-level train/validation/test separation. Within
-that contract, the answer is yes.
+under one carrier frequency, one centred UAV, valid ground receivers only, and
+city-level train/validation/test separation.
 
-\textbf{RQ2: prior versus neural prediction.} The answer is not ``physics or
-neural prediction'', but both in the right order. The calibrated priors put
-together the most predictable pieces of the problem: two-ray LoS path loss,
+\textbf{RQ2. Which part of the prediction should be left to a calibrated
+analytic prior and which part should be left to the neural network, so that the
+hybrid model is both accurate and interpretable?} The calibrated priors should
+handle the most predictable propagation structure: two-ray LoS path loss,
 height-binned LoS calibration, morphology-aware NLoS corrections, and
 log-domain ridge models for DS and AS. These priors are strong enough to be
 useful on their own. The neural model is then valuable because it learns bounded
@@ -92,15 +94,17 @@ residual corrections around them, reducing the frozen-prior test errors from
 \SI{1.9383}{dB}, \SI{28.1023}{ns}, and \(13.7416^\circ\) to
 \SI{1.6519}{dB}, \SI{26.5570}{ns}, and \(11.3854^\circ\).
 
-\textbf{RQ3: continuous UAV height.} Continuous UAV height can be handled when
-it is represented explicitly. In the final model, height enters twice: through
-height-aware calibrated priors and through a sinusoidal FiLM conditioning path
-inside the neural residual model. This is important because low-altitude cases
-are not just lower versions of high-altitude cases; they contain more blocked
-links, stronger transition zones, and harder spread tails. The height-binned
-results show that high-altitude samples are easier even though they are less
-represented in the training data, which confirms that the effect is physical
-rather than a sampling artifact.
+\textbf{RQ3. How does the continuous UAV transmitter height
+(\SIrange{12}{478}{m}) affect the prediction error, and is the same
+architecture able to cover the full height range without per-height
+retraining?} Height affects the difficulty of the prediction through visibility,
+blocking and spread-tail behaviour, so it must be represented explicitly. In
+the final model, height enters twice: through height-aware calibrated priors and
+through a sinusoidal FiLM conditioning path inside the neural residual model.
+Low-altitude cases contain more blocked links, stronger transition zones and
+harder spread tails, while high-altitude samples are easier even though they
+are less represented in the training data. This indicates that the height trend
+is physical, not only a sampling artifact.
 
 \subsection{Main contributions}
 

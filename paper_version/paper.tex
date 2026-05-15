@@ -120,9 +120,10 @@ loss, delay spread, angular spread).
 CKM work itself emphasizes that a radio map is not merely an image but a
 position-indexed channel side-information object \cite{zengx2021ckm,
 ckmtutorial2024,ckmdata2024}. This is why the evaluation protocol matters as
-much as the neural architecture. A random image split can reward memorization of
-urban morphology, whereas a city split tests whether the learned propagation
-surrogate transfers to unseen layouts.
+much as the neural architecture. A random image split can place visually similar
+samples from the same urban layouts in both training and testing, whereas a
+city split tests whether the learned propagation surrogate transfers to unseen
+layouts.
 
 Physics-informed and hybrid methods address a different weakness of pure image
 regression: the model should not need to rediscover stable propagation effects
@@ -1506,9 +1507,12 @@ frozen priors then provided stronger anchors: \SI{1.9246}{dB} path-loss RMSE,
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png}
-\caption{Path-loss target GMM fits by topology group. The diagnostic exposed
-different LoS/NLoS marginals and motivated distribution-aware heads before
-returning to prior-anchored residual learning.}
+\caption{Full non-residual DL GMM-head model for path loss (PL): target GMM-5
+fits by topology group. Thick curves show the summed LoS/NLoS mixture densities,
+faint dotted curves show the individual Gaussian components, and dashed vertical
+lines mark the marginal means. The diagnostic exposed different LoS/NLoS
+marginals and motivated distribution-aware heads before returning to
+prior-anchored residual learning.}
 \label{fig:gmm-fit}
 \end{figure}
 
