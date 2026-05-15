@@ -35,14 +35,14 @@ training cities.
 Deep radio-map prediction is usually formulated as image-to-image regression.
 RadioUNet \cite{radiounet2020}, PMNet \cite{pmnet2023}, RadioGUNet
 \cite{radiogunet2025}, RMTransformer \cite{rmtransformer2025}, PathFinder
-\cite{pathfinder2025}, ReVeal \cite{reveal2025}, and AIRMap
-\cite{airmap2025} are the closest methodological neighbours. They show that
-CNN, graph, attention, and digital-twin approaches can produce accurate radio
-maps when the geometry and split assumptions match the task. However, most of
-these references focus on path loss or received power only, often with fixed or
-terrestrial transmitter settings, and do not simultaneously predict dense
-path loss, delay spread and angular spread for a centred but variable-height
-UAV.
+\cite{pathfinder2025}, Gao et al.\ \cite{gao2026}, ReVeal \cite{reveal2025},
+and AIRMap \cite{airmap2025} are the closest methodological neighbours. They
+show that CNN, graph, attention, corridor-weighting, and digital-twin
+approaches can produce accurate radio maps when the geometry and split
+assumptions match the task. However, most of these references focus on path
+loss or received power only, often with fixed or terrestrial transmitter
+settings, and do not simultaneously predict dense path loss, delay spread and
+angular spread for a centred but variable-height UAV.
 
 Physics-informed and hybrid models are relevant because pure image regression
 can waste capacity relearning radial propagation laws. Prior-residual learning
@@ -122,6 +122,7 @@ PMNet / ICASSP \cite{pmnet2023,icassp2023challenge} & Strong outdoor path-loss-m
 RadioGUNet \cite{radiogunet2025} & Graph/U-Net radio maps, \SI{1.304}{dB} DPM and \SI{1.936}{dB} IRT reported & Outdoor RadioMapSeer setting; not the CKM UAV protocol. \\
 ReVeal \cite{reveal2025} & Outdoor sparse-measurement mapping, \SI{1.95}{dB} RMSE & Sparse reconstruction rather than dense topology-only generation. \\
 RMTransformer / PathFinder \cite{rmtransformer2025,pathfinder2025} & Attention/domain-adaptation radio-map references around the same PL scale & Different split and transmitter assumptions. \\
+Gao et al.\ \cite{gao2026} & Outdoor corridor-weighted PL model, \SI{5.59}{dB} on ICASSP~2023 and \SI{12.19}{dB} on ITU~2024 & Recent comparable PL reference; final PL is numerically lower, but protocols differ. \\
 AIRMap \cite{airmap2025} & Digital-twin radio-map generation with path-gain error below \SI{4}{dB} & Different target, map size and evaluation path. \\
 \textbf{Final model (this thesis)} & \textbf{\SI{1.6519}{dB} PL, \SI{26.5570}{ns} DS, \(11.3854^\circ\) AS} & \textbf{Strict city holdout, \(513\times513\) dense maps, centred variable-height UAV and joint PL/DS/AS output.} \\
 \bottomrule

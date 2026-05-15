@@ -1188,6 +1188,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{howpublished}{Public GitHub repository}
+      \field{note}{Snapshot commit 8b6c5fd26c30}
       \field{title}{{CKMGenerator}: Generator of Path Loss, Delay Spread and Angular Spread}
       \field{urlday}{6}
       \field{urlmonth}{5}
@@ -1226,6 +1227,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{howpublished}{Public GitHub repository}
+      \field{note}{Snapshot commit 63d12a3d1a05}
       \field{title}{{Final\_Code\_TFG}: Final Training and Evaluation Code}
       \field{urlday}{6}
       \field{urlmonth}{5}
@@ -1264,6 +1266,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{howpublished}{Public GitHub repository}
+      \field{note}{Snapshot tag final-thesis-2026-05-15}
       \field{title}{{TFG\_ActualText\_LaTeX}: Thesis Source}
       \field{urlday}{6}
       \field{urlmonth}{5}
@@ -1302,6 +1305,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{howpublished}{Public GitHub repository}
+      \field{note}{Snapshot commit 7c13efd51708}
       \field{title}{{TFGAllProgress\_Tries\_and\_Attempts}: Development History and Experimental Attempts}
       \field{urlday}{6}
       \field{urlmonth}{5}

@@ -89,6 +89,14 @@ Z.~Zhong, Z.~Yu, P.~Li, J.~Lv, C.~L.~P. Chen, and M.~Chen, ``{PathFinder}:
   \url{https://arxiv.org/abs/2512.14150}
 \BIBentrySTDinterwordspacing
 
+\bibitem{gao2026}
+\BIBentryALTinterwordspacing
+Y.~Gao, T.~Wen, W.~Xie, J.~Du, Y.~Zeng, D.~Niyato, and S.~Xu, ``Effective
+  outdoor pathloss prediction: A multi-layer segmentation approach with
+  weighting map,'' arXiv:2601.08436, 2026. [Online]. Available:
+  \url{https://arxiv.org/abs/2601.08436}
+\BIBentrySTDinterwordspacing
+
 \bibitem{airmap2025}
 \BIBentryALTinterwordspacing
 A.~Saeizadeh, M.~Tehrani-Moayyed, D.~Villa, J.~G.~B. Jr., P.~Johari,
@@ -222,29 +230,30 @@ E.~Perez, F.~Strub, H.~de~Vries, V.~Dumoulin, and A.~Courville, ``{FiLM}:
 \bibitem{moreno2026ckmgenerator}
 \BIBentryALTinterwordspacing
 G.~Moreno~Garcia, ``{CKMGenerator}: Generator of path loss, delay spread and
-  angular spread,'' Public GitHub repository, 2026. [Online]. Available:
+  angular spread,'' Public GitHub repository, 2026, snapshot commit
+  8b6c5fd26c30. [Online]. Available:
   \url{https://github.com/unworthyzeus/CKMGenerator}
 \BIBentrySTDinterwordspacing
 
 \bibitem{moreno2026finalcode}
 \BIBentryALTinterwordspacing
 G.~Moreno~Garcia, ``{Final\_Code\_TFG}: Final training and evaluation code,''
-  Public GitHub repository, 2026. [Online]. Available:
-  \url{https://github.com/unworthyzeus/Final_Code_TFG}
+  Public GitHub repository, 2026, snapshot commit 63d12a3d1a05. [Online].
+  Available: \url{https://github.com/unworthyzeus/Final_Code_TFG}
 \BIBentrySTDinterwordspacing
 
 \bibitem{moreno2026tfgprogress}
 \BIBentryALTinterwordspacing
 G.~Moreno~Garcia, ``{TFGAllProgress\_Tries\_and\_Attempts}: Development history
-  and experimental attempts,'' Public GitHub repository, 2026. [Online].
-  Available:
+  and experimental attempts,'' Public GitHub repository, 2026, snapshot commit
+  7c13efd51708. [Online]. Available:
   \url{https://github.com/unworthyzeus/TFGAllProgress_Tries_and_Attempts}
 \BIBentrySTDinterwordspacing
 
 \bibitem{moreno2026tfgtext}
 \BIBentryALTinterwordspacing
 G.~Moreno~Garcia, ``{TFG\_ActualText\_LaTeX}: Thesis source,'' Public GitHub
-  repository, 2026. [Online]. Available:
+  repository, 2026, snapshot tag final-thesis-2026-05-15. [Online]. Available:
   \url{https://github.com/unworthyzeus/TFG_ActualText_LaTeX}
 \BIBentrySTDinterwordspacing
 

@@ -372,7 +372,7 @@ model-correction map is the direct qualitative evidence for that claim.
 \begin{table}[H]
 \centering
 \caption[Final-model appendix panel index.]%
-{Final residual GMM-head model appendix panels generated from validation samples with the
+{Final residual GMM-head model appendix panels generated from selected validation/test samples with the
 selected final model.}
 \label{tab:try80_appendix_panels}
 \footnotesize
@@ -386,7 +386,7 @@ mixed/low & Dubrovnik & sample\_05288 & low \\
 mixed/mid & Nice & sample\_10828 & mid \\
 mixed/high & Nice & sample\_10814 & high \\
 dense/low & Chiang Mai & sample\_04519 & low \\
-dense/mid & Tunis & sample\_14651 & mid \\
+dense/mid & Vancouver & sample\_15265 & mid \\
 dense/high & Tunis & sample\_14694 & high \\
 \bottomrule
 \end{tabular}
@@ -451,9 +451,9 @@ validation sample in Chiang Mai.}
 \clearpage
 \begin{figure}[p]
 \centering
-\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis_sample_14651_6x3.png}
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Vancouver_sample_15265_6x3.png}
 \caption{Final residual GMM-head model \(6\times3\) inspection panel for a dense, mid-antenna
-validation sample in Tunis.}
+held-out test sample in Vancouver.}
 \label{fig:appendix_try80_dense_mid}
 \end{figure}
 
@@ -1428,7 +1428,7 @@ Complete final-generator path & \SI{0.88}{s} & \(100\%\) \\
 \end{table}
 \normalsize
 
-Figure~\ref{fig:try80_panel} shows a representative final-model validation
+Figure~\ref{fig:try80_panel} shows a representative final-model held-out test
 inspection panel. The same plotting script is used for all appendix panels:
 the three columns are path loss, delay spread, and angular spread, while the
 six rows are the ground truth, frozen prior, final prediction,
@@ -1440,10 +1440,10 @@ prior-error row.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis_sample_14651_6x3.png}
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Vancouver_sample_15265_6x3.png}
 \caption[Representative final-model inspection panel.]%
 {Representative final-model \(6\times3\) inspection panel for a dense,
-mid-antenna validation diagnostic sample in Tunis. Columns: path loss, delay
+mid-antenna held-out test sample in Vancouver. Columns: path loss, delay
 spread, angular spread. Rows: ground truth, frozen prior, final
 prediction, context / support mask, prior error
 ($\mathrm{Prior}-\mathrm{GT}$), and model correction

@@ -4,7 +4,8 @@
   "checkpoint": "C:\\TFG\\TFGpractice\\cluster_outputs\\TFGEightiethTry80\\try80_joint_huge_pathloss_finetune\\best_model.pt",
   "device": "privateuseone:0",
   "main_panel_layout": "6x3",
-  "main_panel": "try80_panel_dense_mid_ant_Tunis_sample_14651_6x3.png",
+  "main_panel_split": "test",
+  "main_panel": "try80_panel_dense_mid_ant_Vancouver_sample_15265_6x3.png",
   "panels": [
     {
       "file": "try80_panel_open_low_ant_Segovia_sample_13213.png",

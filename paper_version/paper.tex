@@ -24,6 +24,12 @@
 \usetikzlibrary{arrows.meta,positioning,fit,calc}
 \usepackage[hidelinks]{hyperref}
 \urlstyle{same}
+\hypersetup{
+  pdftitle={Prior-Anchored Deep Learning for Dense UAV Air-to-Ground Channel Knowledge Maps},
+  pdfauthor={Guillem Moreno Garcia, Evgenii Vinogradov, Sergi Abadal},
+  pdfsubject={Dense UAV channel knowledge map prediction with prior-anchored residual learning},
+  pdfkeywords={channel knowledge map, UAV, 6G, path loss, delay spread, angular spread, Gaussian mixture model}
+}
 
 \graphicspath{{./}}
 \sisetup{detect-all=true}
@@ -44,11 +50,13 @@ guillem.moreno.garcia@estudiantat.upc.edu.}%
 Channel knowledge maps (CKMs) promise fast environment-aware radio planning, but
 dense air-to-ground CKM generation remains difficult when path loss, delay
 spread, and angular spread must all be predicted over unseen urban layouts. This
-paper condenses a full thesis project into its final technical line: a strict
-city-holdout evaluation protocol, train-only calibrated physical/statistical
-priors, and a bounded residual neural model with a Gaussian-mixture residual
-head. The final model predicts \(513\times513\) dense maps from topology,
-geometric masks, UAV height, and frozen priors. On held-out cities it reaches
+paper studies a strict city-holdout evaluation protocol, train-only calibrated
+physical/statistical priors, and a bounded residual neural model with a
+Gaussian-mixture residual head. The final model predicts \(513\times513\) dense
+maps from topology, geometric masks, UAV height, and frozen priors. It is
+trained through a probabilistic residual/GMM stage followed by deterministic
+RMSE-oriented fine-tuning; reported maps use the pixel-wise mixture expectation.
+On held-out cities it reaches
 \SI{1.6519}{dB} path-loss RMSE, \SI{26.5570}{ns} delay-spread RMSE, and
 \(11.3854^\circ\) angular-spread RMSE, reducing RMSE relative to the frozen
 priors for all three targets. The result supports a hybrid design principle: use calibrated priors
@@ -73,10 +81,10 @@ the link \cite{khawaja_survey,saboor2025height}. A practical CKM surrogate,
 however, must generalize to urban layouts not seen during training and must not
 hide hard propagation regimes behind a single global score.
 
-The thesis behind this paper began as a generic dense image-to-image learning
-problem, but that formulation was not sufficient. Early U-Net and cGAN models
-could draw plausible maps, yet their physical errors remained large under a
-ground-only metric. PMNet-inspired and U-Net-style backbones improved smooth LoS structure
+A pure dense image-to-image formulation was not sufficient for this setting.
+Early U-Net and cGAN models could draw plausible maps, yet their physical
+errors remained large under a ground-only metric. PMNet-inspired and
+U-Net-style backbones improved smooth LoS structure
 but did not solve NLoS mode collapse or the spike-plus-tail nature of spread
 targets. The final design therefore moved away from ``bigger backbone first''
 and toward a hybrid sequence:
@@ -100,11 +108,12 @@ showed that U-Net-like architectures can perform well for path-loss maps
 \cite{pmnet2023,icassp2023challenge}. More recent models introduce attention,
 equivariance, or domain-shift machinery, including RMTransformer
 \cite{rmtransformer2025}, RadioGUNet \cite{radiogunet2025}, PathFinder
-\cite{pathfinder2025}, and digital-twin radio-map generators such as AIRMap
-\cite{airmap2025}. These papers provide the closest dense path-loss map
-context, but they generally do not match the present contract: continuous UAV
-height, strict city holdout on CKM samples, and three dense targets (path loss,
-delay spread, angular spread).
+\cite{pathfinder2025}, Gao et al.'s corridor-weighted multi-layer
+segmentation model \cite{gao2026}, and digital-twin radio-map generators such
+as AIRMap \cite{airmap2025}. These papers provide the closest dense path-loss
+map context, but they generally do not match the present contract: continuous
+UAV height, strict city holdout on CKM samples, and three dense targets (path
+loss, delay spread, angular spread).
 
 CKM work itself emphasizes that a radio map is not merely an image but a
 position-indexed channel side-information object \cite{zengx2021ckm,
@@ -137,7 +146,7 @@ benchmarks here.
 \section{Task and Evaluation Protocol}
 
 Each sample is a \(513\times513\) urban topology map from the ray-traced CKM
-setting used throughout the thesis. The carrier is fixed at
+setting used in this work. The carrier is fixed at
 \SI{7.125}{GHz}, so frequency is not a learned variable; the main transmitter
 degree of freedom is height. There is one UAV transmitter at the map centre.
 The transmitter horizontal position is fixed, but its antenna height
@@ -298,7 +307,7 @@ must improve an already calibrated predictor rather than merely beat FSPL.
 \draw[arr] (stack.east) -- (net.west);
 \draw[arr] (net.east) -- (out.west);
 \end{tikzpicture}}
-\caption{Compact thesis-style pipeline. The transmitter is always centred, but
+\caption{Compact prior-anchored pipeline. The transmitter is always centred, but
 its height varies by sample. Frozen height-aware priors are produced first and
 then used as channels for the final prior-anchored residual GMM model.}
 \label{fig:pipeline}
@@ -781,7 +790,7 @@ absolute free-space attenuation, altitude trends, or the average spread scale
 from pixels alone. It learns where the frozen estimates are locally biased and
 how the remaining residual distribution should be placed across the map.
 
-The height path mirrors the detailed thesis implementation. The scalar
+The height path mirrors the full implementation. The scalar
 \(h_{\mathrm{tx}}\) is expanded to a 32-dimensional sinusoidal code using
 16 log-spaced frequencies over the UAV-height range,
 \begin{equation}
@@ -880,7 +889,7 @@ training a separate network per altitude bin.
 \draw[skiparr] ([yshift=0.18cm]down1.north) -- ([yshift=0.18cm]up1.north);
 \draw[blue!65, thick, dashed] (skip.south) -- ++(0,-0.28);
 \end{tikzpicture}}
-\caption{Final shared deep-learning architecture adapted from the thesis
+\caption{Final shared deep-learning architecture used in the reported system
 diagram. The map stack carries topology, masks, and frozen priors; the scalar
 UAV height is encoded separately and injected through FiLM. Encoder FiLM uses
 the height code; decoder FiLM and global heads use the fused height/bottleneck
@@ -1436,6 +1445,9 @@ Final PL is between those values; outdoor RadioMapSeer setting. \\
 PMNet / ICASSP \cite{pmnet2023,icassp2023challenge} &
 \SI{1.38}{dB} converted score &
 Final PL is close but higher under a different benchmark contract; scale context only, no joint spread prediction. \\
+Gao et al.\ \cite{gao2026} &
+\SI{5.59}{dB} ICASSP~2023; \SI{12.19}{dB} ITU~2024 &
+Final PL is numerically lower; recent corridor-weighted outdoor PL predictor, but no variable-height UAV or joint spread outputs. \\
 ReVeal \cite{reveal2025} &
 \SI{1.95}{dB} outdoor sparse-measurement RMSE &
 Final PL is in the same range; sparse mapping rather than dense generation. \\
@@ -1453,8 +1465,9 @@ Same broad digital-twin motivation, but path gain and \(200\times200\) maps. \\
 \end{table}
 
 The fair conclusion is narrow but useful. The final path-loss number is in the
-same band as strong dense radio-map references, while the spread results should
-be interpreted primarily against same-protocol internal baselines because no
+same band as strong dense radio-map references and numerically below the recent
+Gao et al.\ outdoor segmentation results, while the spread results should be
+interpreted primarily against same-protocol internal baselines because no
 external dense CKM PL/DS/AS benchmark was found.
 
 \subsection{Qualitative Residual Behavior}
@@ -1467,9 +1480,9 @@ prior-anchored residual corrector.
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.92\textwidth,height=0.62\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis_sample_14651_6x3.png}
+\includegraphics[width=0.92\textwidth,height=0.62\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Vancouver_sample_15265_6x3.png}
 \caption{Representative final-model inspection panel for a dense, mid-antenna
-validation sample in Tunis. Columns are path loss, delay spread, and angular
+held-out test sample in Vancouver. Columns are path loss, delay spread, and angular
 spread. Rows show ground truth, frozen prior, final prediction,
 context/support, prior error, and model correction.}
 \label{fig:panel}
@@ -1533,9 +1546,9 @@ conditioning or calibration across those variables.
 
 \section{Code Availability}
 
-The reproducibility record is public as live source repositories. For archival
-submission, these repositories should be pinned to release tags or DOI-backed
-snapshots; the citations below identify the current public source locations.
+The reproducibility record is public as live source repositories. The citations
+below identify the public source locations and snapshot commits or tags used for
+this manuscript.
 The standalone CKM Generator repository contains the Streamlit interface,
 command-line generator, frozen calibration files, final-model runtime code, and
 the published checkpoint path used by the demonstrator
@@ -1550,7 +1563,7 @@ source files.
 
 \section{Conclusion}
 
-This paper reports the final thesis result as a dense UAV CKM surrogate under a
+This paper reports a dense UAV CKM surrogate under a
 strict city-holdout contract. The answer to the first research question is
 positive within that contract, but the path to that answer matters. The earlier
 distribution-aware GMM heads without frozen priors were not the best final
