@@ -353,14 +353,17 @@ p_t(x)+c_{t,q(x)}\tanh r_{t,k}(x),
 \end{equation}
 where \(p_t(x)\) is the frozen prior, \(c_{t,q}\) is the residual cap for the
 target/regime and \(r_{t,k}\) is the learned raw residual. The deterministic
-map exported for metrics is the mixture expectation
+map exported for metrics is the local-weighted model-space mean, followed by
+the target inverse transform
 \begin{equation}
-\hat y_t(x)
+\hat z_t(x)
 =
 \sum_{k=1}^{K}\pi_{t,k}(x)\,\mu_{t,k}(x),
 \qquad K=3 \text{ in the final residual head.}
 \label{eq:try80_point}
 \end{equation}
+For path loss, \(\hat y_t=\hat z_t\); for delay and angular spread,
+\(\hat y_t=\exp(\hat z_t)-1\).
 The GMM head therefore has two roles: it represents residual uncertainty during
 training and it produces a continuous pixel-wise prediction at inference.
 

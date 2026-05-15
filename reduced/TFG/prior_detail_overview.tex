@@ -28,8 +28,11 @@ then follows a divide-and-conquer split of responsibility: calibrated priors
 remove the stable component of the targets, and the neural residual model
 focuses on the local errors that remain.
 
-The word \emph{prior} is therefore used for three concrete estimators, not for
-a vague physical hint:
+The term \emph{prior} is not used here in the Bayesian sense of a probability
+distribution over model parameters or targets, and no posterior inference is
+performed in the prior stage. It denotes deterministic, frozen estimator maps
+computed before the neural residual correction. The word \emph{prior} is
+therefore used for three concrete estimators, not for a vague physical hint:
 \begin{itemize}
 \item \textbf{LoS path-loss prior.} This is the clearest physical branch:
       \(\mathrm{PL}_{\mathrm{LoS}}=\mathrm{FSPL}+C_{\mathrm{2ray}}+b+r\).
@@ -56,12 +59,23 @@ a vague physical hint:
       \(\log(1+y)\) space. The raw estimate captures propagation state,
       distance, elevation, and local morphology; the final ridge calibration
       adds the 23-feature vector of Sec.~\ref{sec:try79_detail}. That vector
-      includes continuous normalized UAV height, transmitter clearance above
-      nearby rooftops, and the local fraction of buildings taller than the
-      transmitter. This is why the spread prior can fit the near-zero LoS mass
+      includes continuous normalized UAV height, density-weighted transmitter
+      clearance over nearby building pixels, and the local window-area fraction
+      occupied by buildings taller than the transmitter. This is why the spread prior can fit the near-zero LoS mass
       and the NLoS tail without letting the largest tail values dominate the
       whole calibration, unlike a native-space global average.
 \end{itemize}
+
+The notation intentionally reuses \(\rho\) in two different blocks:
+\(\rho(h_{\mathrm{tx}})\) is the fitted LoS reflection amplitude, whereas
+\(\rho_k\) is a local building-density fraction in a \(k\times k\) window.
+They are unrelated quantities; the argument or subscript identifies which one
+is meant.
+The same convention is used for \(b\): \(b(h_{\mathrm{tx}})\) is a LoS
+dB bias, \(b(x)\) is the binary building mask, \(b_{\mathrm{topology}}\) is
+a spread-prior log-domain offset, and \(b_{41}\) is the blocker-depth feature.
+These symbols are local to their definitions and should not be read as one
+shared physical variable.
 
 \begin{table}[H]
 \centering

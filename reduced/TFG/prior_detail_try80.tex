@@ -14,10 +14,26 @@ LoS/NLoS masks. The model input contains nine spatial channels:
 \item ground mask,
 \item combined path-loss prior,
 \item LoS path-loss prior,
-\item NLoS path-loss prior,
+\item calibrated Try~78 NLoS-branch map,
 \item delay-spread prior,
 \item angular-spread prior.
 \end{enumerate}
+
+The seventh channel is named \texttt{path\_loss\_nlos\_prior} in the code,
+but it should be read carefully. It is the calibrated Try~78 mixed/NLoS map
+computed by the regime-wise path-loss calibration, not a map that has been
+zeroed outside NLoS pixels. In the final combined path-loss prior and in the
+final output selection, only the explicit LoS/NLoS masks decide which regional
+branch is used.
+
+The three mask channels are passed as binary maps. The topology channel is
+masked to ground pixels and divided by \(90\,\mathrm{m}\); the three
+path-loss-prior channels are divided by \(180\,\mathrm{dB}\); and the
+delay- and angular-spread priors are passed as
+\(\log(1+\mathrm{prior})/\log(1+400)\) and
+\(\log(1+\mathrm{prior})/\log(1+90)\), respectively. These scaling constants
+only affect the neural-network input representation; the residual targets and
+reported metrics remain in the native units.
 
 The scalar UAV height is not appended as a constant image channel. It is
 encoded with a sinusoidal embedding and injected into the network through FiLM
@@ -35,14 +51,18 @@ architecture used by the final evaluation.
 \subsection{Prior-Anchored GMM Residual Model}
 
 The final model introduces a joint multi-task residual GMM-head architecture that
-predicts a \emph{Gaussian Mixture Model (GMM)} at each pixel, rather than a
-simple point estimate. For each task \(k \in \{\mathrm{PL},\, \mathrm{DS},\, \mathrm{AS}\}\),
+emits a \emph{Gaussian Mixture Model (GMM)}-parameterized residual head at each
+pixel, rather than only a direct scalar output. For each task \(k \in \{\mathrm{PL},\, \mathrm{DS},\, \mathrm{AS}\}\),
 region \(r\in\{\mathrm{LoS},\mathrm{NLoS}\}\), component
 \(j\in\{1,2,3\}\), and valid pixel \(x\), the model predicts a mixture
 weight, a mean and a standard deviation. Path loss is modeled in native dB
 space, while delay spread and angular spread are modeled in transformed
 \(\log(1+y)\) space inside the probabilistic head and converted back to
 native units for deterministic metrics.
+In the selected final fine-tuning stage the same GMM parameterization is kept,
+but the probabilistic losses are disabled; therefore the final reported claim
+is based on the deterministic mixture-mean map rather than on calibrated
+predictive densities.
 
 The native residual caps are task- and region-dependent:
 
@@ -114,7 +134,8 @@ space before the Gaussian likelihood:
 \end{equation}
 
 The DNN also predicts per-pixel mixture probabilities \(p_{k,r,j}(x)\) and
-component variances:
+combines global and local standard-deviation terms into the component standard
+deviation:
 \begin{equation}
 \sigma_{k,r,j}(x)
 =
@@ -125,11 +146,21 @@ component variances:
 }.
 \label{eq:try80_sigma}
 \end{equation}
-Both variance terms are constrained by sigmoid transforms to lie between
-\(\sigma_{\min}=0.05\) and \(\sigma_{\max}=3.0\). These bounds stabilize the
-probabilistic head and prevent the NLL term, when it is enabled, from
-collapsing to unrealistically tiny uncertainty or exploding to a uselessly
-flat density.
+The Gaussian variance used by the density is therefore
+\(\sigma^2_{k,r,j}(x)\). Both standard-deviation terms are constrained by
+sigmoid transforms to lie between \(\sigma_{\min}=0.05\) and
+\(\sigma_{\max}=3.0\). These bounds stabilize the probabilistic head and
+prevent the NLL term, when it is enabled, from collapsing to unrealistically
+tiny uncertainty or exploding to a uselessly flat density.
+
+The local component logits are transformed with a per-pixel softmax, so
+\(\sum_j p_{k,r,j}(x)=1\). The global mixture weights
+\(\pi^{(g)}_{k,r,j}\) emitted by the global branch belong to the map-level
+distributional branch used when map-level KL-style terms are active; they are
+not multiplied into the deterministic point map in Eq.~\eqref{eq:try80_point}.
+This distinction is important for the selected final checkpoint, where the
+distributional losses are disabled and RMSE is computed from the local-weighted
+point prediction.
 
 The architecture supports a full GMM Negative Log Likelihood (NLL), and the
 preceding large-capacity residual stage used non-zero probabilistic weights.
@@ -217,7 +248,7 @@ for each task.
 The architecture explicitly enforces the separation of global and local effects via a dual-head design for each task:
 
 \begin{itemize}
-\item \textbf{Global Head (Map-Level Context)}: The deepest bottleneck feature map is globally average-pooled to produce a single vector representing the macro-context. This pooled vector, fused with the height condition, is passed through an MLP to predict the non-spatial quantities: global mixture weights $\pi^{(g)}_{k,r,j}$, global offsets $\delta^{(g)}_{k,r,j}$, and global variances $\sigma^{(g)2}_{k,r,j}$.
+\item \textbf{Global Head (Map-Level Context)}: The deepest bottleneck feature map is globally average-pooled to produce a single vector representing the macro-context. This pooled vector, fused with the height condition, is passed through an MLP to predict the non-spatial quantities used by the distributional branch: auxiliary global mixture weights $\pi^{(g)}_{k,r,j}$, global offsets $\delta^{(g)}_{k,r,j}$, and global standard deviations $\sigma^{(g)}_{k,r,j}$.
 \item \textbf{Local Head (Pixel-Level Refinement)}: The high-resolution output of the decoder is passed through $1\times1$ convolutions to predict the spatially varying fields: local component weights $p_{k,r,j}(x)$, $\delta^{(\ell)}_{k,r}(x)$, $\alpha_{k,r}(x)$, and $\tilde\sigma_{k,r}(x)$.
 \end{itemize}
 
@@ -308,7 +339,8 @@ The architecture explicitly enforces the separation of global and local effects 
 $\Delta_{k,r,j}=\mathrm{clip}(\delta^{(g)}_{k,r,j}+\delta^{(\ell)}_{k,r},\,\pm\delta_{\max,k,r})$ \\
 $\mu_{k,r,j} = y_k^{\mathrm{prior}} + \alpha_{k,r}\Delta_{k,r,j}$ \\
 $\sigma^2_{k,r,j} = \sigma^{(g)2}_{k,r,j} + \tilde\sigma_{k,r}^2$ \\[0.2cm]
-$\hat y_{k,r} = \sum_j p_{k,r,j} \mu_{k,r,j}$};
+$\hat z_{k,r} = \sum_j p_{k,r,j} \mu_{k,r,j}$\\
+PL: $\hat y=\hat z$; DS/AS: $\hat y=\exp(\hat z)-1$};
 
 % Routing Prior to GMM
 \draw[->, thick] (prior.south) |- node[pos=0.25, right, font=\scriptsize] {$\mathbb{R}^{1 \times H \times W}$} ([yshift=0.5cm]gmm.east);
@@ -419,6 +451,11 @@ $\pi^{(g)}_{k,r,j}$, $\delta^{(g)}_{k,r,j}$ and $\sigma^{(g)}_{k,r,j}$, while
 the local head outputs per-pixel maps
 $p^{(\ell)}_{k,r,j}(x)$, $\delta^{(\ell)}_{k,r}(x)$, $\alpha_{k,r}(x)$, and
 $\tilde\sigma_{k,r}(x)$.
+After softmax over components, \(p^{(\ell)}_{k,r,j}(x)\) becomes the local
+probability \(p_{k,r,j}(x)\) used in the regional model-space mean. The auxiliary
+global weights \(\pi^{(g)}_{k,r,j}\) are retained for the distributional
+training branch and diagnostics, but the selected RMSE/MAE-dominant checkpoint
+uses the local probabilities for the deterministic output map.
 
 \begin{figure}[H]
 \centering
@@ -448,8 +485,8 @@ $\tilde\sigma_{k,r}(x)$.
 
 \node[mix] (delta) at (12.5,-3.0) {Residual assembly\\$\Delta_{r,j}(x)=\mathrm{clip}\!\left(\delta^{(g)}_{r,j}+\delta^{(\ell)}_{r}(x),\ \pm\delta_{\max,k,r}\right)$};
 \node[prior] (prior) at (0,-6.5) {Frozen task prior\\broadcast to regions\\$y^{\mathrm{prior}}_{k}(x)$};
-\node[mix] (mu) at (17.0,-6.5) {Anchored means\\$\mu_{r,j}(x)=y^{\mathrm{prior}}_{k}(x)+\alpha_r(x)\Delta_{r,j}(x)$};
-\node[mix] (sigma) at (21.5,-3.0) {Variance merge\\$\sigma_{r,j}(x)=\sqrt{(\sigma^{(g)}_{r,j})^2+(\tilde\sigma_r(x))^2}$};
+\node[mix] (mu) at (17.0,-6.5) {Anchored means\\native residual, then task transform\\$\mu_{r,j}(x)$};
+\node[mix] (sigma) at (21.5,-3.0) {Std.-dev. merge\\$\sigma_{r,j}(x)=\sqrt{(\sigma^{(g)}_{r,j})^2+(\tilde\sigma_r(x))^2}$};
 
 \draw[thick] (globpars.south) -- (17.0, 1.8);
 \draw[arr] (17.0, 1.8) -- node[above, font=\scriptsize] {$\mathbb{R}^{6}$} (12.5, 1.8) -- (delta.north);
@@ -462,7 +499,7 @@ $\tilde\sigma_{k,r}(x)$.
 \draw[arr] (delta.south) -- node[above right, font=\scriptsize] {$\mathbb{R}^{6 \times H \times W}$} (mu.north);
 \draw[arr] (prior.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{2 \times H \times W}$} (mu.west);
 
-\node[mix] (expv) at (17.0,-10.0) {Regional expectation\\$\hat y_{k,r}(x)=\sum_{j=1}^{3} p_{k,r,j}(x)\,\mu_{k,r,j}(x)$};
+\node[mix] (expv) at (17.0,-10.0) {Regional model-space mean\\$\hat z_{k,r}(x)=\sum_{j=1}^{3} p_{k,r,j}(x)\,\mu_{k,r,j}(x)$\\PL: $\hat y=\hat z$; DS/AS: $\hat y=\exp(\hat z)-1$};
 \node[box, fill=orange!15] (mask) at (25.0,-10.0) {Region selection\\LoS/NLoS masks choose\\$\hat y_{k,\mathrm{LoS}}$ or $\hat y_{k,\mathrm{NLoS}}$};
 \node[box, fill=red!10] (out) at (31.0,-10.0) {Final task map\\$\hat y_k(x)$};
 
@@ -486,9 +523,10 @@ $\tilde\sigma_{k,r}(x)$.
 
 The implementation defines a composite loss that can train both the
 probabilistic GMM head and the deterministic residual map. For each task, let
-\(\Omega_k\) be the valid ground-pixel set, let \(q_k(y\mid x)\) be the
-predicted mixture density, and let \(\hat y_k(x)\) be the native-space point
-prediction used for RMSE. The total objective is:
+\(\Omega_k\) be the valid ground-pixel set, let \(q_k(z\mid x)\) be the
+predicted mixture density in the modelled space, with \(z=y\) for path loss and
+\(z=\log(1+y)\) for delay spread and angular spread, and let \(\hat y_k(x)\) be
+the native-space point prediction used for RMSE. The total objective is:
 
 \begin{equation}
 \begin{aligned}
@@ -609,11 +647,18 @@ The anchor penalty keeps the correction small:
 The guard term is Eq.~\eqref{eq:try80_loss}. Together, these two terms encode
 the final design philosophy: the DNN is allowed to improve the
 prior, but it must pay a penalty for large or harmful deviations.
+In Eq.~\eqref{eq:try80_anchor}, the residual variables are the same tensors
+used by the implementation: native-dB offsets for path loss, and the
+corresponding \(\log(1+y)\)-space offsets for delay and angular spread after
+the native residual caps have been applied. The guard term, by contrast, is
+evaluated in the native units of each task against the frozen prior map.
 
 \paragraph{Outlier budget and deterministic losses.}
-The last mixture component is treated as the broad/outlier component. If the
-outlier-budget term is active and its mean usage exceeds \(\tau=0.60\), a
-hinge penalty is applied:
+When the outlier-budget term is active, the implementation uses the last local
+mixture component as a proxy for broad/outlier usage. This is an indexing
+convention rather than a hard architectural constraint: the model is not forced
+to make that component the broadest one. If the mean usage of this proxy exceeds
+\(\tau=0.60\), a hinge penalty is applied:
 \begin{equation}
 \mathcal{L}_{\mathrm{out},k}
 =

@@ -57,7 +57,8 @@ physical/statistical priors, and a bounded residual neural model with a
 Gaussian-mixture residual head. The final model predicts \(513\times513\) dense
 maps from topology, geometric masks, UAV height, and frozen priors. It is
 trained through a probabilistic residual/GMM stage followed by deterministic
-RMSE-oriented fine-tuning; reported maps use the pixel-wise mixture expectation.
+RMSE-oriented fine-tuning; reported maps use the deterministic mixture-mean
+point prediction.
 On held-out cities it reaches
 \SI{1.6519}{dB} path-loss RMSE, \SI{26.5570}{ns} delay-spread RMSE, and
 \(11.3854^\circ\) angular-spread RMSE, reducing RMSE relative to the frozen
@@ -356,7 +357,7 @@ train-only calibration. \\
 Final prior-anchored residual GMM &
 Reported model &
 Keeps the distribution-aware head, but moves it into bounded residual space
-around the frozen priors and then fine-tunes the deterministic expectation. \\
+around the frozen priors and then fine-tunes the deterministic point map. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -443,6 +444,9 @@ d_{\mathrm{ref}}
 \end{aligned}
 \label{eq:path-distances}
 \end{equation}
+For the positive UAV and receiver heights used here, \(d_{\mathrm{ref}}\) is
+strictly larger than \(d_{\mathrm{LoS}}\); equality would occur only in the
+limiting geometric case where one antenna lies exactly on the ground plane.
 The LoS branch starts from
 \begin{equation}
 \mathrm{FSPL}
@@ -471,7 +475,8 @@ fit. This LoS prior is not FSPL alone and it is not a learned linear
 regressor. The direct distance \(d_{\mathrm{LoS}}\) sets the free-space
 baseline, the image-source distance \(d_{\mathrm{ref}}\) supplies the
 ground-reflected path, and \(k(d_{\mathrm{ref}}-d_{\mathrm{LoS}})\) is the
-extra phase accumulated by that reflected wave. The train-calibrated functions
+extra phase accumulated by that reflected wave, with \(k=2\pi f/c\) the
+free-space wavenumber. The train-calibrated functions
 \(\rho(h_{\mathrm{tx}})\) and \(\phi(h_{\mathrm{tx}})\) are effective
 reflection amplitude and phase curves, fitted in \SI{5}{m} UAV-height bins,
 smoothed across bins, and linearly interpolated to the actual sample height at
@@ -480,6 +485,17 @@ inference. The terms \(b(h_{\mathrm{tx}})\) and
 they remove, respectively, a remaining height-dependent offset and a smooth
 range-dependent residual; these terms are also stored as height-conditioned
 calibration curves rather than as one global correction.
+The deployed LoS path-loss prior is finally kept inside the \([20,180]\) dB
+range used by the final model. For this CKM dataset, valid calibrated LoS
+values are not expected to leave that interval, so the operation is a
+defensive range guard rather than a correction that should materially change
+the prior.
+The notation in this compact paper is local: \(\rho(h_{\mathrm{tx}})\) is the
+LoS reflection-amplitude curve, whereas \(\rho_k\) denotes a local density
+fraction; likewise \(b(h_{\mathrm{tx}})\) is a LoS dB bias, while
+\(b_q^{\mathrm{nat}}\), \(b_{\mathrm{top}}\), and \(b_{41}\) denote spread
+anchors, spread topology offsets, and blocker-depth features. These symbols
+should not be read as one shared physical variable.
 
 The LoS calibration is deliberately structured rather than fully flexible. It
 is fitted only on valid LoS ground pixels from training cities. First, the
@@ -520,8 +536,14 @@ is directly valid at every UAV height:
 \label{eq:cost-paper}
 \end{equation}
 where \(C\) denotes the COST231-shaped branch,
-\(d_{\mathrm{km}}=\max(d_{2D}/1000,0.001)\), and \(a(h_{\mathrm{rx}})\)
-is the usual mobile-height correction. The second term is an A2G
+\(d_{\mathrm{km}}=\max(d_{2D}/1000,0.001)\), and
+\(a(h_{\mathrm{rx}})
+=(1.1\log_{10}f_{\mathrm{MHz}}-0.7)h_{\mathrm{rx}}
+-(1.56\log_{10}f_{\mathrm{MHz}}-0.8)\)
+is the small/medium-city mobile-height correction. The \(+3\) dB term is
+retained as the COST231 metropolitan correction inside this empirical basis; it
+is not a claim that the original COST231 deployment domain transfers unchanged
+to \SI{7.125}{GHz} UAV links. The second term is an A2G
 elevation-dependent NLoS envelope: it keeps the altitude/elevation structure of
 coverage-oriented A2G models, with fixed excess-loss constants later corrected
 by the train-only NLoS calibration. With the positive fitted envelope constant
@@ -644,9 +666,10 @@ Term & Prior block & Source & Role in this paper \\
 \cite{alhourani2014,khawaja_survey,tr38901} & Elevation angle and low-elevation complement for blocked/spread-prone regimes. \\
 \addlinespace[1pt]
 \multicolumn{4}{l}{\emph{CKM train-split fitted calibration}} \\
-\(\rho(h_{\mathrm{tx}}),\phi(h_{\mathrm{tx}})\) & LoS PL & Train-split fit & Effective reflection amplitude and phase; not material constants. \\
-\(b(h_{\mathrm{tx}})\) & LoS PL & Train-split fit & Height-dependent offset left after coherent two-ray fitting. \\
-\(r(d_{2D},h_{\mathrm{tx}})\) & LoS PL & Train-split fit & Smoothed radial residual left by two-ray plus bias. \\
+\(\rho(h_{\mathrm{tx}}),\phi(h_{\mathrm{tx}})\) & LoS PL & Train-split fit + smoothing & Smoothed deployed effective reflection amplitude and phase; not material constants. \\
+\(b(h_{\mathrm{tx}})\) & LoS PL & Train-split fit + smoothing & Smoothed deployed height-dependent offset left after coherent two-ray fitting. \\
+\(r(d_{2D},h_{\mathrm{tx}})\) & LoS PL & Train-split fit + smoothing & Smoothed deployed radial residual left by two-ray plus bias. \\
+\(b_q^{\mathrm{nat}}, b_{\mathrm{top}}, a_j\) & Spreads & Fixed CKM raw-prior constants & Initial log-domain DS/AS scale before ridge calibration. \\
 \bottomrule
 \end{tabularx}
 \end{table*}
@@ -733,7 +756,10 @@ The LoS two-ray parameters are fitted by a small grid search rather than by a
 neural optimizer. For each \SI{5}{m} height bin \(B_h\), candidate values
 \(\hat\rho\in\{0,0.05,\ldots,1.5\}\) and
 \(\hat\phi\in[-\pi,\pi)\) on a 48-point phase grid are evaluated on valid LoS
-training pixels. For each candidate pair, the dB bias has the closed-form value
+training pixels. The upper end of this grid is a robustness allowance for an
+effective CKM-fitted coefficient, not a claim that a passive Fresnel reflection
+coefficient exceeds unity; the smoothed deployed reflection-amplitude curve
+stored by the final prior remains below unity. For each candidate pair, the dB bias has the closed-form value
 \begin{equation}
 \hat b(\hat\rho,\hat\phi)
 =\frac{1}{|B_h|}\sum_{i\in B_h}
@@ -754,10 +780,15 @@ calibrator. For every supported regime \(r\), the calibration weights solve
 \left(\mathbf{x}_{78,i}^{\top}\mathbf{w}-y_i\right)^2,
 \label{eq:nlos-ols-fit}
 \end{equation}
-with fallback to broader topology/height/visibility groups when the exact
-regime has too few pixels. At deployment, the same deterministic features select
+with fallback to stored antenna-height keys within the same morphology and
+LoS/NLoS group when the exact antenna-height key is unavailable. At deployment,
+the same deterministic features select
 one stored coefficient vector and produce the clipped NLoS prior in
-Eq.~\eqref{eq:nlos-prior-paper}.
+Eq.~\eqref{eq:nlos-prior-paper}. This is an ordinary least-squares objective,
+not a requirement that every regime have a nonsingular normal matrix; if a
+calibration block is rank deficient or ill-conditioned, the stored solution is
+interpreted as the numerical least-squares or pseudo-inverse solution associated
+with this objective.
 
 The delay-spread and angular-spread priors are fitted in a transformed domain,
 \begin{equation}
@@ -785,7 +816,30 @@ z^{(0)}
 \end{aligned}
 \label{eq:spread-raw-paper}
 \end{equation}
-where \(q\) is the LoS/NLoS state. The native anchor
+The constants in Eq.~\eqref{eq:spread-raw-paper} are fixed before ridge
+calibration. For delay spread, \(b_{\mathrm{LoS}}^{\mathrm{nat}}=\SI{4.0}{ns}\),
+\(b_{\mathrm{NLoS}}^{\mathrm{nat}}=\SI{11.0}{ns}\), and
+\((a_1,\ldots,a_6)=(0.11,0.62,0.48,0.32,0.86,0.60)\). For angular spread,
+\(b_{\mathrm{LoS}}^{\mathrm{nat}}=3.0^\circ\),
+\(b_{\mathrm{NLoS}}^{\mathrm{nat}}=7.0^\circ\), and
+\((a_1,\ldots,a_6)=(0.05,0.52,0.60,0.38,0.58,0.35)\). The topology offsets
+\(b_{\mathrm{top}}\) are log-domain offsets, not native ns/degree offsets. In
+the class order open-sparse low-rise, open-sparse vertical,
+mixed-compact low-rise, mixed-compact mid-rise, dense-block mid-rise, and
+dense-block high-rise, the delay-spread offsets are
+\((0.00,0.18,0.06,0.22,0.24,0.34)\), and the angular-spread offsets are
+\((0.00,0.09,0.05,0.16,0.18,0.24)\). The six topology classes are assigned
+from map-level building coverage \(\bar\rho_{\mathrm{map}}\) and mean
+non-ground building height \(\bar h_{\mathrm{map}}\): coverage
+\(\bar\rho_{\mathrm{map}}\le 0.12\) is open sparse, with low-rise if
+\(\bar h_{\mathrm{map}}\le\SI{12}{m}\) and vertical otherwise; coverage
+\(\bar\rho_{\mathrm{map}}\ge 0.28\) is dense block, with mid-rise if
+\(\bar h_{\mathrm{map}}\le\SI{28}{m}\) and high-rise otherwise; intermediate
+coverage is mixed compact, with low-rise if
+\(\bar h_{\mathrm{map}}\le\SI{12}{m}\) and mid-rise otherwise. These labels are
+map-level routing keys for calibration, not per-pixel learned features.
+
+Here \(q\) is the LoS/NLoS state. The native anchor
 \(b^{\mathrm{nat}}_q\) gives a different starting scale to LoS and NLoS
 pixels, \(b_{\mathrm{top}}\) shifts the baseline by topology class,
 \(\log(1+d_{2D})\) captures range growth, \(\theta_{\mathrm{inv}}\) increases
@@ -815,7 +869,10 @@ not incidental: they tell the spread prior whether the centred UAV is above the
 local skyline, near rooftop level, or below nearby high-rise clutter. The
 quadratic raw prior terms let the calibration bend the initial log-domain
 estimate, while the interaction terms represent cases where range, low
-elevation, dense buildings, and NLoS support become harmful together. The
+elevation, dense buildings, and NLoS support become harmful together; in
+particular, \(c_{41}\theta_{\mathrm{inv}}\) means that transmitter clearance is
+allowed to matter differently at low elevation, not that clearance is only
+important when NLoS support is already high. The
 calibrated log prior is ridge-regularized per metric and regime:
 \begin{equation}
 \hat{\mathbf{w}}_{79,r}
@@ -852,13 +909,14 @@ and AS. Height is handled differently across the frozen estimators: the LoS PL
 branch interpolates its fitted \SI{5}{m} height-bin curves, while the NLoS PL
 and spread branches use discrete antenna-height regimes with fallback keys;
 the spread model also keeps continuous height, clearance, and taller-building
-features inside \(\mathbf{x}_{79}\). This heavy calibration is the point: the prior stores many small
-decisions about morphology, visibility, and height before the neural residual
-is trained. On the final held-out test split, the deployed prior anchors are
-summarized in Table~\ref{tab:prior-only-anchor}. The final neural model
-receives only the resulting prior maps as channels; the handcrafted features
-remain inside the frozen prior estimators rather than becoming additional
-learned inputs.
+features inside \(\mathbf{x}_{79}\). This heavy calibration is the point: the
+prior stores many small decisions about morphology, visibility, and height
+before the neural residual is trained. On the final held-out test split, the
+deployed prior anchors are summarized in Table~\ref{tab:prior-only-anchor}.
+Beyond the topology, masks, and scalar height path, the final neural model
+receives the deployed prior maps rather than the handcrafted feature vectors;
+those features remain inside the frozen prior estimators instead of becoming
+additional learned inputs.
 
 \begin{table}[!t]
 \centering
@@ -1050,28 +1108,31 @@ lee2024timevarying}. The native residual is clipped by target and visibility:
 \label{eq:delta-paper}
 \end{equation}
 with caps of \(7/25\) dB for PL LoS/NLoS, \(20/20\) ns for DS, and
-\(17^\circ/15^\circ\) for AS. Omitting indices for compactness, the component
-mean is anchored to the frozen prior in the same transformed space used by the
-implementation:
+\(17^\circ/15^\circ\) for AS. The residual cap is specified in native units:
+dB for PL, ns for DS, and degrees for AS. Omitting indices for compactness,
+the component mean is anchored to the frozen prior after this native residual
+has been assembled:
 \begin{equation}
 \begin{aligned}
-u&=y^{\mathrm{prior}}+\alpha\Delta,\\
-\mu&=u,\qquad k=\mathrm{PL},\\
-\mu&=\log(1+[u]_+),\qquad k\in\{\mathrm{DS},\mathrm{AS}\}.
+u^{\mathrm{nat}}&=y^{\mathrm{prior,nat}}+\alpha\Delta,\\
+\mu&=u^{\mathrm{nat}},\qquad k=\mathrm{PL},\\
+\mu&=\log(1+[u^{\mathrm{nat}}]_+),\qquad k\in\{\mathrm{DS},\mathrm{AS}\}.
 \end{aligned}
 \label{eq:mu-paper}
 \end{equation}
-where \([u]_+=\max(u,0)\) and \(0\leq\alpha_{k,r}(p)\leq1\). PL is modeled in
-native dB space, while DS and AS use the log transform in
-Eq.~\eqref{eq:spread-transform-paper}. The deterministic map used for RMSE is
-the mixture expectation:
+where \([u^{\mathrm{nat}}]_+=\max(u^{\mathrm{nat}},0)\) and
+\(0\leq\alpha_{k,r}(p)\leq1\). PL is modeled in native dB space, while DS and
+AS use the log transform in Eq.~\eqref{eq:spread-transform-paper}. The
+deterministic map used for RMSE is the mixture mean in the modelled space:
 \begin{equation}
 \hat z_{k,r}(p)
 =\sum_{j=1}^3p_{k,r,j}(p)\mu_{k,r,j}(p).
 \label{eq:gmm-expectation-paper}
 \end{equation}
 For PL, \(\hat y_{k,r}=\hat z_{k,r}\). For DS and AS, the output is mapped
-back with \(\hat y_{k,r}=\exp(\hat z_{k,r})-1\).
+back with \(\hat y_{k,r}=\exp(\hat z_{k,r})-1\). Thus the spread output is
+the deterministic point map used for RMSE, not the exact native-space
+expectation of the log-space mixture.
 The final map selects the LoS or NLoS branch with the explicit geometric mask.
 The mixture variances combine map-level and local uncertainty,
 \begin{equation}
@@ -1087,7 +1148,7 @@ The mixture variances combine map-level and local uncertainty,
 with both terms constrained to \([0.05,3.0]\). During the residual/GMM stage
 these variances and mixture weights define a pixel-wise likelihood; during the
 final fine-tuning stage the same head remains in place but the reported output
-is the deterministic expectation above.
+is the deterministic point map above.
 
 The two mixture-weight objects have different jobs. The global weights
 \(\pi^{(g)}_{k,r,j}\) describe the sample-level residual histogram and are
@@ -1117,9 +1178,10 @@ live.
 This head is useful even when the final reported number is a deterministic
 RMSE. The probabilistic stage teaches the network that a hard NLoS region can
 contain several plausible residual levels, while the anchor gate decides how
-far the prediction may move from the frozen estimate. The final expectation is
-therefore not an unconstrained average of arbitrary map values; it is the mean
-of a small residual mixture whose components remain tied to the prior.
+far the prediction may move from the frozen estimate. The final point map is
+therefore not an unconstrained average of arbitrary map values; it is the
+model-space mean of a small residual mixture whose components remain tied to
+the prior.
 
 \begin{figure*}[!t]
 \centering
@@ -1140,8 +1202,8 @@ of a small residual mixture whose components remain tied to the prior.
 \node[local] (l1) at (3.9,-0.2) {Local pixel params\\\(p_{r,j}(x)\), \(\delta^{(\ell)}_r(x)\),\\\(\alpha_r(x)\), \(\tilde\sigma_r(x)\)};
 \node[mix] (resid) at (7.9,0.7) {Bounded residual\\\(\Delta_{r,j}(x)=\mathrm{clip}(\delta^{(g)}+\delta^{(\ell)},\pm\delta_{\max})\)};
 \node[prior] (p0) at (7.9,-1.35) {Frozen task prior\\\(y^{\mathrm{prior}}_k(x)\)\\DS/AS use \(\log(1+y)\)};
-\node[mix] (mu) at (12.3,0.7) {Anchored means\\PL: \(y^{\mathrm{prior}}+\alpha\Delta\)\\DS/AS: \(\log(1+[y^{\mathrm{prior}}+\alpha\Delta]_+)\)};
-\node[mix] (expv) at (12.3,-1.35) {Pixel expectation\\\(\hat y_{k,r}=\sum_j p_{r,j}\mu_{r,j}\)};
+\node[mix] (mu) at (12.3,0.7) {Anchored means\\native residual first\\DS/AS then \(\log(1+y)\)};
+\node[mix] (expv) at (12.3,-1.35) {Model-space mean\\\(\hat z_{k,r}=\sum_j p_{r,j}\mu_{r,j}\)};
 \node[outbox] (sel) at (16.1,-0.3) {LoS/NLoS\\mask selection};
 \node[outbox] (out) at (19.4,-0.3) {Final map\\\(\hat y_k(x)\)};
 
@@ -1160,7 +1222,7 @@ of a small residual mixture whose components remain tied to the prior.
 sample-level residual mixture; the local branch places that distribution
 pixel by pixel through component weights, residual refinements, gates and local
 uncertainty. Component means are anchored to the frozen prior and the
-deterministic map is the pixel-wise mixture expectation after LoS/NLoS
+deterministic map is obtained from the pixel-wise model-space mixture mean after LoS/NLoS
 selection.}
 \label{fig:gmm-head}
 \end{figure*}
@@ -1193,7 +1255,7 @@ and moment terms keep the mixture distribution from becoming a numerically
 convenient but physically uninformative density, and the outlier-budget term
 discourages a solution that spends most of its capacity on the easy bulk while
 leaving large tails unconstrained. The final fine-tuning stage then disables
-those terms and optimizes the deterministic mixture expectation for RMSE/MAE,
+those terms and optimizes the deterministic mixture-mean point map for RMSE/MAE,
 with a small anchor and guard that keep the correction close to the prior.
 Table~\ref{tab:loss-roles} summarizes the roles. The selected checkpoint is
 therefore reported as a deterministic RMSE improvement over the frozen priors,
@@ -1216,7 +1278,7 @@ Distribution KL & residual/GMM stage &
 Regularizes the learned mixture so it remains close to the intended
 distributional structure instead of using degenerate weights or variances. \\
 Moment matching & residual/GMM stage &
-Encourages the expectation and spread of the mixture to agree with target
+Encourages the model-space mean and spread of the mixture to agree with target
 moments, stabilizing deterministic extraction from the GMM. \\
 Outlier budget & residual/GMM stage &
 Keeps rare large residuals visible in the objective instead of letting the
@@ -1378,10 +1440,11 @@ fitting on training cities only: Tables~\ref{tab:pl-prior-height} and
 prior-evaluation split.
 Table~\ref{tab:pl-prior-height} shows the height dependence of the calibrated
 path-loss prior. This is not post-hoc stratification: UAV height is part of the
-estimator itself through the centred geometry, elevation angle, height-binned
-calibration, and final FiLM conditioning. The trend is strongest in NLoS: the
-low-altitude bin remains the hardest because many receivers are blocked by
-local urban structure, while high UAVs see fewer deep shadow pockets.
+prior estimator through the centred geometry, elevation angle, and
+height-binned calibration, and it later conditions the residual neural model
+through FiLM. The trend is strongest in NLoS: the low-altitude bin remains the
+hardest because many receivers are blocked by local urban structure, while high
+UAVs see fewer deep shadow pockets.
 Table~\ref{tab:spread-prior-height} shows the matching spread-prior pattern.
 Delay spread in particular collapses with altitude, from \SI{39.90}{ns}
 overall in the lowest bin to \SI{3.70}{ns} above \SI{300}{m}.
@@ -1563,7 +1626,9 @@ PMNet / ICASSP \cite{pmnet2023,icassp2023challenge} &
 Final PL is close but higher under a different benchmark contract; scale context only, no joint spread prediction. \\
 Gao et al.\ \cite{gao2026} &
 \SI{5.59}{dB} ICASSP~2023; \SI{12.19}{dB} ITU~2024 &
-Final PL is numerically lower; recent corridor-weighted outdoor PL predictor, but no variable-height UAV or joint spread outputs. \\
+Final PL is numerically lower, but this is scale context rather than a
+like-for-like win: recent corridor-weighted outdoor PL predictor, no
+variable-height UAV or joint spread outputs. \\
 ReVeal \cite{reveal2025} &
 \SI{1.95}{dB} outdoor sparse-measurement RMSE &
 Final PL is in the same range; sparse mapping rather than dense generation. \\
@@ -1581,10 +1646,11 @@ Same broad digital-twin motivation, but path gain and \(200\times200\) maps. \\
 \end{table}
 
 The fair conclusion is narrow but useful. The final path-loss number is in the
-same band as strong dense radio-map references and numerically below the recent
-Gao et al.\ outdoor segmentation results, while the spread results should be
-interpreted primarily against same-protocol internal baselines because no
-external dense CKM PL/DS/AS benchmark was found.
+same band as strong dense radio-map references. It is numerically below the
+recent Gao et al.\ outdoor segmentation results, but that comparison remains
+cross-dataset scale context rather than a leaderboard result. The spread
+results should be interpreted primarily against same-protocol internal
+baselines because no external dense CKM PL/DS/AS benchmark was found.
 
 \subsection{Qualitative Residual Behavior}
 

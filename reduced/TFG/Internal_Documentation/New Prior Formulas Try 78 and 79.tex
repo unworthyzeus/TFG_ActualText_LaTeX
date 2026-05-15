@@ -1777,7 +1777,8 @@ progressively more general regimes:
 \item same topology class + LoS/NLoS + \emph{all} antenna heights,
 \item same topology class + \emph{all} LoS states + all antenna heights,
 \item global topology + LoS/NLoS + all antenna heights,
-\item fully global fallback: (metric, global, all-LoS, all-ant).
+\item fully global fallback: (metric, global, all\_los, all-ant), where
+      \texttt{all\_los} denotes all visibility states rather than LoS-only data.
 \end{enumerate}
 
 This ensures that even data-sparse regimes always have a valid coefficient
@@ -2579,7 +2580,7 @@ structure in obstructed pixels.
 \draw[arr] (delta.south) -- node[above right, font=\scriptsize] {$\mathbb{R}^{6 \times H \times W}$} (mu.north);
 \draw[arr] (prior.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{2 \times H \times W}$} (mu.west);
 
-\node[mix] (expv) at (17.0,-10.0) {Regional expectation\\$\hat y_{k,r}(x)=\sum_{j=1}^{3} p_{k,r,j}(x)\,\mu_{k,r,j}(x)$};
+\node[mix] (expv) at (17.0,-10.0) {Regional model-space mean\\$\hat z_{k,r}(x)=\sum_{j=1}^{3} p_{k,r,j}(x)\,\mu_{k,r,j}(x)$\\PL: $\hat y=\hat z$; DS/AS: $\hat y=\exp(\hat z)-1$};
 \node[box, fill=orange!15] (mask) at (25.0,-10.0) {Region selection\\LoS/NLoS masks choose\\$\hat y_{k,\mathrm{LoS}}$ or $\hat y_{k,\mathrm{NLoS}}$};
 \node[box, fill=red!10] (out) at (31.0,-10.0) {Final task map\\$\hat y_k(x)$};
 

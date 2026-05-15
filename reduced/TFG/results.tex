@@ -316,8 +316,9 @@ dense\_block\_highrise  & 4.79 & 4.18 & 5.91 & 4.67 \\
 
 The headline finding here is counter-intuitive at first sight:
 \textbf{LoS path loss is consistently harder for the distribution-first path-loss model than NLoS path
-loss}, by roughly \SI{1.5}{} to \SI{2}{dB} of RMSE in every topology
-class. The same pattern survives any choice of aggregation, and it
+loss}. In Table~\ref{tab:try76_per_expert}, the LoS RMSE is higher than the
+NLoS RMSE in every topology class, with a class-wise gap ranging from about
+\SI{0.6}{dB} to \SI{1.7}{dB}. The same pattern survives any choice of aggregation, and it
 contradicts the intuition built up during the PMHHNet diagnostic phase, where NLoS was
 the dominant source of error and also what made the most physical sense.
 This reversal motivated the later return to explicit priors for both path loss
@@ -358,11 +359,11 @@ components.
 The global comparison is only a first-order diagnostic: the distribution-first
 path-loss model trains one LoS and one NLoS GMM expert per topology class,
 not one collapsed pair. This also explains the topology ranking inside each
-regime. The LoS target standard deviation grows
-monotonically from \SI{5.22}{dB} in
+regime. The LoS target standard deviation grows from \SI{5.22}{dB} in
 \texttt{mixed\_compact\_lowrise} to \SI{5.91}{dB} in
-\texttt{dense\_block\_highrise}, and the LoS RMSE follows the same
-ordering (best 3.74, worst 5.10 dB). Denser, taller cities scatter the
+\texttt{dense\_block\_highrise}, and the LoS RMSE broadly follows the same
+trend, with small reorderings in the middle classes
+(best \SI{4.15}{dB}, worst \SI{4.79}{dB}). Denser, taller cities scatter the
 LoS path loss over a wider range, so even with perfect calibration the
 RMSE budget grows. The same monotonic growth is visible on the NLoS
 side, but with a smaller absolute gap because NLoS is the regime where
@@ -373,8 +374,8 @@ $\mathrm{RMSE}/\sigma_{\text{target}}$, which estimates how much of the
 target variability the model fails to explain.
 Figure~\ref{fig:try76_los_vs_nlos} (right panel) plots this skill
 metric per expert: \textbf{LoS} sits in the
-\(0.79\) to \(0.87\) range, while \textbf{NLoS} is consistently lower at
-\(0.71\) to \(0.90\). In other words, the distribution-first predecessor usually explains a larger fraction
+\(0.79\) to \(0.87\) range, while \textbf{NLoS} spans
+\(0.71\) to \(0.90\). In most classes, the distribution-first predecessor explains a larger fraction
 of the NLoS variance even though its absolute NLoS RMSE is also lower.
 The model is doing harder statistical work on NLoS and reaping a larger
 absolute benefit at the same time.
@@ -590,7 +591,7 @@ The headline path-loss-prior number (\SI{1.92}{dB} overall RMSE on its
 30\% city-holdout evaluation split, see Table~\ref{tab:try78_results}) hides the
 same morphological structure that the distribution-first path-loss predecessor surfaced. The per-sample evaluation
 records were re-aggregated by classifying each evaluated sample into the six
-six topology classes with the same routing rule used by the
+topology classes with the same routing rule used by the
 distribution-first experiments. The pixel-weighted RMSE per topology class is
 reported in
 Table~\ref{tab:try78_by_topology} and visualised in
@@ -601,7 +602,9 @@ Figure~\ref{fig:try78_by_topology}.
 \caption[Hybrid path-loss prior RMSE by topology class.]%
 {Hybrid path-loss prior, pixel-weighted RMSE on the
 30\% city-holdout evaluation split, broken down by topology class. The
-overall row reproduces Table~\ref{tab:try78_results}.}
+overall row reproduces the RMSE values in Table~\ref{tab:try78_results}; the
+sample count is the sum of samples assigned to the six topology classes. The
+aggregate Try~78 evaluator contains 4994 topology-assigned samples.}
 \label{tab:try78_by_topology}
 \footnotesize
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrrr}
@@ -620,19 +623,18 @@ dense block highrise  & 2.44 & 4.09 & 2.97 &  104 \\
 \end{tabularx}
 \end{table}
 
-The dependency on morphology is monotonic and matches the LoS variance
+The LoS dependency on morphology is monotonic and matches the LoS variance
 pattern observed in the distribution-first path-loss predecessor. The two-ray prior fits its own ground
 reflection ring against an LoS marginal whose width grows with city
 density and building height (see the LoS standard-deviation column of
 Table~\ref{tab:try76_per_expert}), so the LoS RMSE of the analytic
 model rises from \SI{1.39}{dB} in the open sparse lowrise class to
-\SI{2.44}{dB} in the dense block highrise class. The NLoS branch
-mirrors the same ranking, with the worst topology class
-(\emph{dense block highrise}) almost exactly twice as large as the
-best (\SI{4.09}{dB} versus \SI{2.81}{dB} for the distribution-first NLoS model in
-\emph{mixed compact lowrise}). The dataset is also unbalanced in
+\SI{2.44}{dB} in the dense block highrise class. The NLoS branch is less
+ordered by morphology: the best Try~78 NLoS topology is
+\emph{mixed compact lowrise} at \SI{2.91}{dB}, while the worst is
+\emph{dense block highrise} at \SI{4.09}{dB}. The dataset is also unbalanced in
 this respect: dense block highrise contributes only 104 of
-the 4994 test samples, so its high RMSE has a relatively small impact
+the 4994 topology-assigned evaluation samples, so its high RMSE has a relatively small impact
 on the overall pixel-weighted aggregate but is the regime most likely
 to limit deployment in dense urban environments.
 

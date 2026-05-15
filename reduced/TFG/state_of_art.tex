@@ -58,10 +58,12 @@ which depends only on carrier frequency~$f$ and Tx-Rx distance~$d$:
   \mathrm{PL}_{\mathrm{FSPL}} = 20\log_{10}(d) + 20\log_{10}(f)
     + 20\log_{10}\!\left(\frac{4\pi}{c}\right).
 \end{equation}
-FSPL is the irreducible floor in unobstructed conditions.  In aerial scenarios a
-specular ground reflection produces constructive/destructive interference
-periodically with distance.  The \emph{coherent two-ray} model captures this by
-adding the direct and reflected fields before converting to dB
+FSPL is the single-direct-ray reference baseline in unobstructed conditions, not
+a lower bound on the final path loss once coherent reflections are present.  In
+aerial scenarios a specular ground reflection can produce constructive or
+destructive interference periodically with distance.  The \emph{coherent
+two-ray} model captures this by adding the direct and reflected fields before
+converting to dB
 \cite{rappaport,wocc2021}:
 \begin{equation}
   E_{\mathrm{total}} = E_{\mathrm{direct}}
@@ -461,8 +463,10 @@ partially explain spread patterns, reducing the effective learning problem.
 The final residual GMM-head model instantiates this idea explicitly: one shared encoder processes the
 topology map and UAV height, and three parallel decoder heads predict path-loss
 residual, delay-spread residual, and angular-spread residual respectively, all
-anchored to their corresponding physical priors.  The multi-task loss is a
-weighted sum of per-target NLL terms, with weights tuned on the validation set.
+anchored to their corresponding physical priors.  The implementation defines a
+composite per-target objective: probabilistic NLL, KL and moment terms are active
+in the preceding large-capacity residual stage, while the reported final
+checkpoint is selected after an RMSE/MAE-dominant fine-tuning stage.
 
 % Section separator
 \section{Training stabilisation and regularisation techniques}

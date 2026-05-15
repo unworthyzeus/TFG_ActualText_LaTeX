@@ -1,6 +1,9 @@
 \subsection{Physical motivation for log-domain modeling}
 
-Delay spread (DS) and angular spread (AS) are strictly positive and heavy-tailed. Their empirical distributions are commonly modeled in the logarithmic domain in standard channel models \cite{tr38901,winner2}. For a spread variable $y$, define:
+Delay spread (DS) and angular spread (AS) are non-negative, often
+zero-inflated, and heavy-tailed. Their empirical distributions are commonly
+modeled in the logarithmic domain in standard channel models
+\cite{tr38901,winner2}. For a spread variable $y$, define:
 \begin{equation}
 z(x) = \log(1 + y(x)),\qquad \hat y(x) = \exp(\hat z(x)) - 1
 \label{eq:log_transform_79}
@@ -65,7 +68,9 @@ a_3\rho_{41}
 \label{eq:raw_spread}
 \end{equation}
 
-where $\theta_{\mathrm{inv}}(x) = 1 - \theta_{\mathrm{norm}}(x)$ (high value at low elevation). Example coefficients for delay spread: the native anchors are $b^{\mathrm{native}}_{\mathrm{LoS}} = 4.0$ ns and $b^{\mathrm{native}}_{\mathrm{NLoS}} = 11.0$ ns, which the implementation converts to $\log(1+4.0)$ and $\log(1+11.0)$ before adding the remaining log-domain terms. The delay coefficients are $a_1 = 0.11$, $a_2 = 0.62$, $a_3 = 0.48$, $a_4 = 0.32$, $a_5 = 0.86$, $a_6 = 0.60$. After Eq.~\eqref{eq:raw_spread}, the raw log prior is clipped to $[0,8]$, inverse transformed with $\exp(\cdot)-1$, and clipped to the metric upper bound.
+where $\theta_{\mathrm{inv}}(x) = 1 - \theta_{\mathrm{norm}}(x)$ (high value at low elevation). Example coefficients for delay spread: the native anchors are $b^{\mathrm{native}}_{\mathrm{LoS}} = 4.0$ ns and $b^{\mathrm{native}}_{\mathrm{NLoS}} = 11.0$ ns, which the implementation converts to $\log(1+4.0)$ and $\log(1+11.0)$ before adding the remaining log-domain terms. The delay coefficients are $a_1 = 0.11$, $a_2 = 0.62$, $a_3 = 0.48$, $a_4 = 0.32$, $a_5 = 0.86$, $a_6 = 0.60$. After Eq.~\eqref{eq:raw_spread}, the raw log prior is clipped to $[0,8]$, inverse transformed with $\exp(\cdot)-1$, and clipped to the metric upper bound. For reproducibility, the \(z^{(0)}(x)\) entries used later in \(\textbf{x}_{79}\) denote the log value recovered from this clipped native raw prior, i.e.,
+\(\log(1+\mathrm{raw\_prior}_{\mathrm{clipped}}(x))\), not an unconstrained
+copy of Eq.~\eqref{eq:raw_spread}.
 
 The raw prior is not a 3GPP formula copied directly into CKM. Instead, it
 takes the 3GPP/WINNER lesson that spread statistics should be separated by
@@ -73,6 +78,41 @@ propagation state and represented in log space \cite{tr38901,winner2}, then
 adds CKM-specific map morphology terms. UAV measurement studies also motivate
 the elevation-angle dependence: low-elevation links usually interact with more
 rooftops and street canyons than near-overhead links \cite{cai2019,izydorczyk2019}.
+For reproducibility, Table~\ref{tab:try79_raw_constants} lists the fixed
+raw-prior constants used before the regime-wise ridge calibration.
+
+\begin{table}[H]
+\centering
+\caption{Fixed constants used in the raw spread prior of Eq.~\eqref{eq:raw_spread}.}
+\label{tab:try79_raw_constants}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{lccX}
+\toprule
+Quantity & Delay spread & Angular spread & Meaning \\
+\midrule
+\(b^{\mathrm{native}}_{\mathrm{LoS}}\) & \(4.0\) ns & \(3.0^\circ\) &
+Native LoS anchor converted to \(\log(1+b)\). \\
+\(b^{\mathrm{native}}_{\mathrm{NLoS}}\) & \(11.0\) ns & \(7.0^\circ\) &
+Native NLoS anchor converted to \(\log(1+b)\). \\
+\(a_1,\ldots,a_6\) &
+\(0.11,0.62,0.48,0.32,0.86,0.60\) &
+\(0.05,0.52,0.60,0.38,0.58,0.35\) &
+Coefficients of \(\log(1+d_{2D})\), \(\theta_{\mathrm{inv}}\),
+\(\rho_{41}\), \(h_{41}\), \(n_{41}\), and
+\(n_{41}\theta_{\mathrm{inv}}\), respectively. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The topology offset \(b_{\mathrm{topology}}\) is also fixed before ridge
+calibration. For delay spread, the offsets for
+\texttt{open\_sparse\_lowrise}, \texttt{open\_sparse\_vertical},
+\texttt{mixed\_compact\_lowrise}, \texttt{mixed\_compact\_midrise},
+\texttt{dense\_block\_midrise}, and \texttt{dense\_block\_highrise} are
+\(0.00, 0.18, 0.06, 0.22, 0.24, 0.34\). For angular spread, the corresponding
+offsets are \(0.00, 0.09, 0.05, 0.16, 0.18, 0.24\). These are log-domain
+offsets, not native ns/degree offsets.
 
 Every term in Eq.~\eqref{eq:raw_spread} has a physical interpretation:
 \begin{itemize}
@@ -123,8 +163,8 @@ The vector in Eq.~\eqref{eq:x79} can be grouped into five blocks:
 The first block lets the model bend the raw prior quadratically. The geometry
 block handles range and height. The morphology block measures whether there
 are nearby scatterers. The interaction block allows the model to express
-statements such as ``density matters more at low elevation'' or ``being below
-nearby rooftops matters most when NLoS support is already high''.
+statements such as ``density matters more at low elevation'' or
+``density-weighted transmitter clearance matters differently at low elevation''.
 As in the path-loss-prior vector, some of these terms are not independent.
 For instance, \(z^{(0)}(x)^2\) is determined by \(z^{(0)}(x)\), and
 \(t_{41}(x)n_{41}(x)\) is tied to both the taller-building and NLoS-support
@@ -153,8 +193,8 @@ higher-order subsets.
 \(n_{15},n_{41}\) & Fine/coarse local NLoS support. & Measures how much nearby ground is geometrically shielded. \\
 \(b_{41}\) & Blocker-depth term. & Measures how far nearby buildings protrude above receiver height. \\
 \(1\) & Bias term. & Gives each regime its own additive offset. \\
-\(c_{41}\) & Transmitter-clearance term. & Measures how far the UAV is above nearby rooftops. \\
-\(t_{41}\) & Taller-building fraction. & Counts nearby buildings whose height exceeds the UAV height. \\
+\(c_{41}\) & Transmitter-clearance term. & Density-weighted window-area mean of UAV clearance above nearby building pixels. \\
+\(t_{41}\) & Taller-building area fraction. & Fraction of the full local window occupied by buildings whose height exceeds the UAV height. \\
 \bottomrule
 \end{tabularx}
 \caption{Term-by-term inventory of the direct terms in the spread calibration vector.}
@@ -171,9 +211,9 @@ higher-order subsets.
 \(n_{41}\log(1+d_{2D})\) & NLoS-distance interaction. & Lets range matter differently in blocked streets than in open ground. \\
 \(\rho_{41}\theta_{\mathrm{inv}}\) & Density-elevation interaction. & Activates when dense morphology and low elevation occur together. \\
 \(\theta_{\mathrm{norm}}\rho_{41}\) & Overhead-density interaction. & Allows dense areas to behave differently when viewed from high elevation. \\
-\(c_{41}\theta_{\mathrm{inv}}\) & Clearance-elevation interaction. & Makes rooftop clearance more important at grazing elevation. \\
-\(t_{41}\rho_{41}\) & Tall-building-density interaction. & Highlights dense high-rise blocks where many buildings can shadow the UAV. \\
-\(t_{41}n_{41}\) & Tall-building-NLoS interaction. & Activates in blocked regions where buildings are also taller than the transmitter. \\
+\(c_{41}\theta_{\mathrm{inv}}\) & Clearance-elevation interaction. & Lets density-weighted rooftop clearance matter differently at grazing elevation. \\
+\(t_{41}\rho_{41}\) & Tall-building-density interaction. & Highlights dense high-rise blocks where a large window area contains buildings above the UAV. \\
+\(t_{41}n_{41}\) & Tall-building-NLoS interaction. & Activates in blocked regions where taller-building area is also present. \\
 \bottomrule
 \end{tabularx}
 \caption{Interaction terms in the spread calibration vector.}
@@ -211,7 +251,16 @@ nonlinear transforms and interactions selected from propagation intuition.}
 \label{fig:try79_feature_groups}
 \end{figure}
 
-The new features beyond those in \(\textbf{x}_{78}\) are:
+The new features beyond those in \(\textbf{x}_{78}\) are listed below. The
+shared morphology notation follows the path-loss-prior construction in
+Sec.~\ref{sec:nlos_branch}. In particular, \(b(\cdot)\) is the building mask,
+\(\rho_k\) is the building-density box mean, \(h_k\) is the density-weighted
+building-height box mean, \(n_k\) is the ground-NLoS support box mean, and
+\(\theta_{\mathrm{norm}}\) is the normalized elevation angle. The same
+reflected-padding \(\mathrm{BoxMean}_k\) operator is used here, and
+\(H_{\mathrm{norm}}=\SI{90}{m}\) is the building-height normalizer. This keeps
+the spread-prior vector self-contained while preserving the common feature
+definitions used by the path-loss prior.
 
 \paragraph{Normalised transmitter height.}
 \begin{equation}
@@ -247,20 +296,52 @@ flat open ground leaves it at zero.
 c_{41}(x) = \frac{\mathrm{BoxMean}_{41}\!\left(\max(h_{\mathrm{tx}}-\mathrm{topology}(\cdot),0)\,b(\cdot)\right)(x)}{H_{\mathrm{norm}}}
 \label{eq:c41}
 \end{equation}
-Measures how far the UAV is above surrounding buildings (mean altitude clearance over nearby building tops).
-Large \(c_{41}\) means the transmitter is well above the local skyline, which
-should reduce obstruction-driven delay and angular spread. Small \(c_{41}\)
-means the UAV is close to, or below, nearby rooftops.
+This is a density-weighted clearance feature: the clearance above each building
+pixel is averaged by \(\mathrm{BoxMean}_{41}\) over the full \(41\times41\)
+window and then normalized by \(H_{\mathrm{norm}}\). Ground pixels contribute
+zero through the multiplier \(b(\cdot)\). A large \(c_{41}\) therefore means
+both that nearby buildings are present and that the transmitter is well above
+them. A small value can mean either little local building coverage, or buildings
+that reach close to or above the UAV height.
 
 \paragraph{Taller-building fraction.}
 \begin{equation}
 t_{41}(x) = \mathrm{BoxMean}_{41}\!\left(\mathbf{1}[\mathrm{topology}(\cdot)>h_{\mathrm{tx}}]\cdot b(\cdot)\right)(x)
 \label{eq:t41}
 \end{equation}
-Fraction of buildings in the $41\times41$ window that are taller than the UAV.
-This term is zero if the UAV is above all local buildings and grows when the
-link is likely to be embedded in a high-rise canyon. It is especially useful
-for distinguishing dense but low-rise zones from dense high-rise zones.
+This is the fraction of the full \(41\times41\) window area occupied by
+building pixels taller than the UAV, not the fraction of buildings after
+conditioning on there being a building pixel. It is zero if the UAV is above
+all local buildings or if the local window contains no buildings, and grows
+when the link is likely to be embedded in a high-rise canyon. It is especially
+useful for distinguishing dense but low-rise zones from dense high-rise zones.
+
+\paragraph{Six-class topology definition.}
+The spread prior uses the six topology labels produced by the final Try~80
+prior code. For a map, let \(\bar\rho_{\mathrm{map}}\) be the fraction of
+non-ground pixels and let \(\bar h_{\mathrm{map}}\) be the mean height over
+non-ground pixels only. The class assignment is:
+\begin{equation}
+\mathrm{class}_{79}
+=
+\begin{cases}
+\texttt{open\_sparse\_lowrise},
+& \bar\rho_{\mathrm{map}}\le0.12,\ \bar h_{\mathrm{map}}\le\SI{12}{m},\\
+\texttt{open\_sparse\_vertical},
+& \bar\rho_{\mathrm{map}}\le0.12,\ \bar h_{\mathrm{map}}>\SI{12}{m},\\
+\texttt{dense\_block\_midrise},
+& \bar\rho_{\mathrm{map}}\ge0.28,\ \bar h_{\mathrm{map}}\le\SI{28}{m},\\
+\texttt{dense\_block\_highrise},
+& \bar\rho_{\mathrm{map}}\ge0.28,\ \bar h_{\mathrm{map}}>\SI{28}{m},\\
+\texttt{mixed\_compact\_lowrise},
+& 0.12<\bar\rho_{\mathrm{map}}<0.28,\ \bar h_{\mathrm{map}}\le\SI{12}{m},\\
+\texttt{mixed\_compact\_midrise},
+& 0.12<\bar\rho_{\mathrm{map}}<0.28,\ \bar h_{\mathrm{map}}>\SI{12}{m}.
+\end{cases}
+\label{eq:topo79}
+\end{equation}
+These labels are map-level routing keys for the spread-prior ridge models;
+they are not additional per-pixel morphology features.
 
 \subsubsection{Stage 3: regime-wise ridge regression}
 
@@ -291,14 +372,20 @@ targets. The coefficient vector
 \right\|_2^2 ,
 \label{eq:try79_ridge_objective}
 \end{equation}
-where \(\textbf{D}=\mathrm{diag}(1,\dots,1,0)\) leaves the bias term
-unpenalized. The regularizer is small, but it prevents unstable coefficients
-when a regime contains few valid pixels or when two morphology features are
-strongly correlated.
+where \(\textbf{D}=\mathrm{diag}(d_1,\ldots,d_{23})\), with \(d_{23}=0\)
+and \(d_i=1\) for \(i\ne23\). Thus, the final interaction term
+\(t_{41}n_{41}\), which is the last entry of Eq.~\eqref{eq:x79}, is left
+unpenalized by the ridge term in the frozen calibration used by the final
+model. This is an implementation detail of the stored artifact, not a separate
+physical assumption: a post-hoc check that instead left the bias coefficient
+unpenalized produced no meaningful RMSE change. The regularizer is small, but
+it prevents unstable coefficients when a regime contains few valid pixels or
+when two morphology features are strongly correlated.
 
 Term by term, \(\textbf{X}_r^\top\textbf{X}_r\) is the feature correlation
 matrix for regime \(r\), \(\lambda\textbf{D}^\top\textbf{D}\) adds a small
-diagonal stabilizer while leaving the bias unpenalized, and
+diagonal stabilizer to every coefficient except the final
+\(t_{41}n_{41}\) coefficient, and
 \(\textbf{X}_r^\top\textbf{z}_r\) is the feature-target
 correlation vector in log-spread space. This is ridge regression: it is the
 ordinary least-squares fit plus a penalty that discourages very large
@@ -328,7 +415,9 @@ the same keys in this order and uses the first one present:
 \item same topology class + LoS/NLoS + \emph{all} antenna heights,
 \item same topology class + \emph{all} LoS states + all antenna heights,
 \item global topology + LoS/NLoS + all antenna heights,
-\item fully global fallback: (metric, global, all-LoS, all-ant).
+\item fully global fallback: (\texttt{metric}, \texttt{global},
+      \texttt{all\_los}, \texttt{all\_ant}), where \texttt{all\_los} is the
+      implementation key for all visibility states, not LoS-only pixels.
 \end{enumerate}
 
 \subsubsection{Stage 4: inverse transform and clipping}

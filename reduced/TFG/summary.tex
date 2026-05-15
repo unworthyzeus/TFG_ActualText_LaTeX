@@ -14,7 +14,9 @@ temporal / delay spread i dispersió angular / angular spread sota un protocol
 estricte de validació per ciutats completes. Després de provar U-Nets, cGANs,
 experts i priors físics, el treball convergeix en un model híbrid: priors
 interpretables calibrats per pèrdua de trajecte i spreads, més un model final
-amb cap GMM residual conjunt.
+amb cap GMM residual conjunt. En els resultats finals, aquest cap s'avalua
+mitjançant la predicció determinista de la mitjana de la mescla, no com una
+densitat predictiva calibrada.
 
 El resultat final no és un prior pur ni una xarxa neuronal pura: el model final
 usa deep learning com a corrector multitasca condicionat per la geometria
@@ -40,7 +42,9 @@ temporal / delay spread y dispersión angular / angular spread bajo un protocolo
 estricto de validación por ciudades completas. Tras probar U-Nets, cGANs,
 expertos y priors físicos, el trabajo converge en un modelo híbrido: priors
 interpretables calibrados para pérdida de trayecto y spreads, más un modelo
-final con cabeza GMM residual conjunta.
+final con cabeza GMM residual conjunta. En los resultados finales, esa cabeza
+se evalúa mediante la predicción determinista de la media de la mezcla, no como
+una densidad predictiva calibrada.
 
 El resultado final no es un prior puro ni una red neuronal pura: el modelo final
 usa deep learning como corrector multitarea condicionado por la geometría urbana,
@@ -66,7 +70,9 @@ angular spread under a strict city-holdout evaluation protocol, where entire
 cities are reserved for validation and test. After testing U-Nets, cGANs,
 expert models, and physical priors, the project converges on a hybrid design:
 calibrated interpretable priors for path loss and spreads, plus a joint
-residual GMM-head model.
+residual GMM-head model. In the final reported results, that head is evaluated
+through its deterministic mixture-mean prediction, not as a calibrated
+predictive density.
 
 The final system is neither a pure prior nor a pure neural network: the final
 model adds deep learning as a multi-task residual corrector conditioned on urban

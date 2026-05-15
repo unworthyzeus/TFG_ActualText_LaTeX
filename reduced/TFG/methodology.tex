@@ -289,8 +289,8 @@ showed \emph{what} the model had misunderstood.  The central idea of the late
 pipeline was therefore to identify the target distribution before asking a
 network to perform pixel-by-pixel prediction. The distribution-first path-loss
 model addressed this by
-predicting the parameters of a Gaussian Mixture Model (GMM) rather than a
-simple point estimate.
+emitting a Gaussian Mixture Model (GMM)-parameterized residual head rather than
+only a direct scalar map.
 
 \begin{figure}[htbp]
 \centering
@@ -630,8 +630,10 @@ This is a deliberate simplification relative to the earlier branches. The
 PMHHNet diagnostic runs used masked MSE with multi-scale and Laplacian-style auxiliaries; the
 distribution-first models removed those structural losses and focused on target
 shape. The final model keeps the residual GMM-head machinery available: it
-still emits mixture parameters and uses the mixture expectation as the
-deterministic map prediction. The probabilistic NLL, KL, moment and outlier
+still emits mixture parameters and uses the local-weighted model-space mixture
+mean as the deterministic point prediction; for delay and angular spread this
+mean is computed in \(\log(1+y)\) space and inverse-transformed before native
+RMSE/MAE are reported. The probabilistic NLL, KL, moment and outlier
 terms were active in the preceding large-capacity training stage, but the
 selected final model is chosen after a deterministic RMSE/MAE-dominant
 fine-tuning stage because the frozen priors already explain the main
@@ -683,12 +685,15 @@ GMM components $K$ & 5 (Stage A, path/delay), spike+exp (angular) & 3 (residual 
 \end{tabularx}
 \end{table}
 
-Two patterns deserve emphasis. First, the move from PMHHNet diagnostics to distribution-first modelling
-onward is a simplification, not a complication: SWA, EMA, CutMix, label noise,
-and the multi-auxiliary losses are all turned off, and the training stack
-becomes a plain AdamW + ReduceLROnPlateau loop. This is consistent with the
-distribution-first philosophy: once the output head and target distribution
-are correct, the classical training-stabilisation tricks become unnecessary.
+Two patterns deserve emphasis. First, the move from PMHHNet diagnostics to the
+distribution-first and final prior-anchored stages is a simplification, not a
+complication: SWA, EMA, CutMix, label noise and the older auxiliary
+stabilisation tricks are removed. The distribution-first experts use AdamW with
+ReduceLROnPlateau, whereas the final joint GMM uses AdamW with the
+warmup-plus-cosine \texttt{LambdaLR} schedule implemented in
+\texttt{train\_try80.py}. This is consistent with the distribution-first
+philosophy: once the output head and target distribution are correct, the
+classical training-stabilisation tricks become unnecessary.
 Second, the final model uses a smaller learning rate than the distribution-first experts
 (\num{5e-5} vs \num{3e-4}) because it is fine-tuning a residual head whose
 inputs already include the strong frozen priors; pushing the learning

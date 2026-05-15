@@ -68,8 +68,10 @@ when the model head follows the target distribution. Earlier point-regression
 models could produce plausible-looking maps while missing NLoS path-loss modes
 or suppressing spread tails. The distribution-first stage fixed that diagnosis
 by using GMM-style outputs and histogram-aware evaluation. The final model keeps
-that lesson: it predicts residual distributions around calibrated anchors
-instead of forcing every target into a single smooth estimate.
+that lesson in its head design: it emits mixture parameters around calibrated
+anchors and exports their local-weighted point prediction, while the final
+reported claim remains the deterministic RMSE improvement selected after the
+RMSE/MAE-dominant fine-tuning stage.
 
 \subsection{Answers to the research questions}
 

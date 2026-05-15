@@ -64,9 +64,10 @@ spike plus NLoS-heavy tails. Heteroscedastic losses, mixture-density networks,
 GMM heads and diffusion-style generative models all address this mismatch in
 different ways \cite{kendall2017uncertainties,saleh2021probabilistic,
 garciamarti2020mixture,radiodiff2025}. The final model keeps the practical
-part of that lesson: a prior-anchored residual GMM head predicts a distribution
-around the frozen prior and then exports the mixture expectation as the
-continuous map.
+part of that lesson: a prior-anchored residual GMM head emits mixture
+parameters around the frozen prior, then the selected RMSE-dominant checkpoint
+exports a local-weighted point map rather than making a calibrated
+probabilistic-density claim.
 
 \section{Fair comparison protocol}
 \label{sec:soa_benchmarks}
