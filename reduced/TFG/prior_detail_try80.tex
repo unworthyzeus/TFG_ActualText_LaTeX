@@ -136,8 +136,8 @@ preceding large-capacity residual stage used non-zero probabilistic weights.
 The selected final model keeps the same GMM head, but the last residual
 fine-tuning stage is RMSE/MAE-dominant: its NLL, KL, moment and
 outlier-budget weights are set to zero in the resolved YAML configuration.
-The deterministic point prediction used for RMSE evaluation is the expected
-value of the mixture:
+The deterministic point prediction used for RMSE evaluation is the mixture
+mean in the modelled space:
 
 \begin{equation}
 \hat z_{k,r}(x)
@@ -152,6 +152,11 @@ value of the mixture:
 \end{cases}
 \label{eq:try80_point}
 \end{equation}
+For path loss, this is also the native-space mixture mean because the modelled
+space is dB. For delay spread and angular spread, the mixture is averaged in
+\(\log(1+y)\) space and then mapped back with \(\exp(\cdot)-1\). Therefore the
+reported point map should be read as the deterministic prediction used for
+RMSE, not as the exact native-space expectation of the probabilistic mixture.
 The final task map selects \(\hat y_{k,\mathrm{LoS}}\) or
 \(\hat y_{k,\mathrm{NLoS}}\) using the explicit CKM LoS/NLoS masks. This
 prevents a visually plausible NLoS correction from leaking into pixels whose

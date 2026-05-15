@@ -42,9 +42,11 @@ a vague physical hint:
       and \(r(d_{2D},h_{\mathrm{tx}})\) are fitted in \SI{5}{m} height bins,
       smoothed, and linearly interpolated at inference. It is not a generic
       free-space formula and it is not a learned linear regressor.
-\item \textbf{NLoS path-loss prior.} This starts from a raw blocked-link
-      propagation estimate \(P_0\), then calibrates it with local morphology:
-      building density, building height, NLoS support, shadow/blocker proxies,
+\item \textbf{NLoS path-loss prior.} This starts from the raw blocked-link
+      propagation estimate \(\mathrm{PL}^{(0)}\), which includes
+      \(\mathrm{PL}_{\mathrm{NLoS,raw}}\) on obstructed pixels, then calibrates
+      it with local morphology: building density, building height, NLoS support,
+      the elevation-dependent shadowing proxy \(\sigma_{\mathrm{shadow}}\),
       elevation angle, and interactions. It uses antenna-height regimes
       (\texttt{low\_ant}, \texttt{mid\_ant}, \texttt{high\_ant}) because the
       obstruction geometry changes qualitatively when the centred UAV rises
@@ -56,9 +58,9 @@ a vague physical hint:
       adds the 23-feature vector of Sec.~\ref{sec:try79_detail}. That vector
       includes continuous normalized UAV height, transmitter clearance above
       nearby rooftops, and the local fraction of buildings taller than the
-      transmitter. This is why the spread prior can represent both the
-      near-zero LoS spike and the NLoS tail better than a native-space global
-      average.
+      transmitter. This is why the spread prior can fit the near-zero LoS mass
+      and the NLoS tail without letting the largest tail values dominate the
+      whole calibration, unlike a native-space global average.
 \end{itemize}
 
 \begin{table}[H]
@@ -93,8 +95,9 @@ Height-dependent dB bias remaining after the coherent two-ray fit. \\
 \(r(d_{2D},h_{\mathrm{tx}})\) & LoS path loss &
 Smoothed radial residual table. It corrects distance-dependent errors that
 remain after FSPL, two-ray interference, and height bias. \\
-\(P_0\) & NLoS path loss &
-Raw blocked-link propagation estimate before map-morphology calibration. \\
+\(\mathrm{PL}^{(0)}\), \(\mathrm{PL}_{\mathrm{NLoS,raw}}\) & NLoS path loss &
+Raw hybrid formula map and its obstructed-pixel branch before
+map-morphology calibration. \\
 \(\rho_k\) & NLoS PL and spreads &
 Fraction of building pixels in a \(k\times k\) neighbourhood; a local density
 proxy. \\
@@ -104,8 +107,8 @@ nearby reflectors and blockers. \\
 \(n_k\) & NLoS PL and spreads &
 Local NLoS-support fraction; indicates how much of the neighbourhood is
 geometrically blocked. \\
-\(s\) & NLoS path loss &
-Shadow/blocker proxy used by the NLoS linear calibration. \\
+\(\sigma_{\mathrm{shadow}}\) & NLoS path loss &
+Elevation-dependent shadowing proxy used by the NLoS linear calibration. \\
 \(\theta\), \(\theta_{\mathrm{norm}}\), \(\theta_{\mathrm{inv}}\) &
 PL and spreads &
 Elevation-angle terms. Low elevation links interact with more buildings, so
