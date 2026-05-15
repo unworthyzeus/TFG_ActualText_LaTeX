@@ -2,77 +2,77 @@
 
 \section{Conclusions}
 
-This thesis started as a dense deep-learning surrogate for UAV radio maps and
-ended as a hybrid, prior-anchored CKM prediction pipeline. The central lesson is
-that the hard part was not drawing plausible maps, but matching the physical and
-statistical structure of each target under a strict city-holdout protocol.
-Progress came from enforcing ground-only metrics, separating LoS/NLoS behaviour,
-diagnosing target distributions and using calibrated priors where the data
-clearly followed stable propagation structure.
+This thesis demonstrates a variable-height UAV CKM predictor under a strict
+city-holdout protocol. The final system jointly predicts dense path loss, delay
+spread, and angular spread for unseen cities while conditioning on continuous
+UAV height. The strongest result is not a pure black-box network, but a hybrid
+pipeline: calibrated priors explain the stable physical and statistical
+structure, and a neural residual model corrects what remains.
 
-The final numbers meet the original targets. The standalone calibrated
-path-loss prior reaches \SI{1.9246}{dB} RMSE on its evaluation holdout and
-\SI{1.9383}{dB} when used as the frozen prior on the final test split. The
-spread priors reach \SI{28.10}{ns} DS RMSE and \(13.74^\circ\) AS RMSE. The
-final residual GMM-head model improves those anchors on 14 unseen test cities,
-reaching \SI{1.6519}{dB}, \SI{26.5570}{ns} and \(11.3854^\circ\) for PL, DS and
-AS. The prior is therefore not a weak baseline; it is already a strong
-train-calibrated estimator, and the neural gain is measured against that
-demanding reference.
+The final numbers meet the original targets. The path-loss prior reaches
+\SI{1.9246}{dB} RMSE on its evaluation holdout and \SI{1.9383}{dB} when used as
+the frozen prior on the final test split. The spread priors reach
+\SI{28.10}{ns} DS RMSE and \(13.74^\circ\) AS RMSE. The final residual GMM-head
+model improves those anchors on 14 unseen test cities, reaching
+\SI{1.6519}{dB}, \SI{26.5570}{ns}, and \(11.3854^\circ\) for PL, DS, and AS.
+The prior is therefore not a weak baseline; it is already a strong estimator.
 
 The answer to \textbf{RQ1} is yes within the fixed CKM contract: dense PL/DS/AS
 prediction is viable under strict city holdout, and the final model does it
 jointly with one generator. The answer to \textbf{RQ2} is that the useful split
-is not physics versus neural prediction, but calibrated physics/statistics first
-and bounded neural residuals second. Frozen priors absorb radial, visibility,
-height and spread-scale structure; the network learns where those estimates are
-locally biased. The answer to \textbf{RQ3} is also positive but conditional:
-continuous UAV height can be handled by height-aware priors plus sinusoidal FiLM
-conditioning, but low-altitude and NLoS-heavy cases remain the regimes that most
-need explicit reporting.
+is calibrated physics/statistics first and bounded neural residuals second. The
+priors combine two-ray LoS behaviour, height-aware calibration, NLoS morphology,
+and log-domain DS/AS ridge models; the network learns local residuals around
+these anchors. The answer to \textbf{RQ3} is also positive: continuous UAV
+height is handled through height-aware priors and a sinusoidal FiLM conditioning
+path, while low-altitude and NLoS-heavy cases remain the most difficult.
 
 The main contributions are therefore:
 \begin{itemize}
-  \item a reproducible city-holdout evaluation contract with ground-only masking
-        and LoS/NLoS/height diagnostics;
-  \item a height-aware path-loss prior combining LoS two-ray calibration and
-        NLoS morphology OLS;
-  \item log-domain DS/AS priors with ridge calibration and regime fallbacks;
-  \item a distribution-first diagnosis showing why earlier point-regression
-        models collapsed on NLoS and spread tails;
-  \item a final joint prior-anchored residual GMM-head model and generator.
+  \item a joint CKM generator for variable-height UAV path loss, delay spread,
+        and angular spread on unseen cities;
+  \item a calibrated prior family that combines physical propagation structure,
+        morphology, visibility, height regimes, and empirical spread statistics;
+  \item a distribution-first modelling lesson showing why GMM-style residual
+        prediction and histogram checks are needed for NLoS and spread tails;
+  \item a reproducible city-holdout evaluation contract with ground-only
+        masking and LoS/NLoS/height diagnostics.
 \end{itemize}
 
-The negative results matter. cGANs improved visual sharpness but not physical
-RMSE; larger PMHHNet variants and topology experts improved organization but not
-the NLoS mode-collapse; heteroscedastic and multi-scale experiments exposed hard
-pixels but did not become the final predictor. These failures justify the final
-hybrid design: it is not a bigger black-box CNN, but a division of labour between
-auditable priors and learned residual corrections.
+The qualitative spread results also clarify the remaining limitation. The
+general DS/AS structure is usually correct, but rare groups of high-spread
+pixels are sometimes missed, and some false positive high-spread patches remain.
+This explains why spread RMSE improves less dramatically than path loss even
+though the maps are physically more coherent.
+
+The negative results justify the final design. Pure image-translation models,
+larger CNN variants, topology experts, multi-scale outputs, and uncertainty
+heads exposed useful failure modes, but none solved the distribution mismatch
+alone. The final model is stronger because it combines auditable priors with a
+distribution-aware residual head instead of only increasing neural capacity.
 
 \section{Future directions}
 
 The nearest continuation is a controlled ablation of the final residual line:
-remove individual prior channels, residual caps, GMM terms, anchor/guard losses
+remove individual prior channels, residual caps, GMM terms, anchor/guard losses,
 and height-conditioning paths while keeping the same city-holdout contract.
-This would quantify which parts of the final gain are essential and which are
-engineering support.
+This would quantify which parts of the final gain are essential.
 
 The next modelling step is broader conditioning. The current dataset fixes
-frequency, antenna assumptions and simulator settings; a more general CKM
-surrogate should learn across frequency, bandwidth, antenna pattern and possibly
-polarization. A practical intermediate step would simulate the same cities under
-several radio configurations so the model can separate geometry effects from
-radio-configuration effects.
+frequency, antenna assumptions, and simulator settings; a more general CKM
+surrogate should learn across frequency, bandwidth, antenna pattern, and
+possibly polarization. A practical intermediate step would simulate the same
+cities under several radio configurations so the model can separate geometry
+effects from radio-configuration effects.
 
 For spread targets, future work should also test structure-aware objectives.
 DS and AS maps are quantized and spike-plus-tail, so small spatial shifts can be
 penalized harshly by RMSE even when the morphology is plausible. Region-wise
-correlation, gradient consistency, LoS/NLoS boundary consistency or
+correlation, gradient consistency, LoS/NLoS boundary consistency, or
 topology-aware ranking losses may better preserve physical spread patterns.
 
 The final extension is simulator-to-reality calibration. Because the priors are
 interpretable, they are suitable for correction with limited field measurements.
 A future operational CKM predictor should adapt to a new city with sparse real
-data while still reporting uncertainty by LoS/NLoS regime, UAV-height bin and
+data while still reporting uncertainty by LoS/NLoS regime, UAV-height bin, and
 topology class.

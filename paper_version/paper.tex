@@ -1663,31 +1663,36 @@ source files.
 
 \section{Conclusion}
 
-This paper reports a dense UAV CKM surrogate under a
-strict city-holdout contract. The answer to the first research question is
-positive within that contract, but the path to that answer matters. The earlier
-distribution-aware GMM heads without frozen priors were not the best final
-predictors; they were worse than the final prior-anchored system. Their value
-was diagnostic: they showed that the earlier failures were not caused by
-path loss, delay spread, and angular spread being impossible dense targets, but
-by using output heads and losses that collapsed multi-modal or spike-plus-tail
-distributions. The final shared model then closes RQ1 by predicting all three
-maps jointly in one generator, reaching \SI{1.6519}{dB},
-\SI{26.5570}{ns}, and \(11.3854^\circ\) on unseen cities.
+This paper presents a dense variable-height UAV CKM surrogate that jointly
+predicts path loss, delay spread, and angular spread on unseen cities. Under the
+strict city-holdout contract, the final model reaches \SI{1.6519}{dB},
+\SI{26.5570}{ns}, and \(11.3854^\circ\), respectively, while using one centred
+UAV generator across the sampled height range. The result is not only a neural
+architecture result. Its main contribution is a hybrid recipe: first build
+strong train-only calibrated priors for the structure that is predictable, then
+learn bounded residual distributions around those anchors.
 
-The answer to the second question is that the useful split is not ``physics or
-neural'', but calibrated physics/statistics first and bounded neural residuals
-second. Frozen priors explain most radial, visibility, height, and spread-scale
-structure; the final model improves those priors by \SI{0.2865}{dB},
-\SI{1.5453}{ns}, and \(2.3562^\circ\) RMSE on the held-out test set. The
-answer to the height question is also positive but conditional: continuous UAV
-height can be handled by height-aware priors plus sinusoidal embeddings and
-FiLM modulation, so one model can cover the varying-height range without
-per-altitude retraining, but low-altitude and NLoS-heavy cases remain the
-regimes that require explicit reporting.
+The calibrated priors are themselves an important part of the method. They put
+together coherent two-ray LoS path loss, height-dependent calibration,
+morphology-aware NLoS correction, visibility switching, and log-domain DS/AS
+spread statistics. These frozen anchors already explain most radial,
+visibility, height, and spread-scale structure; the final residual model then
+improves them by \SI{0.2865}{dB}, \SI{1.5453}{ns}, and \(2.3562^\circ\) RMSE on
+the held-out test set. Continuous UAV height is handled through both the
+height-aware priors and a sinusoidal FiLM conditioning path, so the same model
+covers the varying-height regime without per-altitude retraining.
 
-The main practical conclusion is therefore narrow and useful. For this fixed
-ray-traced CKM simulation contract, a prior-anchored residual GMM-head model is
+The distribution-first diagnosis remains the key modelling lesson. NLoS path
+loss and spread targets are multi-modal, quantized, and spike-plus-tail rather
+than single smooth residuals. GMM-style residual heads and histogram checks
+therefore matter because they prevent visually plausible maps from hiding
+collapsed marginals. The remaining spread errors are consistent with this
+interpretation: the large-scale DS/AS structure is usually recovered, but rare
+high-spread pixel groups can still be missed, and some false positive
+high-spread patches remain.
+
+The main practical conclusion is narrow and useful. For this fixed ray-traced
+CKM simulation contract, the prior-anchored residual GMM-head model is
 accurate, fast, and interpretable enough to replace repeated map generation for
 many planning experiments, achieving a measured \(113.7\times\) speed-up over
 the local MATLAB ray-tracing path. The result is a reproducible surrogate for a
