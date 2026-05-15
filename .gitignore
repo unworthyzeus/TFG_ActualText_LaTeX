@@ -14,3 +14,12 @@
 texput.log
 build/
 tmp_pdf_check*/
+
+# Final deliverables and thesis/paper figures are repository artifacts.
+# Keep these explicit so broad local TeX-ignore rules never hide them.
+!reduced/TFG/TFG.pdf
+!paper_version/paper.pdf
+!reduced/TFG/img/
+!reduced/TFG/img/**
+!paper_version/img/
+!paper_version/img/**
