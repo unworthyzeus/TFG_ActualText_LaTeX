@@ -831,7 +831,7 @@ training a separate network per altitude bin.
   prior/.style={draw, thick, rounded corners=2pt, rectangle, minimum width=2.35cm, minimum height=0.82cm, align=center, fill=gray!15},
   arr/.style={-{Stealth[length=2.0mm]}, thick, rounded corners=3pt},
   condarr/.style={-{Stealth[length=1.8mm]}, thick, dashed, orange!85!black, rounded corners=3pt},
-  skiparr/.style={<->, thick, dashed, blue!65}
+  skiparr/.style={-{Stealth[length=1.8mm]}, thick, dashed, blue!65, rounded corners=3pt}
 ]
 \node[prior] (input) at (0,0.8) {9-channel input\\topology, masks\\frozen priors};
 \node[block] (stem) at (2.35,0.8) {Stem\\128 ch};
@@ -867,16 +867,13 @@ training a separate network per altitude bin.
 \draw[arr] (height.east) -- (embed.west);
 \draw[arr] (embed.east) -- (hmlp.west);
 \coordinate (filmbusA) at (5.35,-0.18);
-\coordinate (filmbusC) at (9.70,-0.18);
-\coordinate (filmbusD) at (11.20,-0.18);
 \coordinate (filmbusB) at (18.55,-0.18);
-\draw[condarr] (hmlp.north) -- (filmbusA) -- (filmbusC);
-\draw[condarr] (filmbusD) -- (filmbusB);
+\draw[condarr] (hmlp.north) -- (filmbusA) -- (filmbusB);
 \draw[condarr] (6.35,-0.18) -- (down2.south);
 \draw[condarr] (9.70,-0.18) -- ([xshift=-0.24cm]bott.south);
 \draw[condarr] (12.55,-0.18) -- (up4.south);
 \draw[condarr] (18.55,-0.18) -- (up1.south);
-\draw[condarr] (11.20,-0.18) -- ([xshift=0.30cm]global.north);
+\draw[condarr] (11.35,-0.18) -- ([xshift=0.36cm]global.north);
 
 \draw[arr] ([xshift=0.32cm]bott.south) -- ++(0,-0.70) -| ([xshift=-0.30cm]global.north);
 \draw[arr] (global.east) -- ([yshift=0.20cm]assembly.west);
@@ -884,10 +881,13 @@ training a separate network per altitude bin.
 \draw[arr] (taskprior.east) -- ([yshift=-0.22cm]assembly.west);
 \draw[arr] (assembly.east) -- (out.west);
 
-\node[prior, fill=blue!4, minimum width=5.2cm] (skip) at (10.9,2.15)
+\node[prior, fill=blue!4, minimum width=5.2cm] (skip) at (10.9,2.55)
 {U-Net skip concatenations preserve high-resolution morphology};
-\draw[skiparr] ([yshift=0.18cm]down1.north) -- ([yshift=0.18cm]up1.north);
-\draw[blue!65, thick, dashed] (skip.south) -- ++(0,-0.28);
+\draw[skiparr] (stem.north) -- ++(0,0.34) -| (up1.north);
+\draw[skiparr] (down1.north) -- ++(0,0.54) -| (up2.north);
+\draw[skiparr] (down2.north) -- ++(0,0.74) -| (up3.north);
+\draw[skiparr] (down3.north) -- ++(0,0.94) -| (up4.north);
+\draw[blue!65, thick, dashed] (skip.south) -- ++(0,-0.18);
 \end{tikzpicture}}
 \caption{Final shared deep-learning architecture used in the reported system
 diagram. The map stack carries topology, masks, and frozen priors; the scalar
@@ -896,8 +896,8 @@ the height code; decoder FiLM and global heads use the fused height/bottleneck
 context. A shared U-Net produces local residual fields, pooled bottleneck
 features produce global GMM parameters, and the prior-anchored GMM assembly
 emits continuous PL/DS/AS maps.
-The dashed skip arrow summarizes the four encoder--decoder concatenations used
-in the implementation.}
+The blue dashed arrows show the four encoder--decoder concatenations used in
+the implementation.}
 \label{fig:dl-architecture}
 \end{figure*}
 
