@@ -172,16 +172,19 @@ branch because those pixels have different error mechanisms. The LoS branch
 extracts direct and reflected distances, FSPL, a coherent two-ray correction,
 height-bin bias terms, and a smoothed radial residual profile. The NLoS branch
 extracts a calibrated feature vector containing the raw NLoS prior, distance,
-local building density, local building height, local NLoS support,
-shadow/blocker proxies, elevation angle, and interactions between those terms:
+local building density, local building height, local NLoS support, a
+shadowing proxy, normalized elevation angle, and interactions between those
+terms:
 \[
 \begin{aligned}
 \mathbf{x}_{78}
 = \bigl[
 &P_0^2,\ P_0,\ \log(1+d_{2D}),\ \rho_{15},\ \rho_{41},\
 h_{15},\ h_{41},\\
-&\rho_{41}h_{41},\ \rho_{41}\log(1+d_{2D}),\
-n_{15},\ n_{41},\ s,\ \theta,\ n_{41}\theta,\ 1
+&\rho_{41}\log(1+d_{2D}),\ n_{15},\ n_{41},\
+n_{41}\log(1+d_{2D}),\\
+&\sigma_{\mathrm{shadow}},\ \theta_{\mathrm{norm}},\
+n_{41}\theta_{\mathrm{norm}},\ 1
 \bigr]^\top .
 \end{aligned}
 \]

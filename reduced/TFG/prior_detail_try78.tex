@@ -132,7 +132,7 @@ parameter:
 \begin{equation}
 \Gamma(h_{\mathrm{tx}})
 =
-\rho(h_{\mathrm{tx}})\,e^{j\phi(h_{\mathrm{tx}})}
+\rho(h_{\mathrm{tx}})\,e^{-j\phi(h_{\mathrm{tx}})}
 \end{equation}
 
 where $\rho \in [0, 1.5]$ is the effective amplitude (allowing slight
@@ -167,8 +167,8 @@ e^{-j\left(k\bigl(d_{\mathrm{ref}}(x)-d_{\mathrm{LoS}}(x)\bigr)+\phi(h_{\mathrm{
       accumulated due to the extra path length of the reflected wave.
 \item $\phi(h_{\mathrm{tx}})$: an additional phase offset capturing phase
       shifts upon reflection (e.g., phase shift at the boundary). The fitted
-      values are $\phi \approx 0$ for all height bins, meaning in-phase
-      reflection dominates.
+      values are $\phi \approx 0$ for all height bins, meaning the fitted
+      extra phase offset is near zero under this sign convention.
 \item $-20\log_{10}|\cdot|$: the total field amplitude at the receiver,
       normalized to the direct-path field. When the two waves add in phase, the
       field amplitude is $> 1$, giving a \emph{negative} correction (the signal
@@ -214,7 +214,7 @@ In contrast, our enhanced two-ray implementation keeps the same coherent
 field-sum equation but
 replaces the angle-dependent
 $\Gamma(\theta)$ with a height-dependent effective coefficient $\Gamma(h_{\mathrm{tx}})
-= \rho e^{j\phi}$. We do not assume a flat dielectric plane; instead, $\rho$
+= \rho e^{-j\phi}$. We do not assume a flat dielectric plane; instead, $\rho$
 and $\phi$ are fitted to the CKM dataset in 5~m UAV-height bins, with linear
 interpolation between bins during prediction. This allows the model to capture
 aggregate scattering effects from the real, non-flat urban terrain that a
@@ -555,8 +555,8 @@ $h_{\mathrm{tx}}$ (m) & $\rho^*$ & $\phi^*$ (rad) & $b^*$ (dB)\\
 \end{table}
 
 The dominant pattern is $\rho \approx 0.46$ to $0.56$ with $\phi \approx 0$
-for heights 10 to 100 m, meaning a moderate-amplitude in-phase ground
-reflection. Biases are near-zero ($< 0.05$ dB) for these bins. At very high
+for heights 10 to 100 m, meaning a moderate-amplitude ground reflection with
+a near-zero fitted extra phase offset. Biases are near-zero ($< 0.05$ dB) for these bins. At very high
 altitudes, the fitted $\rho$ and bias increase because training data is sparser;
 those bins are stabilized by Gaussian smoothing.
 
@@ -696,10 +696,13 @@ what adapts that shape to the 7.125 GHz UAV ray-tracing setting used here.
 \end{itemize}
 
 \paragraph{Elevation-aware UAV envelope.}
-The A2G NLoS envelope models the elevation-angle dependence of urban
-air-to-ground path loss. The dependence on elevation angle follows the common
-UAV channel-model observation that links at larger elevation angles have fewer
-obstructions and lower shadowing variance \cite{khawaja_survey,tr38901}.
+The A2G NLoS envelope is used as a conservative elevation-dependent shape term
+for urban air-to-ground path loss. UAV channel models often report fewer
+obstructions and lower shadowing variance at larger elevation angles
+\cite{khawaja_survey,tr38901}, but the particular constants below are not used
+as a standalone monotonic law. They define one raw envelope that is later
+combined with COST-231 through a maximum and corrected by the train-only
+regime-wise NLoS calibration.
 
 \begin{equation}
 \mathrm{PL}_{\mathrm{A2G,NLoS}}(x)

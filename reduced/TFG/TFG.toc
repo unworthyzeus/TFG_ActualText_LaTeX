@@ -96,7 +96,7 @@
 \contentsline {paragraph}{COST-231 term.}{56}{paragraph*.53}%
 \contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:cost231}.}{57}{paragraph*.54}%
 \contentsline {paragraph}{Elevation-aware UAV envelope.}{57}{paragraph*.55}%
-\contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:a2g_nlos}.}{57}{paragraph*.56}%
+\contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:a2g_nlos}.}{58}{paragraph*.56}%
 \contentsline {subsubsection}{Stage 2: raw hybrid prior assembly}{58}{subsubsection*.57}%
 \contentsline {subsubsection}{Stage 3: map-derived morphology features}{59}{subsubsection*.58}%
 \contentsline {paragraph}{Base masks.}{60}{paragraph*.60}%
@@ -105,10 +105,10 @@
 \contentsline {paragraph}{Per-pixel box-mean operator.}{61}{paragraph*.63}%
 \contentsline {paragraph}{Multiscale building density.}{62}{paragraph*.64}%
 \contentsline {paragraph}{Multiscale building height.}{62}{paragraph*.65}%
-\contentsline {paragraph}{Multiscale NLoS-support.}{62}{paragraph*.66}%
+\contentsline {paragraph}{Multiscale NLoS-support.}{63}{paragraph*.66}%
 \contentsline {paragraph}{Elevation angle.}{63}{paragraph*.67}%
 \contentsline {paragraph}{Shadowing proxy.}{63}{paragraph*.68}%
-\contentsline {paragraph}{Interaction terms.}{63}{paragraph*.69}%
+\contentsline {paragraph}{Interaction terms.}{64}{paragraph*.69}%
 \contentsline {subsubsection}{Stage 4: regime-wise linear calibration}{64}{subsubsection*.70}%
 \contentsline {paragraph}{How topology class and antenna bin are computed.}{64}{paragraph*.71}%
 \contentsline {paragraph}{How $\textbf {w}^{78}_{r}$ is fitted.}{65}{paragraph*.72}%

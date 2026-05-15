@@ -250,16 +250,18 @@ where
 \begin{aligned}
 \mathbf{x}_{78}=[&
 P_0^2,P_0,\log(1+d_{2D}),\rho_{15},\rho_{41},h_{15},h_{41},\\
-&\rho_{41}h_{41},\rho_{41}\log(1+d_{2D}),n_{15},n_{41},
-s,\theta,n_{41}\theta,1]^{\top}.
+&\rho_{41}\log(1+d_{2D}),n_{15},n_{41},
+n_{41}\log(1+d_{2D}),\\
+&\sigma_{\mathrm{shadow}},\theta_{\mathrm{norm}},
+n_{41}\theta_{\mathrm{norm}},1]^{\top}.
 \end{aligned}
 \label{eq:x78}
 \end{equation}
 \(\rho_k\) is local building density in a \(k\times k\) window, \(h_k\) is a
 local building-height statistic, \(n_k\) is local NLoS support, \(s\) is a
-shadow/blocker proxy and \(\theta\) is normalized elevation. The interaction
-terms let dense tall areas differ from sparse tall areas and let obstruction
-matter differently at different ranges and elevations. The coefficient vector
+shadowing proxy and \(\theta_{\mathrm{norm}}\) is normalized elevation. The
+interaction terms let density and obstruction support matter differently at
+different ranges and elevations. The coefficient vector
 \(\mathbf{w}_{78,r}\) is fitted on training cities only, with \(r\) selected
 from topology, LoS/NLoS and antenna-height regime fallbacks.
 
