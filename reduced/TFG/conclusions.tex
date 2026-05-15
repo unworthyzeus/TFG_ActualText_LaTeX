@@ -59,30 +59,57 @@ In practical terms, the thesis validates a divide-and-conquer strategy.
 
 \subsection{Answers to the research questions}
 
-\textbf{RQ1: dense prediction under city holdout.} The project shows that dense
-\(513\times513\) prediction is feasible under strict city-holdout evaluation,
-but the successful formulation is not a plain U-Net-style regression problem.
-Pure image-to-image models learned the smooth radial structure reasonably well
-in LoS regions but repeatedly failed on NLoS tails and spread distributions.
-The final priors satisfy the path-loss, delay-spread, and angular-spread error
-targets, while the final model shows that a joint residual GMM-head framework can refine those
-priors without discarding their physical meaning.
+\textbf{RQ1: dense prediction under city holdout.} Dense \(513\times513\)
+prediction is feasible under strict city-holdout evaluation, but only when the
+task is treated as a structured CKM problem rather than as generic image
+translation. This is shown in two steps. First, the
+\emph{Distribution-First GMM Path-Loss Model} and the
+\emph{Distribution-First Spread Experts} prove that all three targets can
+reach good city-holdout errors without explicit physics priors, provided that the output
+head matches the target distribution. The path-loss GMM experts remove the
+earlier NLoS path-loss mode-collapse, while the spread experts obtain
+target-clearing dense delay- and angular-spread predictions with
+spike-plus-tail output heads. Second, the
+\emph{Joint Prior-Anchored Residual GMM-Head Model} proves that the
+three targets can be predicted together in one dense generator rather than as
+separate specialist systems. Its final test errors, \SI{1.6519}{dB} for path
+loss, \SI{26.5570}{ns} for delay spread, and \(11.3854^\circ\) for angular
+spread, all clear the original targets on unseen cities. The strongest result
+is path loss; the weakest external comparison is delay spread, which improves
+same-protocol dense CKM baselines but remains far worse than scalar-channel
+delay-spread predictors. The answer to RQ1 is therefore yes, with a precise
+scope: dense PL/DS/AS prediction is viable under this CKM protocol, and the final model
+shows it can be done jointly, but this does not imply superiority over every
+specialised scalar predictor in the literature.
 
-\textbf{RQ2: prior versus neural prediction.} The answer is target-dependent.
-For LoS path loss, the calibrated enhanced two-ray prior is strong enough to
-reach near-quantisation-scale errors, so forcing a neural model to rediscover
-the same radial ring structure is inefficient. For NLoS path loss and the two
-spread targets, distributional modelling and topology/regime information remain
-essential. The final design therefore does not choose between physics and deep
-learning: it freezes the part that is already explained by calibrated priors
-and leaves the residual, spatially local correction to the network.
+\textbf{RQ2: prior versus neural prediction.} The best result comes from a
+division of labour between calibrated priors and neural residual learning. For
+LoS path loss, the enhanced two-ray prior already captures the dominant radial
+and height-dependent structure, so a purely neural model wastes capacity
+rediscovering a stable effect. The final network is useful because it works on
+the remaining residual: local blocking, NLoS transitions, topology-dependent
+corrections, and spread-distribution errors. Quantitatively, the residual model
+reduces the frozen-prior test error from \SI{1.9383}{dB} to \SI{1.6519}{dB} for
+path loss, from \SI{28.1023}{ns} to \SI{26.5570}{ns} for delay spread, and from
+\(13.7416^\circ\) to \(11.3854^\circ\) for angular spread. That is a strong
+path-loss gain, a modest delay-spread gain, and a meaningful angular-spread
+gain. The answer to RQ2 is therefore not that neural prediction replaces
+physics, but that neural prediction is most useful after the stable physical
+component has been made explicit and frozen.
 
-\textbf{RQ3: continuous UAV height.} The CKM dataset covers UAV antenna heights
-from \SI{12}{m} to \SI{478}{m}. The height-bin analysis shows that error is not
-uniform across this interval: the low-altitude, NLoS-heavy regime remains the
-hardest, while high-altitude cases are often closer to the frozen prior. This
-supports the use of explicit height conditioning and also explains why a single
-headline RMSE is not enough to validate a UAV CKM model.
+\textbf{RQ3: continuous UAV height.} Continuous UAV height can be handled, but
+it must be part of the model and the evaluation rather than a hidden nuisance
+variable. The CKM data span \SI{12}{m} to \SI{478}{m}, and the error breakdowns
+show that this interval is not homogeneous. Low-altitude cases are harder
+because the receiver grid is more often in NLoS or transition regimes, while
+high-altitude maps are smoother and closer to the frozen priors. This explains
+why height conditioning matters even when the ground geometry is fixed: the
+same city footprint can correspond to different visibility structure, path-loss
+rings, and spread regimes as the UAV altitude changes. The answer to RQ3 is
+therefore yes, but the validation must remain height-aware. A single aggregate
+RMSE can certify that the final model meets the overall target, but it cannot
+show whether the model is reliable in the low-altitude cases that are most
+important and most difficult.
 
 \subsection{Main contributions}
 

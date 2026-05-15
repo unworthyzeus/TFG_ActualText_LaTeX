@@ -12,9 +12,17 @@ prediction.
 
 \section{Dataset protocol}
 
-Each sample is a complete $513\times513$ pixel CKM. The model never receives a
-random crop as an independent training city. Instead, the split is performed at
-city level. For the distribution-first and final neural models the split uses
+Each sample is a complete $513\times513$ pixel CKM. The spatial resolution is
+\SI{1}{m}\(\times\)\SI{1}{m} per pixel, so each map covers a
+\SI{513}{m}\(\times\)\SI{513}{m} square. The UAV transmitter is horizontally
+fixed at the centre of the map, while its antenna height \(h_{\mathrm{tx}}\)
+varies from sample to sample and is treated as a primary conditioning variable.
+Every non-building pixel is an active receiver location, with the receiver antenna placed exactly at
+\SI{1.5}{m} above ground. Building pixels are not receiver positions and are
+excluded from the training loss and reported metrics rather than being counted
+as easy background pixels. The model never receives a random crop as an
+independent training city. Instead, the split is performed at city level. For
+the distribution-first and final neural models the split uses
 \texttt{split\_seed = 42}, with 15\% validation and 15\% test samples after
 city assignment. This avoids the most common optimistic error in spatial radio
 prediction: training on one part of a city and testing on another visually
@@ -57,11 +65,16 @@ The receiver mask is:
 \begin{equation}
   m_{\mathrm{ground}}(i,j) =
   \begin{cases}
-    1, & \text{if } \mathrm{topology}(i,j)=0,\\
+    1, & \text{if } \mathrm{topology}(i,j)=0
+    \text{ (non-building receiver pixel)},\\
     0, & \text{otherwise.}
   \end{cases}
   \label{eq:ground_mask}
 \end{equation}
+Equivalently, the CKM supervision grid contains one receiver at every
+non-building pixel, all at the fixed receiver height
+\(h_{\mathrm{rx}}=\SI{1.5}{m}\). The mask only removes building pixels from
+the loss and metrics; it does not subsample the remaining ground pixels.
 The LoS/NLoS visibility masks used later by the priors and the final
 residual model are geometric support inputs rather than target radio maps. In
 the CKM experiments they are read from the dataset when available; for
@@ -120,7 +133,7 @@ from the current endpoint, the efficient route would be:
       the errors;
 \item diagnose target histograms before choosing the output head;
 \item calibrate the path-loss and spread priors as train-only estimators;
-\item for path loss, reproduce the final Try~80 prior-anchored residual setup
+\item for path loss, reproduce the final prior-anchored residual GMM-head setup
       rather than restarting another raw backbone search;
 \item for delay and angular spread, add an explicit high-tail or outlier
       diagnostic before final fine-tuning, because the remaining errors are
@@ -132,7 +145,17 @@ from the current endpoint, the efficient route would be:
 The earlier models are therefore not deleted from the thesis narrative. They
 remain as controlled evidence for why the final method is organised around the
 evaluation contract, distribution shape, and prior-anchored residual learning
-instead of around a larger generic backbone.
+instead of around a larger generic backbone. This is a change in exposition,
+not a change in the experimental contract: the dataset, the city-holdout
+split, the ground-only mask, the final prior-anchored architecture, and the detailed
+path-loss-prior, spread-prior, and residual-GMM formulas remain the same. The older version of the methodology
+read more like a chronological development diary; this reduced version keeps
+the same evidence but presents it as the design path that now looks defensible
+after the negative results are known. The chronology still matters because it
+explains why each simplifying decision was made: U-Net and cGAN runs validated
+the pipeline, PMNet and PMHHNet diagnosed the limits of stronger backbones,
+the distribution-first attempts exposed the target marginals, and the final
+prior-anchored model combined the surviving pieces.
 
 \section{Physical priors and PMHHNet}
 
@@ -362,37 +385,71 @@ secondary to the question: \emph{what statistical object is the network being
 asked to predict?} If the project were restarted with the final evidence
 available, the first step would be to define the city-holdout, ground-only
 metric contract; the second would be to inspect the target distributions; and
-only then would the backbone, loss, prior, and routing design be chosen.
+only then would the backbone, loss, prior, and routing design be chosen. The
+project did not discover this in one step. It moved from direct image
+translation, to residual learning over physical estimates, to topology experts,
+to distribution-first heads, and finally to frozen priors plus bounded neural
+residuals.
 
-This reframes the role of priors. The distribution-first path-loss model used
-no COST-231 prior, enhanced two-ray prior, knife-edge channel, or
-residual-over-prior decomposition, yet it reached NLoS results close to the
-final prior family by modelling the NLoS marginal directly. Priors are
-therefore not magic external knowledge; they are stable, auditable estimators
-of large-scale structure that reduce the burden on the neural residual head.
-The final pipeline reintroduces them because LoS path loss has coherent
-distance, height, and two-ray-ring structure, while NLoS path loss and the
-spread targets still need distribution-aware placement of noisy local tails.
+This evolution reframes the role of priors. Midway through the project, the
+best models were residual-over-prior systems, which made the prior appear to be
+the essential ingredient. The distribution-first path-loss model changed that
+interpretation. It used no COST-231 prior, no enhanced two-ray prior, no
+knife-edge channel, and no residual-over-prior decomposition, yet it reached
+NLoS results close to the final prior family by modelling the NLoS marginal
+directly. Therefore, the prior is useful but not magic: it is not external
+knowledge that solves the task by itself. It is a stable and auditable estimator
+of large-scale structure, especially when that structure is simpler to fit than
+to relearn with a high-capacity network.
 
-Path loss and spread targets also require different modelling semantics. For
-path loss, LoS is the clean deterministic branch and NLoS is a blocked-link
-distribution-placement problem. The old PMHHNet family exposed this mismatch
+The final pipeline reintroduces priors without contradicting the
+distribution-first lesson. The histogram diagnosis showed that the PMHHNet
+family was failing because the output distribution was wrong, not simply
+because one more physical channel was missing. The first response was therefore
+to fix the deep-learning side and prove that NLoS path loss can be modelled
+without a prior when the head represents the target distribution. Once that was
+clear, the question became practical: which parts of the prediction are
+cheapest, most stable, and easiest to audit? For LoS path loss, a calibrated
+two-ray/radial model is more efficient than asking a CNN to relearn the same
+ring structure. For blocked NLoS path loss and the spread targets, the neural
+model is still valuable because the problem is no longer just estimating a
+smooth mean; it is placing local residuals and rare tails in the right parts of
+the map.
+
+Path loss also cannot be treated as one homogeneous target. LoS is not only the
+easy subset: it contains a deterministic spatial law driven by distance,
+height, and coherent two-ray structure. A convolutional network can learn a
+smooth radial trend from distance and topology channels, but it does not
+naturally learn the calibrated ring pattern if the objective rewards only the
+average pixel error. NLoS is different. In valid CKM ground pixels its marginal
+is concentrated around a blocked-link attenuation level, but it is noisy,
+topology-dependent, and hard to place spatially. The model must answer two
+questions at once: which NLoS value range belongs to this map, and which pixels
+belong to the high-error tail. The old PMHHNet family exposed this mismatch
 through severe NLoS mode collapse, with predicted NLoS means around
-\SI{36.5}{dB} against target means around \SI{107.1}{dB}. For delay spread
-and angular spread, the important information often sits in the NLoS tail:
-high spread is not just an error-prone outlier, but the channel evidence that
-multipath has become dominant. The late histogram diagnostics that motivated
-this shift are kept in Appendix~\ref{app:qualitative_diagnostics}; the main
-methodology only keeps the design consequence.
+\SI{36.5}{dB} against target means around \SI{107.1}{dB}.
 
-The resulting rule set is compact. First, identify whether the target is
-smooth, narrow, multi-modal, spike-plus-tail, or heavy-tailed before choosing
-MSE, Huber, GMM, NLL, or residual losses. Second, treat LoS/NLoS as semantic
-regimes, not only as reporting columns. Third, keep masks, units, city
-holdout, topology class, antenna height, and tail-risk policy visible during
-validation. Finally, use visual realism only as a qualitative check: cGAN
-sharpness and larger PMNet/PMHHNet-style backbones did not solve the physical
-RMSE problem until the target distribution itself was represented.
+Delay spread and angular spread are even more distributional. In LoS regions,
+the direct path creates a near-zero spike: small delay spread and narrow angular
+spread are physically expected. In NLoS regions, the spread targets often carry
+the useful channel information because reflected, diffracted, and scattered
+paths dominate the received energy. A high delay spread or wide angular spread
+is therefore not merely an error-prone outlier; it is evidence that multipath
+has become important. This is why a plain RMSE or Huber head tends to miss the
+engineering-relevant tail: it can improve the common near-zero region while
+underpredicting rare high-spread areas. The late histogram diagnostics that
+motivated this shift are kept in Appendix~\ref{app:qualitative_diagnostics};
+the methodology keeps their design consequence: spread maps need explicit
+spike-plus-tail or high-tail diagnostics, not just smoother images.
+
+The resulting rule set is compact but chronological. First, identify whether
+the target is smooth, narrow, multi-modal, spike-plus-tail, or heavy-tailed
+before choosing MSE, Huber, GMM, NLL, or residual losses. Second, treat LoS and
+NLoS as semantic regimes, not only as reporting columns. Third, keep masks,
+units, city holdout, topology class, antenna height, and tail-risk policy
+visible during validation. Finally, use visual realism only as a qualitative
+check: cGAN sharpness and larger PMNet/PMHHNet-style backbones did not solve
+the physical RMSE problem until the target distribution itself was represented.
 
 \section{GMM component count and distribution choice}
 \label{sec:gmm_k_choice}
@@ -656,7 +713,7 @@ deciding which stage should be continued or replaced.
 
 
 
-\section{Final priors and residual model: overview}
+\section{Final priors: overview and literature basis}
 \label{sec:priors_overview}
 
 \input{prior_detail_overview}
@@ -664,86 +721,33 @@ deciding which stage should be continued or replaced.
 \section{Path Loss Prior}
 \label{sec:try78_detail}
 
-The final path-loss prior is the part of the system that most clearly follows
-the ``best path if starting again'' structure. The LoS branch should not be
-learned from pixels first: it is dominated by distance, UAV height, and the
-two-ray interference pattern. The final LoS prior therefore starts from FSPL,
-adds a coherent enhanced two-ray correction, and then applies height-dependent
-calibration and a radial residual profile fitted only on training cities.
+\subsection*{Reader map}
 
-The NLoS branch is treated differently because blocked streets do not follow a
-single radial law. It combines a conservative propagation envelope with local
-morphology features such as building density, building height, NLoS support,
-elevation angle, and shadowing proxies. A regime-wise linear calibration then
-fits the train-only correction for each topology and antenna-height regime. The
-two branches are selected by the explicit LoS/NLoS mask and become the frozen
-path-loss input channels used by the final residual model.
+This section is intentionally detailed because it is the mathematical
+core of the final path-loss result. A reader only interested in the modelling
+logic can follow it in four passes. First, the LoS branch starts from FSPL and
+adds an enhanced two-ray field sum, which explains the radial ring structure
+observed in the CKM maps. Second, the NLoS branch uses a calibrated
+regime-wise model over topology and obstruction features, because a LoS-shaped
+formula cannot explain blocked streets by itself. Third, both branches are
+fitted only on the training split and then evaluated with the same
+pixel-weighted ground-mask RMSE used elsewhere in the thesis. Finally, the
+prior output becomes the frozen path-loss anchor consumed by the final residual GMM-head model.
 
-The detailed equations, feature inventory, and fitting procedure for this prior
-are kept in Appendix~\ref{app:formula_details}. The key result needed in the
-main narrative is that the calibrated path-loss prior reaches about
-\SI{1.92}{dB} overall on held-out cities and about \SI{1.75}{dB} in LoS,
-making it a strong baseline rather than a weak pre-processing step.
+The most important results to retain while reading the details are the LoS
+waterfall in Table~\ref{tab:try78_los_waterfall} and the final path-loss
+numbers in Table~\ref{tab:try78_results}: the enhanced two-ray branch reduces
+LoS error to about \SI{1.75}{dB}, and the full hybrid prior reaches about
+\SI{1.92}{dB} overall on the held-out test cities.
+
+\input{prior_detail_try78}
 
 \section{Delay and Angular Spread Priors}
 \label{sec:try79_detail}
 
-Delay spread and angular spread are not smooth path-loss-like surfaces. Their
-empirical shape is closer to a near-zero LoS mass plus a long NLoS tail, so the
-final prior models them in \(\log(1+y)\) space. The raw spread estimate uses
-propagation state, range, elevation, and multiscale morphology terms; the
-calibrated prior then fits a small ridge-regression model for each metric,
-topology class, visibility state, and UAV-height bin, with fallbacks for sparse
-regimes.
-
-This choice is deliberately simple. A more expressive neural model can learn
-spread maps, but the final evidence showed that a frozen log-domain calibrated
-prior already captures the stable part of the target and gives the residual
-network a much smaller correction problem. The full log transform, feature
-vector, ridge objective, and inverse-transform details are listed in
-Appendix~\ref{app:formula_details}.
+\input{prior_detail_try79}
 
 \section{Joint Prior-Anchored Residual GMM-Head Model}
 \label{sec:try80_detail}
 
-The final model receives nine aligned spatial channels: topology, LoS mask,
-NLoS mask, ground mask, combined path-loss prior, LoS path-loss prior,
-NLoS path-loss prior, delay-spread prior, and angular-spread prior. The scalar
-UAV height is encoded separately with sinusoidal FiLM conditioning. This keeps
-the input tensor explicit: the network sees the geometry and the frozen
-estimators, but it is not asked to infer the whole propagation law from the
-topology map alone.
-
-The output head predicts bounded residuals around the frozen priors for path
-loss, delay spread, and angular spread. Each task keeps separate LoS and NLoS
-residual caps and a learned gate \(\alpha\), so the model can correct local
-errors without freely overwriting the calibrated prior. The GMM-head
-parameterisation remains in the architecture, but the selected final checkpoint
-is chosen by deterministic city-holdout RMSE after an RMSE/MAE-dominant
-fine-tuning stage.
-
-\begin{table}[H]
-\centering
-\caption{Main configuration of the selected final residual GMM-head model.}
-\label{tab:try80_config_main}
-\footnotesize
-\setlength{\tabcolsep}{5pt}
-\renewcommand{\arraystretch}{1.14}
-\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}X@{}}
-\toprule
-Category & Selected value \\ \midrule
-Input tensor & 9 channels: topology, masks, path-loss priors, and spread priors. \\
-Height conditioning & Sinusoidal FiLM at encoder and decoder scales. \\
-Backbone & Four-scale GroupNorm encoder-decoder, base width 128, condition dimension 160. \\
-Residual head & Three GMM components per task and region; deterministic prediction uses the mixture expectation. \\
-Residual limits & PL: 7 dB LoS, 25 dB NLoS; DS: 20 ns in both regimes; AS: \(17^\circ\) LoS, \(15^\circ\) NLoS. \\
-Final fine-tune & AdamW, learning rate \(5\times10^{-5}\), 40 epochs, batch size 1, accumulation 8, RMSE/MAE-dominant objective with light anchor and prior-guard terms. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-The full residual equations, probabilistic terms, and loss-weight schedule are
-kept in Appendix~\ref{app:formula_details}. The methodological claim in the
-main body is narrower and easier to audit: the final neural component improves
-the strong frozen priors on unseen cities while preserving their interpretable
-role as anchors.
+\input{prior_detail_try80}

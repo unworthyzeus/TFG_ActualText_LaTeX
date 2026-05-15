@@ -20,7 +20,7 @@ so the restructure is traceable.
 | For path loss, replicate the Try 80 line; for spreads, consider high-tail/outlier diagnostics. | Partly done. The methodology states this design rule, and Results reports the final Try 80 model versus the frozen priors. A richer spread high-tail/outlier diagnostic remains a good optional final polish. | `TFG/methodology.tex`, `TFG/results.tex` |
 | Reduce about 30 thesis pages before the appendices. Remove duplicated explanations/results, improve structure, and move detail to appendices. | Done. The pulled restructure log estimates Chapter 1 through Conclusions at about 67 pages, with detailed material moved to appendices rather than discarded. | `Things_To_Put_On_The_Thesis/reduction_restructure_changes_2026-05-14.md`, `TFG/methodology.tex`, `TFG/results.tex`, `TFG/appendices.tex` |
 | Delete old appendices C, E, and B, because B can be explained in Methodology. | Done. The old configuration-summary, formula-placement, and implementation-snippet appendices are gone. Essential configuration is now in Methodology; formula detail moved into the final detailed-formula appendix. | `TFG/methodology.tex`, `TFG/appendices.tex` |
-| Add comparison to SOA in Results, using a metric close to the most similar results. | Done and expanded. Results now compares the final model to path-loss radio-map papers plus the closest external scalar spread papers: Mi et al. for measured PL/DS/AS point-cloud prediction and Huang et al. for UAV A2G DS/angular-spread prediction. | `TFG/results.tex`, `TFG/state_of_art.tex`, `TFG/TFG.bib` |
+| Add comparison to SOA in Results, using a metric close to the most similar results. | Done and refined. Results now compares the final model to path-loss radio-map papers and RMTransformer as a recent dense radio-map predictor. Scalar channel-parameter papers such as Mi et al. and Huang et al. are kept out of the Results table because they are not dense CKM-style map benchmarks. | `TFG/results.tex`, `TFG/state_of_art.tex`, `TFG/TFG.bib` |
 
 ## Removed from the main body
 
@@ -59,7 +59,8 @@ Additional SOA comparison update after supervisor follow-up:
 
 - Added bibliography entries for RadioUNet, noisy-environment radio-map
   prediction, Mi et al.'s measured point-cloud channel-parameter predictor,
-  and Huang et al.'s UAV A2G Transformer channel-characteristic predictor.
+  and related A2G/radio-map context papers. Later follow-up removed Huang et
+  al. from the comparison tables because it is not dense-map comparable.
 - State of the Art now states that the closest external spread numbers are
   scalar channel-characteristic predictors, not dense CKM maps.
 - Results now reports the useful but uncomfortable comparison: the final
@@ -67,6 +68,64 @@ Additional SOA comparison update after supervisor follow-up:
   angular-spread RMSE is about 1.5x Mi et al.'s scalar angular-spread error;
   the delay-spread RMSE is much larger than scalar-channel papers, while still
   improving the same-protocol dense CKM spread baselines.
+- Revised the reduced-version Results comparison table so the former
+  `Final / reported metric` ratio column now states whether the final model is
+  better, worse, mixed, or not physically comparable. The Conclusions answers
+  to RQ1--RQ3 were expanded to make the strongest result, weakest result, and
+  height-conditioning conclusion explicit.
+- Reworded Table 4.14 again into plain comparison language: each row now states
+  directly whether the final model is comparable, better, worse, mixed, or not
+  convertible, and the last column says what conclusion is actually fair.
+- Tightened Table 4.14 wording so the verdict column explicitly says "our final
+  PL/DS/AS" rather than leaving the metric owner implicit.
+- Clarified the Mi et al. row in Table 4.14: even though their numbers are much
+  better, the row now states that the comparison is not direct because that work
+  predicts scalar channel snapshots from point-cloud/RGB/mask inputs rather than
+  dense CKM maps.
+- Revised Table 4.14 to keep only external comparison rows plus the final-model
+  reference row. Removed internal PMHHNet / predecessor / frozen-prior rows from
+  the table, removed Gao et al. from this results-side comparison, and replaced
+  the indoor/noisy row with more outdoor references: RadioGUNet and ReVeal.
+- Reworked Table 4.14 verdict wording so rows no longer start with "Better" or
+  "Worse"; they now state "our final PL/DS/AS RMSE is X times better/worse".
+- Tried the PathFinder physical-unit conversion: the RM3D DS-RPP normalized
+  RMSE is converted with the 36 dB RadioMap3DSeer window, while the unseen-rural
+  conversion is explicitly marked as an approximate same-window scale check.
+- Aligned the Section 2 positioning table with the cleaned comparison: removed
+  the indoor/noisy, Gao et al., PMHHNet, and frozen-prior rows; added RadioGUNet,
+  ReVeal, and PathFinder as the outdoor/unseen-domain context rows.
+- Replaced the Gao et al. row in the Section 2 evaluation-condition table with
+  RadioGUNet, keeping Gao et al. only as background literature context.
+- Checked Huang et al. against the source paper and clarified that it is only a
+  weak scalar A2G spread reference: the dataset is a Wireless InSite Shandong
+  University Software Campus trajectory dataset with two UAV positions, three
+  mmWave frequencies, and three flight altitudes, not dense CKM maps.
+- Updated the AIRMap comparison to say that the final model is below 2 dB PL
+  RMSE and therefore arguably much better than AIRMap's reported below-4 dB
+  path-gain threshold, while still noting that an exact ratio is not recoverable.
+- Removed Huang et al. from the results and positioning comparison tables,
+  keeping only a brief State-of-the-Art note that it is not comparable because
+  it predicts scalar link-level A2G channel characteristics rather than dense
+  CKM maps.
+- Added RMTransformer as the recent, more comparable replacement row: it reports
+  dense path-loss radio-map prediction on USC/PMNet maps, with 0.007148
+  normalised pixel RMSE (about 1.82 dB under its 254 dB scaling window) and
+  0.008099 channel prediction error (about 2.06 dB).
+- Strengthened the PMNet/ICASSP row in Table 4.14 so the 1.20x path-loss gap is
+  explicitly only a scale reference, not a direct ranking, because PMNet uses a
+  different test setup and does not match the unseen-CKM-city, UAV-height, and
+  three-target PL/DS/AS conditions used by the final model.
+- Moved the detailed Try 78, Try 79, and Try 80 formula/model documentation
+  back into Methodology as in the old version instead of leaving it as a
+  separate final appendix. Returned the target-map quantisation derivation to
+  the Results limitations section, where it lived before.
+- Removed Mi et al. from Table 4.14 and changed the table framing so scalar
+  channel-parameter papers are not presented as dense CKM map benchmarks.
+- Clarified RQ1 with the actual experiment names: Try 76 Distribution-First GMM
+  Path-Loss Model and Try 77 Distribution-First Spread Experts show that good
+  separate dense PL/DS/AS results are possible without explicit priors, while
+  Try 80 Joint Prior-Anchored Residual GMM-Head Model shows that the three
+  targets can be predicted jointly.
 
 Version folders now kept inside the same repository:
 

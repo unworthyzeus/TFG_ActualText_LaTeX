@@ -1,9 +1,8 @@
-This section provides the compact main-text documentation for the
-ML-calibrated physical path-loss and spread priors and the final joint
-residual GMM-head model architecture. The detailed mathematical derivations and
-implementation-level fitting notes are moved to Appendix~\ref{app:formula_details}
-so that the methodology chapter explains the design without duplicating the
-appendix.
+This section provides the compact entry point for the ML-calibrated physical
+path-loss and spread priors and the final joint residual GMM-head model
+architecture. The detailed mathematical derivations and implementation-level
+fitting notes follow in the same methodology chapter, so the design and the
+audit trail remain together.
 
 \subsection{High-level architecture}
 
@@ -27,6 +26,95 @@ height-dependent calibration into a strong auditable baseline. The final model
 then follows a divide-and-conquer split of responsibility: calibrated priors
 remove the stable component of the targets, and the neural residual model
 focuses on the local errors that remain.
+
+The word \emph{prior} is therefore used for three concrete estimators, not for
+a vague physical hint:
+\begin{itemize}
+\item \textbf{LoS path-loss prior.} This is the clearest physical branch:
+      \(\mathrm{PL}_{\mathrm{LoS}}=\mathrm{FSPL}+C_{\mathrm{2ray}}+b+r\).
+      FSPL uses the 3D direct Tx--Rx distance; \(C_{\mathrm{2ray}}\) comes
+      from a coherent direct-plus-ground-reflected field sum; \(b\) is a
+      fitted height-dependent dB offset; and \(r\) is a smoothed radial
+      residual table. The UAV is always centred horizontally, so the radial
+      coordinate is unambiguous, but \(h_{\mathrm{tx}}\) varies by sample:
+      \(\rho(h_{\mathrm{tx}})\), \(\phi(h_{\mathrm{tx}})\), \(b(h_{\mathrm{tx}})\)
+      and \(r(d_{2D},h_{\mathrm{tx}})\) are fitted in \SI{5}{m} height bins,
+      smoothed, and linearly interpolated at inference. It is not a generic
+      free-space formula and it is not a learned linear regressor.
+\item \textbf{NLoS path-loss prior.} This starts from a raw blocked-link
+      propagation estimate \(P_0\), then calibrates it with local morphology:
+      building density, building height, NLoS support, shadow/blocker proxies,
+      elevation angle, and interactions. It uses antenna-height regimes
+      (\texttt{low\_ant}, \texttt{mid\_ant}, \texttt{high\_ant}) because the
+      obstruction geometry changes qualitatively when the centred UAV rises
+      above the local skyline. It is deliberately separate from the LoS branch
+      because blocked pixels do not follow the same two-ray mechanism.
+\item \textbf{Delay- and angular-spread priors.} These are fitted in
+      \(\log(1+y)\) space. The raw estimate captures propagation state,
+      distance, elevation, and local morphology; the final ridge calibration
+      adds the 23-feature vector of Sec.~\ref{sec:try79_detail}. That vector
+      includes continuous normalized UAV height, transmitter clearance above
+      nearby rooftops, and the local fraction of buildings taller than the
+      transmitter. This is why the spread prior can represent both the
+      near-zero LoS spike and the NLoS tail better than a native-space global
+      average.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\caption{Term-by-term interpretation of the main frozen-prior quantities.}
+\label{tab:prior_term_meanings}
+\footnotesize
+\renewcommand{\arraystretch}{1.08}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.18\textwidth}
+>{\raggedright\arraybackslash}p{0.20\textwidth}
+>{\raggedright\arraybackslash}X}
+\toprule
+Term & Prior block & Interpretation \\
+\midrule
+\(d_{\mathrm{LoS}}\) & LoS path loss &
+3D direct Tx--Rx distance. It sets the FSPL baseline and uses the fixed
+\(h_{\mathrm{rx}}=\SI{1.5}{m}\) receiver height. \\
+\(d_{\mathrm{ref}}\) & LoS path loss &
+Image-source reflected distance. It is the length of the single
+ground-reflected path used in the coherent two-ray correction. \\
+\(C_{\mathrm{2ray}}\) & LoS path loss &
+Direct-plus-reflected field correction in dB. Negative values mean constructive
+gain over FSPL; positive values mean destructive fading. \\
+\(\rho(h_{\mathrm{tx}})\) & LoS path loss &
+Height-interpolated effective reflection amplitude. It is fitted from CKM
+rather than assumed from one fixed ground material. \\
+\(\phi(h_{\mathrm{tx}})\) & LoS path loss &
+Height-interpolated effective reflection phase. It absorbs the phase offset of
+the simplified one-reflection geometry. \\
+\(b(h_{\mathrm{tx}})\) & LoS path loss &
+Height-dependent dB bias remaining after the coherent two-ray fit. \\
+\(r(d_{2D},h_{\mathrm{tx}})\) & LoS path loss &
+Smoothed radial residual table. It corrects distance-dependent errors that
+remain after FSPL, two-ray interference, and height bias. \\
+\(P_0\) & NLoS path loss &
+Raw blocked-link propagation estimate before map-morphology calibration. \\
+\(\rho_k\) & NLoS PL and spreads &
+Fraction of building pixels in a \(k\times k\) neighbourhood; a local density
+proxy. \\
+\(h_k\) & NLoS PL and spreads &
+Local building-height summary in a \(k\times k\) neighbourhood; a proxy for
+nearby reflectors and blockers. \\
+\(n_k\) & NLoS PL and spreads &
+Local NLoS-support fraction; indicates how much of the neighbourhood is
+geometrically blocked. \\
+\(s\) & NLoS path loss &
+Shadow/blocker proxy used by the NLoS linear calibration. \\
+\(\theta\), \(\theta_{\mathrm{norm}}\), \(\theta_{\mathrm{inv}}\) &
+PL and spreads &
+Elevation-angle terms. Low elevation links interact with more buildings, so
+\(\theta_{\mathrm{inv}}\) is especially useful for spread tails. \\
+\(b_{41}\), \(c_{41}\), \(t_{41}\) & Spreads &
+Blocker depth, transmitter clearance, and local taller-building fraction; they
+separate open overhead links from obstructed street-canyon-like links. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \begin{figure}[H]
 \centering
@@ -126,8 +214,8 @@ prior a competitive baseline. \\
 The final pipeline is a hybrid between classical propagation models,
 distribution-aware regression, and dataset-specific calibration.
 Table~\ref{tab:prior_literature_mapping} keeps the mapping explicit; the
-detailed equations and fitting procedures are collected in
-Appendix~\ref{app:formula_details}.
+detailed equations and fitting procedures are given in the following
+path-loss-prior, spread-prior, and residual-GMM methodology sections.
 
 \begin{table}[H]
 \centering

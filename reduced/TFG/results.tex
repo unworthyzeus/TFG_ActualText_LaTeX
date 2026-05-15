@@ -166,6 +166,26 @@ divide-and-conquer result of the thesis: the calibration stage handles the
 repeatable structure, and the neural stage is evaluated only on the residual
 that remains after that baseline has already done substantial work.
 
+The calibrated path-loss prior is the clearest example of this design. It is not a
+single generic propagation formula. It is split into a LoS branch and an NLoS
+branch because those pixels have different error mechanisms. The LoS branch
+extracts direct and reflected distances, FSPL, a coherent two-ray correction,
+height-bin bias terms, and a smoothed radial residual profile. The NLoS branch
+extracts a calibrated feature vector containing the raw NLoS prior, distance,
+local building density, local building height, local NLoS support,
+shadow/blocker proxies, elevation angle, and interactions between those terms:
+\[
+\mathbf{x}_{78} =
+\bigl[
+P_0^2,\ P_0,\ \log(1+d_{2D}),\ \rho_{15},\ \rho_{41},\
+h_{15},\ h_{41},\ \rho_{41}h_{41},\ \rho_{41}\log(1+d_{2D}),\
+n_{15},\ n_{41},\ s,\ \theta,\ n_{41}\theta,\ 1
+\bigr]^\top .
+\]
+The weights are fitted using training data only and separately by propagation
+regime. This is why the final prior is a calibrated feature extractor, not
+just an analytic baseline.
+
 Second, RMSE and MAE told different stories during the middle of the project.
 For example, the prior-confidence stage had moderate average absolute error on many samples, but
 RMSE remained high because a smaller number of hard NLoS cases produced very
@@ -195,18 +215,28 @@ Overall & 1.9246 & dB \\
 
 The final spread priors showed that a large part of the spread targets can also be explained by
 geometry, morphology, and calibration without a neural network. The fitted
-calibration dictionary contains \(114\) regime keys. This is \(57\) keys per
-spread metric: \(36\) exact topology, LoS/NLoS, and antenna keys, \(12\)
-antenna-collapsed topology and LoS/NLoS fallbacks, \(6\) topology-wide fallbacks,
-\(2\) global LoS/NLoS fallbacks, and \(1\) fully global fallback. Equivalently,
-the exact key grid alone has \(2\) metrics \(\times\) \(6\) topology classes
-\(\times\) \(2\) LoS/NLoS states \(\times\) \(3\) antenna-height bins, or
-\(72\) exact regimes, and the remaining \(42\) fitted keys are the fallback
-regimes used when an exact key is too sparse.
+calibration dictionary contains \(114\) regime keys, but this number is not
+one simple Cartesian product. For each spread metric, the exact grid has
+\(6\) topology classes \(\times\) \(2\) LoS/NLoS states \(\times\) \(3\)
+antenna-height bins, or \(36\) exact keys. The implementation then adds
+fallback calibrations for sparse regimes: \(12\) antenna-collapsed topology
+and LoS/NLoS keys, \(6\) topology-wide keys, \(2\) global LoS/NLoS keys, and
+\(1\) fully global key. This gives \(57\) keys per spread metric and
+\(114\) keys across delay spread and angular spread. Equivalently, the
+dictionary contains \(72\) exact DS/AS regimes plus \(42\) fallback regimes.
 The point of this dictionary is not novelty by formula alone, but coverage: the
 baseline is strong because it stores many small regime-specific decisions about
 density, building height, visibility, and antenna height instead of forcing one
 global estimator to explain all pixels.
+The calibrated spread-prior module applies this idea separately to delay spread and angular spread. The
+raw spread estimate is only the first feature; the calibrated model then uses a
+23-term vector with raw-prior curvature, range, elevation angle, UAV height,
+local building density at two scales, local height at two scales, LoS/NLoS
+support at two scales, blocker depth, transmitter clearance, taller-building
+fraction, and interaction terms. Both spread targets are fitted in
+\(\log(1+y)\) space, so the model can handle the LoS spike near zero and the
+long NLoS tail with one calibrated framework while still reporting metrics in
+native ns and degrees.
 
 \begin{table}[H]
 \centering
@@ -460,7 +490,7 @@ angular-spread targets are heavily quantised. A smooth prediction can therefore
 be penalised at staircase-like stored target boundaries even when the physical
 morphology is plausible. The reported spread RMSE remains the correct metric
 for the released arrays, but it can slightly overstate the physical mistake;
-Appendix~\ref{app:quantisation_detail} gives the quantisation floor explicitly.
+Section~\ref{sec:limitations} gives the quantisation floor explicitly.
 
 \begin{figure}[H]
 \centering
@@ -628,13 +658,15 @@ to deployability rather than accuracy.}
 \subsection{Final joint prior-anchored residual GMM-head model test results}
 
 The final residual GMM-head model freezes the path-loss and spread priors and learns a bounded residual correction
-for the three radio maps. The selected final model evaluated here is the
-validation-selected model state from the final residual fine-tuning stage; it
-is tested on the city-holdout test split with 2590 samples from 14 cities that
-were not seen in training. The architecture retains the GMM-head
-parameterisation, and the preceding residual stage used non-zero probabilistic
-weights, but this reported final model is selected with deterministic
-RMSE/MAE-dominant fine-tuning. The final claim is therefore an RMSE
+for the three radio maps. It is tested on the city-holdout test split with
+2590 samples from 14 cities that were not seen in training. The final
+prior-anchored residual GMM-head model should be read as a two-stage final
+pipeline, not only as the last fine-tuning loss:
+the large-capacity residual/GMM stage keeps NLL, KL, moment matching and
+outlier-budget terms active, while the selected reported checkpoint is the
+validation-selected state after the deterministic RMSE/MAE-dominant
+fine-tuning stage. The exact weights of both stages are listed in
+Table~\ref{tab:try80_loss_settings}. The final claim is therefore an RMSE
 improvement over the frozen priors rather than a calibrated probabilistic
 prediction claim. For a target \(t\), group \(G\), and valid pixel set
 \(\Omega_{G,t}\), the reported model RMSE is
@@ -759,105 +791,107 @@ the worst subexpert for each output remains below its target
 The state-of-the-art numbers cannot be used as a direct leaderboard because
 their datasets, height assumptions, city splits, and target definitions differ.
 Still, Table~\ref{tab:soa_result_comparison} places the final test result next
-to the closest available metrics from Section~\ref{sec:soa_position}. Path
-loss has several external dB-scale references. For delay spread and angular
-spread, the closest external references are scalar channel-characteristic
-predictors rather than dense \(513\times513\) map predictors, so their ratios
-are order-of-magnitude context rather than a ranking.
+to the closest available metrics from Section~\ref{sec:soa_position}. Path loss
+has several external dB-scale references, but no external paper found here
+reports the same dense CKM city-holdout contract for delay spread and angular
+spread. The table is therefore limited to path-loss-like external rows plus the
+final-model reference row; scalar channel-parameter papers are kept out of this
+results table. In the table, PL means path-loss RMSE and lower RMSE is better.
+The better/worse ratios should be read cautiously because the rows use different
+data, different inputs, or different evaluation contracts. Earlier internal
+baselines are discussed in the ablation results instead of repeated here.
 
 \begin{table}[H]
 \centering
-\caption[Results-side comparison with closest state-of-the-art metrics.]%
-{Results-side comparison with the closest available path-loss and spread
-metrics. External spread rows are scalar channel-characteristic predictors, not
-dense CKM-style map predictors. Ratios are interpretive unless the row shares
-the CKM protocol.}
+\caption[Plain-language comparison with closest path-loss metrics.]%
+{Plain-language comparison with the closest available path-loss-side metrics.
+No scalar indoor or link-level spread predictor is included as a table row,
+because those numbers are not dense CKM-style map benchmarks.}
 \label{tab:soa_result_comparison}
+\begingroup
 \scriptsize
-\renewcommand{\arraystretch}{1.08}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.21\textwidth}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{0.98}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.18\textwidth}
+>{\raggedright\arraybackslash}p{0.25\textwidth}
 >{\raggedright\arraybackslash}p{0.29\textwidth}
->{\centering\arraybackslash}p{0.16\textwidth}
 >{\raggedright\arraybackslash}X}
 \toprule
-Method & Reported metric & Final / reported metric & Protocol interpretation \\
+Reference & What it reports & Verdict for our final model & Why the verdict is limited \\
 \midrule
 RadioUNet \cite{radiounet2020} &
 \SI{1.6}{dB}--\SI{3.1}{dB} equivalent path-loss RMSE in accurate-map settings &
-\(0.54\)--\(1.02\times\) PL &
-Final CKM path-loss error is in the same range, but RadioUNet is a 2D
-path-loss-map setting without UAV-height conditioning or spread targets. \\
+Our final PL RMSE is \(1.03\times\) worse than the best \SI{1.6}{dB} case and
+\(1.88\times\) better than the \SI{3.1}{dB} case. &
+2D path-loss maps only; no UAV-height conditioning or spread targets. \\
+RadioGUNet \cite{radiogunet2025} &
+\SI{1.304}{dB} DPM, \SI{1.936}{dB} IRT, and \SI{1.392}{dB} DPM with cars on
+RadioMapSeer &
+Our final PL RMSE is \(1.27\times\) worse than its best DPM number, but
+\(1.17\times\) better than its IRT number. &
+Outdoor simulated terrestrial maps; held-out test layouts, but no UAV-height or
+spread targets. \\
 PMNet / ICASSP~2023 winner \cite{pmnet2023,icassp2023challenge} &
 \SI{1.38}{dB} converted from the RadioMap3DSeer normalized score &
-\(1.20\times\) PL &
-Lower reported path-loss RMSE, but fixed benchmark contract without the CKM
-city-holdout, UAV-height, and three-target setting. \\
-Noisy-environment CNN \cite{jaensch2026noisyenv} &
-\SI{1.3}{dB} with complete environment input; \SI{2.1}{dB} with noisy input &
-\(0.79\)--\(1.27\times\) PL &
-Measured indoor path-loss scale reference with sparse observations; no delay-
-or angular-spread output. \\
-Gao et al.\ multi-layer model \cite{gao2026} &
-\SI{5.59}{dB} on ICASSP~2023-style data &
-\(0.30\times\) PL &
-Final CKM path-loss RMSE is about 70\% lower, but the input layers and
-evaluation contract are not the same. \\
+Our final PL RMSE is \(1.20\times\) worse than PMNet's reported path-loss RMSE,
+but only as scale context, not as a direct ranking. &
+Not directly comparable: ICASSP/RadioMap3DSeer testing differs from our unseen
+CKM-city split, continuous UAV-height conditioning, and joint PL/DS/AS target
+contract. \\
+ReVeal PINN \cite{reveal2025} &
+\SI{1.95}{dB} outdoor rural/suburban radio-environment RMSE with sparse
+measurements &
+Our final PL RMSE is \(1.18\times\) better than ReVeal's reported RMSE. &
+Real outdoor measurements, but sparse RSSI radio-environment mapping rather than
+dense UAV-height-conditioned CKM generation. \\
 AIRMap \cite{airmap2025} &
 path-gain error reported below \SI{4}{dB} against ray tracing &
-\(<0.42\times\) PL &
-Relevant as a fast adaptive radio-map/digital-twin reference, but it reports
-path gain under a different calibration and measurement protocol. \\
-PMHHNet reference from this thesis &
-\SI{9.41}{dB} city-holdout path-loss RMSE &
-\(0.18\times\) PL &
-Most comparable internal baseline: same CKM family and city-holdout logic, but
-without the final calibrated priors and residual GMM-head design. \\
-Mi et al.\ point-cloud LSP predictor \cite{mi2024pointcloud} &
-\SI{1.56}{dB} PL, \SI{0.90}{ns} RMS DS, \(7.39^\circ\) AS &
-\(1.06\times\) PL; \(29.5\times\) DS; \(1.54\times\) AS &
-Closest measured external paper reporting all three quantities, but it predicts
-scalar indoor \SI{60}{GHz} channel snapshots from point-cloud/RGB/mask inputs. \\
-Huang et al.\ A2G Transformer \cite{huang2025a2gtransformer} &
-\(0.172\,\mathrm{dBm}\) received power, \SI{4.577}{ns} RMS DS, \(0.074^\circ\)--\(1.549^\circ\) angular-component RMSE &
-\(5.8\times\) DS; AS at least \(7.3\times\) &
-Closest UAV spread-side reference found, but it predicts scalar A2G channel
-characteristics, not dense per-pixel maps; received power is not path loss. \\
+Our final PL RMSE is below \SI{2}{dB}, so it is arguably much better than the
+reported \SI{4}{dB} threshold, but an exact times ratio is not recoverable. &
+Reports path gain, not the same path-loss calibration. \\
+RMTransformer \cite{rmtransformer2025} &
+0.007148 normalised pixel RMSE, approximately \SI{1.82}{dB} with its
+\SI{254}{dB} USC/PMNet scaling window; 0.008099 channel prediction error,
+approximately \SI{2.06}{dB} &
+Our final PL RMSE is \(1.10\times\) better than the converted pixel RMSE and
+\(1.25\times\) better than the converted channel prediction error. &
+Recent dense path-loss radio-map reference, but on \SI{256}{px} USC/PMNet maps
+with a random 90/10 split, no CKM city-holdout, no continuous UAV height, and no
+spread targets. \\
 PathFinder \cite{pathfinder2025} &
-0.0331 normalized RMSE on DS-RPP; 0.3263 normalized RMSE on unseen rural data &
-Not unit-convertible &
-Useful distribution-shift path-loss reference, but its normalized S2MT protocol
-cannot be converted into CKM dB, ns, or degree RMSE. \\
-Distribution-first spread predecessor from this thesis &
-\SI{30.96}{ns} delay spread and \(11.78^\circ\) angular spread, pixel-weighted &
-\(0.86\times\) DS; \(0.97\times\) AS &
-Closest spread-only dense predecessor on the shared CKM city-holdout test
-split; it lacks the final frozen priors. \\
-Frozen spread priors from this thesis &
-\SI{28.1023}{ns} delay spread and \(13.7416^\circ\) angular spread &
-\(0.94\times\) DS; \(0.83\times\) AS &
-Direct same-protocol ablation showing what the final residual head improves
-for the two spread targets. \\
+0.0331 normalized RMSE on RM3D DS-RPP, approximately \SI{1.19}{dB} with the
+\SI{36}{dB} RM3D window; 0.3263 on unseen rural, approximately \SI{11.75}{dB}
+only under the same assumption &
+Our final PL RMSE is \(1.39\times\) worse than the converted DS-RPP value, but
+\(7.11\times\) better than the rural value under the same \SI{36}{dB} assumption. &
+The DS-RPP conversion follows RM3D scaling; the rural conversion is only an
+approximate scale check because the paper reports normalised image-space RMSE. \\
 \textbf{Final model} &
 \textbf{\SI{1.6519}{dB} PL, \SI{26.5570}{ns} DS, \(11.3854^\circ\) AS on unseen CKM cities} &
-\textbf{\(1.00\times\)} &
+\textbf{Reference row for the ratios above.} &
 Only row here reporting all three dense CKM targets under the final
 city-holdout protocol. \\
 \bottomrule
 \end{tabularx}
+\endgroup
 \end{table}
 
 This comparison supports a cautious interpretation. The final path-loss number
 is not claimed to beat every published benchmark in absolute terms; PMNet's
-reported ICASSP score is lower on its own easier contract. The path-loss result
-is nevertheless in the same band as RadioUNet and measured noisy-environment
-CNN references, and below several newer multi-layer or adaptive-map references.
-For spreads, the honest external reading is mixed: the final angular-spread
-error is within roughly \(1.5\times\) of the measured point-cloud reference, but
-the delay-spread RMSE is much larger than scalar-channel papers. The thesis
-claim is therefore not that the spread maps beat external scalar predictors; it
-is that the model reports dense delay-spread and angular-spread RMSE on unseen
-CKM cities, improves the closest same-protocol spread baselines, and keeps the
-stricter ground-mask, LoS/NLoS, and continuous-height protocol visible.
+reported ICASSP score is lower on its own easier contract, and RadioGUNet is
+lower on the easiest RadioMapSeer setting. The path-loss result is nevertheless
+in the same outdoor simulated-map band as RadioUNet and RadioGUNet, better than
+the PathFinder unseen-rural value under the approximate RM3D scaling, close to
+ReVeal's real outdoor sparse-measurement scale, and slightly better than
+RMTransformer after applying that paper's own \SI{254}{dB} normalisation window.
+For spreads, the honest external reading is that the table has no direct dense
+counterpart: the scalar channel-parameter papers reviewed in the state of the
+art are too different in input, output, and evaluation protocol to rank here.
+The thesis claim is therefore not that the spread maps beat external scalar
+predictors; it is that the model reports dense delay-spread and angular-spread
+RMSE on unseen CKM cities, improves the closest same-protocol spread baselines,
+and keeps the stricter ground-mask, LoS/NLoS, and continuous-height protocol
+visible.
 
 \subsubsection*{Inference-time sanity check}
 
@@ -887,7 +921,7 @@ or rendered maps.
 \centering
 \caption[Full-pipeline runtime and ray-tracing comparison.]
 {Full-pipeline runtime comparison for one \(513\times513\) Barcelona CKM sample.
-Both rows are measured on the same laptop. The surrogate row includes geometric
+Both rows are measured on the same Ryzen~5~5600H / RTX~3050~Ti Laptop machine. The surrogate row includes geometric
 mask generation, prior computation, and prediction of path loss, delay spread,
 and angular spread, including the default numerical \texttt{.npz} export.
 Checkpoint loading, one-time CUDA warm-up, and optional PNG exports are
@@ -931,6 +965,7 @@ The qualitative evidence supports the quantitative story without needing the ful
 
 The main lesson is that LoS path loss in this dataset has a strong radial ring structure, so a calibrated two-ray prior is more efficient than asking a CNN to learn the same pattern from pixels. The remaining qualitative failures are concentrated in sparse NLoS and high-spread cases, which is why future spread work should include an explicit high-tail or outlier diagnostic.
 \section{Limitations}
+\label{sec:limitations}
 
 The dataset is produced by ray tracing, not by field measurements. The results
 therefore measure agreement with a simulator and not direct over-the-air
@@ -940,12 +975,65 @@ integer maps: delay spread as uint16 in ns and angular spread as uint8 in
 degrees. A more suitable dataset for the final modelling stage would preserve
 the continuous ray-traced targets, for example as float32 or as documented
 scaled integers, before any display-oriented quantisation.
+This should not be confused with a quantized model output: the final residual
+GMM-head model emits continuous PL/DS/AS values. In that light, the final
+path-loss MAE of \SI{0.9298}{dB} on labels stored at approximately
+\SI{1}{dB} resolution is already close to the path-loss label step, even
+though the RMSE remains \SI{1.6519}{dB} because it is dominated by the harder
+tail errors.
 
-The approximate quantisation floor is \(\Delta/\sqrt{12}\), or about
-\SI{0.289}{} in the native unit when \(\Delta=1\). This is not the dominant
-error in the current final-model snapshot, but it becomes relevant once residual
-errors approach the sub-unit regime. The derivation and storage table are moved
-to Appendix~\ref{app:quantisation_detail}.
+The effect can be written explicitly. Let \(y^\star\) be the continuous
+ray-traced value and \(y_q = Q_\Delta(y^\star) = y^\star + \epsilon_q\) the
+stored value after rounding to step \(\Delta\). Under the usual high-resolution
+quantisation approximation, \(\epsilon_q \sim \mathcal{U}(-\Delta/2,\Delta/2)\),
+so
+\begin{equation}
+  \sigma_q = \sqrt{\mathbb{E}[\epsilon_q^2]}
+           = \frac{\Delta}{\sqrt{12}}.
+  \label{eq:quant_floor}
+\end{equation}
+With \(\Delta=1\) in the physical units used here, the hidden uncertainty is
+\(0.289\,\mathrm{dB}\) for path loss, \(0.289\,\mathrm{ns}\) for delay spread,
+and \(0.289^\circ\) for angular spread. This is not the dominant error in the
+current final-model snapshot, but it is an irreducible resolution limit of the
+saved labels and becomes important once residual errors approach the sub-unit
+regime.
+
+\begin{table}[H]
+\centering
+\caption[Approximate RMSE floor from target quantisation.]%
+{Approximate quantisation RMSE implied by the stored integer target
+precision in the current CKM HDF5 file. The table reports the actual storage
+used in this thesis.}
+\label{tab:quantisation_floor}
+\begin{tabular}{lccc}
+\toprule
+Target & Stored type & Current integer step & Current floor \\
+\midrule
+Path loss & uint8 & \SI{1}{dB} & \SI{0.289}{dB} \\
+Delay spread & uint16 & \SI{1}{ns} & \SI{0.289}{ns} \\
+Angular spread & uint8 & \(1^\circ\) & \(0.289^\circ\) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This also explains why getting very close to the best possible error is
+mathematically harder than the headline RMSE suggests. If model error and
+quantisation error are approximately independent, the observed squared error
+decomposes as
+\[
+  \mathbb{E}\!\left[(\hat{y}-y_q)^2\right]
+  \approx
+  \mathbb{E}\!\left[(\hat{y}-y^\star)^2\right] + \sigma_q^2 .
+\]
+Near \(\sigma_q\), a real reduction in model error produces only a small change
+in total RMSE because of the square-root compression. In addition, many
+different continuous ray-tracing values collapse to the same stored integer, so
+the model cannot learn sub-bin structure from the labels even if the input
+geometry contains enough information. The heavy-tailed NLoS distributions add a
+second difficulty: MSE is dominated by rare large misses, so once the common
+LoS pixels are near the quantisation scale, further improvements depend on
+resolving sparse hard NLoS cases rather than on smoothing the whole map.
 
 The LoS/NLoS mask used in these experiments should be interpreted as a
 geometric binary visibility mask, not as an augmented electromagnetic

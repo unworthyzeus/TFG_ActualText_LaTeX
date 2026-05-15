@@ -862,54 +862,6 @@
       \verb https://arxiv.org/abs/2402.00878
       \endverb
     \endentry
-    \entry{jaensch2026noisyenv}{misc}{}{}
-      \name{author}{4}{}{%
-        {{hash=0561b6d6bce37254be5ef5adf7845108}{%
-           family={Jaensch},
-           familyi={J\bibinitperiod},
-           given={Fabian},
-           giveni={F\bibinitperiod}}}%
-        {{hash=14ebd377c35d0c3606f4b638f2a7a847}{%
-           family={Yapar},
-           familyi={Y\bibinitperiod},
-           given={Çağkan},
-           giveni={Ç\bibinitperiod}}}%
-        {{hash=d9eb31011b950ccd77c4a87b7dc4b3c2}{%
-           family={Caire},
-           familyi={C\bibinitperiod},
-           given={Giuseppe},
-           giveni={G\bibinitperiod}}}%
-        {{hash=bad64d8cb89d43f2f782224e4b1a01cd}{%
-           family={Demir},
-           familyi={D\bibinitperiod},
-           given={Begüm},
-           giveni={B\bibinitperiod}}}%
-      }
-      \strng{namehash}{88aa75fbd7e3c7031b8710d62c3f37da}
-      \strng{fullhash}{b8481e56d412bf3322eba8bacf535c7f}
-      \strng{fullhashraw}{b8481e56d412bf3322eba8bacf535c7f}
-      \strng{bibnamehash}{88aa75fbd7e3c7031b8710d62c3f37da}
-      \strng{authorbibnamehash}{88aa75fbd7e3c7031b8710d62c3f37da}
-      \strng{authornamehash}{88aa75fbd7e3c7031b8710d62c3f37da}
-      \strng{authorfullhash}{b8481e56d412bf3322eba8bacf535c7f}
-      \strng{authorfullhashraw}{b8481e56d412bf3322eba8bacf535c7f}
-      \field{sortinit}{J}
-      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2602.11950}
-      \field{title}{Radio Map Prediction from Noisy Environment Information and Sparse Observations}
-      \field{year}{2026}
-      \verb{doi}
-      \verb 10.48550/arXiv.2602.11950
-      \endverb
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/2602.11950
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/2602.11950
-      \endverb
-    \endentry
     \entry{kendall2017uncertainties}{inproceedings}{}{}
       \name{author}{2}{}{%
         {{hash=4b1053f4ffb69cd61c1f122cc435c884}{%
@@ -1359,82 +1311,6 @@
       \endverb
       \verb{url}
       \verb https://dspace.networks.imdea.org/handle/20.500.12761/886
-      \endverb
-    \endentry
-    \entry{mi2024pointcloud}{article}{}{}
-      \name{author}{9}{}{%
-        {{hash=eef592f5ba9fdc14102f70ec7be4a3e9}{%
-           family={Mi},
-           familyi={M\bibinitperiod},
-           given={Hang},
-           giveni={H\bibinitperiod}}}%
-        {{hash=871a30cc70f411906df29414b5f6da03}{%
-           family={Ai},
-           familyi={A\bibinitperiod},
-           given={Bo},
-           giveni={B\bibinitperiod}}}%
-        {{hash=c70d4de4f100d3d6fca380329bdb05cc}{%
-           family={He},
-           familyi={H\bibinitperiod},
-           given={Ruisi},
-           giveni={R\bibinitperiod}}}%
-        {{hash=98c7505b057bcd6fc1ccd1935395e057}{%
-           family={Bodi},
-           familyi={B\bibinitperiod},
-           given={Anuraag},
-           giveni={A\bibinitperiod}}}%
-        {{hash=1aff9fdf3c802387dfb80e43e17971d4}{%
-           family={Caromi},
-           familyi={C\bibinitperiod},
-           given={Raied},
-           giveni={R\bibinitperiod}}}%
-        {{hash=c33641e67eeaefc87b7821dc9b51ff90}{%
-           family={Wang},
-           familyi={W\bibinitperiod},
-           given={Jian},
-           giveni={J\bibinitperiod}}}%
-        {{hash=e12eaea03a2f5b4f6eba077d84645eee}{%
-           family={Senic},
-           familyi={S\bibinitperiod},
-           given={Jelena},
-           giveni={J\bibinitperiod}}}%
-        {{hash=827562c5dd20fa9f0b76525cedfb7fa4}{%
-           family={Gentile},
-           familyi={G\bibinitperiod},
-           given={Camillo},
-           giveni={C\bibinitperiod}}}%
-        {{hash=4b185319a251aff382f603c4d7e8f65f}{%
-           family={Miao},
-           familyi={M\bibinitperiod},
-           given={Yang},
-           giveni={Y\bibinitperiod}}}%
-      }
-      \strng{namehash}{e6efb7834d8219986e8b337d0f478d4c}
-      \strng{fullhash}{35a5ed8ba0ab2df6afa959fb6735b3f7}
-      \strng{fullhashraw}{35a5ed8ba0ab2df6afa959fb6735b3f7}
-      \strng{bibnamehash}{e6efb7834d8219986e8b337d0f478d4c}
-      \strng{authorbibnamehash}{e6efb7834d8219986e8b337d0f478d4c}
-      \strng{authornamehash}{e6efb7834d8219986e8b337d0f478d4c}
-      \strng{authorfullhash}{35a5ed8ba0ab2df6afa959fb6735b3f7}
-      \strng{authorfullhashraw}{35a5ed8ba0ab2df6afa959fb6735b3f7}
-      \field{sortinit}{M}
-      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{journaltitle}{IEEE Open Journal of Vehicular Technology}
-      \field{title}{Measurement-Based Prediction of mmWave Channel Parameters Using Deep Learning and Point Cloud}
-      \field{volume}{5}
-      \field{year}{2024}
-      \field{pages}{1059\bibrangedash 1074}
-      \range{pages}{16}
-      \verb{doi}
-      \verb 10.1109/OJVT.2024.3436857
-      \endverb
-      \verb{urlraw}
-      \verb https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=956227
-      \endverb
-      \verb{url}
-      \verb https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=956227
       \endverb
     \endentry
     \entry{perez2018film}{inproceedings}{}{}
@@ -2163,6 +2039,7 @@
       \strng{authornamehash}{993c146e980db475a24664d36a89979d}
       \strng{authorfullhash}{b6275ef0063a3e4ccabc00d6d3799135}
       \strng{authorfullhashraw}{b6275ef0063a3e4ccabc00d6d3799135}
+      \field{extraname}{1}
       \field{sortinit}{Y}
       \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
       \field{labelnamesource}{author}
@@ -2175,6 +2052,55 @@
       \endverb
       \verb{url}
       \verb https://arxiv.org/abs/2602.22231
+      \endverb
+    \endentry
+    \entry{radiogunet2025}{misc}{}{}
+      \name{author}{4}{}{%
+        {{hash=5d8972f0b53d4f1a344d17c1ccd15749}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Ziyue},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=8cfebbe54197d0a6e7c196b6fe8cf3a3}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Feng},
+           giveni={F\bibinitperiod}}}%
+        {{hash=3853f73b57fe1741b84761b79630d017}{%
+           family={Jin},
+           familyi={J\bibinitperiod},
+           given={Yifei},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=5d5daaf8cb2f1cb01093982c0ea68f39}{%
+           family={Vandikas},
+           familyi={V\bibinitperiod},
+           given={Konstantinos},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{0982ae57e0ddd37ac9c711a5fc0e51bd}
+      \strng{fullhash}{2edd728c4ec1e52a6598d91ccb69943c}
+      \strng{fullhashraw}{2edd728c4ec1e52a6598d91ccb69943c}
+      \strng{bibnamehash}{0982ae57e0ddd37ac9c711a5fc0e51bd}
+      \strng{authorbibnamehash}{0982ae57e0ddd37ac9c711a5fc0e51bd}
+      \strng{authornamehash}{0982ae57e0ddd37ac9c711a5fc0e51bd}
+      \strng{authorfullhash}{2edd728c4ec1e52a6598d91ccb69943c}
+      \strng{authorfullhashraw}{2edd728c4ec1e52a6598d91ccb69943c}
+      \field{extraname}{2}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{arXiv:2511.17841}
+      \field{title}{Group Equivariant Convolutional Networks for Pathloss Estimation}
+      \field{year}{2025}
+      \verb{doi}
+      \verb 10.48550/arXiv.2511.17841
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2511.17841
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2511.17841
       \endverb
     \endentry
     \entry{dataset2212}{misc}{}{}

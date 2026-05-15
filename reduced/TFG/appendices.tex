@@ -15,10 +15,9 @@ public technical role it plays in the thesis narrative.
 
 The main chapters use only the attempts that carry a methodological or
 quantitative claim; this appendix keeps the full numbering context. The
-chronology is separated from the detailed final formulas: Chapter~3 contains
-the compact methodology, Chapter~\ref{chap:results} contains the quantitative
-results, and Appendix~\ref{app:formula_details} preserves the full mathematical
-audit trail.
+chronology is separated from the final formulas: Chapter~3 contains both the
+methodology and the mathematical audit trail, while
+Chapter~\ref{chap:results} contains the quantitative results.
 
 \section{Try-number map}
 
@@ -274,27 +273,30 @@ answer.
 
 \subsection{Distribution-first modelling}
 
-Try 76 reframed NLoS path loss as a distributional problem. Instead of forcing
-one value everywhere, Stage A estimated sample-level mixture structure and
-Stage B placed components spatially. This produced much stronger NLoS
-behaviour, with the DirectML summary around \SI{3.34}{dB} pixel-weighted RMSE.
-The key lesson was that a model can approach the hard regime by estimating the
-right distribution before assigning pixels.
+The distribution-first path-loss GMM line reframed NLoS path loss as a
+distributional problem. Instead of forcing one value everywhere, Stage A
+estimated sample-level mixture structure and Stage B placed components
+spatially. This produced much stronger NLoS behaviour, with the DirectML
+summary around \SI{3.34}{dB} pixel-weighted RMSE. The key lesson was that a
+model can approach the hard regime by estimating the right distribution before
+assigning pixels.
 
-Try 77 transferred the same philosophy to delay and angular spread. It was
+The distribution-first spread expert line transferred the same philosophy to
+delay and angular spread. It was
 not the final deployed spread baseline, but it explained why spread targets
-should not be treated as ordinary smooth images. Together, Tries 76 and 77 are
-the conceptual bridge to the GMM residual head retained in the final attempt.
+should not be treated as ordinary smooth images. Together, the two
+distribution-first lines are the conceptual bridge to the GMM residual head
+retained in the final attempt.
 
 \subsection{Frozen calibrated priors}
 
-Try 78 showed that LoS path loss was more deterministic than the neural
+The calibrated path-loss prior showed that LoS path loss was more deterministic than the neural
 history suggested. The dominant residual over FSPL was a radial ring field,
 well explained by the enhanced two-ray model with fitted effective reflection
 parameters. Its final path-loss calibration uses 18 regimes for the NLoS
 linear model, while the LoS branch remains the enhanced two-ray prior.
 
-Try 79 applied the same estimator discipline to delay spread and angular
+The calibrated spread-prior module applied the same estimator discipline to delay spread and angular
 spread: use log-domain ridge calibration over geometry, LoS/NLoS state,
 height, topology, and local morphology. Its final taxonomy is 36 exact regimes
 per metric, 72 exact regimes total, and 114 keys when fallback entries are
@@ -304,7 +306,7 @@ physics'' and toward ``frozen calibrated estimator plus learned residual.''
 \subsection{Final prior-anchored residual GMM-head model}
 
 The final attempt is the joint prior-anchored residual GMM-head model. It starts from
-the frozen Try 78 path-loss prior and Try 79 spread priors, then learns
+the frozen path-loss prior and spread priors, then learns
 bounded residual corrections for path loss, delay spread, and angular spread
 with one shared multi-task network. The GMM head remains part of the residual
 output design even when the selected final model is chosen by deterministic
@@ -323,14 +325,18 @@ selected final model reported in Chapter~\ref{chap:results}.
 
 The qualitative appendix is generated with the panel-generation script. It uses
 the validation split, the selected final model state, DirectML
-inference, and the frozen calibrated priors. The script selects one validation
-sample for each macro expert
+inference, and the frozen calibrated priors. The script initially selects one
+validation sample for each macro expert
 \((\mathrm{open},\mathrm{mixed},\mathrm{dense})\times
 (\mathrm{low},\mathrm{mid},\mathrm{high})\). It keeps candidates for which
 the final residual GMM-head model beats the frozen prior on all three outputs, then chooses the
 best-mean-RMSE candidate while drawing from different cities where the
-validation split provides visually distinct examples. The manifest next to
-the images records filenames, city, sample, antenna height, and per-task RMSE.
+validation split provides visually distinct examples. The open/high panel
+selected by that automatic rule is not included here: its angular-spread field
+is almost flat, so the robust percentile colour scale collapses to a misleading
+near-zero range. The remaining panels are the ones used as qualitative
+evidence. The manifest next to the images records filenames, city, sample,
+antenna height, and per-task RMSE.
 
 The script can emit both a wide and a tall layout, but the thesis keeps only
 the tall \(6\times 3\) version to avoid duplicating the same evidence. In this
@@ -376,7 +382,6 @@ Expert & City & Sample & Height bin \\
 \midrule
 open/low & Segovia & sample\_13213 & low \\
 open/mid & Segovia & sample\_13215 & mid \\
-open/high & Nazareth & sample\_10722 & high \\
 mixed/low & Dubrovnik & sample\_05288 & low \\
 mixed/mid & Nice & sample\_10828 & mid \\
 mixed/high & Nice & sample\_10814 & high \\
@@ -405,15 +410,6 @@ validation sample in Segovia.}
 \caption{Final residual GMM-head model \(6\times3\) inspection panel for an open, mid-antenna
 validation sample in Segovia.}
 \label{fig:appendix_try80_open_mid}
-\end{figure}
-
-\clearpage
-\begin{figure}[p]
-\centering
-\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_open_high_ant_Nazareth_sample_10722_6x3.png}
-\caption{Final residual GMM-head model \(6\times3\) inspection panel for an open, high-antenna
-validation sample in Nazareth.}
-\label{fig:appendix_try80_open_high}
 \end{figure}
 
 \clearpage
@@ -924,7 +920,7 @@ the masks, priors, predictions, and metadata in the numerical archive.
 Disabling \texttt{Run final residual model} is useful when the goal is only to
 validate topologies, masks, and prior generation.
 
-\chapter{Additional Qualitative Diagnostics}
+\chapter{Additional Results and Qualitative Diagnostics}
 \label{app:qualitative_diagnostics}
 
 The most important visual diagnosis was the contrast between plausible LoS
@@ -932,6 +928,44 @@ maps and failed NLoS tails. Early CNN outputs often followed the central radial
 trend but underestimated shadowed regions. The later histogram analysis made
 this visible: the model behaved like a single-mode regressor even when the
 target distribution was multi-modal.
+
+This appendix keeps the detailed results that were removed from the main
+Results chapter during the reduction pass. They are not needed to follow the
+main thesis claim, but they make the final interpretation auditable: the
+distribution-first models exposed the target shapes, the final model improved
+the frozen priors across splits and regimes, and the runtime optimizations did
+not change the mathematical definition of the generator.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png}
+\caption[Path-loss GMM target fits by topology expert.]%
+{Five-component Gaussian-mixture fits of the LoS and NLoS path-loss targets,
+shown separately for the six topology experts. This is the distribution seen
+by the specialised expert models, and is therefore more faithful than a single
+collapsed global curve. Per expert, the target is treated as a GMM rather than
+as a perfect Gaussian: the LoS and NLoS marginals contain asymmetric shoulders,
+tails and rare outliers, including values outside the visible
+\SIrange{72}{128}{dB} plotting window. The solid curves show the total mixture
+density and the faint dotted curves show the individual Gaussian components.
+The dashed line marks the per-expert marginal mean.}
+\label{fig:try76_los_vs_nlos_distribution}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try79_quantized_spread_example.png}
+\caption[Example of spread-target quantisation.]%
+{Example of spread-target quantisation on a calibrated-prior test sample
+(Jaipur, \texttt{sample\_07308}). The ground-truth delay-spread map contains
+broad staircase-like bands and isolated quantised pixels, while the
+height-aware calibrated prediction is smoother and more continuous. The
+resulting delay RMSE is only \SI{1.11}{ns}, but the residual panel shows how
+RMSE still penalises smooth transitions across quantised ground-truth
+boundaries. The same effect is visible on the angular-spread map, whose target
+is dominated by sparse high-valued quantised pixels.}
+\label{fig:try79_quantized_spread_example}
+\end{figure}
 
 \begin{figure}[p]
 \centering
@@ -1070,6 +1104,46 @@ contains cities not seen during training.}
 \label{fig:try80_split_rmse}
 \end{figure}
 
+\begin{table}[H]
+\centering
+\caption[Final-model RMSE by split.]%
+{Final-model pixel-weighted RMSE by split, compared with the frozen priors.
+The test split is the unseen-city generalisation claim; the all row aggregates
+train, validation, and test together.}
+\label{tab:try80_split_absolute}
+\scriptsize
+\begin{tabular}{lrrrrrrr}
+\toprule
+Split & Samples & PL model & PL prior & DS model & DS prior & AS model & AS prior \\
+\midrule
+Train & 10840 & 1.7111 & 2.0006 & 28.7929 & 30.8086 & 11.5975 & 13.9553 \\
+Validation & 2750 & 1.6157 & 1.8916 & 22.1061 & 23.4494 & 11.3782 & 13.8178 \\
+Test & 2590 & 1.6519 & 1.9383 & 26.5570 & 28.1023 & 11.3854 & 13.7416 \\
+All & 16180 & 1.6845 & 1.9711 & 27.4121 & 29.2527 & 11.5256 & 13.8966 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption[Final-model improvement by split.]%
+{Final-model improvement over the frozen priors by split. Values are
+pixel-weighted \(\Delta=\mathrm{model}-\mathrm{prior}\); negative values are
+better.}
+\label{tab:try80_split_delta}
+\scriptsize
+\begin{tabular}{lrrrrrrr}
+\toprule
+Split & Samples & PL \(\Delta\)RMSE & PL \(\Delta\)MAE & DS \(\Delta\)RMSE & DS \(\Delta\)MAE & AS \(\Delta\)RMSE & AS \(\Delta\)MAE \\
+\midrule
+Train & 10840 & -0.2895 & -0.3030 & -2.0157 & +0.6135 & -2.3578 & +0.0108 \\
+Validation & 2750 & -0.2758 & -0.2865 & -1.3433 & +0.5869 & -2.4396 & -0.0413 \\
+Test & 2590 & -0.2865 & -0.3020 & -1.5453 & +0.6864 & -2.3562 & +0.0198 \\
+All & 16180 & -0.2867 & -0.3000 & -1.8406 & +0.6214 & -2.3710 & +0.0036 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \begin{figure}[ht]
 \centering
 \pgfplotsset{
@@ -1112,6 +1186,57 @@ contains cities not seen during training.}
 {Final test RMSE on unseen cities against the frozen priors for
 path loss, delay spread, and angular spread.}
 \label{fig:try80_test_final}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\pgfplotsset{
+  targetcompare/.style={
+    ybar, width=\linewidth, height=5.4cm, ymin=0,
+    bar width=18pt,
+    symbolic x coords={Target,Final},
+    xtick={Target,Final},
+    xticklabel style={font=\small},
+    tick label style={font=\small},
+    title style={font=\bfseries\small},
+    enlarge x limits=0.35,
+    ymajorgrids=true,
+    nodes near coords,
+    every node near coord/.append style={font=\scriptsize},
+  }
+}
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[targetcompare, title={Path loss}, ylabel={RMSE (dB)}, ymax=5.6]
+\addplot[fill=gray!25, draw=black, bar shift=0pt] coordinates {(Target,5.00)};
+\addplot[fill=blue!55, draw=black, bar shift=0pt] coordinates {(Final,1.65)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[targetcompare, title={Delay spread}, ylabel={RMSE (ns)}, ymax=55]
+\addplot[fill=gray!25, draw=black, bar shift=0pt] coordinates {(Target,50.00)};
+\addplot[fill=orange!70, draw=black, bar shift=0pt] coordinates {(Final,26.56)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.31\textwidth}\centering
+\begin{tikzpicture}
+\begin{axis}[targetcompare, title={Angular spread}, ylabel={RMSE ($^\circ$)}, ymax=22]
+\addplot[fill=gray!25, draw=black, bar shift=0pt] coordinates {(Target,20.00)};
+\addplot[fill=green!60, draw=black, bar shift=0pt] coordinates {(Final,11.39)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\caption[Final result against original numerical targets.]%
+{\textbf{Target vs final result.} Final global test check using
+pixel-weighted RMSE only. The final-result bar is the held-out city test
+result, which remains below the original targets: \SI{5}{dB} for path loss,
+\SI{50}{ns} for delay spread, and \(20^\circ\) for angular spread.}
+\label{fig:try80_test_objectives}
 \end{figure}
 
 \begin{figure}[H]
@@ -1160,6 +1285,30 @@ path loss, delay spread, and angular spread.}
 improves the frozen prior in both regimes for all three outputs.}
 \label{fig:try80_test_los_nlos}
 \end{figure}
+
+\begin{table}[H]
+\centering
+\caption[Final-model LoS/NLoS improvement by split.]%
+{Final-model LoS/NLoS RMSE improvement by split. Values are
+pixel-weighted \(\Delta=\mathrm{model}-\mathrm{prior}\); negative values are
+better.}
+\label{tab:try80_los_nlos_split_delta}
+\scriptsize
+\begin{tabular}{llrrr}
+\toprule
+Split & Scope & PL \(\Delta\)RMSE & DS \(\Delta\)RMSE & AS \(\Delta\)RMSE \\
+\midrule
+Train & LoS & -0.2880 & -2.7919 & -3.0669 \\
+Train & NLoS & -0.3640 & -0.4813 & -0.2537 \\
+Validation & LoS & -0.2781 & -1.7935 & -3.0430 \\
+Validation & NLoS & -0.3103 & -0.3452 & -0.1880 \\
+Test & LoS & -0.2844 & -2.0432 & -2.9308 \\
+Test & NLoS & -0.3661 & -0.4112 & -0.2191 \\
+All & LoS & -0.2856 & -2.5127 & -3.0385 \\
+All & NLoS & -0.3565 & -0.4525 & -0.2388 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{figure}[H]
 \centering
@@ -1220,6 +1369,65 @@ expert (dense, mixed, open) and the second letter the antenna-height expert
 \label{fig:try80_subexpert_delta}
 \end{figure}
 
+\begin{table}[H]
+\centering
+\caption[All-city final-model deltas by prior subexpert.]%
+{All-city final-model deltas by prior subexpert. Each city contributes to one
+of the nine morphology and antenna prior experts, and the table shows that the
+improvement is not concentrated in a single easy subexpert.}
+\label{tab:try80_subexpert_delta}
+\scriptsize
+\begin{tabular}{lrrrrrrr}
+\toprule
+Subexpert & Samples & PL \(\Delta\)RMSE & PL \(\Delta\)MAE & DS \(\Delta\)RMSE & DS \(\Delta\)MAE & AS \(\Delta\)RMSE & AS \(\Delta\)MAE \\
+\midrule
+\texttt{dense|high\_ant} & 1957 & -0.3602 & -0.3674 & -0.6473 & +0.0638 & -2.6405 & -0.0905 \\
+\texttt{dense|low\_ant} & 2018 & -0.3359 & -0.3303 & -1.5779 & +0.5463 & -2.3994 & -0.1867 \\
+\texttt{dense|mid\_ant} & 2055 & -0.3288 & -0.3223 & -1.4074 & +0.6147 & -2.8587 & -0.2663 \\
+\texttt{mixed|high\_ant} & 2156 & -0.2931 & -0.3308 & -0.6794 & +0.2382 & -2.3186 & +0.0025 \\
+\texttt{mixed|low\_ant} & 2060 & -0.2745 & -0.2514 & -2.8379 & +0.8299 & -2.5845 & -0.0666 \\
+\texttt{mixed|mid\_ant} & 2094 & -0.2781 & -0.2824 & -2.0522 & +0.9436 & -2.8200 & -0.0366 \\
+\texttt{open|high\_ant} & 1272 & -0.2721 & -0.3278 & -0.5428 & +0.1224 & -1.2874 & +0.0567 \\
+\texttt{open|low\_ant} & 1269 & -0.2363 & -0.2094 & -3.1170 & +1.2934 & -2.0271 & +0.4146 \\
+\texttt{open|mid\_ant} & 1299 & -0.2941 & -0.3062 & -1.5789 & +0.8869 & -1.7804 & +0.2568 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The runtime result in Chapter~\ref{chap:results} reports the complete
+generator path. Table~\ref{tab:try80_runtime_breakdown} keeps the component
+breakdown that was removed from the main body. It is useful because it shows
+that the final acceleration is not only a neural-forward-pass result: mask
+generation, prior computation, inference, and numerical export all contribute
+to the measured \SI{0.88}{s} path.
+
+\begin{table}[H]
+\centering
+\caption[Final-generator runtime component breakdown.]%
+{Mean component timing for the final prior-anchored generator on the same ten
+Barcelona samples and the same Ryzen~5~5600H / RTX~3050~Ti Laptop hardware
+used in the ray-tracing comparison. The LoS/NLoS mask is
+generated with the vectorized CUDA backend, which was checked to produce zero
+difference with the original GT ray-caster on these samples. The default
+numerical \texttt{.npz} export is included in the measured path; optional PNG
+exports are outside this component timing.}
+\label{tab:try80_runtime_breakdown}
+\scriptsize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xcc}
+\toprule
+Component & Mean time per sample & Share of final-generator path \\
+\midrule
+Topology preparation & \SI{0.002}{s} & \(<0.2\%\) \\
+Geometric LoS/NLoS mask generation & \SI{0.30}{s} & \(33.9\%\) \\
+Torch computation of final calibrated path-loss and spread priors & \SI{0.04}{s} & \(4.7\%\) \\
+Final residual GMM-head neural prediction for PL, DS and AS, plus default \texttt{.npz} export & \SI{0.54}{s} & \(61.2\%\) \\
+\midrule
+Complete final-generator path & \SI{0.88}{s} & \(100\%\) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\normalsize
+
 Figure~\ref{fig:try80_panel} shows a representative final-model validation
 inspection panel. The same plotting script is used for all appendix panels:
 the three columns are path loss, delay spread, and angular spread, while the
@@ -1232,11 +1440,11 @@ prior-error row.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_main_panel.png}
+\includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Tunis_sample_14651_6x3.png}
 \caption[Representative final-model inspection panel.]%
-{Representative final-model \(6\times3\) inspection panel for a validation
-diagnostic sample from the selected final model. Columns: path loss, delay spread,
-angular spread. Rows: ground truth, frozen prior, final
+{Representative final-model \(6\times3\) inspection panel for a dense,
+mid-antenna validation diagnostic sample in Tunis. Columns: path loss, delay
+spread, angular spread. Rows: ground truth, frozen prior, final
 prediction, context / support mask, prior error
 ($\mathrm{Prior}-\mathrm{GT}$), and model correction
 ($\mathrm{Model}-\mathrm{Prior}$).}
@@ -1248,72 +1456,3 @@ dataset has a strong radial ring structure. Buildings explain visibility and
 NLoS morphology, but in LoS they are not the main generator of the residual
 shape. This is why a calibrated two-ray model could outperform many neural
 iterations that tried to learn the same pattern from pixels alone.
-
-\chapter{Quantisation Detail for the Target Maps}
-\label{app:quantisation_detail}
-
-The path-loss target is stored as uint8, delay spread as uint16 in ns, and
-angular spread as uint8 in degrees. The effect can be written explicitly. Let
-\(y^\star\) be the continuous ray-traced value and
-\(y_q = Q_\Delta(y^\star) = y^\star + \epsilon_q\) the stored value after
-rounding to step \(\Delta\). Under the usual high-resolution quantisation
-approximation, \(\epsilon_q \sim \mathcal{U}(-\Delta/2,\Delta/2)\), so
-\begin{equation}
-  \sigma_q = \sqrt{\mathbb{E}[\epsilon_q^2]}
-           = \frac{\Delta}{\sqrt{12}}.
-  \label{eq:quant_floor}
-\end{equation}
-With \(\Delta=1\) in the physical units used here, the hidden uncertainty is
-\(0.289\,\mathrm{dB}\) for path loss, \(0.289\,\mathrm{ns}\) for delay spread,
-and \(0.289^\circ\) for angular spread.
-
-\begin{table}[H]
-\centering
-\caption[Approximate RMSE floor from target quantisation.]%
-{Approximate quantisation RMSE implied by the stored integer target precision
-in the current CKM HDF5 file.}
-\label{tab:quantisation_floor}
-\begin{tabular}{lccc}
-\toprule
-Target & Stored type & Current integer step & Current floor \\
-\midrule
-Path loss & uint8 & \SI{1}{dB} & \SI{0.289}{dB} \\
-Delay spread & uint16 & \SI{1}{ns} & \SI{0.289}{ns} \\
-Angular spread & uint8 & \(1^\circ\) & \(0.289^\circ\) \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-If model error and quantisation error are approximately independent, the
-observed squared error decomposes as
-\[
-  \mathbb{E}\!\left[(\hat{y}-y_q)^2\right]
-  \approx
-  \mathbb{E}\!\left[(\hat{y}-y^\star)^2\right] + \sigma_q^2 .
-\]
-Near \(\sigma_q\), a real reduction in model error produces only a small change
-in total RMSE because of the square-root compression. In addition, many
-different continuous ray-tracing values collapse to the same stored integer, so
-the model cannot learn sub-bin structure from the labels even if the input
-geometry contains enough information. The heavy-tailed NLoS distributions add a
-second difficulty: MSE is dominated by rare large misses, so once the common
-LoS pixels are near the quantisation scale, further improvements depend on
-resolving sparse hard NLoS cases rather than on smoothing the whole map.
-
-\chapter{Detailed Final Model Formula Documentation}
-\label{app:formula_details}
-
-This appendix keeps the full mathematical and fitting detail for the final
-path-loss prior, spread priors, and joint residual GMM-head model. The main
-methodology chapter gives the decision path and compact model definition; this
-appendix preserves the derivations, feature inventories, calibration notes, and
-loss details for auditability.
-
-\section{Detailed Path-Loss Prior}
-\input{prior_detail_try78}
-
-\section{Detailed Delay and Angular Spread Priors}
-\input{prior_detail_try79}
-
-\section{Detailed Joint Prior-Anchored Residual GMM-Head Model}
-\input{prior_detail_try80}

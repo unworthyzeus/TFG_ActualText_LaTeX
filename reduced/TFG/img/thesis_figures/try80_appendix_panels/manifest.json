@@ -4,7 +4,7 @@
   "checkpoint": "C:\\TFG\\TFGpractice\\cluster_outputs\\TFGEightiethTry80\\try80_joint_huge_pathloss_finetune\\best_model.pt",
   "device": "privateuseone:0",
   "main_panel_layout": "6x3",
-  "main_panel": "try80_main_panel.png",
+  "main_panel": "try80_panel_dense_mid_ant_Tunis_sample_14651_6x3.png",
   "panels": [
     {
       "file": "try80_panel_open_low_ant_Segovia_sample_13213.png",
@@ -57,33 +57,6 @@
         "angular_spread": {
           "model_rmse": 3.16835880279541,
           "prior_rmse": 3.1831769943237305
-        }
-      }
-    },
-    {
-      "file": "try80_panel_open_high_ant_Nazareth_sample_10722.png",
-      "files": {
-        "3x6": "try80_panel_open_high_ant_Nazareth_sample_10722.png",
-        "6x3": "try80_panel_open_high_ant_Nazareth_sample_10722_6x3.png"
-      },
-      "city": "Nazareth",
-      "sample": "sample_10722",
-      "h_tx_m": 353.7660827636719,
-      "topology_class_6": "open_sparse_lowrise",
-      "expert": "open|high_ant",
-      "score_mean_model_rmse": 1.0277819534142811,
-      "metrics": {
-        "path_loss": {
-          "model_rmse": 0.8634465336799622,
-          "prior_rmse": 1.154586911201477
-        },
-        "delay_spread": {
-          "model_rmse": 0.43622902035713196,
-          "prior_rmse": 0.49357521533966064
-        },
-        "angular_spread": {
-          "model_rmse": 1.7836703062057495,
-          "prior_rmse": 1.8965023756027222
         }
       }
     },

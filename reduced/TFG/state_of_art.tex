@@ -160,11 +160,12 @@ RadioUNet \cite{radiounet2020} is the canonical convolutional path-loss-map
 baseline before the PMNet challenge family. In its accurate-map settings it
 reports grey-level RMSE values around \(0.0203\)--\(0.0384\); using the paper's
 \SI{80}{dB} grey-level conversion gives an approximate \SI{1.6}{dB}--\SI{3.1}{dB}
-path-loss scale. More recent work on noisy indoor radio-map prediction
-\cite{jaensch2026noisyenv} reports measured-data RMSE between
-\SI{1.3}{dB} and \SI{2.1}{dB}, depending on whether complete or noisy
-environment information is available. These papers are useful path-loss scale
-references, but they do not report dense delay-spread or angular-spread maps.
+path-loss scale. RadioGUNet \cite{radiogunet2025} extends this outdoor
+RadioMapSeer line with group-equivariant convolutions, reporting
+\SI{1.304}{dB} on the easiest DPM setting, \SI{1.936}{dB} on the IRT setting,
+and \SI{1.392}{dB} with cars. These papers are useful path-loss scale
+references, but they do not report dense delay-spread or angular-spread maps and
+do not use the CKM city-holdout, continuous-UAV-height contract.
 
 \subsection{PMNet and the ICASSP outdoor challenge family}
 
@@ -231,11 +232,13 @@ setting.
 The RMTransformer \cite{rmtransformer2025} evaluates a hybrid MaxViT/CNN
 encoder--decoder on the USC/PMNet dataset rather than on the ICASSP challenge
 test set.  It reports a normalised RMSE of~0.007148 versus~0.01046 for PMNet
-under a random 90/10 split on \(256\times256\) maps.  This supports the use of
-attention for long-range urban context, but the score is not inserted in
-Table~\ref{tab:icassp2023corrected} because it is not measured on
-RadioMap3DSeer and cannot be converted with that dataset's \SI{36}{dB}
-normalisation window.
+under a random 90/10 split on \(256\times256\) maps.  The paper normalises
+received power/path loss from \(-254\) to \SI{0}{dBm}, so the reported pixel
+RMSE corresponds to roughly \SI{1.82}{dB} on its own scale, and the reported
+channel prediction error of 0.008099 corresponds to roughly \SI{2.06}{dB}.
+This supports the use of attention for long-range urban context, but it is not
+inserted in Table~\ref{tab:icassp2023corrected} because it is not measured on
+RadioMap3DSeer or under the ICASSP challenge contract.
 
 Recent attention and foundation-model variants extend the effective receptive
 field of radio-map predictors \cite{wicopg2025,fmrme2026}.  They are attractive
@@ -350,18 +353,12 @@ path-loss model.  Per-pixel dense prediction of delay spread and angular spread
 over $513 \times 513$ maps is, to the best of the author's knowledge, not
 addressed by published methods at the time of writing.
 
-The closest external quantitative references are therefore scalar channel
-characteristic predictors. Mi et al.\ \cite{mi2024pointcloud} use measured
-\SI{60}{GHz} indoor data, fused point clouds, RGB information, and segmentation
-masks to predict path loss, RMS delay spread, angular spread, and Rician
-\(K\)-factor, reporting mean RMSE values of \SI{1.56}{dB}, \SI{0.90}{ns},
-\(7.39^\circ\), and \SI{2.67}{dB}, respectively. Huang et al.\
-\cite{huang2025a2gtransformer} predict UAV A2G channel characteristics with a
-Transformer model; on merged datasets they report \(0.172\,\mathrm{dBm}\)
-received-power RMSE, \SI{4.577}{ns} RMS delay-spread RMSE, and angular-spread
-component RMSE values from \(0.074^\circ\) to \(1.549^\circ\). These numbers
-are not dense-map leaderboards, but they are the fairest external anchors for
-asking whether the final spread errors are in the right order of magnitude.
+The closest external quantitative references for spreads are therefore scalar
+channel-characteristic predictors rather than dense CKM-map benchmarks. Huang et al.\
+\cite{huang2025a2gtransformer} are not used in the results comparison tables
+because their Wireless InSite campus dataset predicts scalar A2G link
+characteristics from coordinates and link features, not dense CKM maps from
+city topologies.
 
 The main challenge is the spike-plus-exponential distribution shape of spread
 targets.  A model trained only with mean-squared error (MSE) collapses to the
@@ -553,7 +550,7 @@ compactly.
 \midrule
 PMNet / ICASSP~2023 \cite{pmnet2023} & No & No & No & No \\
 RMTransformer \cite{rmtransformer2025} & No & No & No & No \\
-Gao et al.\ \cite{gao2026} & No & No & No & No \\
+RadioGUNet \cite{radiogunet2025} & Partial & No & No & Partial \\
 AIRMap \cite{airmap2025} & Partial & No & No & Partial \\
 Tarhouni et al.\ \cite{tarhouni2025} & No & No & No & Physical ref. \\
 PathFinder \cite{pathfinder2025} & Partial & No & No & Partial \\
@@ -627,13 +624,20 @@ than using the current Tx-centred distance and obstruction features.
 
 PathFinder \cite{pathfinder2025} tackles distribution shift via disentangled
 feature encoding and mask-guided low-rank attention, reporting the lowest MSE
-of~$0.1068$ on unseen rural datasets.  The explicit domain-generalisation focus
-aligns with the CKM city-holdout spirit, though PathFinder's setup involves
-multi-transmitter inputs and a different normalisation convention.  Techniques
-from PathFinder such as transmitter-oriented mixup augmentation are listed as
-medium-priority future work. The final model is not multi-transmitter, but the
-same concern motivates its city-holdout split: a CKM surrogate is useful only if
-it works on new urban layouts, not only on shuffled samples from the same city.
+of~$0.1068$ and RMSE of~$0.3263$ on unseen rural datasets. On the
+RadioMap3DSeer DS-RPP split, its normalised RMSE of~$0.0331$ can be
+approximately converted with the \SI{36}{dB} RadioMap3DSeer target window,
+giving about \SI{1.19}{dB}. The unseen-rural score would be about
+\SI{11.75}{dB} under the same window, but this is only an approximate scale
+reading because the paper and code report normalised PNG image units and do not
+state a separate rural physical target window. The explicit
+domain-generalisation focus aligns with the CKM city-holdout spirit, though
+PathFinder's setup involves multi-transmitter inputs and a different
+normalisation convention. Techniques from PathFinder such as
+transmitter-oriented mixup augmentation are listed as medium-priority future
+work. The final model is not multi-transmitter, but the same concern motivates
+its city-holdout split: a CKM surrogate is useful only if it works on new urban
+layouts, not only on shuffled samples from the same city.
 
 \subsection{ICASSP 2025 indoor challenge}
 
@@ -700,14 +704,12 @@ published work across the comparison dimensions introduced in this chapter.
 \midrule
 RadioUNet \cite{radiounet2020} & approx.\ 1.6--3.1\,dB equivalent path-loss RMSE & No & Classic CNN radio-map scale reference; no spread targets. \\
 ICASSP~2023 winner PMNet \cite{pmnet2023,icassp2023challenge} & 1.38\,dB & No & Converted from 0.0383 normalised RMSE using the RadioMap3DSeer 36\,dB target window. \\
-Noisy-environment CNN \cite{jaensch2026noisyenv} & 1.3--2.1\,dB measured indoor path-loss RMSE & No & Useful measured-data path-loss scale; sparse observations and indoor setting. \\
-Mi et al.\ point-cloud LSP predictor \cite{mi2024pointcloud} & 1.56\,dB PL; 0.90\,ns DS; \(7.39^\circ\) AS & No & Closest measured multi-parameter spread reference, but scalar indoor snapshots. \\
-Huang et al.\ A2G Transformer \cite{huang2025a2gtransformer} & 4.577\,ns DS; \(0.074^\circ\)--\(1.549^\circ\) angular components & No & Closest UAV spread predictor, but channel-characteristic samples rather than dense maps. \\
-AIRMap \cite{airmap2025} & path-gain $<4$\,dB vs.\ ray tracing; field calibration reported as median percentage error & Partial & Different protocol and path-gain target. \\
-Gao et al.\ \cite{gao2026} (multi-layer) & 5.59\,dB on ICASSP~2023 data & No & Relevant corridor-weighting baseline, different protocol. \\
+RadioGUNet \cite{radiogunet2025} & 1.304\,dB DPM; 1.936\,dB IRT; 1.392\,dB DPM with cars & Partial & Outdoor RadioMapSeer path-loss maps with held-out test layouts, but no UAV-height or spread targets. \\
+ReVeal PINN \cite{reveal2025} & 1.95\,dB outdoor rural/suburban radio-environment RMSE & No & Real outdoor sparse-measurement mapping; not dense CKM generation. \\
+RMTransformer \cite{rmtransformer2025} & 0.007148 normalised pixel RMSE, approximately 1.82\,dB under its 254\,dB scaling window & No & Recent dense radio-map path-loss reference, but random 90/10 split on 256\,px USC/PMNet maps. \\
+AIRMap \cite{airmap2025} & path-gain $<4$\,dB vs.\ ray tracing; field calibration reported as median percentage error & Partial & The final model is below 2\,dB PL RMSE, so it is arguably better on this broad scale, but the target is path gain rather than calibrated path loss. \\
+PathFinder \cite{pathfinder2025} & 0.0331 normalised RMSE on RM3D DS-RPP; 0.3263 on unseen rural & Partial & Useful outdoor/unseen-domain reference, but reported primarily in normalised image units. \\
 Tarhouni et al.\ \cite{tarhouni2025} & multi-dB, sub-\SI{6}{GHz} & No & Physical outdoor reference, not dense UAV CKM. \\
-PMHHNet reference (this thesis) & 9.41\,dB & Yes & Internal direct-regression baseline. \\
-ML-calibrated path-loss prior & 1.92\,dB overall; 1.75\,dB LoS & Yes & Frozen path-loss prior used by the final pipeline. \\
 \textbf{Final model (this thesis)} & \textbf{1.65\,dB on unseen test cities} & \textbf{Yes} & \textbf{Final prior-anchored residual GMM-head model; also improves delay-spread and angular-spread RMSE over the frozen priors.} \\
 \bottomrule
 \end{tabularx}
