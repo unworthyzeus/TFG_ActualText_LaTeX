@@ -7,5 +7,6 @@
 
 ### Later
 - Create a copy of the thesis as a paper: Introduction, State of the Art, Methodology and Results.
-- For the paper, table 4.4, 4.5, 4.6, 4.7, 4.8, 4.9 figure 4.1 for instance, is something that should be included in the paper. Not the 100 maps and graphs that are shown. The paper can be double columns (like 2 text columns for paper) and maximum 15 pages.
+- For the paper, table 4.4, 4.5, 4.6, 4.7, 4.8, 4.9 figure 4.1 for instance, is something that should be included in the paper. Not the 100 maps and graphs that are shown. 
+- The paper can be double columns (like 2 text columns for paper) and maximum 15 pages.
 - Style LaTeX IEEE
