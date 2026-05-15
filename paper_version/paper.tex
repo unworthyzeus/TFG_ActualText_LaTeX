@@ -1682,14 +1682,14 @@ the held-out test set. Continuous UAV height is handled through both the
 height-aware priors and a sinusoidal FiLM conditioning path, so the same model
 covers the varying-height regime without per-altitude retraining.
 
-The distribution-first diagnosis remains the key modelling lesson. NLoS path
-loss and spread targets are multi-modal, quantized, and spike-plus-tail rather
-than single smooth residuals. GMM-style residual heads and histogram checks
-therefore matter because they prevent visually plausible maps from hiding
-collapsed marginals. The remaining spread errors are consistent with this
-interpretation: the large-scale DS/AS structure is usually recovered, but rare
-high-spread pixel groups can still be missed, and some false positive
-high-spread patches remain.
+The distribution-first diagnosis remains the key modelling lesson. NLoS
+path-loss residuals are mixture-like and prone to mode collapse, while DS/AS
+targets are quantized and spike-plus-tail rather than single smooth residuals.
+GMM-style residual heads and histogram checks therefore matter because they
+prevent visually plausible maps from hiding collapsed marginals. The remaining
+spread errors are consistent with this interpretation: the large-scale DS/AS
+structure is usually recovered, but rare high-spread pixel groups can still be
+missed, and some false positive high-spread patches remain.
 
 The main practical conclusion is narrow and useful. For this fixed ray-traced
 CKM simulation contract, the prior-anchored residual GMM-head model is
