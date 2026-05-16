@@ -1384,19 +1384,19 @@ construction step.}
 \toprule
 Model & RMSE (dB) & Role in Try 80\\
 \midrule
-FSPL (LoS only)            & 3.9540 & ablation baseline (not used)\\
-FSPL + radial residual     & 3.7086 & ablation baseline (not used)\\
-Coherent two-ray (LoS)     & 1.7516 & building block $\to$ folded into Hybrid LoS\\
-Hybrid LoS                 & 1.7516 & \textbf{frozen LoS prior} (used in Try 80)\\
-Hybrid NLoS                & 3.3967 & \textbf{frozen NLoS prior} (used in Try 80)\\
+FSPL (LoS only)            & 3.8937 & ablation baseline (not used)\\
+FSPL + radial residual     & 3.6505 & ablation baseline (not used)\\
+Coherent two-ray (LoS)     & 1.7379 & building block $\to$ folded into Hybrid LoS\\
+Hybrid LoS                 & 1.7379 & \textbf{frozen LoS prior} (used in Try 80)\\
+Hybrid NLoS                & 3.3591 & \textbf{frozen NLoS prior} (used in Try 80)\\
 \midrule
-\textbf{Hybrid overall}    & \textbf{1.9246} & combined frozen prior (Try 80 input)\\
+\textbf{Hybrid overall}    & \textbf{1.9072} & combined frozen prior (Try 80 input)\\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \paragraph{Why do Coherent two-ray (LoS) and Hybrid LoS show the same RMSE?}
-The two rows report the same value (1.7516 dB) on the \emph{evaluation split},
+The two rows report the same value (1.7379 dB) on the \emph{evaluation split},
 but they are not identical models.
 
 \begin{itemize}
@@ -1442,17 +1442,17 @@ bounded, even though the difference is not visible at this precision.
   title={Try 78 path-loss RMSE comparison}
 ]
 \addplot[fill=blue!50] coordinates {
-  (FSPL,3.9540)
-  (FSPL+radial,3.7086)
-  (Two-ray LoS,1.7516)
-  (Hybrid LoS,1.7516)
-  (Hybrid NLoS,3.3967)
-  (Hybrid overall,1.9246)
+  (FSPL,3.8937)
+  (FSPL+radial,3.6505)
+  (Two-ray LoS,1.7379)
+  (Hybrid LoS,1.7379)
+  (Hybrid NLoS,3.3591)
+  (Hybrid overall,1.9072)
 };
 \end{axis}
 \end{tikzpicture}
 \caption{Try 78 pixel-weighted RMSE values. The coherent two-ray model
-reduces LoS RMSE from 3.95 dB (FSPL) to 1.75 dB, a gain of 2.2 dB.}
+reduces LoS RMSE from 3.89 dB (FSPL) to 1.74 dB, a gain of 2.2 dB.}
 \label{fig:try78_rmse}
 \end{figure}
 
