@@ -2,14 +2,14 @@
 \label{chap:results}
 
 This chapter reports the main quantitative and qualitative outcomes of the
-project. The standalone path-loss prior audit uses the city-holdout
-validation+test pool: 5340 samples from 29 unseen cities. The
-selected final residual GMM-head model is then evaluated on the final
-2590-sample, 14-city test split. Two path-loss-prior numbers therefore appear
-in this chapter: \SI{1.9072}{dB} is the standalone calibrated hybrid prior on
-the held-out validation+test pool, whereas \SI{1.9383}{dB} is the frozen
-path-loss prior baseline used by the final residual model on the final 14-city
-test split. All final model-versus-prior comparisons use the latter.
+project. The headline numbers now include the selected final residual
+GMM-head model evaluated on the same city-holdout test split used by the
+calibrated spread priors: 2590 samples from 14 unseen cities. Two
+path-loss-prior numbers therefore appear in this chapter: \SI{1.9246}{dB} is
+the standalone calibrated hybrid prior on its 30\% analytic-prior evaluation
+holdout, whereas \SI{1.9383}{dB} is the same frozen path-loss prior
+re-evaluated as the baseline for the final residual model on the final
+14-city test split. All final model-versus-prior comparisons use the latter.
 The final model is reported as the final prior-anchored residual GMM-head
 model over the three outputs: path loss, delay spread, and angular spread.
 The prior is therefore not a weak reference included only for comparison. It is
@@ -40,7 +40,7 @@ Masked-evaluation reset  & Ground-only masking became mandatory. & Building pixe
 Prior-residual phase  & Prior plus residual helped LoS but NLoS remained dominant. & PMNet residual branch: \SI{19.78}{dB} overall, \SI{3.86}{dB} LoS, \SI{34.47}{dB} NLoS. \\
 PMHHNet reference      & PMHHNet synthesis with six experts and physical channels. & \SI{9.41}{dB} overall, \SI{3.75}{dB} LoS, \SI{31.48}{dB} NLoS. \\
 Distribution-first GMM      & Distribution-first path-loss modelling. & NLoS pixel-weighted RMSE $\approx$\,\SI{3.34}{dB}. \\
-Final path-loss prior      & ML-calibrated path-loss prior. & Held-out validation+test: \SI{1.9072}{dB} overall, \SI{1.74}{dB} LoS, \SI{3.36}{dB} NLoS; final-test prior baseline: \SI{1.9383}{dB}. \\
+Final path-loss prior      & ML-calibrated path-loss prior. & Standalone holdout: \SI{1.9246}{dB} overall, \SI{1.75}{dB} LoS, \SI{3.40}{dB} NLoS; final-test prior baseline: \SI{1.9383}{dB}. \\
 Final spread priors      & ML-calibrated spread priors. & \SI{28.10}{ns} delay; \SI{13.74}{\degree} angular. \\
 Final residual GMM-head model      & Joint prior-anchored residual GMM-head model. & Final test: \SI{1.65}{dB} path loss, \SI{26.56}{ns} delay spread, \SI{11.39}{\degree} angular spread; RMSE improves over the frozen priors on all three outputs. \\
 \bottomrule
@@ -50,9 +50,9 @@ Final residual GMM-head model      & Joint prior-anchored residual GMM-head mode
 
 The final path-loss prior is the clearest evidence that the prior is a strong
 path-loss baseline in its own right. The enhanced two-ray LoS model
-reduced LoS RMSE from roughly \SI{3.89}{dB} with FSPL to
-\SI{1.74}{dB}. The final hybrid prior reached \SI{1.9072}{dB} overall under the
-pixel-weighted metric on the held-out validation+test pool.
+reduced LoS RMSE from roughly \SI{3.95}{dB} with FSPL to
+\SI{1.75}{dB}. The final hybrid prior reached \SI{1.9246}{dB} overall under the
+pixel-weighted metric on its 30\% evaluation holdout.
 
 \subsection{LoS path-loss prior progression}
 
@@ -65,15 +65,15 @@ from each modelling choice can be isolated
 \centering
 \caption[LoS path-loss prior progression.]%
 {LoS path-loss prior progression: three priors evaluated on the same
-held-out validation+test pool (pixel-weighted RMSE).}
+30\% city-holdout evaluation set (pixel-weighted RMSE).}
 \label{tab:try78_los_waterfall}
 \begin{tabular}{lcc}
 \toprule
 Prior & LoS RMSE (dB) & Gain over previous \\
 \midrule
-FSPL only                       & 3.8937 & N/A \\
-FSPL + radial residual          & 3.6505 & $-$0.24 \\
-\textbf{Enhanced two-ray}       & \textbf{1.7379} & $\mathbf{-1.91}$ \\
+FSPL only                       & 3.9540 & N/A \\
+FSPL + radial residual          & 3.7086 & $-$0.25 \\
+\textbf{Enhanced two-ray}       & \textbf{1.7516} & $\mathbf{-1.96}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -130,7 +130,7 @@ Prior-confidence stage & Path loss & \(\approx 18.87\) dB & Prior-confidence and
 PMHHNet reference & Path loss overall & 9.41 dB & PMHHNet consolidated the physical-channel and expert approach. \\
 PMHHNet reference & Path loss NLoS & 31.48 dB & The headline bottleneck was no longer global; it was NLoS tail failure. \\
 Dist.-first GMM & Path loss NLoS & \(\approx 3.34\) dB & Distribution-first modelling directly attacked NLoS multi-modality. \\
-Final path-loss prior & Path loss overall & 1.9072 dB & ML-calibrated prior became the strongest path-loss baseline. \\
+Final path-loss prior & Path loss overall & 1.9246 dB & ML-calibrated prior became the strongest path-loss baseline. \\
 Final DS prior & Delay spread overall & 28.10 ns & Log-domain ridge calibration met the original 50 ns project target. \\
 Final AS prior & Angular spread overall & \(13.74^\circ\) & Regime-wise calibration met the original 20 degree target. \\
 Final GMM test & Joint outputs & 1.6519 dB PL; 26.5570 ns DS; \(11.3854^\circ\) AS & Selected final model on 14 unseen test cities; model RMSE improves over every frozen prior. \\
@@ -147,11 +147,14 @@ different: the distribution-first predecessors report the six topology classes d
 whereas the final residual model groups them into three two-class morphology families
 (\texttt{open}, \texttt{mixed}, \texttt{dense}) and then separates each
 family again by low/mid/high UAV antenna bin. That changes the reporting
-grid, not the test samples. The standalone path-loss-prior audit uses the same
-training cities and the full validation+test held-out pool, giving
-\SI{1.9072}{dB} over 5340 held-out samples. The final
-residual-model comparison remains test-only, so the frozen path-loss prior
-baseline in Table~\ref{tab:try80_final_test_overall} is \SI{1.9383}{dB}.
+grid, not the test samples. The path-loss prior is the exception: its final hybrid
+evaluation used a 30\% evaluation holdout for fitting-versus-evaluation
+of the analytic prior. This holdout contains the same final test
+cities, but also contains additional validation-side cities, so the path-loss prior
+is grouped in the same results chapter for continuity rather than as a
+bitwise-identical split. For this reason, the standalone path-loss-prior
+result is \SI{1.9246}{dB}, while the frozen prior baseline used in the final
+residual-model test comparison is \SI{1.9383}{dB}.
 
 Several conclusions follow from this table. First, the project did not improve
 only because the neural network became larger. Some larger or more complex
@@ -203,15 +206,15 @@ that stage while the NLoS branch was still structurally wrong.
 \begin{table}[!htbp]
 \centering
 \caption{Final hybrid path-loss prior, pixel-weighted RMSE on the
-held-out validation+test split.}
+30\% city-holdout evaluation split.}
 \label{tab:try78_results}
 \begin{tabular}{lcc}
 \toprule
 Region & RMSE & Unit \\
 \midrule
-LoS & 1.7379 & dB \\
-NLoS & 3.3591 & dB \\
-Overall & 1.9072 & dB \\
+LoS & 1.7516 & dB \\
+NLoS & 3.3967 & dB \\
+Overall & 1.9246 & dB \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -268,7 +271,7 @@ cannot represent the NLoS path-loss target because that marginal is strongly
 multi-modal, and (ii) once the output head is a Gaussian mixture conditioned
 on the UAV height, the NLoS mode-collapse that dominated the error budget of
 the PMHHNet diagnostic phase disappears. This is a small RMSE difference compared to the
-ML-calibrated path-loss prior (\SI{3.36}{dB} NLoS), but it is a qualitatively different
+ML-calibrated path-loss prior (\SI{3.40}{dB} NLoS), but it is a qualitatively different
 result because it is obtained without injecting any physics.
 
 \subsubsection*{Per-expert breakdown (12 experts: 6 topology classes
@@ -526,17 +529,17 @@ same pixel-weighted aggregation as the headline tables.
 \begin{table}[!htbp]
 \centering
 \caption{Path-loss prior pixel-weighted RMSE by UAV transmitter height, on
-the held-out validation+test split.}
+the 30\% city-holdout evaluation split.}
 \label{tab:try78_by_height}
 \small
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrrr}
 \toprule
 UAV height bin & Overall & LoS & NLoS & Samples \\
 \midrule
-12 to 50   & 2.177 & 1.800 & 3.725 & 1294 \\
-50 to 150  & 1.917 & 1.770 & 3.181 & 2802 \\
-150 to 300 & 1.671 & 1.657 & 2.227 &  846 \\
-300 to 500 & 1.576 & 1.568 & 2.229 &  396 \\
+12 to 50   & 2.180 & 1.797 & 3.756 & 1211 \\
+50 to 150  & 1.936 & 1.785 & 3.228 & 2634 \\
+150 to 300 & 1.680 & 1.666 & 2.259 &  786 \\
+300 to 500 & 1.627 & 1.619 & 2.255 &  362 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -567,8 +570,8 @@ UAV height bin & Metric & Overall & LoS & NLoS \\
 The altitude dependence is monotonic and physically intuitive. Higher UAV
 transmitters see more of the ground as unobstructed LoS and encounter fewer
 deep shadow pockets, so both the NLoS pixel fraction and the worst-case tails
-shrink. Path-loss NLoS RMSE drops from \SI{3.72}{dB} at low altitudes to
-\SI{2.23}{dB} above \SI{300}{m}, and delay-spread NLoS RMSE collapses from
+shrink. Path-loss NLoS RMSE drops from \SI{3.76}{dB} at low altitudes to
+\SI{2.26}{dB} above \SI{300}{m}, and delay-spread NLoS RMSE collapses from
 \SI{35}{ns} to under \SI{3}{ns} in the same comparison. The opposite is true
 for the absolute number of samples: the dataset is dominated by the
 \SI{50}{\mathrm{-}}\SI{150}{m} band, so the global aggregate RMSE reflects that
@@ -584,8 +587,8 @@ where a distribution-aware residual can matter.
 
 \subsection{Path-loss prior by topology class}
 
-The headline path-loss-prior number (\SI{1.91}{dB} overall RMSE on the
-held-out validation+test split, see Table~\ref{tab:try78_results}) hides the
+The headline path-loss-prior number (\SI{1.92}{dB} overall RMSE on its
+30\% city-holdout evaluation split, see Table~\ref{tab:try78_results}) hides the
 same morphological structure that the distribution-first path-loss predecessor surfaced. The per-sample evaluation
 records were re-aggregated by classifying each evaluated sample into the six
 topology classes with the same routing rule used by the
@@ -598,24 +601,24 @@ Figure~\ref{fig:try78_by_topology}.
 \centering
 \caption[Hybrid path-loss prior RMSE by topology class.]%
 {Hybrid path-loss prior, pixel-weighted RMSE on the
-held-out validation+test split, broken down by topology class. The
+30\% city-holdout evaluation split, broken down by topology class. The
 overall row reproduces the RMSE values in Table~\ref{tab:try78_results}; the
 sample count is the sum of samples assigned to the six topology classes. The
-aggregate Try~78 evaluator contains 5339 topology-assigned samples.}
+aggregate Try~78 evaluator contains 4994 topology-assigned samples.}
 \label{tab:try78_by_topology}
 \footnotesize
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrrr}
 \toprule
 Topology class & LoS & NLoS & Overall & Samples \\
 \midrule
-open sparse lowrise   & 1.35 & 2.93 & 1.39 &  945 \\
-open sparse vertical  & 1.40 & 3.93 & 1.53 &  370 \\
-mixed compact lowrise & 1.79 & 2.93 & 1.88 & 1320 \\
-mixed compact midrise & 1.89 & 3.85 & 2.20 & 1060 \\
-dense block midrise   & 2.17 & 3.11 & 2.35 & 1540 \\
-dense block highrise  & 2.41 & 4.10 & 2.96 &  104 \\
+open sparse lowrise   & 1.39 & 2.92 & 1.43 &  895 \\
+open sparse vertical  & 1.43 & 3.91 & 1.55 &  370 \\
+mixed compact lowrise & 1.81 & 2.91 & 1.90 & 1240 \\
+mixed compact midrise & 1.91 & 3.84 & 2.21 & 1060 \\
+dense block midrise   & 2.19 & 3.20 & 2.40 & 1325 \\
+dense block highrise  & 2.44 & 4.09 & 2.97 &  104 \\
 \midrule
-\textbf{Overall}        & \textbf{1.74} & \textbf{3.36} & \textbf{1.91} & \textbf{5339} \\
+\textbf{Overall}        & \textbf{1.75} & \textbf{3.40} & \textbf{1.92} & \textbf{4994} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -625,13 +628,13 @@ pattern observed in the distribution-first path-loss predecessor. The two-ray pr
 reflection ring against an LoS marginal whose width grows with city
 density and building height (see the LoS standard-deviation column of
 Table~\ref{tab:try76_per_expert}), so the LoS RMSE of the analytic
-model rises from \SI{1.35}{dB} in the open sparse lowrise class to
-\SI{2.41}{dB} in the dense block highrise class. The NLoS branch is less
+model rises from \SI{1.39}{dB} in the open sparse lowrise class to
+\SI{2.44}{dB} in the dense block highrise class. The NLoS branch is less
 ordered by morphology: the best Try~78 NLoS topology is
-\emph{mixed compact lowrise} at \SI{2.93}{dB}, while the worst is
-\emph{dense block highrise} at \SI{4.10}{dB}. The dataset is also unbalanced in
+\emph{mixed compact lowrise} at \SI{2.91}{dB}, while the worst is
+\emph{dense block highrise} at \SI{4.09}{dB}. The dataset is also unbalanced in
 this respect: dense block highrise contributes only 104 of
-the 5339 topology-assigned evaluation samples, so its high RMSE has a relatively small impact
+the 4994 topology-assigned evaluation samples, so its high RMSE has a relatively small impact
 on the overall pixel-weighted aggregate but is the regime most likely
 to limit deployment in dense urban environments.
 
@@ -640,10 +643,9 @@ the thesis quantitative. The right panel of
 Figure~\ref{fig:try78_by_topology} compares the distribution-first DL model
 against the analytic two-ray prior on
 the same six topology classes for the NLoS regime. Both methods agree
-within about \SI{1}{dB} on all topology classes. The distribution-first model is
-slightly better in the open and mixed classes, while the analytic prior is
-slightly better in the dense classes. The aggregate
-gap quoted earlier (\SI{3.34}{dB} for the distribution-first NLoS model versus \SI{3.36}{dB}
+within about \SI{1}{dB} on most topology classes, and the distribution-first model is in fact
+\emph{slightly better} on the four most populated classes. The aggregate
+gap quoted earlier (\SI{3.34}{dB} for the distribution-first NLoS model versus \SI{3.40}{dB}
 for the path-loss prior NLoS) is therefore not an artefact of one easy class
 dominating the average; it is genuinely a per-class equivalence. This
 is what justifies the chronology of the project: once the GMM head

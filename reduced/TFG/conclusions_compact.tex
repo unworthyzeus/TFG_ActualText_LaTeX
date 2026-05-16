@@ -10,11 +10,10 @@ pipeline: calibrated priors explain the stable physical and statistical
 structure, and a neural residual model corrects what remains.
 
 The final numbers meet the original targets. The path-loss prior reaches
-\SI{1.9072}{dB} RMSE on the held-out validation+test split and
-\SI{1.9383}{dB} when used as the frozen prior on the final test split. The spread priors reach
-\SI{28.10}{ns} DS RMSE and \(13.74^\circ\) AS RMSE on the same final test
-split. The final residual GMM-head model improves those RMSE anchors on 14
-unseen test cities, reaching
+\SI{1.9246}{dB} RMSE on its evaluation holdout and \SI{1.9383}{dB} when used as
+the frozen prior on the final test split. The spread priors reach
+\SI{28.10}{ns} DS RMSE and \(13.74^\circ\) AS RMSE. The final residual GMM-head
+model improves those anchors on 14 unseen test cities, reaching
 \SI{1.6519}{dB}, \SI{26.5570}{ns}, and \(11.3854^\circ\) for PL, DS, and AS.
 The prior is therefore not a weak baseline; it is already a strong estimator.
 
