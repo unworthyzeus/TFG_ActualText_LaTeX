@@ -21,9 +21,9 @@ and spread-scale statistics; the learned model then focuses on local residual
 structure and distribution mismatch.
 
 The finished pipeline meets the original numerical targets. The standalone
-path-loss prior achieved \SI{1.9246}{dB} RMSE on its 30\% city-holdout
-evaluation split, and \SI{1.9383}{dB} when reused as the frozen prior on the
-final 14-city unseen test split. The spread priors reached \SI{28.10}{ns}
+path-loss prior achieved \SI{1.9072}{dB} RMSE on the held-out
+validation+test split, and \SI{1.9383}{dB} when reused as the frozen prior on
+the final 14-city unseen test split. The spread priors reached \SI{28.10}{ns}
 delay-spread RMSE and \SI{13.74}{\degree} angular-spread RMSE on the same final
 test split. The final prior-anchored residual GMM-head model improved those
 anchors to \SI{1.6519}{dB}, \SI{26.5570}{ns}, and
@@ -61,7 +61,10 @@ with unusually high DS or AS are missed, while some false positive high-spread
 patches are predicted where the target remains moderate. This explains why the
 spread gains are more modest than the path-loss gain, while still being useful:
 the model improves the global structure and many local regimes, but rare spread
-hot spots remain the hardest cases.
+hot spots remain the hardest cases. These RMSE gains should not be read as
+universal typical-error gains: delay-spread MAE increases, and angular-spread
+MAE is nearly unchanged, so the spread claim remains an RMSE-and-structure
+claim rather than a calibrated-error claim.
 
 The most important methodological conclusion is that CKM prediction improves
 when the model head follows the target distribution. Earlier point-regression
