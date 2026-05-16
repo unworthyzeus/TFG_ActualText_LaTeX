@@ -1432,13 +1432,12 @@ Test & 2590 & 1.6519 & 26.5570 & 11.3854 \\
 The frozen priors are strong enough to deserve their own reporting. They are
 not simply baselines for the final neural model; they encode most of the stable
 geometry and therefore determine what residual problem the network sees.
-Because these prior calibrations are deterministic, non-DL estimators, their
-standalone audits are reported separately from neural checkpoint selection. The
-path-loss table uses the held-out validation+test split after fitting the
-10840 training references and evaluating 5340 held-out references
-(5339 topology-assigned rows). The spread table uses the final 14-city test
-split because Try~79 shares the 10840/2750/2590 train/validation/test contract
-used by the final Try~80 model.
+Because these prior calibrations are deterministic, non-DL estimators, they do
+not require a validation split for early stopping or checkpoint selection.
+Their standalone audit therefore pools the validation and test cities after
+fitting on training cities only: Tables~\ref{tab:pl-prior-height} and
+\ref{tab:spread-prior-height} are evaluated on the 29-city validation+test
+prior-evaluation split.
 Table~\ref{tab:pl-prior-height} shows the height dependence of the calibrated
 path-loss prior. This is not post-hoc stratification: UAV height is part of the
 prior estimator through the centred geometry, elevation angle, and
@@ -1457,26 +1456,26 @@ physically easier regime with fewer blocked links and weaker spread tails.
 
 \begin{table}[!t]
 \centering
-\caption{Calibrated path-loss prior RMSE by UAV height on the held-out
-validation+test split.}
+\caption{Calibrated path-loss prior RMSE by UAV height on the 29-city
+validation+test prior-evaluation split.}
 \label{tab:pl-prior-height}
 \scriptsize
 \begin{tabular}{lrrrr}
 \toprule
 Height bin & Overall & LoS & NLoS & Samples \\
 \midrule
-12--50 m & 2.177 & 1.800 & 3.725 & 1294 \\
-50--150 m & 1.917 & 1.770 & 3.181 & 2802 \\
-150--300 m & 1.671 & 1.657 & 2.227 & 846 \\
-300--500 m & 1.576 & 1.568 & 2.229 & 396 \\
+12--50 m & 2.180 & 1.797 & 3.756 & 1211 \\
+50--150 m & 1.936 & 1.785 & 3.228 & 2634 \\
+150--300 m & 1.680 & 1.666 & 2.259 & 786 \\
+300--500 m & 1.627 & 1.619 & 2.255 & 362 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[!t]
 \centering
-\caption{Calibrated spread-prior RMSE by UAV height on the final 14-city
-test split.}
+\caption{Calibrated spread-prior RMSE by UAV height on the same 29-city
+validation+test prior-evaluation split.}
 \label{tab:spread-prior-height}
 \scriptsize
 \begin{tabular}{llrrr}
@@ -1497,10 +1496,10 @@ Height bin & Metric & Overall & LoS & NLoS \\
 \end{table}
 
 The path-loss prior also varies by topology. Its overall RMSE ranges from
-\SI{1.39}{dB} in open sparse low-rise maps to \SI{2.96}{dB} in dense block
+\SI{1.43}{dB} in open sparse low-rise maps to \SI{2.97}{dB} in dense block
 high-rise maps. The NLoS branch is hardest in sparse vertical and dense
-high-rise regimes, reaching \SI{3.93}{dB} and \SI{4.10}{dB}; the overall
-pixel-weighted prior remains \SI{1.91}{dB}.
+high-rise regimes, reaching \SI{3.91}{dB} and \SI{4.09}{dB}; the overall
+pixel-weighted prior remains \SI{1.92}{dB}.
 
 The final residual model improves the priors consistently across data splits,
 not only on the validation split used for model selection. Table~\ref{tab:split-delta}
@@ -1577,11 +1576,8 @@ and \SI{3.34}{dB} NLoS pixel-aggregate RMSE, showing that NLoS collapse was a
 modeling choice rather than a necessity. The earlier distribution-first spread fits
 reached \SI{30.96}{ns} delay-spread RMSE and \(11.78^\circ\) angular-spread
 RMSE, motivating log-domain and mixture-aware treatment of spread targets. The
-frozen priors then provided stronger anchors: the standalone path-loss prior
-reached \SI{1.9072}{dB} RMSE on its held-out validation+test split and
-\SI{1.9383}{dB} when frozen on the final test split, while the spread priors
-reached \SI{28.10}{ns} delay-spread RMSE and \(13.74^\circ\)
-angular-spread RMSE on that same final test split.
+frozen priors then provided stronger anchors: \SI{1.9246}{dB} path-loss RMSE,
+\SI{28.10}{ns} delay-spread RMSE, and \(13.74^\circ\) angular-spread RMSE.
 
 \begin{figure}[t]
 \centering
