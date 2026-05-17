@@ -641,6 +641,10 @@ selected final model is chosen after a deterministic RMSE/MAE-dominant
 fine-tuning stage because the frozen priors already explain the main
 large-scale structure. Consequently, the final claim is an RMSE improvement
 over the frozen priors, not a calibrated probabilistic prediction claim.
+Checkpoint selection in this final stage uses the validation composite
+\(\mathrm{PL}_{\mathrm{RMSE}}+0.30\,\mathrm{DS}_{\mathrm{RMSE}}
++0.25\,\mathrm{AS}_{\mathrm{RMSE}}\), matching the
+\texttt{score\_weights} field of the reported configuration.
 
 \section{Training hyperparameters}
 \label{sec:hyperparams}

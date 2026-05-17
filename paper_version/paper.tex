@@ -1259,7 +1259,11 @@ those terms and optimizes the deterministic mixture-mean point map for RMSE/MAE,
 with a small anchor and guard that keep the correction close to the prior.
 Table~\ref{tab:loss-roles} summarizes the roles. The selected checkpoint is
 therefore reported as a deterministic RMSE improvement over the frozen priors,
-not as a calibrated probabilistic predictor.
+not as a calibrated probabilistic predictor. In this final stage, checkpoint
+selection uses the validation composite
+\(\mathrm{PL}_{\mathrm{RMSE}}+0.30\,\mathrm{DS}_{\mathrm{RMSE}}
++0.25\,\mathrm{AS}_{\mathrm{RMSE}}\), matching the reported
+\texttt{score\_weights}.
 
 \begin{table*}[!t]
 \centering
