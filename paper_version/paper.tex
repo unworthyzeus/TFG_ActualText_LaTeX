@@ -1405,12 +1405,12 @@ AS & NLoS & 8.4424 & 8.6614 & -0.2191 \\
 \end{tabular}
 \end{table}
 
-The validation/test sanity check is also useful. Validation stores the model
-selection values; the test row is the real generalization result. Delay spread
-worsens more on test because the held-out city mix contains harder high-delay
-cases. The frozen delay-spread prior shows the same validation-to-test
-worsening, confirming that this is a city-mix effect rather than an evaluator
-change.
+The validation/test sanity check is also useful. The validation row reports an
+external re-evaluation of the selected checkpoint, while the test row is the
+real generalization result. Delay spread worsens more on test because the
+held-out city mix contains harder high-delay cases. The frozen delay-spread
+prior shows the same validation-to-test worsening, confirming that this is a
+city-mix effect rather than an evaluator change.
 
 \begin{table}[t]
 \centering
@@ -1557,8 +1557,8 @@ Group & Samples & PL & DS & AS \\
 \texttt{mixed/low} & 2060 & -0.2745 & -2.8379 & -2.5845 \\
 \texttt{mixed/mid} & 2094 & -0.2781 & -2.0522 & -2.8200 \\
 \texttt{open/high} & 1272 & -0.2721 & -0.5428 & -1.2874 \\
-\texttt{open/low} & 1318 & -0.2363 & -3.1170 & -2.0271 \\
-\texttt{open/mid} & 1250 & -0.2941 & -1.5789 & -1.7804 \\
+\texttt{open/low} & 1269 & -0.2363 & -3.1170 & -2.0271 \\
+\texttt{open/mid} & 1299 & -0.2941 & -1.5789 & -1.7804 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1785,7 +1785,7 @@ the local MATLAB ray-tracing path. The result is a reproducible surrogate for a
 defined dataset, split, carrier, antenna setup, and receiver mask, and its
 clearest lesson is methodological: diagnose the target distribution, freeze the
 stable structure in auditable priors, and spend neural capacity on the residual
-uncertainty that the priors cannot explain.
+structure that the priors cannot explain.
 
 \bibliographystyle{IEEEtran}
 \bibliography{TFG}

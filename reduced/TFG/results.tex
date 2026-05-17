@@ -567,9 +567,9 @@ UAV height bin & Metric & Overall & LoS & NLoS \\
 The altitude dependence is monotonic and physically intuitive. Higher UAV
 transmitters see more of the ground as unobstructed LoS and encounter fewer
 deep shadow pockets, so both the NLoS pixel fraction and the worst-case tails
-shrink. Path-loss NLoS RMSE drops from \SI{3.72}{dB} at low altitudes to
-\SI{2.23}{dB} above \SI{300}{m}, and delay-spread NLoS RMSE collapses from
-\SI{35}{ns} to under \SI{3}{ns} in the same comparison. The opposite is true
+shrink. Path-loss NLoS RMSE drops from \SI{3.76}{dB} at low altitudes to
+\SI{2.26}{dB} above \SI{300}{m}, and delay-spread NLoS RMSE collapses from
+\SI{35.13}{ns} to \SI{2.76}{ns} in the same comparison. The opposite is true
 for the absolute number of samples: the dataset is dominated by the
 \SI{50}{\mathrm{-}}\SI{150}{m} band, so the global aggregate RMSE reflects that
 regime more than the higher-altitude extremes. Together with the empirical HDF5
@@ -744,27 +744,26 @@ in train, validation, test, and all-city reporting. Angular spread improves
 RMSE strongly, while MAE is practically neutral overall; on the unseen test
 split the MAE change is only \(+0.02^\circ\), and the LoS MAE even improves.
 
-The validation metrics stored for the selected model state are not the final
-test claim. They are the model-selection metrics computed during training on
-the validation cities. As a sanity check, re-running the external evaluator on
-the validation split reproduces the stored validation values up to numerical
-rounding; the same selected model is then evaluated on the separate test
-cities.
+The validation metrics are not the final test claim. They are an external
+validation re-evaluation of the same selected checkpoint on the validation
+cities. The same selected model is then evaluated on the separate test cities,
+so the table checks validation/test drift without changing checkpoint or
+metric.
 Table~\ref{tab:try80_val_test_sanity} reports the two scopes side by side.
 
 \begin{table}[!htbp]
 \centering
 \caption[Validation-versus-test sanity check.]%
 {Validation-versus-test sanity check for the same selected final model. The
-validation row matches the metrics stored during training; the test row is the
-final unseen-city generalisation result.}
+validation row re-evaluates the selected checkpoint on validation cities; the
+test row is the final unseen-city generalisation result.}
 \label{tab:try80_val_test_sanity}
 \scriptsize
 \begin{tabularx}{\textwidth}{lrrrrr>{\raggedright\arraybackslash}X}
 \toprule
 Split & Samples & PL RMSE & DS RMSE & DS prior RMSE & AS RMSE & Meaning \\
 \midrule
-Validation & 2750 & 1.6157 & 22.1061 & 23.4494 & 11.3782 & Stored during training and used to select the final model state. \\
+Validation & 2750 & 1.6157 & 22.1061 & 23.4494 & 11.3782 & External validation re-evaluation of the selected model state. \\
 Test & 2590 & 1.6519 & 26.5570 & 28.1023 & 11.3854 & Separate 14-city holdout; this is the thesis generalisation number. \\
 \bottomrule
 \end{tabularx}
@@ -796,8 +795,10 @@ test split: \SI{1.65}{dB} path loss against the \SI{5}{dB} target,
 \SI{26.56}{ns} delay spread against the \SI{50}{ns} target, and
 \(11.39^\circ\) angular spread against the \(20^\circ\) target. The same
 target check also holds on validation and on the all-city aggregation; even
-the worst subexpert for each output remains below its target
-(\SI{2.66}{dB}, \SI{36.89}{ns}, and \(14.06^\circ\)).
+the worst unseen-test subexpert for each output remains below its target
+(\SI{2.66}{dB}, \SI{36.89}{ns}, and \(14.06^\circ\)). On the all-city
+subexpert audit, the corresponding worst cases are \SI{2.45}{dB},
+\SI{42.24}{ns}, and \(13.97^\circ\), still below the same targets.
 
 \subsubsection*{Comparison with closest state-of-the-art metrics}
 
