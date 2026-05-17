@@ -40,7 +40,7 @@ Masked-evaluation reset  & Ground-only masking became mandatory. & Building pixe
 Prior-residual phase  & Prior plus residual helped LoS but NLoS remained dominant. & PMNet residual branch: \SI{19.78}{dB} overall, \SI{3.86}{dB} LoS, \SI{34.47}{dB} NLoS. \\
 PMHHNet reference      & PMHHNet synthesis with six experts and physical channels. & \SI{9.41}{dB} overall, \SI{3.75}{dB} LoS, \SI{31.48}{dB} NLoS. \\
 Distribution-first GMM      & Distribution-first path-loss modelling. & NLoS pixel-weighted RMSE $\approx$\,\SI{3.34}{dB}. \\
-Final path-loss prior      & ML-calibrated path-loss prior. & Held-out validation+test: \SI{1.9072}{dB} overall, \SI{1.74}{dB} LoS, \SI{3.36}{dB} NLoS; final-test prior baseline: \SI{1.9383}{dB}. \\
+Final path-loss prior      & ML-calibrated path-loss prior. & Held-out validation+test: \SI{1.9246}{dB} overall, \SI{1.75}{dB} LoS, \SI{3.40}{dB} NLoS; final-test prior baseline: \SI{1.9383}{dB}. \\
 Final spread priors      & ML-calibrated spread priors. & \SI{28.10}{ns} delay; \SI{13.74}{\degree} angular. \\
 Final residual GMM-head model      & Joint prior-anchored residual GMM-head model. & Final test: \SI{1.65}{dB} path loss, \SI{26.56}{ns} delay spread, \SI{11.39}{\degree} angular spread; RMSE improves over the frozen priors on all three outputs. \\
 \bottomrule
@@ -71,9 +71,9 @@ held-out validation+test pool (pixel-weighted RMSE).}
 \toprule
 Prior & LoS RMSE (dB) & Gain over previous \\
 \midrule
-FSPL only                       & 3.8937 & N/A \\
-FSPL + radial residual          & 3.6505 & $-$0.24 \\
-\textbf{Enhanced two-ray}       & \textbf{1.7379} & $\mathbf{-1.91}$ \\
+FSPL only                       & 3.9540 & N/A \\
+FSPL + radial residual          & 3.7086 & $-$0.25 \\
+\textbf{Enhanced two-ray}       & \textbf{1.7516} & $\mathbf{-1.96}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -130,7 +130,7 @@ Prior-confidence stage & Path loss & \(\approx 18.87\) dB & Prior-confidence and
 PMHHNet reference & Path loss overall & 9.41 dB & PMHHNet consolidated the physical-channel and expert approach. \\
 PMHHNet reference & Path loss NLoS & 31.48 dB & The headline bottleneck was no longer global; it was NLoS tail failure. \\
 Dist.-first GMM & Path loss NLoS & \(\approx 3.34\) dB & Distribution-first modelling directly attacked NLoS multi-modality. \\
-Final path-loss prior & Path loss overall & 1.9072 dB & ML-calibrated prior became the strongest path-loss baseline. \\
+Final path-loss prior & Path loss overall & 1.9246 dB & ML-calibrated prior became the strongest path-loss baseline. \\
 Final DS prior & Delay spread overall & 28.10 ns & Log-domain ridge calibration met the original 50 ns project target. \\
 Final AS prior & Angular spread overall & \(13.74^\circ\) & Regime-wise calibration met the original 20 degree target. \\
 Final GMM test & Joint outputs & 1.6519 dB PL; 26.5570 ns DS; \(11.3854^\circ\) AS & Selected final model on 14 unseen test cities; model RMSE improves over every frozen prior. \\
@@ -209,9 +209,9 @@ held-out validation+test split.}
 \toprule
 Region & RMSE & Unit \\
 \midrule
-LoS & 1.7379 & dB \\
-NLoS & 3.3591 & dB \\
-Overall & 1.9072 & dB \\
+LoS & 1.7516 & dB \\
+NLoS & 3.3967 & dB \\
+Overall & 1.9246 & dB \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -533,10 +533,10 @@ the held-out validation+test split.}
 \toprule
 UAV height bin & Overall & LoS & NLoS & Samples \\
 \midrule
-12 to 50   & 2.177 & 1.800 & 3.725 & 1294 \\
-50 to 150  & 1.917 & 1.770 & 3.181 & 2802 \\
-150 to 300 & 1.671 & 1.657 & 2.227 &  846 \\
-300 to 500 & 1.576 & 1.568 & 2.229 &  396 \\
+12 to 50   & 2.180 & 1.797 & 3.756 & 1211 \\
+50 to 150  & 1.936 & 1.785 & 3.228 & 2634 \\
+150 to 300 & 1.680 & 1.666 & 2.259 &  786 \\
+300 to 500 & 1.627 & 1.619 & 2.255 &  362 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -601,21 +601,21 @@ Figure~\ref{fig:try78_by_topology}.
 held-out validation+test split, broken down by topology class. The
 overall row reproduces the RMSE values in Table~\ref{tab:try78_results}; the
 sample count is the sum of samples assigned to the six topology classes. The
-aggregate Try~78 evaluator contains 5339 topology-assigned samples.}
+aggregate Try~78 evaluator contains 4994 topology-assigned samples.}
 \label{tab:try78_by_topology}
 \footnotesize
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrrr}
 \toprule
 Topology class & LoS & NLoS & Overall & Samples \\
 \midrule
-open sparse lowrise   & 1.35 & 2.93 & 1.39 &  945 \\
-open sparse vertical  & 1.40 & 3.93 & 1.53 &  370 \\
-mixed compact lowrise & 1.79 & 2.93 & 1.88 & 1320 \\
-mixed compact midrise & 1.89 & 3.85 & 2.20 & 1060 \\
-dense block midrise   & 2.17 & 3.11 & 2.35 & 1540 \\
-dense block highrise  & 2.41 & 4.10 & 2.96 &  104 \\
+open sparse lowrise   & 1.39 & 2.92 & 1.43 &  895 \\
+open sparse vertical  & 1.43 & 3.91 & 1.55 &  370 \\
+mixed compact lowrise & 1.81 & 2.91 & 1.90 & 1240 \\
+mixed compact midrise & 1.91 & 3.84 & 2.21 & 1060 \\
+dense block midrise   & 2.19 & 3.20 & 2.40 & 1325 \\
+dense block highrise  & 2.44 & 4.09 & 2.97 &  104 \\
 \midrule
-\textbf{Overall}        & \textbf{1.74} & \textbf{3.36} & \textbf{1.91} & \textbf{5339} \\
+\textbf{Overall}        & \textbf{1.75} & \textbf{3.40} & \textbf{1.92} & \textbf{4994} \\
 \bottomrule
 \end{tabularx}
 \end{table}

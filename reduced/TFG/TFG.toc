@@ -87,7 +87,7 @@
 \contentsline {subsubsection}{Calibrated LoS prior}{52}{subsubsection*.42}%
 \contentsline {subsection}{\numberline {3.11.2}Calibration of the LoS two-ray model}{54}{subsection.3.11.2}%
 \contentsline {subsubsection}{Data preparation}{54}{subsubsection*.44}%
-\contentsline {subsubsection}{Grid search for $(\mitrho , \mitphi )$}{55}{subsubsection*.45}%
+\contentsline {subsubsection}{Grid search for $(\rho , \phi )$}{55}{subsubsection*.45}%
 \contentsline {subsubsection}{Post-fit Gaussian smoothing across height bins}{55}{subsubsection*.46}%
 \contentsline {subsubsection}{Radial residual correction}{56}{subsubsection*.47}%
 \contentsline {subsubsection}{Smoothed deployed parameter values}{56}{subsubsection*.48}%
@@ -125,7 +125,7 @@
 \contentsline {paragraph}{Blocker depth.}{75}{paragraph*.81}%
 \contentsline {paragraph}{Transmitter clearance.}{75}{paragraph*.82}%
 \contentsline {paragraph}{Taller-building fraction.}{75}{paragraph*.83}%
-\contentsline {paragraph}{Six-class topology definition.}{76}{paragraph*.84}%
+\contentsline {paragraph}{Six-class topology definition.}{75}{paragraph*.84}%
 \contentsline {subsubsection}{Stage 3: regime-wise ridge regression}{76}{subsubsection*.85}%
 \contentsline {paragraph}{Fallback hierarchy.}{77}{paragraph*.86}%
 \contentsline {subsubsection}{Stage 4: inverse transform and clipping}{77}{subsubsection*.87}%
