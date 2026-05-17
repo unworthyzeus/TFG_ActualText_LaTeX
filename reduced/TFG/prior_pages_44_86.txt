@@ -248,7 +248,7 @@ mask RMSE used elsewhere in the thesis. Finally, the prior output becomes the fr
 path-loss anchor consumed by the final residual GMM-head model.
 The most important results to retain while reading the details are the LoS waterfall in
 Table 4.2 and the final path-loss numbers in Table 4.4: the enhanced two-ray branch
-reduces LoS error to about 1.74 dB, and the full hybrid prior reaches about 1.91 dB overall
+reduces LoS error to about 1.75 dB, and the full hybrid prior reaches about 1.92 dB overall
 on the held-out validation+test cities.
 3.11.1         LoS branch: enhanced two-ray model
 The LoS prior is not a pure FSPL prior. FSPL is kept because it is the direct-ray normaliza-
@@ -1371,14 +1371,14 @@ RMSEs. Units are dB (path loss), ns (delay spread), and degrees (angular spread)
 the native non-transformed domain.
 3.11.5     Observed path-loss-prior results
 The headline path-loss numbers for the calibrated prior are reported in the results chap-
-ter (LoS waterfall in Table 4.2): the enhanced LoS two-ray prior PLLoS reaches 1.7379 dB
-pixel-weighted RMSE on LoS pixels, the regime-wise OLS NLoS head reaches 3.3591 dB
+ter (LoS waterfall in Table 4.2): the enhanced LoS two-ray prior PLLoS reaches 1.7516 dB
+pixel-weighted RMSE on LoS pixels, the regime-wise OLS NLoS head reaches 3.3967 dB
 
                                                   68
                                                        3.12 - Delay and Angular Spread Priors
 
 
-on NLoS pixels, and the combined prior reaches 1.9072 dB overall on the held-out vali-
+on NLoS pixels, and the combined prior reaches 1.9246 dB overall on the held-out vali-
 dation+test split.
 
                                  Geometry                                           CKM Map

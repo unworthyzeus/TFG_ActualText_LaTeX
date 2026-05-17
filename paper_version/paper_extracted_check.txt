@@ -711,7 +711,7 @@ probabilistic predictor.                                                        
 stage makes the head behave like a residual density model:                                   estimators, their standalone audits are reported separately
 it learns where residual mass lies and discourages the old                                   from neural checkpoint selection. The path-loss table uses the
 single-mode collapse. The final fine-tuning stage keeps the                                  held-out validation+test split after fitting the 10840 training
-same architecture but shifts the optimization weight toward the                              references and evaluating 5340 held-out references (5339
+same architecture but shifts the optimization weight toward the                              references and evaluating 5340 held-out references (4994
 deterministic metrics used for the paper tables. The anchor and                              topology-assigned rows). The spread table uses the final 14-
 guard terms remain active at small weight so the fine-tuned                                  city test split because Try 79 shares the 10840/2750/2590
 model cannot gain average RMSE by damaging large regions                                     train/validation/test contract used by the final Try 80 model.
@@ -787,19 +787,19 @@ RESIDUAL /GMM STAGE IS PART OF THE FINAL PIPELINE , EVEN THOUGH
                                                              0.25
  Learning rate                   2 × 10−4                    5 × 10−5                      aware treatment of spread targets. The frozen priors then
                                                                                            provided stronger anchors: the standalone path-loss prior
-                                                                                           reached 1.9072 dB RMSE on its held-out validation+test split
+                                                                                           reached 1.9246 dB RMSE on its held-out validation+test split
                                                                                            and 1.9383 dB when frozen on the final test split, while the
    The path-loss prior also varies by topology. Its overall
                                                                                            spread priors reached 28.10 ns delay-spread RMSE and 13.74◦
-RMSE ranges from 1.39 dB in open sparse low-rise maps to
+RMSE ranges from 1.43 dB in open sparse low-rise maps to
                                                                                            angular-spread RMSE on that same final test split.
-2.96 dB in dense block high-rise maps. The NLoS branch is
+2.97 dB in dense block high-rise maps. The NLoS branch is
                                                                                               For spread targets, quantized labels make visual and RMSE
 hardest in sparse vertical and dense high-rise regimes, reaching
                                                                                            interpretation harder. The released delay and angular maps
-3.93 dB and 4.10 dB; the overall pixel-weighted prior remains
+3.91 dB and 4.09 dB; the overall pixel-weighted prior remains
                                                                                            are integer-valued; smooth predictions can be penalized across
-1.91 dB.
+1.92 dB.
                                                                                            staircase-like target boundaries even when the morphology is
    The final residual model improves the priors consistently
                                                                                            plausible. This does not invalidate RMSE, but it warns against
