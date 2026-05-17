@@ -27,7 +27,7 @@ Early U-Net/cGAN & Dense image-to-image prediction was feasible, but visual real
 Ground-mask reset & Building pixels are not receivers and must be excluded. & Later metrics use the ground-only mask. \\
 PMNet/PMHHNet & Height FiLM, physical channels and experts helped LoS, but NLoS tails remained poorly modelled. & PMHHNet reference: \SI{9.41}{dB} overall, \SI{3.75}{dB} LoS, \SI{31.48}{dB} NLoS. \\
 Distribution-first GMM & The hard NLoS problem was distributional, not just architectural. & NLoS PL pixel-weighted RMSE around \SI{3.34}{dB} without explicit priors. \\
-Frozen priors & Train-only calibrated priors became strong baselines in their own right. & \SI{1.9246}{dB} standalone PL prior; \SI{28.10}{ns} DS; \(13.74^\circ\) AS. \\
+Frozen priors & Train-only calibrated priors became strong baselines in their own right. & \SI{1.9072}{dB} standalone PL prior (\SI{1.9383}{dB} final-test frozen PL); \SI{28.10}{ns} DS; \(13.74^\circ\) AS. \\
 Final residual GMM head & A bounded neural residual improves already strong priors. & Test: \SI{1.6519}{dB} PL, \SI{26.5570}{ns} DS, \(11.3854^\circ\) AS. \\
 \bottomrule
 \end{tabularx}
@@ -35,24 +35,24 @@ Final residual GMM head & A bounded neural residual improves already strong prio
 
 The final path-loss prior is the most important baseline. Its LoS branch is not
 FSPL alone: the enhanced two-ray calibration reduces LoS RMSE from about
-\SI{3.95}{dB} to \SI{1.75}{dB}. The full hybrid prior reaches
-\SI{1.9246}{dB} overall on its 30\% analytic-prior evaluation holdout
+\SI{3.89}{dB} to \SI{1.74}{dB}. The full hybrid prior reaches
+\SI{1.9072}{dB} overall on the held-out validation+test split
 (Table~\ref{tab:try78_results}). When re-evaluated on the final 14-city test
 split as the frozen anchor for the neural model, the path-loss prior is
 \SI{1.9383}{dB}.
 
 \begin{table}[htbp]
 \centering
-\caption{Standalone calibrated path-loss prior on its 30\% city-holdout evaluation split.}
+\caption{Standalone calibrated path-loss prior on the held-out validation+test split.}
 \label{tab:try78_results}
 \scriptsize
 \begin{tabular}{lcc}
 \toprule
 Region & RMSE & Unit \\
 \midrule
-LoS & 1.7516 & dB \\
-NLoS & 3.3967 & dB \\
-Overall & 1.9246 & dB \\
+LoS & 1.7379 & dB \\
+NLoS & 3.3591 & dB \\
+Overall & 1.9072 & dB \\
 \bottomrule
 \end{tabular}
 \hfill
@@ -60,9 +60,9 @@ Overall & 1.9246 & dB \\
 \toprule
 LoS prior stage & LoS RMSE & Gain \\
 \midrule
-FSPL only & 3.9540 & N/A \\
-FSPL + radial residual & 3.7086 & -0.25 \\
-Enhanced two-ray & 1.7516 & -1.96 \\
+FSPL only & 3.8937 & N/A \\
+FSPL + radial residual & 3.6505 & -0.24 \\
+Enhanced two-ray & 1.7379 & -1.91 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -170,18 +170,20 @@ and morphology/height groups.
 
 \begin{table}[htbp]
 \centering
-\caption{Compact height audit. Values are prior-only RMSE.}
+\caption{Compact height audit. Values are prior-only RMSE: PL uses the
+held-out Try~78 validation+test split, while DS/AS use the final 14-city
+Try~79/Try~80 test split.}
 \label{tab:height_topology_audit}
 \scriptsize
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrr}
 \toprule
-Height bin & PL prior & DS prior & AS prior & Samples \\
+Height bin & PL prior & DS prior & AS prior & PL samples \\
 \midrule
-12--50 m & 2.180 & 39.90 & 15.69 & 1211 \\
-50--150 m & 1.936 & 27.17 & 14.19 & 2634 \\
-150--300 m & 1.680 & 8.70 & 10.39 & 786 \\
-300--500 m & 1.627 & 3.70 & 8.85 & 362 \\
+12--50 m & 2.177 & 39.90 & 15.69 & 1294 \\
+50--150 m & 1.917 & 27.17 & 14.19 & 2802 \\
+150--300 m & 1.671 & 8.70 & 10.39 & 846 \\
+300--500 m & 1.576 & 3.70 & 8.85 & 396 \\
 \bottomrule
 \end{tabular}
 \end{table}

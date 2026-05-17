@@ -72,7 +72,7 @@ converting to dB
 where $\Gamma$ is the reflection coefficient and $\Delta\phi$ is the phase
 difference determined by the path-length difference.  A calibrated two-ray model
 fitted to the CKM dataset achieves approximately
-$1.75\,\mathrm{dB}$ RMSE on line-of-sight (LoS) pixels; the deterministic
+$1.74\,\mathrm{dB}$ RMSE on line-of-sight (LoS) pixels; the deterministic
 radial structure explains most LoS variance without any neural network.
 
 \subsection{Empirical and semi-empirical models}
@@ -485,11 +485,13 @@ The PMHHNet diagnostic phase incorporated SWA starting from 60\,\% of the traini
 \subsection{Exponential moving average weights}
 
 Separate from SWA, exponential moving average (EMA) tracking of the model
-weights at a decay rate of~0.9975 produces a smoother checkpoint suitable for
-validation scoring.  EMA weights are used for validation and final test inference
-but not for gradient updates.  The EMA-smoothed validation score is also used as
-input to the ReduceLROnPlateau scheduler to avoid reacting to noisy single-epoch
-validation spikes.
+weights at a decay rate of~0.9975 was useful in the earlier PMHHNet diagnostic
+branch because it produced smoother validation checkpoints. In that older
+branch, EMA weights were used for validation scoring and the smoothed score fed
+the ReduceLROnPlateau scheduler. The selected Try~80 model is different: it does
+not use EMA or ReduceLROnPlateau, and instead selects the checkpoint by the
+validation RMSE/MAE score under an AdamW warmup-plus-cosine
+\texttt{LambdaLR} schedule.
 
 \subsection{Feature-wise linear modulation}
 
