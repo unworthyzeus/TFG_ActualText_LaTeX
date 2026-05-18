@@ -907,9 +907,14 @@ implementation then adds \(12\) height-collapsed topology/visibility fallbacks,
 fully global fallback, for \(57\) keys per metric and \(114\) keys across DS
 and AS. Height is handled differently across the frozen estimators: the LoS PL
 branch interpolates its fitted \SI{5}{m} height-bin curves, while the NLoS PL
-and spread branches use discrete antenna-height regimes with fallback keys;
-the spread model also keeps continuous height, clearance, and taller-building
-features inside \(\mathbf{x}_{79}\). This heavy calibration is the point: the
+and spread branches use discrete antenna-height regimes with fallback keys
+(\texttt{low\_ant}: \(h_{\mathrm{tx}}\le\SI{58.12}{m}\),
+\texttt{mid\_ant}: \(\SI{58.12}{m}<h_{\mathrm{tx}}\le\SI{103.85}{m}\),
+\texttt{high\_ant}: \(h_{\mathrm{tx}}>\SI{103.85}{m}\)); the spread model
+also keeps continuous height, clearance, and taller-building features inside
+\(\mathbf{x}_{79}\). These calibration bins are distinct from the broader
+height-reporting bins in Tables~\ref{tab:pl-prior-height} and
+\ref{tab:spread-prior-height}. This heavy calibration is the point: the
 prior stores many small decisions about morphology, visibility, and height
 before the neural residual is trained. On the final held-out test split, the
 deployed prior anchors are summarized in Table~\ref{tab:prior-only-anchor}.
@@ -1533,7 +1538,9 @@ All & 16180 & -0.2867 & -1.8406 & -2.3710 \\
 
 The all-city morphology/height audit groups samples by broad urban form
 (\texttt{open}, \texttt{mixed}, \texttt{dense}) and antenna-height bin
-(\texttt{low}, \texttt{mid}, \texttt{high}). These rows are not nine separately
+(\texttt{low}, \texttt{mid}, \texttt{high}), using the same
+\SI{58.12}{m} and \SI{103.85}{m} thresholds as the frozen-prior
+calibration keys. These rows are not nine separately
 trained final neural networks. They are evaluation buckets that mirror the
 regime structure used by the frozen priors and fallback tables: morphology is
 derived from building-density/height thresholds, and the height tag comes from

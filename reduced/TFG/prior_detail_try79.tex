@@ -346,6 +346,13 @@ they are not additional per-pixel morphology features.
 \subsubsection{Stage 3: regime-wise ridge regression}
 
 The regime $r$ for the spread prior is keyed by: metric (DS or AS), topology class (6 classes), propagation state (LoS or NLoS), antenna-height bin, giving up to $2 \times 6 \times 2 \times 3 = 72$ regimes.
+The antenna-height bins use the same tertile-style thresholds as
+Eq.~\eqref{eq:ant_bin_v2}: \texttt{low\_ant} for
+\(h_{\mathrm{tx}}\le\SI{58.12}{m}\), \texttt{mid\_ant} for
+\(\SI{58.12}{m}<h_{\mathrm{tx}}\le\SI{103.85}{m}\), and
+\texttt{high\_ant} above \SI{103.85}{m}. These calibration bins are
+different from the broader height-reporting bins used later in the results
+tables.
 
 Valid pixels are subsampled at rate $p = 0.02$ (2\%). The ridge regression:
 \begin{equation}
@@ -377,10 +384,9 @@ and \(d_i=1\) for \(i\ne23\). Thus, the final interaction term
 \(t_{41}n_{41}\), which is the last entry of Eq.~\eqref{eq:x79}, is left
 unpenalized by the ridge term in the frozen calibration used by the final
 model. This is an implementation detail of the stored artifact, not a separate
-physical assumption: a post-hoc check that instead left the bias coefficient
-unpenalized produced no meaningful RMSE change. The regularizer is small, but
-it prevents unstable coefficients when a regime contains few valid pixels or
-when two morphology features are strongly correlated.
+physical assumption. The regularizer is small, but it prevents unstable
+coefficients when a regime contains few valid pixels or when two morphology
+features are strongly correlated.
 
 Term by term, \(\textbf{X}_r^\top\textbf{X}_r\) is the feature correlation
 matrix for regime \(r\), \(\lambda\textbf{D}^\top\textbf{D}\) adds a small

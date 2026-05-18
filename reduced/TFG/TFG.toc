@@ -152,7 +152,7 @@
 \contentsline {paragraph}{Expert nomenclature.}{93}{paragraph*.110}%
 \contentsline {subsection}{\numberline {4.2.3}RMSE by UAV transmitter height}{94}{subsection.4.2.3}%
 \contentsline {subsection}{\numberline {4.2.4}Path-loss prior by topology class}{95}{subsection.4.2.4}%
-\contentsline {subsection}{\numberline {4.2.5}Final joint prior-anchored residual GMM-head model test results}{97}{subsection.4.2.5}%
+\contentsline {subsection}{\numberline {4.2.5}Final joint prior-anchored residual GMM-head model test results}{96}{subsection.4.2.5}%
 \contentsline {section}{\numberline {4.3}Qualitative Analysis}{101}{section.4.3}%
 \contentsline {section}{\numberline {4.4}Limitations}{101}{section.4.4}%
 \contentsline {chapter}{\numberline {5}Sustainability Analysis and Ethical Implications}{103}{chapter.5}%

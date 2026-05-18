@@ -439,7 +439,11 @@ also keys the regime by spread metric. The final residual model reports a simple
 subexpert grid: three morphology groups (\texttt{open}, \texttt{mixed},
 \texttt{dense}) crossed with three antenna-height bins
 (\texttt{low\_ant}, \texttt{mid\_ant}, \texttt{high\_ant}), giving the
-nine subexperts used in the final breakdowns.
+nine subexperts used in the final breakdowns. These audit bins follow the
+calibration thresholds of Eq.~\eqref{eq:ant_bin_v2}: low is at or below
+\SI{58.12}{m}, mid is above \SI{58.12}{m} and at or below
+\SI{103.85}{m}, and high is above \SI{103.85}{m}. They are not the four
+broader reporting bins used in the height-stratified prior tables.
 
 A sequential DirectML pass over the 12 mirrored expert models now gives
 test metrics on the same 2590-sample holdout used by the distribution-first path-loss predecessor and the final model.
@@ -776,8 +780,8 @@ so the test cities contain harder delay-spread distributions before the neural
 residual is applied. In particular, Kuala Lumpur contributes only 13.2\% of
 the valid delay-spread test pixels but 36.2\% of the test delay-spread squared
 error, with \SI{44.00}{ns} model RMSE and \SI{46.93}{ns} prior RMSE. This is
-why the final test delay-spread RMSE is higher than the validation-selection
-summary, while still improving over the prior.
+why the final test delay-spread RMSE is higher than the validation
+re-evaluation row, while still improving over the prior.
 
 Delay spread is the only output where RMSE and MAE move in opposite directions.
 This is not a contradiction: RMSE weights rare high-delay errors quadratically,

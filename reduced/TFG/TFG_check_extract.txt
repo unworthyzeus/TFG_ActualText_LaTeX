@@ -3968,7 +3968,7 @@ class78 = open_lowrise
 
 with thresholds 𝑑1 = 0.1957, 𝑑2 = 0.2549 (density fractions), ℎ1 = 10.91 m, and ℎ2 = 15.95
 m. Together with the binary LoS/NLoS label and the three UAV-height bins below, this
-yields the 18 stored path-loss path-loss calibration keys.
+yields the 18 stored path-loss calibration keys.
 The antenna-height bin is assigned by UAV height tertiles:
 ℎtx ≤ 58.12 m
 ant_bin = mid_ant 58.12 < ℎtx ≤ 103.85 m
@@ -4682,9 +4682,8 @@ w∈ℝ23
 where D = diag(𝑑1 , … , 𝑑23 ), with 𝑑23 = 0 and 𝑑𝑖 = 1 for 𝑖 ≠ 23. Thus, the final interaction
 term 𝑡41 𝑛41 , which is the last entry of Eq. (3.71), is left unpenalized by the ridge term in
 the frozen calibration used by the final model. This is an implementation detail of the
-stored artifact, not a separate physical assumption: a post-hoc check that instead left the
-bias coefficient unpenalized produced no meaningful RMSE change. The regularizer is
-small, but it prevents unstable coefficients when a regime contains few valid pixels or
+stored artifact, not a separate physical assumption. The regularizer is small, but it
+prevents unstable coefficients when a regime contains few valid pixels or
 when two morphology features are strongly correlated.
 ⊤
 Term by term, X⊤
@@ -6726,7 +6725,7 @@ a change of model or metric. The frozen delay-spread prior also worsens from 23.
 RMSE on validation to 28.10 ns on test, so the test cities contain harder delay-spread
 distributions before the neural residual is applied. In particular, Kuala Lumpur contributes
 only 13.2% of the valid delay-spread test pixels but 36.2% of the test delay-spread squared
-error, with 44.00 ns model RMSE and 46.93 ns prior RMSE. This is why the final test delayspread RMSE is higher than the validation-selection summary, while still improving over
+error, with 44.00 ns model RMSE and 46.93 ns prior RMSE. This is why the final test delayspread RMSE is higher than the validation re-evaluation row, while still improving over
 the prior.
 Delay spread is the only output where RMSE and MAE move in opposite directions. This
 is not a contradiction: RMSE weights rare high-delay errors quadratically, so suppressing
