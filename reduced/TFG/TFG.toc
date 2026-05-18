@@ -24,12 +24,12 @@
 \contentsline {subsection}{\numberline {2.2.4}Delay spread and angular spread in standard channel models}{23}{subsection.2.2.4}%
 \contentsline {section}{\numberline {2.3}Deep learning for radio-map estimation}{23}{section.2.3}%
 \contentsline {subsection}{\numberline {2.3.1}Image-to-image translation baselines}{23}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}PMNet and the ICASSP outdoor challenge family}{23}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.2}PMNet and the ICASSP outdoor challenge family}{24}{subsection.2.3.2}%
 \contentsline {subsection}{\numberline {2.3.3}Transformers, state-space models, and attention-based encoders}{24}{subsection.2.3.3}%
 \contentsline {subsection}{\numberline {2.3.4}Foundation models for radio maps}{25}{subsection.2.3.4}%
 \contentsline {section}{\numberline {2.4}Physics-informed and hybrid neural approaches}{25}{section.2.4}%
 \contentsline {subsection}{\numberline {2.4.1}Geometry-assisted and diffraction-aware deep learning}{25}{subsection.2.4.1}%
-\contentsline {subsection}{\numberline {2.4.2}Physics-informed neural networks}{25}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.2}Physics-informed neural networks}{26}{subsection.2.4.2}%
 \contentsline {subsection}{\numberline {2.4.3}Prior-residual decomposition}{26}{subsection.2.4.3}%
 \contentsline {section}{\numberline {2.5}Channel statistics prediction: delay spread and angular spread}{26}{section.2.5}%
 \contentsline {subsection}{\numberline {2.5.1}Empirical models for spread parameters}{26}{subsection.2.5.1}%

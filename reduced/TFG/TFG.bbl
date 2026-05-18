@@ -1308,6 +1308,9 @@
            given={Joerg},
            giveni={J\bibinitperiod}}}%
       }
+      \list{publisher}{1}{%
+        {ACM}%
+      }
       \strng{namehash}{1df23929e048cc85049b20444931c4b6}
       \strng{fullhash}{fa7b8ebdb430ee43e7b521150043c4bc}
       \strng{fullhashraw}{fa7b8ebdb430ee43e7b521150043c4bc}
@@ -1323,6 +1326,11 @@
       \field{booktitle}{Proceedings of the 23rd International ACM Conference on Modeling, Analysis and Simulation of Wireless and Mobile Systems}
       \field{title}{A Mixture Density Channel Model for Deep Learning-Based Wireless Physical Layer Design}
       \field{year}{2020}
+      \field{pages}{53\bibrangedash 62}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1145/3416010.3423229
+      \endverb
       \verb{urlraw}
       \verb https://dspace.networks.imdea.org/handle/20.500.12761/886
       \endverb
