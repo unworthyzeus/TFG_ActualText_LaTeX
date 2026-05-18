@@ -46,10 +46,11 @@
 }
 
 @inproceedings{wocc2021,
-  author    = {Y.-S. Su and S.-C. Lin and K.-C. Chen},
-  title     = {Channel Modeling of Air-to-Ground Signal with Two-Ray Model at Low-Altitude Platforms},
-  booktitle = {2021 30th Wireless and Optical Communications Conference},
+  author    = {Chia-Chuan Chiu and Ang-Hsun Tsai and Hsin-Piao Lin and Chao-Yang Lee and Li-Chun Wang},
+  title     = {Channel Modeling of Air-to-Ground Signal Measurement with Two-Ray Ground-Reflection Model for {UAV} Communication Systems},
+  booktitle = {2021 30th Wireless and Optical Communications Conference ({WOCC})},
   year      = {2021},
+  pages     = {251--256},
   doi       = {10.1109/WOCC53213.2021.9603250},
 }
 
@@ -139,15 +140,6 @@
   url          = {https://arxiv.org/abs/2402.00878},
 }
 
-@misc{jaensch2026noisyenv,
-  author       = {Fabian Jaensch and \c{C}a\u{g}kan Yapar and Giuseppe Caire and Beg{\"u}m Demir},
-  title        = {Radio Map Prediction from Noisy Environment Information and Sparse Observations},
-  year         = {2026},
-  howpublished = {arXiv:2602.11950},
-  doi          = {10.48550/arXiv.2602.11950},
-  url          = {https://arxiv.org/abs/2602.11950},
-}
-
 @misc{ckmimagenet2025,
   author       = {Zijian Wu and Di Wu and Shen Fu and Yuelong Qiu and Yong Zeng},
   title        = {{CKMImageNet}: A Dataset for {AI}-Based Channel Knowledge Map Towards Environment-Aware Communication and Sensing},
@@ -173,13 +165,16 @@
 
 %%% DEEP LEARNING FOR RADIO MAPS — OUTDOOR
 
-@misc{radiounet2020,
-  author       = {Ron Levie and \c{C}a\u{g}kan Yapar and Gitta Kutyniok and Giuseppe Caire},
-  title        = {{RadioUNet}: Fast Radio Map Estimation with Convolutional Neural Networks},
-  year         = {2020},
-  howpublished = {arXiv:1911.09002},
-  doi          = {10.48550/arXiv.1911.09002},
-  url          = {https://arxiv.org/abs/1911.09002},
+@article{radiounet2020,
+  author  = {Ron Levie and \c{C}a\u{g}kan Yapar and Gitta Kutyniok and Giuseppe Caire},
+  title   = {{RadioUNet}: Fast Radio Map Estimation With Convolutional Neural Networks},
+  journal = {IEEE Transactions on Wireless Communications},
+  year    = {2021},
+  volume  = {20},
+  number  = {6},
+  pages   = {4001--4015},
+  doi     = {10.1109/TWC.2021.3054977},
+  url     = {https://arxiv.org/abs/1911.09002},
 }
 
 @misc{radiogunet2025,
@@ -252,27 +247,33 @@
 
 %%% DEEP LEARNING FOR RADIO MAPS — INDOOR
 
-@misc{sip2net2025,
-  author       = {W. Lu and others},
-  title        = {{SIP2Net}: Situational-Aware Indoor Pathloss-Map Prediction Network for Radio Map Generation},
-  year         = {2025},
-  doi          = {10.1109/ICASSP49660.2025.10890319},
+@inproceedings{sip2net2025,
+  author    = {Wenlihan Lu and Ziyi Lu and Jia Yan and Shijian Gao},
+  title     = {{SIP2Net}: Situational-Aware Indoor Pathloss-Map Prediction Network for Radio Map Generation},
+  booktitle = {{ICASSP} 2025 - 2025 {IEEE} International Conference on Acoustics, Speech and Signal Processing ({ICASSP})},
+  year      = {2025},
+  pages     = {1--2},
+  doi       = {10.1109/ICASSP49660.2025.10890319},
 }
 
-@misc{ippnet2025,
-  author       = {Bin Feng and Meng Zheng and Wei Liang and Lei Zhang},
-  title        = {{IPP-Net}: A Generalizable Deep Neural Network Model for Indoor Pathloss Radio Map Prediction},
-  year         = {2025},
-  howpublished = {IEEE Xplore: 10890663},
-  url          = {https://arxiv.org/abs/2501.06414},
+@inproceedings{ippnet2025,
+  author    = {Bin Feng and Meng Zheng and Wei Liang and Lei Zhang},
+  title     = {{IPP-Net}: A Generalizable Deep Neural Network Model for Indoor Pathloss Radio Map Prediction},
+  booktitle = {{ICASSP} 2025 - 2025 {IEEE} International Conference on Acoustics, Speech and Signal Processing ({ICASSP})},
+  year      = {2025},
+  pages     = {1--2},
+  doi       = {10.1109/ICASSP49660.2025.10890663},
+  url       = {https://arxiv.org/abs/2501.06414},
 }
 
-@misc{transPathNet2025,
-  author       = {X. Li and others},
-  title        = {{TransPathNet}: A Novel Two-Stage Framework for Indoor Radio Map Prediction},
-  year         = {2025},
-  howpublished = {arXiv:2501.16023},
-  url          = {https://arxiv.org/abs/2501.16023},
+@inproceedings{transPathNet2025,
+  author    = {Xin Li and Ran Liu and Saihua Xu and Sirajudeen Gulam Razul and Chau Yuen},
+  title     = {{TransPathNet}: A Novel Two-Stage Framework for Indoor Radio Map Prediction},
+  booktitle = {{ICASSP} 2025 - 2025 {IEEE} International Conference on Acoustics, Speech and Signal Processing ({ICASSP})},
+  year      = {2025},
+  pages     = {1--2},
+  doi       = {10.1109/ICASSP49660.2025.10887939},
+  url       = {https://arxiv.org/abs/2501.16023},
 }
 
 %%% FOUNDATION MODELS AND LARGE-SCALE ARCHITECTURES
@@ -313,21 +314,14 @@
 
 @article{geomDL2024,
   author  = {Wangqian Chen and Junting Chen},
-  title   = {Diffraction and Scattering Aware Radio Map and Environment Reconstruction using Geometry Model-Assisted Deep Learning},
+  title   = {Diffraction and Scattering Aware Radio Map and Environment Reconstruction Using Geometry Model-Assisted Deep Learning},
   journal = {IEEE Transactions on Wireless Communications},
   year    = {2024},
+  volume  = {23},
+  number  = {12},
+  pages   = {19804--19819},
+  doi     = {10.1109/TWC.2024.3487225},
   url     = {https://arxiv.org/abs/2403.00229},
-}
-
-@article{mi2024pointcloud,
-  author  = {Hang Mi and Bo Ai and Ruisi He and Anuraag Bodi and Raied Caromi and Jian Wang and Jelena Senic and Camillo Gentile and Yang Miao},
-  title   = {Measurement-Based Prediction of mmWave Channel Parameters Using Deep Learning and Point Cloud},
-  journal = {IEEE Open Journal of Vehicular Technology},
-  volume  = {5},
-  pages   = {1059--1074},
-  year    = {2024},
-  doi     = {10.1109/OJVT.2024.3436857},
-  url     = {https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=956227},
 }
 
 @article{huang2025a2gtransformer,
@@ -344,12 +338,16 @@
 
 %%% GENERATIVE AND STOCHASTIC METHODS
 
-@misc{radiodiff2025,
-  author       = {Xiucheng Wang and Keda Tao and Nan Cheng and Zhisheng Yin and Zan Li and Yuan Zhang and Xuemin Shen},
-  title        = {{RadioDiff}: An Effective Generative Diffusion Model for Sampling-Free Dynamic Radio Map Construction},
-  year         = {2025},
-  howpublished = {IEEE Transactions on Cognitive Communications and Networking},
-  url          = {https://arxiv.org/abs/2408.08593},
+@article{radiodiff2025,
+  author  = {Xiucheng Wang and Keda Tao and Nan Cheng and Zhisheng Yin and Zan Li and Yuan Zhang and Xuemin Shen},
+  title   = {{RadioDiff}: An Effective Generative Diffusion Model for Sampling-Free Dynamic Radio Map Construction},
+  journal = {IEEE Transactions on Cognitive Communications and Networking},
+  year    = {2025},
+  volume  = {11},
+  number  = {2},
+  pages   = {738--750},
+  doi     = {10.1109/TCCN.2024.3504489},
+  url     = {https://arxiv.org/abs/2408.08593},
 }
 
 @misc{radiopit2025,

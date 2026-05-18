@@ -49,8 +49,9 @@ A.~Saboor and E.~Vinogradov, ``Millimeter-wave {UAV} channel model with
 \bibitem{radiounet2020}
 \BIBentryALTinterwordspacing
 R.~Levie, \c{C}a\u{g}kan Yapar, G.~Kutyniok, and G.~Caire, ``{RadioUNet}: Fast
-  radio map estimation with convolutional neural networks,'' arXiv:1911.09002,
-  2020. [Online]. Available: \url{https://arxiv.org/abs/1911.09002}
+  radio map estimation with convolutional neural networks,'' \emph{IEEE
+  Transactions on Wireless Communications}, vol.~20, no.~6, pp. 4001--4015,
+  2021. [Online]. Available: \url{https://arxiv.org/abs/1911.09002}
 \BIBentrySTDinterwordspacing
 
 \bibitem{pmnet2023}
@@ -162,9 +163,10 @@ A.~Al-Hourani, S.~Kandeepan, and S.~Lardner, ``Optimal {LAP} altitude for
 \BIBentrySTDinterwordspacing
 
 \bibitem{wocc2021}
-Y.-S. Su, S.-C. Lin, and K.-C. Chen, ``Channel modeling of air-to-ground signal
-  with two-ray model at low-altitude platforms,'' in \emph{2021 30th Wireless
-  and Optical Communications Conference}, 2021.
+C.-C. Chiu, A.-H. Tsai, H.-P. Lin, C.-Y. Lee, and L.-C. Wang, ``Channel
+  modeling of air-to-ground signal measurement with two-ray ground-reflection
+  model for {UAV} communication systems,'' in \emph{2021 30th Wireless and
+  Optical Communications Conference ({WOCC})}, 2021, pp. 251--256.
 
 \bibitem{kendall2017uncertainties}
 \BIBentryALTinterwordspacing
@@ -202,8 +204,9 @@ Y.~Lee, X.~Ma, and A.~S. I.~D. Lang, ``Modeling of time-varying wireless
 \BIBentryALTinterwordspacing
 X.~Wang, K.~Tao, N.~Cheng, Z.~Yin, Z.~Li, Y.~Zhang, and X.~Shen, ``{RadioDiff}:
   An effective generative diffusion model for sampling-free dynamic radio map
-  construction,'' IEEE Transactions on Cognitive Communications and Networking,
-  2025. [Online]. Available: \url{https://arxiv.org/abs/2408.08593}
+  construction,'' \emph{IEEE Transactions on Cognitive Communications and
+  Networking}, vol.~11, no.~2, pp. 738--750, 2025. [Online]. Available:
+  \url{https://arxiv.org/abs/2408.08593}
 \BIBentrySTDinterwordspacing
 
 \bibitem{winner2}

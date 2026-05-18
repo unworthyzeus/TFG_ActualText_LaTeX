@@ -183,13 +183,69 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Wireless Communications}
-      \field{title}{Diffraction and Scattering Aware Radio Map and Environment Reconstruction using Geometry Model-Assisted Deep Learning}
+      \field{number}{12}
+      \field{title}{Diffraction and Scattering Aware Radio Map and Environment Reconstruction Using Geometry Model-Assisted Deep Learning}
+      \field{volume}{23}
       \field{year}{2024}
+      \field{pages}{19804\bibrangedash 19819}
+      \range{pages}{16}
+      \verb{doi}
+      \verb 10.1109/TWC.2024.3487225
+      \endverb
       \verb{urlraw}
       \verb https://arxiv.org/abs/2403.00229
       \endverb
       \verb{url}
       \verb https://arxiv.org/abs/2403.00229
+      \endverb
+    \endentry
+    \entry{wocc2021}{inproceedings}{}{}
+      \name{author}{5}{}{%
+        {{hash=b723fa0a7a94c34b3bd529beb11fcf65}{%
+           family={Chiu},
+           familyi={C\bibinitperiod},
+           given={Chia-Chuan},
+           giveni={C\bibinithyphendelim C\bibinitperiod}}}%
+        {{hash=634c2e2d362694ade72b0e5025c44543}{%
+           family={Tsai},
+           familyi={T\bibinitperiod},
+           given={Ang-Hsun},
+           giveni={A\bibinithyphendelim H\bibinitperiod}}}%
+        {{hash=32468f125434c001a805abbade0c96cd}{%
+           family={Lin},
+           familyi={L\bibinitperiod},
+           given={Hsin-Piao},
+           giveni={H\bibinithyphendelim P\bibinitperiod}}}%
+        {{hash=87a1a7d53d85d014d4cf88776690daee}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Chao-Yang},
+           giveni={C\bibinithyphendelim Y\bibinitperiod}}}%
+        {{hash=487d07a51df501a6d306e072ce580d12}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Li-Chun},
+           giveni={L\bibinithyphendelim C\bibinitperiod}}}%
+      }
+      \strng{namehash}{e91fc3a39efe9451ce5b7fc3f89b4627}
+      \strng{fullhash}{3421b83a8e4f1d55d8b3a072ed2fd0d4}
+      \strng{fullhashraw}{3421b83a8e4f1d55d8b3a072ed2fd0d4}
+      \strng{bibnamehash}{e91fc3a39efe9451ce5b7fc3f89b4627}
+      \strng{authorbibnamehash}{e91fc3a39efe9451ce5b7fc3f89b4627}
+      \strng{authornamehash}{e91fc3a39efe9451ce5b7fc3f89b4627}
+      \strng{authorfullhash}{3421b83a8e4f1d55d8b3a072ed2fd0d4}
+      \strng{authorfullhashraw}{3421b83a8e4f1d55d8b3a072ed2fd0d4}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2021 30th Wireless and Optical Communications Conference ({WOCC})}
+      \field{title}{Channel Modeling of Air-to-Ground Signal Measurement with Two-Ray Ground-Reflection Model for {UAV} Communication Systems}
+      \field{year}{2021}
+      \field{pages}{251\bibrangedash 256}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1109/WOCC53213.2021.9603250
       \endverb
     \endentry
     \entry{cost231}{report}{}{}
@@ -261,7 +317,7 @@
       \verb https://arxiv.org/abs/2105.05233
       \endverb
     \endentry
-    \entry{ippnet2025}{misc}{}{}
+    \entry{ippnet2025}{inproceedings}{}{}
       \name{author}{4}{}{%
         {{hash=2a325920e39be526f4290ba647c95e5b}{%
            family={Feng},
@@ -296,9 +352,14 @@
       \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{IEEE Xplore: 10890663}
+      \field{booktitle}{{ICASSP} 2025 - 2025 {IEEE} International Conference on Acoustics, Speech and Signal Processing ({ICASSP})}
       \field{title}{{IPP-Net}: A Generalizable Deep Neural Network Model for Indoor Pathloss Radio Map Prediction}
       \field{year}{2025}
+      \field{pages}{1\bibrangedash 2}
+      \range{pages}{2}
+      \verb{doi}
+      \verb 10.1109/ICASSP49660.2025.10890663
+      \endverb
       \verb{urlraw}
       \verb https://arxiv.org/abs/2501.06414
       \endverb
@@ -976,7 +1037,7 @@
       \verb https://arxiv.org/abs/2405.08199
       \endverb
     \endentry
-    \entry{radiounet2020}{misc}{}{}
+    \entry{radiounet2020}{article}{}{}
       \name{author}{4}{}{%
         {{hash=f54f154aec189a8d21003916d6ba8f95}{%
            family={Levie},
@@ -1011,11 +1072,15 @@
       \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:1911.09002}
-      \field{title}{{RadioUNet}: Fast Radio Map Estimation with Convolutional Neural Networks}
-      \field{year}{2020}
+      \field{journaltitle}{IEEE Transactions on Wireless Communications}
+      \field{number}{6}
+      \field{title}{{RadioUNet}: Fast Radio Map Estimation With Convolutional Neural Networks}
+      \field{volume}{20}
+      \field{year}{2021}
+      \field{pages}{4001\bibrangedash 4015}
+      \range{pages}{15}
       \verb{doi}
-      \verb 10.48550/arXiv.1911.09002
+      \verb 10.1109/TWC.2021.3054977
       \endverb
       \verb{urlraw}
       \verb https://arxiv.org/abs/1911.09002
@@ -1024,32 +1089,55 @@
       \verb https://arxiv.org/abs/1911.09002
       \endverb
     \endentry
-    \entry{transPathNet2025}{misc}{}{}
-      \true{moreauthor}
-      \true{morelabelname}
-      \name{author}{1}{}{%
-        {{hash=c9a3728dcc2397d1bab78a791b51779b}{%
+    \entry{transPathNet2025}{inproceedings}{}{}
+      \name{author}{5}{}{%
+        {{hash=86d8cd66cb62928ca1ec636d8cd2e11c}{%
            family={Li},
            familyi={L\bibinitperiod},
-           given={X.},
+           given={Xin},
            giveni={X\bibinitperiod}}}%
+        {{hash=bc63d195cc36a017c921310c2653b76f}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Ran},
+           giveni={R\bibinitperiod}}}%
+        {{hash=62dee864b5642e8986f0a207734c932a}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Saihua},
+           giveni={S\bibinitperiod}}}%
+        {{hash=f340a50a5c776a614f7741820a4d07cf}{%
+           family={Razul},
+           familyi={R\bibinitperiod},
+           given={Sirajudeen\bibnamedelima Gulam},
+           giveni={S\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=7c95929715d85a62f57da8ec3beccb37}{%
+           family={Yuen},
+           familyi={Y\bibinitperiod},
+           given={Chau},
+           giveni={C\bibinitperiod}}}%
       }
-      \strng{namehash}{0b26886cabde4f6202af5174b37a09ec}
-      \strng{fullhash}{0b26886cabde4f6202af5174b37a09ec}
-      \strng{fullhashraw}{0b26886cabde4f6202af5174b37a09ec}
-      \strng{bibnamehash}{0b26886cabde4f6202af5174b37a09ec}
-      \strng{authorbibnamehash}{0b26886cabde4f6202af5174b37a09ec}
-      \strng{authornamehash}{0b26886cabde4f6202af5174b37a09ec}
-      \strng{authorfullhash}{0b26886cabde4f6202af5174b37a09ec}
-      \strng{authorfullhashraw}{0b26886cabde4f6202af5174b37a09ec}
+      \strng{namehash}{284665cdb8fdaad5646c78846ea3b2ae}
+      \strng{fullhash}{cc4417f49335f5057a7cfb9dabd81331}
+      \strng{fullhashraw}{cc4417f49335f5057a7cfb9dabd81331}
+      \strng{bibnamehash}{284665cdb8fdaad5646c78846ea3b2ae}
+      \strng{authorbibnamehash}{284665cdb8fdaad5646c78846ea3b2ae}
+      \strng{authornamehash}{284665cdb8fdaad5646c78846ea3b2ae}
+      \strng{authorfullhash}{cc4417f49335f5057a7cfb9dabd81331}
+      \strng{authorfullhashraw}{cc4417f49335f5057a7cfb9dabd81331}
       \field{extraname}{1}
       \field{sortinit}{L}
       \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2501.16023}
+      \field{booktitle}{{ICASSP} 2025 - 2025 {IEEE} International Conference on Acoustics, Speech and Signal Processing ({ICASSP})}
       \field{title}{{TransPathNet}: A Novel Two-Stage Framework for Indoor Radio Map Prediction}
       \field{year}{2025}
+      \field{pages}{1\bibrangedash 2}
+      \range{pages}{2}
+      \verb{doi}
+      \verb 10.1109/ICASSP49660.2025.10887939
+      \endverb
       \verb{urlraw}
       \verb https://arxiv.org/abs/2501.16023
       \endverb
@@ -1153,30 +1241,46 @@
       \verb https://arxiv.org/abs/2509.11571
       \endverb
     \endentry
-    \entry{sip2net2025}{misc}{}{}
-      \true{moreauthor}
-      \true{morelabelname}
-      \name{author}{1}{}{%
-        {{hash=ab361a4c3518e2c13bd5d8b87e314738}{%
+    \entry{sip2net2025}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=663962c2702408fc8a5b2557dd50a383}{%
            family={Lu},
            familyi={L\bibinitperiod},
-           given={W.},
+           given={Wenlihan},
            giveni={W\bibinitperiod}}}%
+        {{hash=af6a1af6178862937deb87fea2ddf94a}{%
+           family={Lu},
+           familyi={L\bibinitperiod},
+           given={Ziyi},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=3ae949e6f6c21c21ac590262dd2aacd4}{%
+           family={Yan},
+           familyi={Y\bibinitperiod},
+           given={Jia},
+           giveni={J\bibinitperiod}}}%
+        {{hash=87351902f65cc77301eee1db8a457e3e}{%
+           family={Gao},
+           familyi={G\bibinitperiod},
+           given={Shijian},
+           giveni={S\bibinitperiod}}}%
       }
-      \strng{namehash}{f54d0d5ec593f2f1a441408e1133f025}
-      \strng{fullhash}{f54d0d5ec593f2f1a441408e1133f025}
-      \strng{fullhashraw}{f54d0d5ec593f2f1a441408e1133f025}
-      \strng{bibnamehash}{f54d0d5ec593f2f1a441408e1133f025}
-      \strng{authorbibnamehash}{f54d0d5ec593f2f1a441408e1133f025}
-      \strng{authornamehash}{f54d0d5ec593f2f1a441408e1133f025}
-      \strng{authorfullhash}{f54d0d5ec593f2f1a441408e1133f025}
-      \strng{authorfullhashraw}{f54d0d5ec593f2f1a441408e1133f025}
+      \strng{namehash}{31deca695257fc614fadd019ef77d15b}
+      \strng{fullhash}{fcbf4a23c1913337fd5b8324df205c53}
+      \strng{fullhashraw}{fcbf4a23c1913337fd5b8324df205c53}
+      \strng{bibnamehash}{31deca695257fc614fadd019ef77d15b}
+      \strng{authorbibnamehash}{31deca695257fc614fadd019ef77d15b}
+      \strng{authornamehash}{31deca695257fc614fadd019ef77d15b}
+      \strng{authorfullhash}{fcbf4a23c1913337fd5b8324df205c53}
+      \strng{authorfullhashraw}{fcbf4a23c1913337fd5b8324df205c53}
       \field{sortinit}{L}
       \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
+      \field{booktitle}{{ICASSP} 2025 - 2025 {IEEE} International Conference on Acoustics, Speech and Signal Processing ({ICASSP})}
       \field{title}{{SIP2Net}: Situational-Aware Indoor Pathloss-Map Prediction Network for Radio Map Generation}
       \field{year}{2025}
+      \field{pages}{1\bibrangedash 2}
+      \range{pages}{2}
       \verb{doi}
       \verb 10.1109/ICASSP49660.2025.10890319
       \endverb
@@ -1690,43 +1794,6 @@
       \verb https://arxiv.org/abs/2502.19646
       \endverb
     \endentry
-    \entry{wocc2021}{inproceedings}{}{}
-      \name{author}{3}{}{%
-        {{hash=1d8e510e9a4188c06786e185d38d05d4}{%
-           family={Su},
-           familyi={S\bibinitperiod},
-           given={Y.-S.},
-           giveni={Y\bibinithyphendelim S\bibinitperiod}}}%
-        {{hash=1c0e1a19913dfec3799a5a96117c9ac1}{%
-           family={Lin},
-           familyi={L\bibinitperiod},
-           given={S.-C.},
-           giveni={S\bibinithyphendelim C\bibinitperiod}}}%
-        {{hash=b289ba699e8fc9134380b9606f7ca0f3}{%
-           family={Chen},
-           familyi={C\bibinitperiod},
-           given={K.-C.},
-           giveni={K\bibinithyphendelim C\bibinitperiod}}}%
-      }
-      \strng{namehash}{465134c2a9d8ba04bcb6944d288de65f}
-      \strng{fullhash}{465134c2a9d8ba04bcb6944d288de65f}
-      \strng{fullhashraw}{465134c2a9d8ba04bcb6944d288de65f}
-      \strng{bibnamehash}{465134c2a9d8ba04bcb6944d288de65f}
-      \strng{authorbibnamehash}{465134c2a9d8ba04bcb6944d288de65f}
-      \strng{authornamehash}{465134c2a9d8ba04bcb6944d288de65f}
-      \strng{authorfullhash}{465134c2a9d8ba04bcb6944d288de65f}
-      \strng{authorfullhashraw}{465134c2a9d8ba04bcb6944d288de65f}
-      \field{sortinit}{S}
-      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{booktitle}{2021 30th Wireless and Optical Communications Conference}
-      \field{title}{Channel Modeling of Air-to-Ground Signal with Two-Ray Model at Low-Altitude Platforms}
-      \field{year}{2021}
-      \verb{doi}
-      \verb 10.1109/WOCC53213.2021.9603250
-      \endverb
-    \endentry
     \entry{wicopg2025}{misc}{}{}
       \name{author}{6}{}{%
         {{hash=3691938af5e2a7f47b3a671d4ebada7c}{%
@@ -1921,7 +1988,7 @@
       \verb 10.1109/ICNC68183.2026.11416865
       \endverb
     \endentry
-    \entry{radiodiff2025}{misc}{}{}
+    \entry{radiodiff2025}{article}{}{}
       \name{author}{7}{}{%
         {{hash=4999d867ddfda996ca31014dcf22604b}{%
            family={Wang},
@@ -1971,9 +2038,16 @@
       \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{IEEE Transactions on Cognitive Communications and Networking}
+      \field{journaltitle}{IEEE Transactions on Cognitive Communications and Networking}
+      \field{number}{2}
       \field{title}{{RadioDiff}: An Effective Generative Diffusion Model for Sampling-Free Dynamic Radio Map Construction}
+      \field{volume}{11}
       \field{year}{2025}
+      \field{pages}{738\bibrangedash 750}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1109/TCCN.2024.3504489
+      \endverb
       \verb{urlraw}
       \verb https://arxiv.org/abs/2408.08593
       \endverb
