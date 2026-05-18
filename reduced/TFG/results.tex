@@ -845,8 +845,8 @@ Our final PL RMSE is close to the reported RadioMapSeer dB-scale range, while
 remaining above its best DPM number. &
 Outdoor simulated terrestrial maps; held-out test layouts, but no UAV-height or
 spread targets. \\
-PMNet / ICASSP~2023 winner \cite{pmnet2023,icassp2023challenge} &
-\SI{1.38}{dB} converted from the RadioMap3DSeer normalized score &
+PMNet / ICASSP~2023 winner \cite{pmnet_icassp2023,icassp2023challenge} &
+approx.\ \SI{1.38}{dB} converted from the RadioMap3DSeer normalized score &
 Final PL is close but higher under a different benchmark contract; use only as
 scale context, not as a direct ranking. &
 Not directly comparable: ICASSP/RadioMap3DSeer testing differs from our unseen
@@ -881,10 +881,10 @@ with a random 90/10 split, no CKM city-holdout, no continuous UAV height, and no
 spread targets. \\
 PathFinder \cite{pathfinder2025} &
 0.0331 normalized RMSE on RM3D DS-RPP, approximately \SI{1.19}{dB} with the
-\SI{36}{dB} RM3D window; 0.3263 on unseen rural, approximately \SI{11.75}{dB}
+\SI{36}{dB} RM3D image-window convention; 0.3263 on unseen rural, approximately \SI{11.75}{dB}
 only under the same assumption &
 Our final PL RMSE is above the converted DS-RPP value and far below the rural
-value under the same \SI{36}{dB} assumption. &
+value under the same approximate \SI{36}{dB} assumption. &
 The DS-RPP conversion follows RM3D scaling; the rural conversion is only an
 approximate scale check because the paper reports normalised image-space RMSE. \\
 \textbf{Final model} &

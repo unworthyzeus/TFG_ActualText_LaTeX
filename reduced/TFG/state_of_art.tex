@@ -171,40 +171,41 @@ do not use the CKM city-holdout, continuous-UAV-height contract.
 
 \subsection{PMNet and the ICASSP outdoor challenge family}
 
-PMNet \cite{pmnet2023} was the winner of the first ICASSP 2023 Outdoor Pathloss
+PMNet \cite{pmnet_icassp2023} was the winner of the first ICASSP 2023 Outdoor Pathloss
 Radio Map Prediction Challenge \cite{icassp2023challenge}.  It uses a deep
 encoder-decoder with skip connections, trained and evaluated on the
 RadioMap3DSeer dataset~\cite{dataset2212}.  RadioMap3DSeer consists of
-procedurally generated city maps with transmitters fixed at rooftop height
-(6 to 20~m) and building interior pixels masked to zero error.
+city maps derived from urban 3D geometry with rooftop transmitters placed
+3~m above the selected rooftop in the dataset description, and building
+interior pixels masked to zero error.
 
-The challenge metric is RMSE in normalised image units.  The RadioMap3DSeer
-image mapping clips path gain to the range
+The challenge metric is RMSE in normalised image units.  As an approximate
+dB-scale reference, the RadioMap3DSeer image mapping clips path gain to the range
 $[\mathrm{PL}_{\mathrm{thr}}, \mathrm{PL}_{\mathrm{max}}] = [-111, -75]\,\mathrm{dB}$,
-yielding a $36\,\mathrm{dB}$ dynamic window.  Converting to physical dB requires
-multiplying normalised RMSE by~36.  After this correction, the true physical
-errors are:
+yielding a $36\,\mathrm{dB}$ dynamic window under that interpretation.
+Multiplying normalised RMSE by~36 gives the following rough dB-scale references:
 
 \begin{table}[ht]
 \centering
-\caption[Corrected ICASSP 2023 outdoor RMSE.]%
-{Corrected physical RMSE for ICASSP~2023 outdoor challenge methods.
-The normalised scores are taken from the challenge family and converted to dB
-using the \SI{36}{dB} RadioMap3DSeer dynamic range described in the dataset
+\caption[Approximate ICASSP 2023 outdoor RMSE scale.]%
+{Approximate dB-scale RMSE references for ICASSP~2023 outdoor challenge methods.
+The normalised scores are taken from the challenge family and converted with the
+\SI{36}{dB} RadioMap3DSeer image window described in the dataset
 paper \cite{icassp2023challenge,dataset2212}.\protect\footnotemark}
 \label{tab:icassp2023corrected}
 \begin{tabular}{lcc}
 \toprule
-\textbf{Method} & \textbf{RMSE (norm.)} & \textbf{True RMSE (dB)} \\
+\textbf{Method} & \textbf{RMSE (norm.)} & \textbf{Approx. RMSE (dB)} \\
 \midrule
-PMNet \cite{pmnet2023} & 0.0383 & 1.38 \\
+PMNet \cite{pmnet_icassp2023} & 0.0383 & 1.38 \\
 PPNet baseline \cite{icassp2023challenge} & 0.0507 & 1.83 \\
 \bottomrule
 \end{tabular}
 \end{table}
-\footnotetext{The RadioMap3DSeer dynamic range is defined by the path-gain
+\footnotetext{This conversion should be read as an approximate scale reference,
+not as a like-for-like physical RMSE. It uses the path-gain
 clipping window $[\mathrm{PL}_{\mathrm{thr}},\mathrm{PL}_{\mathrm{max}}] =
-[-111,-75]\,\mathrm{dB}$ used to build the normalised target image, so the
+[-111,-75]\,\mathrm{dB}$ associated with the normalised target image, so the
 physical span is $-75-(-111)=36\,\mathrm{dB}$. Multiplying the normalised RMSE
 values reported in the challenge paper \cite{icassp2023challenge,dataset2212}
 by this factor converts them to physical dB, which gives
@@ -553,7 +554,7 @@ compactly.
 \textbf{Method} & \textbf{Unseen city} & \textbf{Cont.\ UAV height}
   & \textbf{$\ge$512\,px} & \textbf{Comparable?} \\
 \midrule
-PMNet / ICASSP~2023 \cite{pmnet2023} & No & No & No & No \\
+PMNet / ICASSP~2023 \cite{pmnet_icassp2023} & No & No & No & No \\
 RMTransformer \cite{rmtransformer2025} & No & No & No & No \\
 RadioGUNet \cite{radiogunet2025} & Partial & No & No & Partial \\
 AIRMap \cite{airmap2025} & Partial & No & No & Partial \\
@@ -594,8 +595,9 @@ task definition.
 
 \subsection{AIRMap: adaptive digital-twin radio maps}
 
-AIRMap \cite{airmap2025} is an adaptive U-Net autoencoder processing
-\(200\times200\) elevation maps for ultra-low-latency digital-twin
+AIRMap \cite{airmap2025} is an adaptive U-Net autoencoder processing fixed
+\(200\times200\) elevation-map tensors with variable spatial resolution
+(2.5--15~m/pixel, corresponding to \SI{500}{m}--\SI{3}{km} per side) for ultra-low-latency digital-twin
 synchronisation.  It reports sub-\SI{4}{dB} RMSE against ray-traced path-gain
 maps, and a separate lightweight calibration step using 20\,\% of field
 measurements reduces the median measurement-domain error to about five percent.
@@ -632,7 +634,7 @@ PathFinder \cite{pathfinder2025} tackles distribution shift via disentangled
 feature encoding and mask-guided low-rank attention, reporting the lowest MSE
 of~$0.1068$ and RMSE of~$0.3263$ on unseen rural datasets. On the
 RadioMap3DSeer DS-RPP split, its normalised RMSE of~$0.0331$ can be
-approximately converted with the \SI{36}{dB} RadioMap3DSeer target window,
+approximately converted with the same \SI{36}{dB} RadioMap3DSeer image-window convention,
 giving about \SI{1.19}{dB}. The unseen-rural score would be about
 \SI{11.75}{dB} under the same window, but this is only an approximate scale
 reading because the paper and code report normalised PNG image units and do not
@@ -709,7 +711,7 @@ published work across the comparison dimensions introduced in this chapter.
 \textbf{Benchmark / method} & \textbf{Reported RMSE / score} & \textbf{City holdout} & \textbf{Interpretation} \\
 \midrule
 RadioUNet \cite{radiounet2020} & approx.\ 1.6--3.1\,dB equivalent path-loss RMSE & No & Classic CNN radio-map scale reference; no spread targets. \\
-ICASSP~2023 winner PMNet \cite{pmnet2023,icassp2023challenge} & 1.38\,dB & No & Converted from 0.0383 normalised RMSE using the RadioMap3DSeer 36\,dB target window. \\
+ICASSP~2023 winner PMNet \cite{pmnet_icassp2023,icassp2023challenge} & approx.\ 1.38\,dB & No & Approximate conversion from 0.0383 normalised RMSE using the RadioMap3DSeer 36\,dB image-window convention. \\
 RadioGUNet \cite{radiogunet2025} & 1.304\,dB DPM; 1.936\,dB IRT; 1.392\,dB DPM with cars & Partial & Outdoor RadioMapSeer path-loss maps with held-out test layouts, but no UAV-height or spread targets. \\
 ReVeal PINN \cite{reveal2025} & 1.95\,dB outdoor rural/suburban radio-environment RMSE & No & Real outdoor sparse-measurement mapping; not dense CKM generation. \\
 RMTransformer \cite{rmtransformer2025} & 0.007148 normalised pixel RMSE, approximately 1.82\,dB under its 254\,dB scaling window & No & Recent dense radio-map path-loss reference, but random 90/10 split on 256\,px USC/PMNet maps. \\

@@ -55,9 +55,19 @@ R.~Levie, \c{C}a\u{g}kan Yapar, G.~Kutyniok, and G.~Caire, ``{RadioUNet}: Fast
 
 \bibitem{pmnet2023}
 \BIBentryALTinterwordspacing
-J.~Lee and A.~F. Molisch, ``{PMNet}: Robust pathloss map prediction via
-  supervised learning,'' in \emph{Proc.\ IEEE ICASSP}, 2023, pp. 1--5.
-  [Online]. Available: \url{https://arxiv.org/abs/2211.10527}
+J.-H. Lee, O.~G. Serbetci, D.~P. Selvam, and A.~F. Molisch, ``{PMNet}: Robust
+  pathloss map prediction via supervised learning,'' in \emph{Proc.\ IEEE
+  Global Communications Conference ({GLOBECOM})}, 2023. [Online]. Available:
+  \url{https://arxiv.org/abs/2211.10527}
+\BIBentrySTDinterwordspacing
+
+\bibitem{pmnet_icassp2023}
+\BIBentryALTinterwordspacing
+J.-H. Lee, J.~Lee, S.-H. Lee, and A.~F. Molisch, ``{PMNet}: Large-scale channel
+  prediction system for {ICASSP} 2023 first pathloss radio map prediction
+  challenge,'' in \emph{Proc.\ IEEE International Conference on Acoustics,
+  Speech and Signal Processing ({ICASSP})}, 2023, pp. 1--2. [Online].
+  Available: \url{https://doi.org/10.1109/ICASSP49357.2023.10095257}
 \BIBentrySTDinterwordspacing
 
 \bibitem{icassp2023challenge}
@@ -135,7 +145,7 @@ A.~Goldsmith, \emph{Wireless Communications}.\hskip 1em plus 0.5em minus
 {COST Action 231}, ``Digital mobile radio towards future generation systems:
   Final report,'' Office for Official Publications of the European Communities,
   Luxembourg, Tech. Rep., 1999. [Online]. Available:
-  \url{https://op.europa.eu/en/publication-detail/-/publication/8d92f6b6-98f4-4d73-b1e8-1c6b7c73cf5f}
+  \url{https://op.europa.eu/en/publication-detail/-/publication/f2f42003-4028-4496-af95-beaa38fd475f}
 \BIBentrySTDinterwordspacing
 
 \bibitem{alhourani2014}
@@ -200,7 +210,7 @@ X.~Wang, K.~Tao, N.~Cheng, Z.~Yin, Z.~Li, Y.~Zhang, and X.~Shen, ``{RadioDiff}:
 \BIBentryALTinterwordspacing
 P.~Ky\"osti \emph{et~al.}, ``{WINNER II} channel models,'' IST-4-027756 WINNER
   II Deliverable, Tech. Rep., 2007. [Online]. Available:
-  \url{https://www.ist-winner.org/WINNER2-Deliverables/D1.1.2v1.2.pdf}
+  \url{https://www.cept.org/files/8339/winner2%20-%20final%20report.pdf}
 \BIBentrySTDinterwordspacing
 
 \bibitem{cai2019}

@@ -119,12 +119,12 @@ path. Table~\ref{tab:position} summarizes that position.
 Family / reference & Relevant metric or capability & Caveat for this thesis \\
 \midrule
 RadioUNet \cite{radiounet2020} & Dense radio-map CNN, about \SI{1.6}{dB}--\SI{3.1}{dB} PL-scale error in its setting & No variable-height UAV and no DS/AS targets. \\
-PMNet / ICASSP \cite{pmnet2023,icassp2023challenge} & Strong outdoor path-loss-map baseline, about \SI{1.38}{dB} after score conversion & Different benchmark and no joint spread prediction. \\
-RadioGUNet \cite{radiogunet2025} & Graph/U-Net radio maps, \SI{1.304}{dB} DPM and \SI{1.936}{dB} IRT reported & Outdoor RadioMapSeer setting; not the CKM UAV protocol. \\
+PMNet / ICASSP \cite{pmnet_icassp2023,icassp2023challenge} & Strong outdoor path-loss-map baseline, about \SI{1.38}{dB} after approximate score conversion & Different benchmark and no joint spread prediction. \\
+RadioGUNet \cite{radiogunet2025} & Group-equivariant U-Net radio maps, \SI{1.304}{dB} DPM and \SI{1.936}{dB} IRT reported & Outdoor RadioMapSeer setting; not the CKM UAV protocol. \\
 ReVeal \cite{reveal2025} & Outdoor sparse-measurement mapping, \SI{1.95}{dB} RMSE & Sparse reconstruction rather than dense topology-only generation. \\
 RMTransformer / PathFinder \cite{rmtransformer2025,pathfinder2025} & Attention/domain-adaptation radio-map references around the same PL scale & Different split and transmitter assumptions. \\
 Gao et al.\ \cite{gao2026} & Outdoor corridor-weighted PL model, \SI{5.59}{dB} on ICASSP~2023 and \SI{12.19}{dB} on ITU~2024 & Recent comparable PL reference; final PL is numerically lower, but protocols differ. \\
-AIRMap \cite{airmap2025} & Digital-twin radio-map generation with path-gain error below \SI{4}{dB} & Different target, map size and evaluation path. \\
+AIRMap \cite{airmap2025} & Digital-twin radio-map generation with path-gain error below \SI{4}{dB} & Different target, fixed \(200\times200\) input grid and evaluation path. \\
 \textbf{Final model (this thesis)} & \textbf{\SI{1.6519}{dB} PL, \SI{26.5570}{ns} DS, \(11.3854^\circ\) AS} & \textbf{Strict city holdout, \(513\times513\) dense maps, centred variable-height UAV and joint PL/DS/AS output.} \\
 \bottomrule
 \end{tabularx}
