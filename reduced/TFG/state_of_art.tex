@@ -132,8 +132,9 @@ in wideband systems.  The \emph{azimuth angular spread} $\sigma_{\mathrm{AS}}$
 at the receiver quantifies the spatial diversity of arriving paths.
 
 3GPP~TR~38.901 \cite{tr38901} models both quantities as log-normal random
-variables conditioned on the LoS/NLoS state and distance.  The WINNER~II and
-COST~2100 models adopt the same convention.  In practice, the distributions of
+variables conditioned on the LoS/NLoS state and distance.  WINNER~II follows
+the same broad log-domain large-scale-parameter convention \cite{winner2}.
+In practice, the distributions of
 delay spread and angular spread are right-skewed with a heavy exponential tail
 and often include a spike near zero representing the dominant LoS path. The
 calibrated spread-prior analysis in this thesis empirically confirms this
@@ -335,12 +336,13 @@ to both priors.
 
 \subsection{Empirical models for spread parameters}
 
-Standard channel models characterise delay spread and angular spread as
-log-normal distributions parameterised by distance and LoS/NLoS state.
-TR~38.901 \cite{tr38901} provides polynomial fits for the log-normal mean and
-standard deviation as functions of 2D distance and transmitter height across UMa,
-UMi, and RMa scenarios.  These fits are limited to the morphology class and
-frequency band of the underlying measurement campaigns.
+Standard channel models characterise delay spread and angular spread through
+log-domain large-scale parameters tied to propagation state and scenario.
+TR~38.901 \cite{tr38901} provides scenario-specific tables and formulae for
+these parameters, with dependencies on variables such as distance, frequency,
+terminal heights, and LoS/NLoS state across UMa, UMi, and RMa scenarios.  These
+parameterisations are limited to the morphology class and frequency band of the
+underlying measurement campaigns.
 
 Log-domain modelling is physically motivated: spread parameters are
 multiplicative quantities in physical space, so their logarithm is more
