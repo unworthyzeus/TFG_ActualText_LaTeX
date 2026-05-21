@@ -1,52 +1,23 @@
 \chapter{Results}
 \label{chap:results}
 
-This chapter reports the main quantitative and qualitative outcomes of the
-project. The standalone path-loss prior audit uses the city-holdout
-validation+test pool: 5340 samples from 29 unseen cities. The
-selected final residual GMM-head model is then evaluated on the final
+This chapter reports the final test results of \textsc{HARP-Net CKM}, the
+joint prior-anchored residual model used in the reduced thesis. The standalone
+path-loss prior audit uses the city-holdout validation+test pool: 5340 samples
+from 29 unseen cities. The selected final model is then evaluated on the final
 2590-sample, 14-city test split. Two path-loss-prior numbers therefore appear
 in this chapter: \SI{1.9246}{dB} is the standalone calibrated hybrid prior on
 the held-out validation+test pool, whereas \SI{1.9383}{dB} is the frozen
-path-loss prior baseline used by the final residual model on the final 14-city
+path-loss prior baseline used by \textsc{HARP-Net CKM} on the final 14-city
 test split. All final model-versus-prior comparisons use the latter.
-The final model is reported as the final prior-anchored residual GMM-head
-model over the three outputs: path loss, delay spread, and angular spread.
-The prior is therefore not a weak reference included only for comparison. It is
-one of the central results of the thesis: a strong, train-calibrated baseline
-that absorbs the stable part of the map before the residual model is asked to
-solve the harder local errors.
 
-\section{Experimental Evaluation}
+The prior is not a weak reference included only for comparison. It is one of
+the central results of the thesis: a strong, train-calibrated baseline that
+absorbs the stable part of the map before the residual model is asked to solve
+the harder local errors. Appendix~A keeps the development history and negative
+attempts; this chapter focuses on the frozen priors and final test evaluation.
 
-Table~\ref{tab:timeline_results} summarizes the most important milestones. The
-early rows are not meant as a leaderboard because masking rules and objectives
-changed during the project; they document why the next stage was necessary.
-
-\begin{table}[!htbp]
-\centering
-\caption{Representative experimental milestones.}
-\label{tab:timeline_results}
-\begingroup
-\footnotesize
-\renewcommand{\arraystretch}{1.05}
-\setlength{\tabcolsep}{3pt}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.65cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
-\toprule
-Experiment family & Main lesson & Representative result \\
-\midrule
-Early U-Net family   & U-Net/cGAN and decoder fixes; cGAN did not solve physical error. & The combined decoder/multiscale run became the clean pre-prior baseline. \\
-Masked-evaluation reset  & Ground-only masking became mandatory. & Building pixels excluded from loss and metrics. \\
-Prior-residual phase  & Prior plus residual helped LoS but NLoS remained dominant. & PMNet residual branch: \SI{19.78}{dB} overall, \SI{3.86}{dB} LoS, \SI{34.47}{dB} NLoS. \\
-PMHHNet reference      & PMHHNet synthesis with six experts and physical channels. & \SI{9.41}{dB} overall, \SI{3.75}{dB} LoS, \SI{31.48}{dB} NLoS. \\
-Distribution-first GMM      & Distribution-first path-loss modelling. & NLoS pixel-weighted RMSE $\approx$\,\SI{3.34}{dB}. \\
-Final path-loss prior      & ML-calibrated path-loss prior. & Held-out validation+test: \SI{1.9246}{dB} overall, \SI{1.75}{dB} LoS, \SI{3.40}{dB} NLoS; final-test prior baseline: \SI{1.9383}{dB}. \\
-Final spread priors      & ML-calibrated spread priors. & \SI{28.10}{ns} delay; \SI{13.74}{\degree} angular. \\
-Final residual GMM-head model      & Joint prior-anchored residual GMM-head model. & Final test: \SI{1.65}{dB} path loss, \SI{26.56}{ns} delay spread, \SI{11.39}{\degree} angular spread; RMSE improves over the frozen priors on all three outputs. \\
-\bottomrule
-\end{tabularx}
-\endgroup
-\end{table}
+\section{Final test contract and frozen priors}
 
 The final path-loss prior is the clearest evidence that the prior is a strong
 path-loss baseline in its own right. The enhanced two-ray LoS model
@@ -91,79 +62,18 @@ a better fit numerically; it is a physically motivated explanation of the
 dominant LoS residual shape in CKM, and it is why the final model uses the two-ray
 output directly as a frozen anchor rather than re-learning it from pixels.
 
-\section{RMSE evolution and interpretation}
-
-The RMSE history should be read as a sequence of increasingly strict
-experiments, not as a perfectly homogeneous leaderboard. The dataset changed,
-the building-mask rule became stricter after the early experiments, and later
-runs used city-holdout discipline more consistently. Nevertheless, the
-representative values in Table~\ref{tab:rmse_evolution} show the real
-direction of the project: from direct image regression, to prior-guided
-residual learning, to frozen calibrated priors and finally to the joint final
-residual GMM-head model.
-
-\begin{table}[!htbp]
-\centering
-\caption[Representative RMSE evolution across the project.]%
-{Representative RMSE evolution across the project. Values are reported
-under their own experiment contract and are used to show trend and diagnosis,
-not to claim every row is directly comparable.}
-\label{tab:rmse_evolution}
-\small
-\setlength{\tabcolsep}{3pt}
-\begin{tabularx}{\textwidth}{@{}
-  >{\raggedright\arraybackslash}p{2.2cm}
-  >{\raggedright\arraybackslash}p{2.6cm}
-  >{\raggedright\arraybackslash}p{3.0cm}
-  >{\raggedright\arraybackslash}X
-@{}}
-\toprule
-Milestone & Target / region & RMSE & Interpretation \\
-\midrule
-Bilinear decoder & Path loss & \(\approx 17.40\) dB & Bilinear decoder alone reduced artifacts but did not solve global propagation. \\
-Multiscale supervision & Path loss & \(\approx 17.06\) dB & Multiscale supervision helped the large-scale field. \\
-Decoder + multiscale & Path loss & \(\approx 16.72\) dB & Best clean pre-prior baseline in the early U-Net family. \\
-Raw physical prior & Path loss & \(\approx 67.23\) dB & Raw physical prior was far too crude without calibration. \\
-Calibrated physical prior & Path loss & \(\approx 24.16\) dB & Regime-aware train-only calibration made the prior useful but incomplete. \\
-PMNet residual branch & Path loss & \(\approx 19.78\) dB & PMNet-style residual learning improved over prior-only calibration. \\
-Prior-confidence stage & Path loss & \(\approx 18.87\) dB & Prior-confidence and robust loss helped, but tail errors persisted. \\
-PMHHNet reference & Path loss overall & 9.41 dB & PMHHNet consolidated the physical-channel and expert approach. \\
-PMHHNet reference & Path loss NLoS & 31.48 dB & The headline bottleneck was no longer global; it was NLoS tail failure. \\
-Dist.-first GMM & Path loss NLoS & \(\approx 3.34\) dB & Distribution-first modelling directly attacked NLoS multi-modality. \\
-Final path-loss prior & Path loss overall & 1.9246 dB & ML-calibrated prior became the strongest path-loss baseline. \\
-Final DS prior & Delay spread overall & 28.10 ns & Log-domain ridge calibration met the original 50 ns project target. \\
-Final AS prior & Angular spread overall & \(13.74^\circ\) & Regime-wise calibration met the original 20 degree target. \\
-Final GMM test & Joint outputs & 1.6519 dB PL; 26.5570 ns DS; \(11.3854^\circ\) AS & Selected final model on 14 unseen test cities; model RMSE improves over every frozen prior. \\
-\bottomrule
-\end{tabularx}
-\end{table}
+\section{Final prior interpretation}
 
 \paragraph{Split-comparability note.}
-The distribution-first predecessors, spread priors, and final residual model use the same \texttt{city\_holdout}
-split contract with \texttt{val\_ratio = 0.15}, \texttt{test\_ratio =
-0.15}, and \texttt{split\_seed = 42}. The resulting test set is the same
-14-city, 2590-sample holdout for these runs. The diagnostic grouping is
-different: the distribution-first predecessors report the six topology classes directly,
-whereas the final residual model groups them into three two-class morphology families
-(\texttt{open}, \texttt{mixed}, \texttt{dense}) and then separates each
-family again by low/mid/high UAV antenna bin. That changes the reporting
-grid, not the test samples. The standalone path-loss-prior audit uses the same
+The final priors and \textsc{HARP-Net CKM} use the same \texttt{city\_holdout}
+contract with \texttt{val\_ratio = 0.15}, \texttt{test\_ratio = 0.15}, and
+\texttt{split\_seed = 42}. The standalone path-loss-prior audit uses the
 training cities and the full validation+test held-out pool, giving
-\SI{1.9246}{dB} over 5340 held-out samples. The final
-residual-model comparison remains test-only, so the frozen path-loss prior
-baseline in Table~\ref{tab:try80_final_test_overall} is \SI{1.9383}{dB}.
+\SI{1.9246}{dB} over 5340 held-out samples. The final model comparison remains
+test-only, so the frozen path-loss prior baseline in
+Table~\ref{tab:try80_final_test_overall} is \SI{1.9383}{dB}.
 
-Several conclusions follow from this table. First, the project did not improve
-only because the neural network became larger. Some larger or more complex
-variants stalled when their objective was not aligned with the physical error.
-The biggest gains came from changing the formulation: masking invalid
-receiver pixels, separating regimes, injecting priors, and eventually making
-the prior itself strong enough to be a useful baseline. This is the
-divide-and-conquer result of the thesis: the calibration stage handles the
-repeatable structure, and the neural stage is evaluated only on the residual
-that remains after that baseline has already done substantial work.
-
-The calibrated path-loss prior is the clearest example of this design. It is not a
+The calibrated path-loss prior is the clearest example of the final design. It is not a
 single generic propagation formula. It is split into a LoS branch and an NLoS
 branch because those pixels have different error mechanisms. The LoS branch
 extracts direct and reflected distances, FSPL, a coherent two-ray correction,
@@ -195,10 +105,10 @@ RMSE remained high because a smaller number of hard NLoS cases produced very
 large misses. This is why the later work moved toward tail-aware and
 distribution-aware methods rather than only lowering the mean error.
 
-Third, LoS and NLoS must be reported separately. The PMHHNet reference already had LoS error
-near \SI{3.75}{dB}, while NLoS error remained above \SI{30}{dB}. A single
-overall number would hide the fact that the LoS branch was nearly solved for
-that stage while the NLoS branch was still structurally wrong.
+Third, LoS and NLoS must be reported separately. A single overall number can
+hide whether the model is improving direct-visibility pixels, blocked pixels,
+or only the easier majority regime. For that reason the final tables below
+always separate LoS/NLoS where the target definition permits it.
 
 \begin{table}[!htbp]
 \centering
@@ -672,12 +582,12 @@ to deployability rather than accuracy.}
 \label{fig:try78_by_topology}
 \end{figure}
 
-\subsection{Final joint prior-anchored residual GMM-head model test results}
+\subsection{\textsc{HARP-Net CKM} final test results}
 
-The final residual GMM-head model freezes the path-loss and spread priors and learns a bounded residual correction
+\textsc{HARP-Net CKM} freezes the path-loss and spread priors and learns a bounded residual correction
 for the three radio maps. It is tested on the city-holdout test split with
-2590 samples from 14 cities that were not seen in training. The final
-prior-anchored residual GMM-head model should be read as a two-stage final
+2590 samples from 14 cities that were not seen in training. The model should
+be read as a two-stage final
 pipeline, not only as the last fine-tuning loss:
 the large-capacity residual/GMM stage keeps NLL, KL, moment matching and
 outlier-budget terms active, while the selected reported checkpoint is the
@@ -705,8 +615,8 @@ incompatible.
 
 \begin{table}[!htbp]
 \centering
-\caption[Final residual GMM-head model test results on unseen cities.]
-{Final residual GMM-head model test results on unseen cities, compared with the frozen
+\caption[\textsc{HARP-Net CKM} test results on unseen cities.]
+{\textsc{HARP-Net CKM} test results on unseen cities, compared with the frozen
 priors. Negative \(\Delta\) means that the model improves the prior.}
 \label{tab:try80_final_test_overall}
 \scriptsize
@@ -723,7 +633,7 @@ Angular spread & 11.3854 & 13.7416 & -2.3562 & 5.0088 & 4.9890 & +0.0198 & \(^{\
 
 \begin{table}[!htbp]
 \centering
-\caption{Final residual GMM-head model test RMSE separated by LoS and NLoS pixels. The test
+\caption{\textsc{HARP-Net CKM} test RMSE separated by LoS and NLoS pixels. The test
 cities are unseen during training.}
 \label{tab:try80_final_test_los_nlos}
 \scriptsize

@@ -157,19 +157,17 @@ path took \SI{0.88}{s}, a \(113.7\times\) reduction.
 
 \subsection{Negative results}
 
-The negative results are useful mainly because they explain why the final
-system looks the way it does. Pure image-translation models improved visual
-sharpness but not the physical metrics that mattered. Larger CNN variants,
-topology experts, multi-scale outputs, and uncertainty heads each helped expose
-some failure mode, but none solved the deeper issue by themselves. The repeated
-pattern was that plausible maps could still miss the target distribution,
-especially NLoS path-loss modes and spread tails.
+The negative results are useful mainly as design evidence, so the detailed
+attempt history is kept in Appendix~A rather than repeated in the main
+conclusion. The short lesson is that pure image translation, larger CNN
+backbones, topology experts, multi-scale outputs, and uncertainty heads each
+exposed a different failure mode, but none removed the need for strong frozen
+priors and distribution-aware residual learning.
 
-This is why the thesis ends with a hybrid, distribution-aware model instead of
-just a larger neural network. The failures ruled out simpler explanations: the
-problem was not only capacity, not only regularisation, and not only decoder
-artifacts. The final design is stronger because it is built on those rejected
-hypotheses.
+This is why the thesis ends with \textsc{HARP-Net CKM}: the final design is
+not just a larger neural network, but a bounded residual predictor built around
+the parts of the channel that can already be explained physically or
+statistically.
 
 \section{Future Directions}
 

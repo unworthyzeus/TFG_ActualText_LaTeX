@@ -1,4 +1,4 @@
-\chapter{Methodology / project development}
+\chapter{Methodology}
 \label{chap:methodology}
 
 This chapter is structured as the route that would be followed if the project
@@ -11,7 +11,7 @@ on decisions that affect reproducibility: masking, splitting, conditioning, and
 the distinction between raw deep prediction and prior-anchored residual
 prediction.
 
-\section{Dataset protocol}
+\section{Dataset and split}
 
 Each sample is a complete $513\times513$ pixel CKM. The spatial resolution is
 \SI{1}{m}\(\times\)\SI{1}{m} per pixel, so each map covers a
@@ -58,6 +58,41 @@ sample \(i\). Then
 \end{equation}
 When the density is visualized, the plotted curve linearly interpolates
 between the bin-centre values \((c_k,d_k)\), with \(c_k=11.5+3k\).
+Figure~\ref{fig:height_density} shows this realized transmitter-height density
+directly from the stored HDF5 samples.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    width=0.82\textwidth,
+    height=4.0cm,
+    xlabel={UAV transmitter height \(h_{\mathrm{tx}}\) (m)},
+    ylabel={Density},
+    xmin=0,
+    xmax=500,
+    ymin=0,
+    ymax=0.014,
+    xtick={0,50,150,300,500},
+    scaled y ticks=false,
+    yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=3},
+    axis lines=left,
+    grid=major,
+    tick label style={font=\scriptsize},
+    label style={font=\scriptsize}
+  ]
+  \addplot+[no marks, color=blue!70!black, thick]
+    table[x=mid_m,y=density,col sep=comma]{data/uav_height_histogram_3m.csv};
+  \end{axis}
+  \end{tikzpicture}
+  \caption{Empirical UAV transmitter-height density read directly from the CKM
+  HDF5 database using the \SI{3}{m} histogram of
+  Eq.~\ref{eq:height_empirical_histogram}, linearly interpolated between bin
+  centres for display. Most training support lies in the low and mid-altitude
+  bands.}
+  \label{fig:height_density}
+\end{figure}
+
 The all-database height counts are 3972 samples below \SI{50}{m}, 8456 from
 \SIrange{50}{150}{m}, 2490 from \SIrange{150}{300}{m}, and 1262 above
 \SI{300}{m}. In the actual training cities, the same bins contain 2676, 5654,
@@ -137,66 +172,33 @@ All RMSE values in this thesis are pixel-weighted over valid ground pixels:
 This is stricter than averaging per-sample RMSEs because large valid maps
 contribute proportionally to the number of receiver pixels.
 
-\section{Diagnostic baselines retained from development}
+\section{Final pipeline overview}
 
-The first implementation used a U-Net generator with a PatchGAN discriminator.
-The generator predicted channel maps from topology-related inputs, while the
-discriminator encouraged realistic local patches. This was useful as a
-software prototype but not as a final scientific direction. The adversarial
-term did not improve the physical errors that dominated validation RMSE, and it
-made diagnosis harder.
+With the evaluation contract fixed, the methodology used for the final thesis
+version is deliberately short. First, the CKM split and receiver mask are frozen
+so that all reported results use unseen cities and valid ground receivers only.
+Second, the target distributions are inspected before selecting the output
+model: path loss is separated into LoS and NLoS regimes, while delay spread and
+angular spread are treated as right-skewed, tail-sensitive quantities. Third,
+train-only priors are calibrated for the three targets. Finally,
+\textsc{HARP-Net CKM} learns only bounded residual corrections around those
+frozen priors.
 
-The next phase focused on controlled engineering changes. Transposed
-convolutions were replaced by bilinear upsampling and projection to reduce
-checkerboard artifacts. Multi-scale supervision was added so that the model
-could learn both global radial structure and local map details. The combined
-decoder/multiscale run became
-the strongest clean pre-prior path-loss baseline in this family.
+The earlier U-Net, cGAN, PMNet, PMHHNet, and distribution-first experiments are
+not part of the main method. They are retained in Appendix~A as development
+evidence because they explain why the thesis stopped expanding generic
+backbones and instead moved toward prior-anchored residual learning. Their
+practical lessons are folded into the final pipeline as constraints: no
+building-pixel credit, no random city leakage, explicit UAV-height
+conditioning, separate treatment of LoS/NLoS regimes, and distribution-aware
+residual heads when the target is multi-modal or heavy-tailed.
 
-After the masking correction, building pixels were excluded from both training loss and
-validation metrics. This changed the interpretation of earlier numbers: any
-method that implicitly benefited from easy building pixels was no longer
-acceptable. The ground-only rule became an invariant for later models.
-
-\section{Methodology structure after the development lessons}
-
-The work was not a single clean jump from U-Net to the final residual GMM-head
-model. The detailed numbering is kept in Appendix~A; the methodology only
-retains the lessons that affect the final design. If the project were repeated
-from the current endpoint, the efficient route would be:
-
-\begin{enumerate}
-\item define the city-holdout split and ground-only metric before comparing
-      any architecture;
-\item use simple U-Net and cGAN baselines only to verify the data pipeline and
-      expose why visual realism is not enough;
-\item separate LoS/NLoS, topology, and UAV-height regimes before interpreting
-      the errors;
-\item diagnose target histograms before choosing the output head;
-\item calibrate the path-loss and spread priors as train-only estimators;
-\item for path loss, reproduce the final prior-anchored residual GMM-head setup
-      rather than restarting another raw backbone search;
-\item for delay and angular spread, add an explicit high-tail or outlier
-      diagnostic before final fine-tuning, because the remaining errors are
-      concentrated in rare spread events;
-\item train the final network as a bounded residual corrector over the frozen
-      priors rather than as a raw map generator.
-\end{enumerate}
-
-The earlier models are therefore not deleted from the thesis narrative. They
-remain as controlled evidence for why the final method is organised around the
-evaluation contract, distribution shape, and prior-anchored residual learning
-instead of around a larger generic backbone. This is a change in exposition,
-not a change in the experimental contract: the dataset, the city-holdout
-split, the ground-only mask, the final prior-anchored architecture, and the detailed
-path-loss-prior, spread-prior, and residual-GMM formulas remain the same. The older version of the methodology
-read more like a chronological development diary; this reduced version keeps
-the same evidence but presents it as the design path that now looks defensible
-after the negative results are known. The chronology still matters because it
-explains why each simplifying decision was made: U-Net and cGAN runs validated
-the pipeline, PMNet and PMHHNet diagnosed the limits of stronger backbones,
-the distribution-first attempts exposed the target marginals, and the final
-prior-anchored model combined the surviving pieces.
+The rest of this chapter therefore describes the final method rather than the
+chronological path used to discover it. Section~\ref{sec:priors_overview}
+summarises the frozen path-loss, delay-spread, and angular-spread priors;
+Sections~\ref{sec:try78_detail} and~\ref{sec:try79_detail} give their
+mathematical construction; and Section~\ref{sec:try80_detail} describes the
+joint residual network trained on top of them.
 
 \section{Physical priors and PMHHNet}
 
@@ -784,11 +786,9 @@ fitted only on the training split and then evaluated with the same
 pixel-weighted ground-mask RMSE used elsewhere in the thesis. Finally, the
 prior output becomes the frozen path-loss anchor consumed by the final residual GMM-head model.
 
-The most important results to retain while reading the details are the LoS
-waterfall in Table~\ref{tab:try78_los_waterfall} and the final path-loss
-numbers in Table~\ref{tab:try78_results}: the enhanced two-ray branch reduces
-LoS error to about \SI{1.75}{dB}, and the full hybrid prior reaches about
-\SI{1.92}{dB} overall on the held-out validation+test cities.
+The corresponding quantitative audit is reported in Chapter~\ref{chap:results};
+this methodology section focuses on how the prior is constructed and why its
+output is frozen before residual learning.
 
 \input{prior_detail_try78}
 

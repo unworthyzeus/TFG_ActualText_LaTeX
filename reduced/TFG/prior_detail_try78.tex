@@ -766,8 +766,9 @@ fitted LoS two-ray curves and the regime-wise NLoS calibration coefficients.
 
 \paragraph{Interpretation of Eq.~\eqref{eq:a2g_nlos}.}
 \begin{itemize}
-\item $\lambda_0$: a free-space-like offset that scales with UAV height and
-      frequency~\cite{khawaja_survey,wocc2021}. The CKM dataset uses
+\item $\lambda_0$: the free-space reference level used inside the raw A2G NLoS
+      envelope before the empirical NLoS offset and elevation-angle modulation
+      are applied~\cite{khawaja_survey,wocc2021}. The CKM dataset uses
       $f = 7.125$ GHz (FR3 6G frequency band); for
       $h_{\mathrm{tx}} = 50$ m at that frequency, $\lambda_0 \approx 83.5$ dB.
 \item $\beta_{\mathrm{NLoS}} = -16.16$ dB: a fixed baseline offset relative
