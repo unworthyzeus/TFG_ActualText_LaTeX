@@ -29,18 +29,19 @@ Appendix A: Development trace, failed attempts, diagnostic baselines, negative r
 
 ## Naming Decision I Would Apply
 
-I would name the final framework `AnchorGMM`.
+I would name the final framework `HARP-Net CKM`.
 
 Definition to introduce once:
 
 ```latex
-\textsc{AnchorGMM} is the final prior-anchored Gaussian-mixture residual
-surrogate used in this thesis. The name reflects its two main design choices:
-predictions are anchored to frozen physical/statistical priors, and the neural
-residual branch keeps a mixture-model representation of the remaining error.
+\textsc{HARP-Net CKM} is the final Height-Aware Residual Prior Network for
+Channel Knowledge Map prediction. The name reflects its central design choice:
+calibrated physical/statistical priors explain the stable propagation structure,
+while a height-conditioned neural network learns the remaining residual
+corrections.
 ```
 
-Then use `\textsc{AnchorGMM}` in the introduction and conclusions instead of repeated phrases such as "selected prior-anchored residual model" or "final prior-anchored residual GMM-head model". In the technical chapters, after the name is defined, keep the longer architecture description when needed.
+Then use `\textsc{HARP-Net CKM}` in the introduction and conclusions instead of repeated phrases such as "selected prior-anchored residual model" or "final prior-anchored residual GMM-head model". In the technical chapters, after the name is defined, keep the longer architecture description when needed.
 
 ## SC-001 - Add 3GPP UxNB Terminology
 
@@ -60,7 +61,7 @@ In the 6G literature, a channel knowledge map is a site-specific,
 location-tagged repository of channel information that can support
 environment-aware planning and reduce online channel-acquisition overhead
 \cite{zengx2021ckm,ckmtutorial2024}. This thesis studies whether
-\textsc{AnchorGMM}, a prior-anchored Gaussian-mixture surrogate, can predict
+\textsc{HARP-Net CKM}, a height-aware residual-prior surrogate, can predict
 dense CKM target maps directly from urban geometry while preserving enough
 physical structure to generalize to cities not seen during training.
 ```
@@ -141,22 +142,22 @@ Exact local fixes:
 
 ## SC-005 - Choose a Clear Framework Name
 
-Use `\textsc{AnchorGMM}`.
+Use `\textsc{HARP-Net CKM}`.
 
 Exact first definition: add the definition from the "Naming Decision" section after the two opening paragraphs in `introduction.tex`.
 
 Exact search/replace after definition:
 
 ```text
-selected prior-anchored residual model -> \textsc{AnchorGMM}
-final prior-anchored residual GMM-head model -> \textsc{AnchorGMM}
-final residual GMM-head model -> \textsc{AnchorGMM}
+selected prior-anchored residual model -> \textsc{HARP-Net CKM}
+final prior-anchored residual GMM-head model -> \textsc{HARP-Net CKM}
+final residual GMM-head model -> \textsc{HARP-Net CKM}
 ```
 
 Do not replace inside highly technical paragraphs where the architecture is being defined; there, write:
 
 ```latex
-\textsc{AnchorGMM}, the final prior-anchored residual GMM-head model, ...
+\textsc{HARP-Net CKM}, the final prior-anchored residual GMM-head model, ...
 ```
 
 ## SC-006 - Define City-Holdout Early
@@ -205,7 +206,7 @@ Exact replacement for lines 75-83:
 
 ```latex
 In simple terms, the final answer to the three questions is positive within
-the fixed CKM simulation setting used in this thesis. \textsc{AnchorGMM}
+the fixed CKM simulation setting used in this thesis. \textsc{HARP-Net CKM}
 predicts path loss, delay spread, and angular spread on cities that were not
 used for training. The reason it works is not that the neural network learns
 all propagation physics from zero. Stable effects such as distance, visibility,
@@ -237,7 +238,7 @@ The main contributions corresponding to these questions are:
   \item Train-calibrated delay-spread and angular-spread priors based on
         log-domain ridge regression over geometry, visibility, UAV-height, and
         environment features.
-  \item \textsc{AnchorGMM}, a shared neural model that receives the frozen PL,
+  \item \textsc{HARP-Net CKM}, a shared neural model that receives the frozen PL,
         DS, and AS priors and learns bounded residual corrections for the three
         maps jointly.
   \item A distribution-shape analysis showing that earlier point-regression
@@ -270,7 +271,7 @@ the thesis: classical propagation models, radio-map deep learning, hybrid
 physics/neural methods, distribution-aware prediction, and fair-comparison
 criteria. Chapter~3 describes the final methodology: the CKM dataset, the
 ground-receiver evaluation contract, the city-holdout split, the calibrated
-priors, and the \textsc{AnchorGMM} residual model. Chapter~4 reports the final
+priors, and the \textsc{HARP-Net CKM} residual model. Chapter~4 reports the final
 quantitative results, the comparison with the frozen priors and the closest
 published benchmarks, qualitative examples, runtime, and limitations.
 Chapter~5 discusses sustainability, economic impact, social impact, and ethical
@@ -324,7 +325,7 @@ The final method follows a hybrid pipeline. First, the city map is represented
 as a building-height raster with a centred UAV transmitter and a fixed
 ground-user receiver grid. Second, geometric LoS/NLoS masks and calibrated
 priors are prepared for path loss, delay spread, and angular spread. Third,
-\textsc{AnchorGMM} receives the topology, masks, UAV height, and prior maps and
+\textsc{HARP-Net CKM} receives the topology, masks, UAV height, and prior maps and
 predicts bounded residual corrections for the three outputs. The final maps are
 the prior predictions plus the learned residual corrections.
 
@@ -372,7 +373,7 @@ fair-comparison -> fair comparison
 continuous-UAV-height -> continuous UAV-height
 city-holdout protocol -> city-holdout split when used as adjective, city holdout when used as noun
 ground-only masking -> ground-receiver masking or valid ground receiver pixels
-prior-anchored residual model -> \textsc{AnchorGMM} in intro/conclusion, technical phrase only in method
+prior-anchored residual model -> \textsc{HARP-Net CKM} in intro/conclusion, technical phrase only in method
 ```
 
 I would run:
@@ -827,7 +828,7 @@ The pipeline has four reproducible stages:
 \begin{enumerate}
   \item define the city-holdout split and the valid ground-receiver mask;
   \item calibrate the path-loss prior and the spread priors on training cities;
-  \item train \textsc{AnchorGMM} as a shared residual model over the frozen
+  \item train \textsc{HARP-Net CKM} as a shared residual model over the frozen
         priors;
   \item evaluate the frozen priors and the final residual model on the same
         held-out test cities.
@@ -881,7 +882,7 @@ This chapter reports the final quantitative and qualitative outcomes of the
 thesis. All main numbers use the same final 2590-sample, 14-city test split and
 the same valid ground-receiver mask. The frozen priors are reported first
 because they are part of the final system, not weak baselines. The final
-\textsc{AnchorGMM} model is then compared with those priors, with the original
+\textsc{HARP-Net CKM} model is then compared with those priors, with the original
 thesis targets, with the closest external path-loss benchmarks, and with the
 ray-tracing runtime baseline.
 ```
@@ -999,7 +1000,6 @@ Keep the Chapter 4 comparison table, but make the wording more neutral:
 
 ```latex
 The table is a context table, not a leaderboard. The only directly comparable
-rows are the frozen priors and \textsc{AnchorGMM}, because they share the CKM
+rows are the frozen priors and \textsc{HARP-Net CKM}, because they share the CKM
 test split, target definitions, and ground-receiver mask.
 ```
-
