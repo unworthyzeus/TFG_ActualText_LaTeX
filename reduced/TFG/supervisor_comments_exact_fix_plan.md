@@ -384,6 +384,8 @@ rg -n "\w+-\w+-\w+|fair-comparison|ground-only|city-holdout|continuous-UAV-heigh
 
 Then simplify only prose, not equations, labels, filenames, or established acronyms.
 
+Important: run this hyphen-cleanup pass after the other thesis fixes, so it also checks newly edited text. The command above is only a starting point; expand the search list with other repeated compounds that appear during editing, for example `prior-anchored`, `height-aware`, `distribution-first`, `image-to-image`, `path-loss`, `delay-spread`, `angular-spread`, `ground-receiver`, and `test-time`.
+
 ## SC-021 - Use "Channel Gain" Only
 
 File: `state_of_art.tex`
@@ -416,7 +418,7 @@ results of this thesis.
 
 Exact deletion/move:
 
-- Move the thesis-specific final model table in `state_of_art.tex` lines 704-729 to Chapter 4 if it is still useful.
+- Move the thesis-specific final model table in `state_of_art.tex` lines 704-729 to Chapter 4.
 - Delete or rewrite lines 731-736 because they report final model performance inside SOTA.
 - Replace the final section title:
 
@@ -621,7 +623,9 @@ Example for PMNet:
 \textbf{Limitations:} PMNet is a strong image-to-image radio-map benchmark, but
 its challenge setting uses a different dataset, fixed rooftop-style
 transmitters, a narrower target image window, and a masking convention that is
-not the same as the CKM ground-receiver evaluation.
+not the same as the CKM ground-receiver evaluation. The challenge includes
+multiple transmitter locations, but it does not test the continuous UAV-height
+conditioning used in CKM.
 ```
 
 Example for transformers/foundation models:
@@ -676,7 +680,8 @@ best zero-shot result was approximately \SI{84}{dB} RMSE, with most models
 collapsing to a nearly constant prediction. Even after oracle linear
 calibration from test data, the minimum achievable RMSE was still approximately
 \SI{42}{dB}. This check is not used as a final benchmark; it only confirms that
-PMNet's strong challenge score does not transfer directly to the CKM contract.
+PMNet's strong challenge score does not transfer directly to the CKM contract,
+because the training and target distributions are structurally different.
 ```
 
 ## SC-033 - Review Transformer/Global-Context Claim
@@ -769,36 +774,53 @@ instead of:
 
 File: `methodology.tex`
 
-I would create a figure file:
+Do not create a new figure from scratch. The paper version already contains the height-density figure and the reduced thesis already has the CSV data file:
 
 ```text
-img/thesis_figures/dataset/uav_height_distribution.pdf
+paper_version/paper.tex, Fig. height-density
+reduced/TFG/data/uav_height_histogram_3m.csv
 ```
 
-from `CKM_Dataset_270326.h5`, plotting the empirical `uav_height` histogram with the four reporting bins:
-
-```text
-<50 m, 50-150 m, 150-300 m, >300 m
-```
+Use the same figure style/data in the thesis so the paper and thesis remain consistent.
 
 Insert after line 68:
 
 ```latex
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.82\textwidth]{img/thesis_figures/dataset/uav_height_distribution.pdf}
-  \caption{Empirical UAV transmitter-height distribution in the CKM dataset.
-  The vertical lines mark the reporting bins used later in the results:
-  below \SI{50}{m}, \SIrange{50}{150}{m}, \SIrange{150}{300}{m}, and above
-  \SI{300}{m}.}
-  \label{fig:uav_height_distribution}
+  \begin{tikzpicture}
+  \begin{axis}[
+      width=0.82\textwidth,
+      height=4.0cm,
+      xlabel={UAV height \(h_{\mathrm{tx}}\) (m)},
+      ylabel={Density (1/m)},
+      xmin=0, xmax=500,
+      ymin=0, ymax=0.014,
+      xtick={0,50,150,300,500},
+      scaled y ticks=false,
+      yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=3},
+      axis lines=left,
+      grid=major,
+      tick label style={font=\scriptsize},
+      label style={font=\scriptsize}
+  ]
+  \addplot+[no marks, color=blue!70!black, thick]
+  table[x=mid_m,y=density,col sep=comma]{data/uav_height_histogram_3m.csv};
+  \end{axis}
+  \end{tikzpicture}
+  \caption{Empirical UAV transmitter-height density read directly from the CKM
+  HDF5 database using the \SI{3}{m} histogram of
+  Eq.~\ref{eq:height_empirical_histogram}, linearly interpolated between bin
+  centres for display. Most training support lies in the low and mid-altitude
+  bands.}
+  \label{fig:height_density}
 \end{figure}
 ```
 
 Then refer to it before the paragraph:
 
 ```latex
-Figure~\ref{fig:uav_height_distribution} shows the empirical height distribution.
+Figure~\ref{fig:height_density} shows the empirical height distribution.
 ```
 
 ## SC-040 - Rewrite Methodology Around Final Method
@@ -845,10 +867,14 @@ File: `prior_detail_try78.tex`
 Exact replacement for lines 769-772:
 
 ```latex
-\item $\lambda_0$: a free-space reference offset that scales with UAV height and
-      frequency~\cite{khawaja_survey,wocc2021}. The CKM dataset uses
-      $f = 7.125$ GHz (FR3 6G frequency band); for
-      $h_{\mathrm{tx}} = 50$ m at that frequency, $\lambda_0 \approx 83.5$ dB.
+\item $\lambda_0$: the free-space reference level used inside the raw A2G NLoS
+      envelope before the empirical NLoS offset and elevation-angle modulation
+      are applied~\cite{khawaja_survey,wocc2021}. This replaces the vaguer
+      wording ``free-space-like offset'': \(\lambda_0\) is the deterministic
+      range/frequency baseline of the envelope, not an additional learned
+      correction term. The CKM dataset uses \(f=7.125\) GHz (FR3 6G frequency
+      band); for \(h_{\mathrm{tx}}=50\) m at that frequency,
+      \(\lambda_0\approx 83.5\) dB.
 ```
 
 ## SC-042 - Delete "The Addition Of 1 Is Not Cosmetic"
@@ -905,6 +931,16 @@ masking rules, objectives, and model families changed during the project.
 
 ## SC-044 - Reframe Economic Impact
 
+### Implementation Note
+
+The supervisor asked for more economic impact, but the ETSETB guide does not
+say the section should become economic-only. It asks for environmental,
+economic, and social perspectives across BT development, project execution, and
+risks/limitations. So the fix should add a stronger economic/viability
+paragraph for the final model while keeping the social-impact and
+risk/limitation discussion. Guide checked:
+`C:\TFG\FINAL_THESIS\reduced\TFG\Examples_And_Guides\Guide for writing the Sustainability and Ethical Implications Analysis.pdf`.
+
 File: `sustainability_balanced.tex`
 
 Exact replacement for lines 74-82:
@@ -912,22 +948,29 @@ Exact replacement for lines 74-82:
 ```latex
 \section{Economic and social impact}
 
-The economic value of the final model is its potential to reduce repeated
-ray-tracing runs during UAV network planning. In the Barcelona runtime check,
-the complete generator produced the three dense maps in \SI{0.88}{s}, compared
-with \SI{99.89}{s} for the MATLAB ray-tracing path used as reference. This
-does not remove the need for ray tracing or field validation, but it changes
-where expensive simulation is spent: planners can use the surrogate to screen
-many UAV heights, city layouts, and candidate deployments, then reserve detailed
-simulation or measurement for the most relevant cases.
+The economic analysis has two parts, following the sustainability guide: the
+cost of developing the BT and the potential viability of the proposed tool if it
+were reused in a planning workflow. During the BT, the main cost was human time:
+literature review, dataset handling, training/debugging, analysis, supervision
+and writing. Compute cost was smaller than labour cost, but still relevant
+because the exploration required many GPU-hours.
 
-In practical terms, the final model could lower the marginal cost of what-if
-studies. A network planner could quickly compare whether raising the UAV,
-moving it to another candidate site, or changing the service area improves
-ground-user coverage before launching a full deterministic simulation. The
-economic impact is therefore not the training cost of this academic prototype,
-but the possible reduction in repeated planning time once a validated surrogate
-is reused.
+For project execution, the economic value of the final model is its potential
+to reduce repeated ray-tracing runs during UAV network planning. In the
+Barcelona runtime check, the complete generator produced the three dense maps in
+\SI{0.88}{s}, compared with \SI{99.89}{s} for the MATLAB ray-tracing path used
+as reference. This does not remove the need for ray tracing or field
+validation, but it changes where expensive simulation is spent: planners can use
+the surrogate to screen many UAV heights, city layouts, and candidate
+deployments, then reserve detailed simulation or measurement for the most
+relevant cases.
+
+The main economic limitation is that this value appears only if the surrogate is
+validated and reused. Training and calibration have an upfront cost, and the
+model should not be sold as a replacement for deterministic simulation in
+unseen frequencies, antenna configurations, or real environments without field
+calibration. Its realistic economic role is decision support: cheaper
+pre-screening before more expensive simulation or measurement.
 ```
 
 Keep the social-impact paragraphs after this replacement.
