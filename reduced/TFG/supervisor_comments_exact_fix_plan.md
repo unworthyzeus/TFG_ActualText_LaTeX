@@ -110,7 +110,7 @@ The project is formulated as dense image-to-image regression on
 $513\times513$ pixel city maps. The final model receives a building-height
 topology map, a LoS/NLoS visibility mask, the UAV antenna height, and the
 frozen prior maps described later in the thesis. In the CKM experiments the
-visibility mask is read from the dataset; for topology-only deployment it can
+visibility mask is read from the dataset; for topology only deployment it can
 be generated geometrically from the building map and UAV height. The predicted
 outputs are path loss, delay spread, and angular spread. The neural network
 therefore does not infer visibility from scratch; it uses visibility as one of
