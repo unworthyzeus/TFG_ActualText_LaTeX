@@ -168,6 +168,32 @@ C.-C. Chiu, A.-H. Tsai, H.-P. Lin, C.-Y. Lee, and L.-C. Wang, ``Channel
   model for {UAV} communication systems,'' in \emph{2021 30th Wireless and
   Optical Communications Conference ({WOCC})}, 2021, pp. 251--256.
 
+\bibitem{yang2019a2gml}
+\BIBentryALTinterwordspacing
+G.~Yang, Y.~Zhang, Z.~He, J.~Wen, Z.~Ji, and Y.~Li, ``Machine-learning-based
+  prediction methods for path loss and delay spread in air-to-ground
+  millimetre-wave channels,'' \emph{IET Microwaves, Antennas \& Propagation},
+  vol.~13, no.~8, pp. 1113--1121, 2019. [Online]. Available:
+  \url{https://onlinelibrary.wiley.com/doi/10.1049/iet-map.2018.6187}
+\BIBentrySTDinterwordspacing
+
+\bibitem{huang2025a2gtransformer}
+\BIBentryALTinterwordspacing
+B.~Huang, Z.~Xin, F.~Yang, Y.~Zhang, Y.~Liu, J.~Huang, and J.~Bian,
+  ``Transformer-based air-to-ground mmwave channel characteristics prediction
+  for 6g uav communications,'' \emph{Sensors}, vol.~25, no.~12, p. 3731, 2025.
+  [Online]. Available: \url{https://www.mdpi.com/1424-8220/25/12/3731}
+\BIBentrySTDinterwordspacing
+
+\bibitem{mi2024pointcloud}
+\BIBentryALTinterwordspacing
+H.~Mi, B.~Ai, R.~He, A.~Bodi, R.~Caromi, J.~Wang, J.~Senic, C.~Gentile, and
+  Y.~Miao, ``Measurement-based prediction of mmwave channel parameters using
+  deep learning and point cloud,'' \emph{IEEE Open Journal of Vehicular
+  Technology}, vol.~5, pp. 1059--1072, 2024. [Online]. Available:
+  \url{https://doi.org/10.1109/OJVT.2024.3436857}
+\BIBentrySTDinterwordspacing
+
 \bibitem{kendall2017uncertainties}
 \BIBentryALTinterwordspacing
 A.~Kendall and Y.~Gal, ``What uncertainties do we need in {Bayesian} deep

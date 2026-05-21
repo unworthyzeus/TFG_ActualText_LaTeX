@@ -14,7 +14,7 @@ prediction.
 \section{Dataset and split}
 
 Each sample is a complete $513\times513$ pixel CKM. The spatial resolution is
-\SI{1}{m}\(\times\)\SI{1}{m} per pixel, so each map covers a
+\SI{1}{m}\(\times\)\SI{1}{m} per-pixel, so each map covers a
 \SI{513}{m}\(\times\)\SI{513}{m} square. The UAV transmitter is horizontally
 fixed at the centre of the map, while its antenna height \(h_{\mathrm{tx}}\)
 varies from sample to sample and is treated as a primary conditioning variable.
@@ -29,7 +29,7 @@ city assignment. This avoids the most common optimistic error in spatial radio
 prediction: training on one part of a city and testing on another visually
 similar part of the same city.
 
-The transmitter-height samples are not uniformly distributed. Comparing the
+The transmitter height samples are not uniformly distributed. Comparing the
 stored HDF5 histogram with the tested affine beta-mixture variants shows that
 the closest nominal sampler is
 \(h_{\mathrm{design}}\approx 10+490X\), where
@@ -58,7 +58,7 @@ sample \(i\). Then
 \end{equation}
 When the density is visualized, the plotted curve linearly interpolates
 between the bin-centre values \((c_k,d_k)\), with \(c_k=11.5+3k\).
-Figure~\ref{fig:height_density} shows this realized transmitter-height density
+Figure~\ref{fig:height_density} shows this realized transmitter height density
 directly from the stored HDF5 samples.
 
 \begin{figure}[ht]
@@ -85,7 +85,7 @@ directly from the stored HDF5 samples.
     table[x=mid_m,y=density,col sep=comma]{data/uav_height_histogram_3m.csv};
   \end{axis}
   \end{tikzpicture}
-  \caption{Empirical UAV transmitter-height density read directly from the CKM
+  \caption{Empirical UAV transmitter height density read directly from the CKM
   HDF5 database using the \SI{3}{m} histogram of
   Eq.~\ref{eq:height_empirical_histogram}, linearly interpolated between bin
   centres for display. Most training support lies in the low and mid-altitude
@@ -172,7 +172,8 @@ All RMSE values in this thesis are pixel-weighted over valid ground pixels:
 This is stricter than averaging per-sample RMSEs because large valid maps
 contribute proportionally to the number of receiver pixels.
 
-\section{Final pipeline overview}
+\section{General Framework and Data Flow}
+\label{sec:framework_data_flow}
 
 With the evaluation contract fixed, the methodology used for the final thesis
 version is deliberately short. First, the CKM split and receiver mask are frozen
@@ -184,22 +185,57 @@ train-only priors are calibrated for the three targets. Finally,
 \textsc{HARP-Net CKM} learns only bounded residual corrections around those
 frozen priors.
 
+\begin{table}[ht]
+\centering
+\caption{External framework inputs, internally computed maps, neural model
+inputs and final outputs.}
+\label{tab:framework_io_contract}
+\small
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+Stage & Maps / variables \\
+\midrule
+External inputs to the full framework &
+Building height map and UAV transmitter height \(h_{\mathrm{tx}}\). \\
+Internally computed support maps &
+LoS/NLoS visibility mask and building/ground receiver mask. \\
+Frozen prior outputs &
+Combined path-loss prior, path loss LoS prior, path loss NLoS prior,
+delay-spread prior, angular-spread prior. \\
+Inputs to \textsc{HARP-Net CKM} &
+Building height map, UAV height conditioning, ground-mask, LoS mask, NLoS mask,
+combined path-loss prior, path loss LoS prior, path loss NLoS prior,
+delay-spread prior, angular-spread prior. \\
+Final outputs &
+Path loss map, angular spread map, delay spread map. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Therefore, the full framework has two external inputs and three final outputs.
+The neural residual model receives ten internal inputs because the framework has
+already computed visibility masks, receiver masks and frozen prior maps. This is
+the main distinction between the deployable framework and the internal neural
+model: the user provides only a city height map and the UAV height, while the
+pipeline constructs the remaining maps before inference.
+
 The earlier U-Net, cGAN, PMNet, PMHHNet, and distribution-first experiments are
 not part of the main method. They are retained in Appendix~A as development
 evidence because they explain why the thesis stopped expanding generic
 backbones and instead moved toward prior-anchored residual learning. Their
 practical lessons are folded into the final pipeline as constraints: no
-building-pixel credit, no random city leakage, explicit UAV-height
+building pixel credit, no random city leakage, explicit UAV height
 conditioning, separate treatment of LoS/NLoS regimes, and distribution-aware
 residual heads when the target is multi-modal or heavy-tailed.
 
 The rest of this chapter therefore describes the final method rather than the
 chronological path used to discover it. Section~\ref{sec:priors_overview}
-summarises the frozen path-loss, delay-spread, and angular-spread priors;
+summarises the frozen path loss, delay spread, and angular-spread priors;
 Sections~\ref{sec:try78_detail} and~\ref{sec:try79_detail} give their
 mathematical construction; and Section~\ref{sec:try80_detail} describes the
 joint residual network trained on top of them.
 
+\iffalse
 \section{Physical priors and PMHHNet}
 
 The middle development phase moved from direct map prediction to residual learning, as
@@ -221,7 +257,7 @@ explain.
 
 \subsection{Mathematical Evolution: From PMNet to PMHHNet}
 
-The \texttt{PMHHNet} (Path-loss Map with High-frequency and Height-awareness
+The \texttt{PMHHNet} (Path loss Map with High-frequency and Height awareness
 Network) was developed as a specific refinement of the \texttt{PMNet}
 philosophy tailored for the UAV-enabled Air-to-Ground (A2G) scenario.
 
@@ -240,7 +276,7 @@ output to the stem's feature depth. This ensures that building geometry is
 strongly injected into the earliest layers of the encoder.
 
 \paragraph{Continuous Sinusoidal FiLM Conditioning.}
-While \texttt{PMNet} was designed for fixed base-station heights, UAVs require
+While \texttt{PMNet} was designed for fixed base station heights, UAVs require
 continuous height generalization. \texttt{PMHHNet} utilizes Feature-wise Linear
 Modulation (FiLM) \cite{perez2018film} to inject the scalar height $h$.
 The height is first mapped to a sinusoidal embedding $\textbf{e}(h) \in \mathbb{R}^K$
@@ -291,7 +327,7 @@ distribution.  This diagnosis came from comparing predicted and ground-truth
 histograms: the maps showed where the model was wrong, but the histograms
 showed \emph{what} the model had misunderstood.  The central idea of the late
 pipeline was therefore to identify the target distribution before asking a
-network to perform pixel-by-pixel prediction. The distribution-first path-loss
+network to perform pixel-by-pixel prediction. The distribution-first path loss
 model addressed this by
 emitting a Gaussian Mixture Model (GMM)-parameterized residual head rather than
 only a direct scalar map.
@@ -313,7 +349,7 @@ only a direct scalar map.
 
 %% Inputs row
 \node[inp] (topo)  {topology\_map / 90};
-\node[inp, right=0.4cm of topo]  (masks) {los, nlos,\\ground masks};
+\node[inp, right=0.4cm of topo]  (masks) {los, nlos,\\ground-masks};
 \node[inp, right=0.4cm of masks] (hgt)   {UAV height\\embedding};
 \node[nd,  right=1.4cm of hgt]   (filt)  {Invalid\\target filter};
 
@@ -334,10 +370,10 @@ only a direct scalar map.
 \end{pgfonlayer}
 \node[lbl] at (inp_box.north west) {Inputs and routing};
 
-%% Stage A: GMM head (right)
+%% Stage A: GMM-head (right)
 \node[sa, below=1.2cm of exp]       (enc)  {Encoder with FiLM(height)};
 \node[sa, below=0.4cm of enc]       (gap)  {Global average pooling};
-\node[sa, below=0.4cm of gap]       (gmm)  {GMM head};
+\node[sa, below=0.4cm of gap]       (gmm)  {GMM-head};
 \node[sa, below=0.4cm of gmm]       (outa) {$\pi_k,\,\mu_k,\,\sigma_k$};
 
 \draw[->] (exp) -- (enc);
@@ -386,9 +422,9 @@ only a direct scalar map.
 
 \end{tikzpicture}%
 }
-\caption[Distribution-first path-loss system. Stage A learns global GMM
+\caption[Distribution-first path loss system. Stage A learns global GMM
 parameters from pooled features and Stage B predicts per-pixel assignments.]%
-{Distribution-first path-loss system. Stage~A learns global
+{Distribution-first path loss system. Stage~A learns global
 GMM parameters $(\pi_k,\mu_k,\sigma_k)$ from pooled features conditioned on
 UAV height; Stage~B produces per-pixel soft assignments and
 within-component offsets anchored to those parameters.}
@@ -399,7 +435,7 @@ The distribution-first spread model applied the same two-stage idea to delay
 spread and angular spread, but changed the mixture shape to match the targets:
 a near-zero LoS spike plus a heavy NLoS tail. The architecture is therefore not
 redrawn as a second full diagram; it follows the same routing and Stage-A /
-Stage-B structure as Figure~\ref{fig:try76_system}, with the path-loss LoS/NLoS
+Stage-B structure as Figure~\ref{fig:try76_system}, with the path loss LoS/NLoS
 experts replaced by delay-spread and angular-spread experts.
 
 For path loss, the distribution-first model utilized 12 specialized experts: six topology classes partitioned by LoS
@@ -469,7 +505,7 @@ is concentrated around a blocked-link attenuation level, but it is noisy,
 topology-dependent, and hard to place spatially. The model must answer two
 questions at once: which NLoS value range belongs to this map, and which pixels
 belong to the high-error tail. The old PMHHNet family exposed this mismatch
-through severe NLoS mode collapse, with predicted NLoS means around
+through severe NLoS mode-collapse, with predicted NLoS means around
 \SI{36.5}{dB} against target means around \SI{107.1}{dB}.
 
 Delay spread and angular spread are even more distributional. In LoS regions,
@@ -489,7 +525,7 @@ The resulting rule set is compact but chronological. First, identify whether
 the target is smooth, narrow, multi-modal, spike-plus-tail, or heavy-tailed
 before choosing MSE, Huber, GMM, NLL, or residual losses. Second, treat LoS and
 NLoS as semantic regimes, not only as reporting columns. Third, keep masks,
-units, city holdout, topology class, antenna height, and tail-risk policy
+units, city-holdout, topology class, antenna height, and tail-risk policy
 visible during validation. Finally, use visual realism only as a qualitative
 check: cGAN sharpness and larger PMNet/PMHHNet-style backbones did not solve
 the physical RMSE problem until the target distribution itself was represented.
@@ -511,7 +547,7 @@ mixtures with $K\in\{2,3,4,5\}$.
 
 Table~\ref{tab:gmm_k_choice} summarises the winning family for the four
 targets used in this thesis, aggregated across all cities. The table uses the
-target-side (ground-truth) histograms, because the distribution-head objective
+target side (ground-truth) histograms, because the distribution-head objective
 is defined against the ground-truth marginal, not the current prediction.
 
 \begin{table}[!htbp]
@@ -544,9 +580,9 @@ Angular spread   & spike-plus-exp. & Dirac-like spike near 0\textdegree{} plus
 
 Three consequences follow. First, a single Gaussian (or any unimodal head) is
 never the best family for NLoS path loss or for the two spreads. This is
-exactly the regime in which the earlier PMHHNet family produced mode collapse
+exactly the regime in which the earlier PMHHNet family produced mode-collapse
 with a single-output MSE head. Second, the number of components that wins is
-consistently $K\in\{4, 5\}$ for the raw path-loss and spread targets, not
+consistently $K\in\{4, 5\}$ for the raw path loss and spread targets, not
 $K=3$. The Stage-A heads in this thesis therefore use $K=5$ by default on
 the target-distribution experts, even though the code supports
 $K\in\{2,\dots,5\}$. The final \texttt{num\_components} field
@@ -605,7 +641,7 @@ All sums are restricted to valid receiver pixels.
 \toprule
 Term group & Large-capacity residual stage & Final residual fine-tuning stage & Interpretation \\
 \midrule
-NLL, KL, moment and outlier budget &
+NLL, KL, moment and outlier-budget &
 1.00 / 0.25 / 0.10 / 0.02 &
 0 / 0 / 0 / 0 &
 Active in the preceding large-capacity stage, then disabled in the selected
@@ -631,7 +667,7 @@ joint model. \\
 \end{table}
 
 This is a deliberate simplification relative to the earlier branches. The
-PMHHNet diagnostic runs used masked MSE with multi-scale and Laplacian-style auxiliaries; the
+PMHHNet diagnostic runs used masked MSE with multi scale and Laplacian-style auxiliaries; the
 distribution-first models removed those structural losses and focused on target
 shape. The final model keeps the residual GMM-head machinery available: it
 still emits mixture parameters and uses the local-weighted model-space mixture
@@ -673,7 +709,7 @@ and gradient accumulation over 8 steps.}
 \toprule
 Config & Distribution-first experts & Final joint GMM & PMHHNet diagnostics \\
 \midrule
-Input channels   & topology, LoS, NLoS, ground mask (4 + scalar height) & topology + frozen priors + masks (9) & topology, LoS, distance, formula prior, knife-edge (5 to 6) \\
+Input channels   & topology, LoS, NLoS, ground-mask (4 + scalar height) & topology + frozen priors + masks (9) & topology, LoS, distance, formula prior, knife-edge (5 to 6) \\
 Optimizer        & AdamW ($\beta_1{=}0.9, \beta_2{=}0.999$) & AdamW & AdamW \\
 Learning rate    & \num{3e-4} & \num{5e-5} & \num{1e-3} to \num{3e-4} (cosine or plateau) \\
 Weight decay     & 0.01 & 0.01 & 0.015 to 0.030 \\
@@ -733,7 +769,7 @@ the PL, DS and AS residual heads remained task-specific.
 
 \item \textbf{Wide residual model with relaxed residual bounds.} The second stage kept the same
 network capacity but loosened the allowed correction range. In the selected
-fine-tuned configuration, the path-loss caps are \(\pm7\) dB in LoS and
+fine-tuned configuration, the path loss caps are \(\pm7\) dB in LoS and
 \(\pm25\) dB in NLoS, the delay-spread caps are \(\pm20\) ns in both regimes,
 and the angular-spread caps are \(\pm17^\circ\) in LoS and \(\pm15^\circ\) in
 NLoS. This made the residual head less constrained and produced a
@@ -744,7 +780,7 @@ capacity to \(128\) base channels and a \(160\)-dimensional conditioning
 vector, while keeping the relaxed residual philosophy. It also placed more
 weight on the deterministic RMSE term. This stage tested whether the remaining
 gap was capacity-limited rather than only cap-limited. The larger model helped
-the spread tasks, but path-loss improvement remained too small while the full
+the spread tasks, but path loss improvement remained too small while the full
 probabilistic objective was still active.
 
 \item \textbf{Final residual fine-tuning stage.} The final stage kept the
@@ -765,12 +801,13 @@ deciding which stage should be continued or replaced.
 
 
 
+\fi
 \section{Final priors: overview and literature basis}
 \label{sec:priors_overview}
 
 \input{prior_detail_overview}
 
-\section{Path Loss Prior}
+\section{Path Loss Prior and Residual Prediction}
 \label{sec:try78_detail}
 
 \subsection*{Reader map}
@@ -778,13 +815,13 @@ deciding which stage should be continued or replaced.
 This section is intentionally detailed because it is the mathematical
 core of the final path-loss result. A reader only interested in the modelling
 logic can follow it in four passes. First, the LoS branch starts from FSPL and
-adds an enhanced two-ray field sum, which explains the radial ring structure
+adds an enhanced two-ray field-sum, which explains the radial ring structure
 observed in the CKM maps. Second, the NLoS branch uses a calibrated
-regime-wise model over topology and obstruction features, because a LoS-shaped
+regime wise model over topology and obstruction features, because a LoS shaped
 formula cannot explain blocked streets by itself. Third, both branches are
 fitted only on the training split and then evaluated with the same
 pixel-weighted ground-mask RMSE used elsewhere in the thesis. Finally, the
-prior output becomes the frozen path-loss anchor consumed by the final residual GMM-head model.
+prior output becomes the frozen path loss anchor consumed by the final residual GMM-head model.
 
 The corresponding quantitative audit is reported in Chapter~\ref{chap:results};
 this methodology section focuses on how the prior is constructed and why its
@@ -792,12 +829,27 @@ output is frozen before residual learning.
 
 \input{prior_detail_try78}
 
-\section{Delay and Angular Spread Priors}
+\section{Angular Spread Prior and Residual Prediction}
 \label{sec:try79_detail}
+
+Angular spread uses the shared spread prior described below. Its final
+prediction is the frozen angular-spread prior plus the bounded residual
+correction predicted by \textsc{HARP-Net CKM}. The target is reported in
+degrees and is evaluated only on valid ground receiver pixels.
+
+\section{Delay Spread Prior and Residual Prediction}
+\label{sec:delay_method_summary}
+
+Delay spread uses the same shared spread prior machinery, but it is evaluated
+in nanoseconds and is more sensitive to rare high delay pixels. The model
+therefore uses the prior as a stable baseline and learns only a bounded
+correction.
+
+\subsection*{Shared spread prior details}
 
 \input{prior_detail_try79}
 
-\section{Joint Prior-Anchored Residual GMM-Head Model}
+\section{Training and Evaluation Protocol}
 \label{sec:try80_detail}
 
 \input{prior_detail_try80}

@@ -16,8 +16,8 @@ The central lesson is that the strongest model is not a pure black-box neural
 network. It is a hybrid system in which calibrated physical/statistical priors
 explain the stable part of the channel, and a neural residual model corrects
 what remains. This division of labour is what made the final result reliable:
-the priors capture radial propagation, visibility, height effects, morphology,
-and spread-scale statistics; the learned model then focuses on local residual
+the priors capture radial propagation, visibility, height effects, building layout,
+and spread scale statistics; the learned model then focuses on local residual
 structure and distribution mismatch.
 
 The finished pipeline meets the original numerical targets. The standalone
@@ -28,71 +28,71 @@ delay-spread RMSE and \SI{13.74}{\degree} angular-spread RMSE on the same final
 test split. The final prior-anchored residual GMM-head model improved those
 anchors to \SI{1.6519}{dB}, \SI{26.5570}{ns}, and
 \SI{11.3854}{\degree}, respectively. These numbers are meaningful because the
-baseline being improved is already strong and train-calibrated, not a weak
+baseline being improved is already strong and train calibrated, not a weak
 baseline.
 
 \subsection{What the final result means}
 
-The clearest contribution is a working CKM predictor for variable-height UAV
+The clearest contribution is a working CKM predictor for variable height UAV
 maps. The final model receives geometry, masks, frozen priors, and a continuous
-height condition, and produces dense path-loss, delay-spread, and
-angular-spread maps jointly. The height dependence is not cosmetic: the same
+height condition, and produces dense path loss, delay spread, and
+angular spread maps jointly. The height dependence is not cosmetic: the same
 city footprint changes its visibility structure, two-ray interference pattern,
 and spread regimes as the UAV altitude changes. The final architecture handles
 this by combining height-aware priors with a sinusoidal height embedding
 injected through FiLM conditioning.
 
-The path-loss result is the strongest success case. Most LoS path-loss
+The path-loss result is the strongest success case. Most LoS path loss
 structure is radial, height-dependent, and coherent enough that an enhanced
 two-ray prior can explain much of it before any neural correction is applied.
 The residual model still matters, but its role is narrower and more realistic:
-it improves local blocked streets, transition regions, and geometry-to-radio
+it improves local blocked streets, transition regions, and geometry to radio
 misalignments that the analytic prior cannot fully capture. Reducing the test
 RMSE from \SI{1.9383}{dB} to \SI{1.6519}{dB} after such a strong prior is
 therefore a substantial result.
 
 Delay spread and angular spread are harder to judge by a single RMSE. Their
-maps contain sparse high-value regions, spike-like behaviour, and long-tailed
+maps contain sparse high value regions, spike like behaviour, and long tailed
 outliers. Qualitatively, the final predictions usually recover the main
-spatial structure: low-spread and high-spread regions appear in the right
+spatial structure: low spread and high spread regions appear in the right
 general parts of the city, and the LoS/NLoS geometry is respected. The
 remaining mistakes are mostly local outlier failures. Some groups of pixels
-with unusually high DS or AS are missed, while some false positive high-spread
+with unusually high DS or AS are missed, while some false positive high spread
 patches are predicted where the target remains moderate. This explains why the
 spread result is less uniform than the path-loss result, while still being useful:
 the model improves the global structure and many local regimes, but rare spread
 hot spots remain the hardest cases. These RMSE gains should not be read as
-universal typical-error gains: delay-spread MAE increases, and angular-spread
-MAE is nearly unchanged, so the spread claim remains an RMSE-and-structure
-claim rather than a calibrated-error claim.
+universal typical error gains: delay-spread MAE increases, and angular spread
+MAE is nearly unchanged, so the spread claim remains an RMSE and structure
+claim rather than a calibrated error claim.
 
 The most important methodological conclusion is that CKM prediction improves
-when the model head follows the target distribution. Earlier point-regression
-models could produce plausible-looking maps while missing NLoS path-loss modes
+when the model head follows the target distribution. Earlier point regression
+models could produce plausible-looking maps while missing NLoS path loss modes
 or suppressing spread tails. The distribution-first stage fixed that diagnosis
-by using GMM-style outputs and histogram-aware evaluation. The final model keeps
+by using GMM style outputs and histogram aware evaluation. The final model keeps
 that lesson in its head design: it emits mixture parameters around calibrated
-anchors and exports their local-weighted point prediction, while the final
+anchors and exports their local weighted point prediction, while the final
 reported claim remains the deterministic RMSE improvement selected after the
-RMSE/MAE-dominant fine-tuning stage.
+RMSE/MAE dominant fine-tuning stage.
 
 \subsection{Answers to the research questions}
 
-\textbf{RQ1. Can a single deep-learning surrogate predict per-pixel path loss,
-delay spread, and angular spread on \(513\times513\) channel-knowledge maps,
+\textbf{RQ1. Can a single deep learning surrogate predict per-pixel path loss,
+delay spread, and angular spread on \(513\times513\) channel knowledge maps,
 under strict city-holdout evaluation, with errors compatible with the thesis
 targets?} Yes, within the fixed CKM contract used in this thesis. The final
 model predicts PL, DS, and AS jointly on unseen cities and clears the original
 targets: \SI{1.6519}{dB} path-loss RMSE, \SI{26.5570}{ns} delay-spread RMSE,
 and \SI{11.3854}{\degree} angular-spread RMSE. The result should be understood
 under one carrier frequency, one centred UAV, valid ground receivers only, and
-city-level train/validation/test separation.
+city level train/validation/test separation.
 
 \textbf{RQ2. Which part of the prediction should be left to a calibrated
 analytic prior and which part should be left to the neural network, so that the
 hybrid model is both accurate and interpretable?} The calibrated priors should
 handle the most predictable propagation structure: two-ray LoS path loss,
-height-binned LoS calibration, morphology-aware NLoS corrections, and
+height-binned LoS calibration, morphology aware NLoS corrections, and
 log-domain ridge models for DS and AS. These priors are strong enough to be
 useful on their own. The neural model is then valuable because it learns bounded
 residual corrections around them, reducing the frozen-prior test errors from
@@ -101,9 +101,9 @@ residual corrections around them, reducing the frozen-prior test errors from
 
 \textbf{RQ3. How does the continuous UAV transmitter height
 (\SIrange{12}{478}{m}) affect the prediction error, and is the same
-architecture able to cover the full height range without per-height
+architecture able to cover the full height range without per height
 retraining?} Height affects the difficulty of the prediction through visibility,
-blocking and spread-tail behaviour, so it must be represented explicitly. In
+blocking and spread tail behaviour, so it must be represented explicitly. In
 the final model, height enters twice: through height-aware calibrated priors and
 through a sinusoidal FiLM conditioning path inside the neural residual model.
 Low-altitude cases contain more blocked links, stronger transition zones and
@@ -113,13 +113,13 @@ is physical, not only a sampling artifact.
 
 \subsection{Main contributions}
 
-The first contribution is the final variable-height CKM predictor itself: a
+The first contribution is the final variable height CKM predictor itself: a
 single prior-anchored residual GMM-head model that jointly predicts path loss,
 delay spread, and angular spread for unseen city layouts while conditioning on
 continuous UAV height.
 
 The second contribution is the calibrated prior family. The path-loss prior
-combines free-space/radial structure, coherent two-ray LoS behaviour,
+combines free space/radial structure, coherent two-ray LoS behaviour,
 height-dependent calibration, NLoS morphology features, and fallback regimes.
 The spread priors extend the same philosophy to DS and AS through log-domain
 ridge calibration, topology/visibility grouping, height regimes, and robust
@@ -130,12 +130,12 @@ neural residual is trained.
 The third contribution is the distribution-first modelling lesson. The thesis
 shows that target histograms, LoS/NLoS marginals, and spike-plus-tail spread
 behaviour are not diagnostic extras; they determine which output head is
-appropriate. This is why GMM-style residual prediction and histogram-aware
+appropriate. This is why GMM style residual prediction and histogram aware
 checks became part of the final design.
 
 The fourth contribution is the evaluation contract: city-holdout splitting,
 ground-only masking, LoS/NLoS reporting, topology diagnostics, and
-UAV-height-stratified reporting. This contract is essential because random
+UAV height stratified reporting. This contract is essential because random
 splits or unmasked building pixels can make the same model appear stronger
 without improving the deployment-relevant task.
 
@@ -152,7 +152,7 @@ contract used here. It is not a universal replacement for ray tracing across all
 frequencies, antenna patterns, or cities. It does show, however, that once the
 dataset contract is fixed, the slow simulator can be compressed into a fast and
 interpretable predictor. In the Barcelona runtime benchmark, pixel-level MATLAB
-ray tracing took \SI{99.89}{s} per sample, while the complete final-generator
+ray tracing took \SI{99.89}{s} per-sample, while the complete final generator
 path took \SI{0.88}{s}, a \(113.7\times\) reduction.
 
 \subsection{Negative results}
@@ -160,7 +160,7 @@ path took \SI{0.88}{s}, a \(113.7\times\) reduction.
 The negative results are useful mainly as design evidence, so the detailed
 attempt history is kept in Appendix~A rather than repeated in the main
 conclusion. The short lesson is that pure image translation, larger CNN
-backbones, topology experts, multi-scale outputs, and uncertainty heads each
+backbones, topology experts, multi scale outputs, and uncertainty heads each
 exposed a different failure mode, but none removed the need for strong frozen
 priors and distribution-aware residual learning.
 
@@ -173,7 +173,7 @@ statistically.
 
 \paragraph{Short-medium term.}
 The next step is to strengthen the current residual pipeline without changing
-the evaluation contract, then extend it toward frequency and radio-configuration
+the evaluation contract, then extend it toward frequency and radio configuration
 conditioning. Useful additions include transmitter-oriented mixup, explicit
 corridor losses, and controlled ablations of each residual head and loss
 weight. The current dataset fixes the carrier and antenna assumptions, while a
@@ -183,30 +183,30 @@ dataset for this stage would simulate the same cities across several radio
 configurations so that the model can separate geometry effects from
 configuration effects.
 
-A nearer-term training direction is adaptation to new or under-represented
-topology types. The per-topology analysis suggests that dense high-rise,
+A nearer term training direction is adaptation to new or under represented
+topology types. The per topology analysis suggests that dense high-rise,
 compact mid-rise, open low-rise, mixed urban layouts, and future morphology
 classes do not fail in exactly the same way. A practical continuation would
-therefore be to fine-tune the final prior-anchored model on newly introduced
+therefore be to fine tune the final prior-anchored model on newly introduced
 urban typologies, or to train lightweight specialist heads on top of the shared
 backbone when only limited examples are available. This would test whether the
 model can recover local structure in topology regimes beyond the original
 training distribution, rather than only specialising to already defined classes.
 
-For delay and angular spreads, another short- to medium-term direction is to
+For delay and angular spreads, another short to medium term direction is to
 optimize not only pixel-wise RMSE but also spatial structure. Spread maps can
 look physically coherent even when small shifts across quantized target
 boundaries are penalized harshly by RMSE. Future fine-tuning should therefore
-test structural objectives, for example gradient consistency, region-wise
-correlation, SSIM-like terms, LoS/NLoS boundary consistency, or topology-aware
+test structural objectives, for example gradient consistency, region wise
+correlation, SSIM like terms, LoS/NLoS boundary consistency, or topology aware
 ranking losses, so that the model preserves the correct spread patterns rather
 than only minimizing the average numeric error.
 
-\paragraph{Medium-long term.}
-The final extension is field calibration. The path-loss and spread priors are
-interpretable, which makes them suitable for simulator-to-reality correction
-using a limited number of real measurements. In the medium-long term, this could
-lead to a CKM predictor that starts from ray-traced or prior-generated maps,
+\paragraph{Medium to long-term.}
+The final extension is field calibration. The path loss and spread priors are
+interpretable, which makes them suitable for simulator to reality correction
+using a limited number of real measurements. In the medium to long-term, this could
+lead to a CKM predictor that starts from ray-traced or prior generated maps,
 adapts to a new city with sparse measurements, and still reports uncertainty by
 LoS/NLoS regime, UAV-height bin, and topology class. Those safeguards should
 remain part of the method before considering operational use in emergency

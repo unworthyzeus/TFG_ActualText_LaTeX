@@ -926,7 +926,6 @@
       \strng{authornamehash}{e3ee46e93898c7aa6be0601113b57083}
       \strng{authorfullhash}{a5949cf8a0893c8bf78f9bea772eb993}
       \strng{authorfullhashraw}{a5949cf8a0893c8bf78f9bea772eb993}
-      \field{extraname}{1}
       \field{sortinit}{2}
       \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
@@ -2179,90 +2178,6 @@
       \verb https://arxiv.org/abs/2512.01451
       \endverb
     \endentry
-    \entry{pmnet2023}{inproceedings}{}{}
-      \name{author}{4}{}{%
-        {{hash=393cdd40783f7202249fac294578a57a}{%
-           family={Lee},
-           familyi={L\bibinitperiod},
-           given={Ju-Hyung},
-           giveni={J\bibinithyphendelim H\bibinitperiod}}}%
-        {{hash=26c112ebbb3f49faaf14ad8fd9eb3d54}{%
-           family={Serbetci},
-           familyi={S\bibinitperiod},
-           given={Omer\bibnamedelima Gokalp},
-           giveni={O\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
-        {{hash=15b01e434a0a8688b66a760a6c58c68e}{%
-           family={Selvam},
-           familyi={S\bibinitperiod},
-           given={Dheeraj\bibnamedelima Panneer},
-           giveni={D\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
-        {{hash=965301119804722511b3c0553e7ebb0d}{%
-           family={Molisch},
-           familyi={M\bibinitperiod},
-           given={Andreas\bibnamedelima F.},
-           giveni={A\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
-      }
-      \strng{namehash}{e3ee46e93898c7aa6be0601113b57083}
-      \strng{fullhash}{627539bbbc70cbf1148cae26f6049138}
-      \strng{fullhashraw}{627539bbbc70cbf1148cae26f6049138}
-      \strng{bibnamehash}{e3ee46e93898c7aa6be0601113b57083}
-      \strng{authorbibnamehash}{e3ee46e93898c7aa6be0601113b57083}
-      \strng{authornamehash}{e3ee46e93898c7aa6be0601113b57083}
-      \strng{authorfullhash}{627539bbbc70cbf1148cae26f6049138}
-      \strng{authorfullhashraw}{627539bbbc70cbf1148cae26f6049138}
-      \field{extraname}{2}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{booktitle}{Proc.\ IEEE Global Communications Conference ({GLOBECOM})}
-      \field{title}{{PMNet}: Robust Pathloss Map Prediction via Supervised Learning}
-      \field{year}{2023}
-      \verb{doi}
-      \verb 10.1109/GLOBECOM54140.2023.10437562
-      \endverb
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/2211.10527
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/2211.10527
-      \endverb
-    \endentry
-    \entry{dhariwal2021diffusion}{inproceedings}{}{}
-      \name{author}{2}{}{%
-        {{hash=4164e43d8cf919f5e3f8d80f5ea23f36}{%
-           family={Dhariwal},
-           familyi={D\bibinitperiod},
-           given={Prafulla},
-           giveni={P\bibinitperiod}}}%
-        {{hash=f1942691d8be7ae0f29eeb3d36bc7eb0}{%
-           family={Nichol},
-           familyi={N\bibinitperiod},
-           given={Alexander},
-           giveni={A\bibinitperiod}}}%
-      }
-      \strng{namehash}{10c6b0d638397c4dc022be283ae5ea35}
-      \strng{fullhash}{10c6b0d638397c4dc022be283ae5ea35}
-      \strng{fullhashraw}{10c6b0d638397c4dc022be283ae5ea35}
-      \strng{bibnamehash}{10c6b0d638397c4dc022be283ae5ea35}
-      \strng{authorbibnamehash}{10c6b0d638397c4dc022be283ae5ea35}
-      \strng{authornamehash}{10c6b0d638397c4dc022be283ae5ea35}
-      \strng{authorfullhash}{10c6b0d638397c4dc022be283ae5ea35}
-      \strng{authorfullhashraw}{10c6b0d638397c4dc022be283ae5ea35}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{booktitle}{Advances in Neural Information Processing Systems}
-      \field{title}{Diffusion Models Beat {GANs} on Image Synthesis}
-      \field{year}{2021}
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/2105.05233
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/2105.05233
-      \endverb
-    \endentry
     \entry{goldsmith}{book}{}{}
       \name{author}{1}{}{%
         {{hash=9a56ad5172ab29301c3cbfc8f03dbd25}{%
@@ -2282,8 +2197,8 @@
       \strng{authornamehash}{9a56ad5172ab29301c3cbfc8f03dbd25}
       \strng{authorfullhash}{9a56ad5172ab29301c3cbfc8f03dbd25}
       \strng{authorfullhashraw}{9a56ad5172ab29301c3cbfc8f03dbd25}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{Wireless Communications}

@@ -2,7 +2,7 @@
 
 Reliable radio coverage prediction is a central requirement for future 6G
 systems in which UAVs may act as aerial base stations, relays, or temporary
-coverage nodes. In 3GPP terminology, a UAV-mounted radio access node is a
+coverage nodes. In 3GPP terminology, a UAV mounted radio access node is a
 UxNB, defined as a radio access node on board a UAV \cite{threegpp22125}. A
 classical ray-tracing simulator can produce detailed channel knowledge maps,
 but this is too expensive to repeat every time the transmitter height, the city
@@ -10,7 +10,7 @@ environment, or the deployment assumptions change. In the 6G literature, a
 channel knowledge map is a site-specific, location-tagged repository of channel
 information that can support environment-aware planning and reduce online
 channel-acquisition overhead \cite{zengx2021ckm,ckmtutorial2024}. This thesis
-studies whether \textsc{HARP-Net CKM}, a height-aware residual-prior surrogate,
+studies whether \textsc{HARP-Net CKM}, a height-aware residual prior surrogate,
 can predict dense CKM target maps directly from urban geometry while preserving
 enough physical structure to generalize to cities not seen during training.
 
@@ -18,11 +18,11 @@ The project is formulated as dense image-to-image regression on
 $513\times513$ pixel city maps. The final model receives a building-height
 topology map, a LoS/NLoS visibility mask, the UAV antenna height, and the
 frozen prior maps described later in the thesis. In the CKM experiments the
-visibility mask is read from the dataset; for topology-only deployment it can
+visibility mask is read from the dataset; for topology only deployment it can
 be generated geometrically from the building map and UAV height. The predicted
 outputs are path loss, delay spread, and angular spread. The neural network
 therefore does not infer visibility from scratch; it uses visibility as one of
-the physical support inputs and learns the residual radio-map structure around
+the physical support inputs and learns the residual radio map structure around
 the calibrated priors.
 
 \textsc{HARP-Net CKM} is the final Height-Aware Residual Prior Network for
@@ -43,22 +43,22 @@ than generating the same maps through ray tracing:
   \item delay-spread RMSE below \SI{50}{ns};
   \item angular-spread RMSE below \SI{20}{\degree};
   \item separate reporting for global, LoS, and NLoS regions;
-  \item a 10 to 100\(\times\) reduction in channel-map generation time compared
+  \item a 10 to 100\(\times\) reduction in channel map generation time compared
         with ray tracing.
 \end{itemize}
 
 These numerical targets were set in the project proposal and kept unchanged
 throughout the thesis. They are meant to match the order of magnitude at
-which a ray-tracing surrogate starts being useful for planning and coverage
-decisions. A few dB of path-loss RMSE is compatible with practical link-budget
+which a ray tracing surrogate starts being useful for planning and coverage
+decisions. A few dB of path-loss RMSE is compatible with practical link budget
 margins, and tens of ns of delay spread and tens of degrees of angular spread
 stay well inside typical multipath spread values reported by 3GPP TR\,38.901
 for UMa/UMi scenarios. Chapter~\ref{chap:results} checks the runtime target
-explicitly by comparing the measured final-generator time with the measured
+explicitly by comparing the measured final generator time with the measured
 MATLAB ray-tracing time on the same Barcelona geometry and hardware.
 
 The most important methodological objective was not only to obtain a low
-average RMSE, but to do so under a strict city-holdout split. City holdout
+average RMSE, but to do so under a strict city-holdout split. City-holdout
 means that entire cities, not individual pixels or tiles, are reserved for
 validation and testing. A test city therefore contains no samples that were
 seen during training. This is harder and more deployment-relevant than random
@@ -71,16 +71,16 @@ The thesis is organised around three research questions, which also define
 the three main scientific claims of the final pipeline:
 
 \begin{itemize}
-  \item \textbf{RQ1.} Can a single deep-learning surrogate predict per-pixel
+  \item \textbf{RQ1.} Can a single deep learning surrogate predict per-pixel
         path loss, delay spread, and angular spread on \(513\times513\)
-        channel-knowledge maps, under strict city-holdout evaluation, with
+        channel knowledge maps, under strict city-holdout evaluation, with
         errors compatible with the thesis targets?
   \item \textbf{RQ2.} Which part of the prediction should be left to a
         calibrated analytic prior and which part should be left to the neural
         network, so that the hybrid model is both accurate and interpretable?
   \item \textbf{RQ3.} How does the continuous UAV transmitter height
         (\SIrange{12}{478}{m}) affect the prediction error, and is the same
-        architecture able to cover the full height range without per-height
+        architecture able to cover the full height range without per height
         retraining?
 \end{itemize}
 
@@ -102,41 +102,41 @@ The main contributions corresponding to these questions are:
         centred UAV transmitter. The evaluation uses \(513\times513\) maps,
         city-holdout train/validation/test splits, valid ground receiver pixels
         only, and continuous UAV altitude conditioning.
-  \item A train-calibrated path-loss prior based on enhanced two-ray LoS
-        propagation and ordinary least squares (OLS) NLoS calibration over
+  \item A train calibrated path-loss prior based on enhanced two-ray LoS
+        propagation and ordinary least-squares (OLS) NLoS calibration over
         environment features. On held-out cities this prior already reaches
         \SI{1.75}{dB} LoS and \SI{3.40}{dB} NLoS RMSE.
-  \item Train-calibrated delay-spread and angular-spread priors based on
-        log-domain ridge regression over geometry, visibility, UAV-height, and
+  \item Train calibrated delay-spread and angular-spread priors based on
+        log-domain ridge regression over geometry, visibility, UAV height, and
         environment features.
   \item \textsc{HARP-Net CKM}, a shared neural model that receives the frozen
         PL, DS, and AS priors and learns bounded residual corrections for the
         three maps jointly.
-  \item A distribution-shape analysis showing that earlier point-regression
-        networks tended to average away difficult NLoS and spread-tail cases.
-        This motivates using mixture-style residual predictions instead of a
+  \item A distribution shape analysis showing that earlier point regression
+        networks tended to average away difficult NLoS and spread tail cases.
+        This motivates using mixture style residual predictions instead of a
         single direct regression value everywhere.
 \end{itemize}
 
 \section{Thesis outline}
 
 Chapter~2 reviews the state of the art and the technical background needed for
-the thesis: classical propagation models, radio-map deep learning, hybrid
+the thesis: classical propagation models, radio map deep learning, hybrid
 physics/neural methods, distribution-aware prediction, and fair comparison
 criteria. Chapter~3 describes the final methodology: the CKM dataset, the
-ground-receiver evaluation contract, the city-holdout split, the calibrated
+ground receiver evaluation contract, the city-holdout split, the calibrated
 priors, and the \textsc{HARP-Net CKM} residual model. Chapter~4 reports the
 final quantitative results, the comparison with the frozen priors and the
 closest published benchmarks, qualitative examples, runtime, and limitations.
 Chapter~5 discusses sustainability, economic impact, social impact, and ethical
-scope. Chapter~6 answers the research questions and presents future work. The
+scope. Chapter~6 answers the research questions and presents future-work. The
 appendices preserve the development trace, representative panels, and generator
 documentation.
 
 \section{Requirements and specifications}
 
 The project uses the CKM HDF5 dataset
-\texttt{CKM\_Dataset\_270326.h5}. The CKM dataset contains 66 real-city
+\texttt{CKM\_Dataset\_270326.h5}. The CKM dataset contains 66 real city
 scenarios and 16180 samples. Each sample is a $513\times513$ pixel raster with
 the following fields:
 
@@ -151,8 +151,8 @@ Field & Shape & Type & Role \\
 \texttt{topology\_map} & $513^2$ & float32 & Building height in metres. Pixels with buildings are not valid receiver locations. \\
 \texttt{los\_mask} & $513^2$ & uint8 & Binary LoS/NLoS visibility mask. \\
 \texttt{path\_loss} & $513^2$ & uint8 & Ray-traced path loss in dB, quantized at approximately \SI{1}{dB}. \\
-\texttt{delay\_spread} & $513^2$ & uint16 & Delay-spread target, stored as integers and evaluated in ns after decoding. \\
-\texttt{angular\_spread} & $513^2$ & uint8 & Angular-spread target, stored as integers and evaluated in degrees after decoding. \\
+\texttt{delay\_spread} & $513^2$ & uint16 & Delay spread target, stored as integers and evaluated in ns after decoding. \\
+\texttt{angular\_spread} & $513^2$ & uint8 & Angular spread target, stored as integers and evaluated in degrees after decoding. \\
 \texttt{uav\_height} & scalar & float32 & UAV transmitter height, used for conditioning and physical priors. \\
 \bottomrule
 \end{tabularx}
@@ -170,7 +170,7 @@ continuously across the dataset.
 
 The final method follows a hybrid pipeline. First, the city map is represented
 as a building-height raster with a centred UAV transmitter and a fixed
-ground-user receiver grid. Second, geometric LoS/NLoS masks and calibrated
+ground user receiver grid. Second, geometric LoS/NLoS masks and calibrated
 priors are prepared for path loss, delay spread, and angular spread. Third,
 \textsc{HARP-Net CKM} receives the topology, masks, UAV height, and prior maps
 and predicts bounded residual corrections for the three outputs. The final maps
@@ -178,7 +178,7 @@ are the prior predictions plus the learned residual corrections.
 
 Earlier neural models are still useful scientifically, but mainly as
 diagnostics. They showed that direct image-to-image prediction can produce
-plausible-looking maps while missing NLoS and spread-tail behaviour. For this
+plausible-looking maps while missing NLoS and spread tail behaviour. For this
 reason the main text presents the final method first; the chronological attempt
 trace is kept in the appendix.
 
@@ -186,8 +186,8 @@ trace is kept in the appendix.
 \label{sec:workplan}
 
 The executed work plan can be grouped into five phases: literature and
-simulation-contract review, dataset and split definition, calibrated-prior
-construction, final residual-model training, and final evaluation/writing.
+simulation contract review, dataset and split definition, calibrated prior
+construction, final residual model training, and final evaluation/writing.
 Figure~\ref{fig:gantt} shows these phases at project level rather than listing
 all individual experiments.
 

@@ -73,7 +73,7 @@ delay spread, angular spread, Gaussian mixture models, physics-informed
 learning.
 \end{IEEEkeywords}
 
-\section{Introduction}
+\section{Introduction and Related Work}
 
 Channel knowledge maps (CKMs) store or predict radio-channel quantities as
 functions of position and environment, enabling faster planning and adaptation
@@ -102,7 +102,7 @@ The contribution is a defensible dense CKM recipe for one fixed UAV simulation
 contract: strict city holdout, valid-receiver masking, explicit LoS/NLoS and
 height reporting, and a final prior-anchored neural correction.
 
-\section{Related Work}
+\subsection{Radio-Map and Channel-Parameter Predictors}
 
 Dense radio-map prediction has often been treated as image-to-image regression.
 RadioUNet \cite{radiounet2020} established convolutional radio-map estimation
@@ -136,18 +136,29 @@ tr38901,wocc2021}. This paper uses those models only as shape priors; all
 deployment coefficients are calibrated from training cities under the same CKM
 masking convention used at inference.
 
+The spread side has fewer direct dense-map references. Yang et al.\ predict
+A2G path loss and delay spread with classical machine-learning regressors
+\cite{yang2019a2gml}, while Huang et al.\ use a Transformer-style predictor
+for UAV mmWave received power, RMS delay spread, and RMS angular spread from
+link-level geometric features \cite{huang2025a2gtransformer}. Mi et al.\
+predict mmWave path loss, RMS delay spread, angular spread, and Rician \(K\)
+factor from measurement-linked point clouds \cite{mi2024pointcloud}. These
+papers are close in target type, but not in evaluation contract: they predict
+link-level or sparse channel parameters, not full \(513\times513\) CKM maps
+for unseen cities.
+
 The final neural head is also informed by distribution-aware wireless learning.
 Heteroscedastic regression \cite{kendall2017uncertainties}, mixture-density
 wireless predictors \cite{saleh2021probabilistic,garciamarti2020mixture,
 lee2024timevarying}, and recent stochastic radio-map models
 \cite{radiodiff2025} all point to the same issue: NLoS and spread targets are
 not well represented by a single symmetric residual. For spread targets, the
-closest external references are often scalar channel-parameter predictors or
-standard channel-model statistics \cite{tr38901,winner2,cai2019,
+closest external references are often scalar or link-level channel-parameter
+predictors and standard channel-model statistics \cite{tr38901,winner2,cai2019,
 izydorczyk2019}, not dense maps, so they are not used as direct CKM
 benchmarks here.
 
-\section{Task and Evaluation Protocol}
+\section{Dataset and Task Contract}
 
 Each sample is a \(513\times513\) urban topology map from the ray-traced CKM
 setting used in this work. The carrier is fixed at
@@ -311,7 +322,7 @@ hard tails. A cleaner or less quantized dataset would likely expose more of
 the continuous surrogate's resolution, especially for small residual
 improvements and spread-map boundaries.
 
-\section{Method}
+\section{\textsc{HARP-Net CKM} Framework}
 
 \subsection{Why the Final Method Is Hybrid}
 
@@ -409,6 +420,36 @@ its height varies by sample. Frozen height-aware priors are produced first and
 then used as channels for the final prior-anchored residual GMM model.}
 \label{fig:pipeline}
 \end{figure*}
+
+\begin{table}[!t]
+\centering
+\caption{Input/output contract of the full framework and final neural model.}
+\label{tab:io-contract-paper}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{p{0.34\linewidth}X}
+\toprule
+Stage & Variables \\
+\midrule
+External framework inputs &
+Building-height map and UAV transmitter height. \\
+Computed support maps &
+LoS/NLoS visibility mask and valid ground-receiver mask. \\
+Frozen prior maps &
+Combined path-loss prior, LoS path-loss prior, NLoS path-loss prior,
+delay-spread prior, and angular-spread prior. \\
+Inputs to \textsc{HARP-Net CKM} &
+Topology map, UAV-height conditioning, ground mask, LoS mask, NLoS mask,
+and the five frozen prior maps. \\
+Final outputs &
+Path-loss, delay-spread, and angular-spread maps. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Thus the full generator has two external inputs and three final outputs. The
+neural residual model has ten internal inputs because the framework has already
+computed the visibility mask, receiver mask, and frozen prior maps.
 
 \subsection{Frozen Priors}
 
@@ -1354,16 +1395,16 @@ metrics used for the paper tables. The anchor and guard terms remain active at
 small weight so the fine-tuned model cannot gain average RMSE by damaging large
 regions where the frozen prior was already accurate.
 
-\section{Experimental Results}
+\section{Experiments and Results}
 
-\subsection{Main Test Results}
+\subsection{Main Test Results by Target}
 
 Table~\ref{tab:main-results} reports the final unseen-city test metrics. The
 model reduces RMSE relative to the frozen prior for all three targets. Path loss
-is the cleanest success case because both RMSE and MAE improve. Delay spread improves RMSE
-while MAE slightly increases; this is consistent with reducing rare high-delay
-errors while introducing small local shifts. Angular spread improves RMSE
-strongly and is approximately neutral in MAE.
+is the cleanest success case because both RMSE and MAE improve. Angular spread
+also improves strongly in RMSE and remains approximately neutral in MAE. Delay
+spread improves RMSE while MAE slightly increases; this is consistent with
+reducing rare high-delay errors while introducing small local shifts.
 
 \begin{table*}[!t]
 \centering
@@ -1387,6 +1428,39 @@ The original numerical targets were \SI{5}{dB}, \SI{50}{ns}, and
 \(20^\circ\). The final model clears all three on unseen cities. More
 importantly, it does so jointly: the same network predicts PL/DS/AS instead of
 using separate specialist models.
+
+\paragraph{Path loss}
+The frozen path-loss prior is already strong, reaching \SI{1.9383}{dB} RMSE
+and \SI{1.2319}{dB} MAE on the final test split. \textsc{HARP-Net CKM}
+reduces these to \SI{1.6519}{dB} and \SI{0.9298}{dB}. This is the most
+uniform gain: the residual model improves both squared error and typical
+absolute error, and it improves both LoS and NLoS pixels in
+Table~\ref{tab:los-nlos}. The closest external references are dense path-loss
+radio-map papers, but they still differ in split, height protocol, frequency,
+and target contract.
+
+\paragraph{Angular spread}
+The angular-spread prior reaches \(13.7416^\circ\) RMSE and \(4.9890^\circ\)
+MAE; the final model reaches \(11.3854^\circ\) RMSE and \(5.0088^\circ\) MAE.
+The near-constant MAE means the residual model mainly suppresses larger angular
+spread errors rather than shifting every pixel uniformly. The LoS gain is much
+larger than the NLoS gain, which is expected because the NLoS angular-spread
+prior is already close to the target distribution. No reviewed external method
+reports the same dense CKM city-holdout angular-spread-map task. The nearest
+papers predict link-level or sparse angular-spread channel parameters
+\cite{huang2025a2gtransformer,mi2024pointcloud}, so the primary comparison is
+against the frozen prior and the thesis target.
+
+\paragraph{Delay spread}
+The delay-spread prior reaches \SI{28.1023}{ns} RMSE and \SI{7.3033}{ns} MAE;
+the final model reaches \SI{26.5570}{ns} RMSE and \SI{7.9897}{ns} MAE. This
+is the least uniform target: RMSE improves because rare high-delay errors are
+reduced, while MAE slightly worsens because small local shifts appear in many
+easy pixels. The LoS/NLoS split confirms that the model improves both
+visibility cases in RMSE. Similar A2G delay-spread predictors exist
+\cite{yang2019a2gml,huang2025a2gtransformer}, but they are not dense
+\(513\times513\) CKM generators under city holdout, so they are used only as
+context.
 
 \subsection{LoS/NLoS and Split Diagnostics}
 
@@ -1714,7 +1788,7 @@ Final generator & Masks, priors, PL/DS/AS prediction, numeric export; CUDA mixed
 \end{tabularx}
 \end{table}
 
-\section{Discussion}
+\subsection{Interpretation and Limitations}
 
 The final result is best interpreted as evidence for a hybrid CKM design rather
 than as a claim that one backbone solves radio mapping in general. The strongest

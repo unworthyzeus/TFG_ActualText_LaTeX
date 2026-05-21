@@ -4,51 +4,51 @@ The final residual GMM-head model follows the same strict split philosophy as th
 distribution-first models. The split is a city-holdout split with
 \texttt{split\_seed = 42}, \texttt{val\_ratio = 0.15}, and
 \texttt{test\_ratio = 0.15}. Metrics and losses are computed only on valid
-ground pixels, using the target-specific no-data masks and the explicit
+ground pixels, using the target-specific no data masks and the explicit
 LoS/NLoS masks. The model input contains nine spatial channels:
 
 \begin{enumerate}
 \item normalized topology,
 \item LoS mask,
 \item NLoS mask,
-\item ground mask,
+\item ground-mask,
 \item combined path-loss prior,
 \item LoS path-loss prior,
-\item calibrated Try~78 NLoS-branch map,
+\item calibrated Try~78 NLoS branch map,
 \item delay-spread prior,
 \item angular-spread prior.
 \end{enumerate}
 
 The seventh channel is named \texttt{path\_loss\_nlos\_prior} in the code,
 but it should be read carefully. It is the calibrated Try~78 mixed/NLoS map
-computed by the regime-wise path-loss calibration, not a map that has been
+computed by the regime wise path loss calibration, not a map that has been
 zeroed outside NLoS pixels. In the final combined path-loss prior and in the
 final output selection, only the explicit LoS/NLoS masks decide which regional
 branch is used.
 
 The three mask channels are passed as binary maps. The topology channel is
 masked to ground pixels and divided by \(90\,\mathrm{m}\); the three
-path-loss-prior channels are divided by \(180\,\mathrm{dB}\); and the
-delay- and angular-spread priors are passed as
+path-loss prior channels are divided by \(180\,\mathrm{dB}\); and the
+delay and angular-spread priors are passed as
 \(\log(1+\mathrm{prior})/\log(1+400)\) and
 \(\log(1+\mathrm{prior})/\log(1+90)\), respectively. These scaling constants
-only affect the neural-network input representation; the residual targets and
+only affect the neural network input representation; the residual targets and
 reported metrics remain in the native units.
 
 The scalar UAV height is not appended as a constant image channel. It is
 encoded with a sinusoidal embedding and injected into the network through FiLM
-conditioning. The selected final configuration uses a shared encoder-decoder with
+conditioning. The selected final configuration uses a shared encoder decoder with
 \texttt{base\_width = 128}, \texttt{cond\_dim = 160}, three GMM
-components per task and region, \(\alpha\)-gate bias \(-2\), and fixed
+components per-task and region, \(\alpha\)-gate bias \(-2\), and fixed
 residual caps specified separately for path loss, delay spread and
 angular spread.
 
 The selected final model reported in Chapter~\ref{chap:results}
-uses these frozen path-loss and spread priors as anchors. This
-section therefore documents both the frozen-prior inputs and the residual
+uses these frozen path loss and spread priors as anchors. This
+section therefore documents both the frozen prior inputs and the residual
 architecture used by the final evaluation.
 
-\subsection{Prior-Anchored GMM Residual Model}
+\subsection{Prior Anchored GMM Residual Model}
 
 The final model introduces a joint multi-task residual GMM-head architecture that
 emits a \emph{Gaussian Mixture Model (GMM)}-parameterized residual head at each
@@ -61,10 +61,10 @@ space, while delay spread and angular spread are modeled in transformed
 native units for deterministic metrics.
 In the selected final fine-tuning stage the same GMM parameterization is kept,
 but the probabilistic losses are disabled; therefore the final reported claim
-is based on the deterministic mixture-mean map rather than on calibrated
+is based on the deterministic mixture mean map rather than on calibrated
 predictive densities.
 
-The native residual caps are task- and region-dependent:
+The native residual caps depend on task and region:
 
 \begin{equation}
 \delta_{\max,k,r}
@@ -134,7 +134,7 @@ space before the Gaussian likelihood:
 \end{equation}
 
 The DNN also predicts per-pixel mixture probabilities \(p_{k,r,j}(x)\) and
-combines global and local standard-deviation terms into the component standard
+combines global and local standard deviation terms into the component standard
 deviation:
 \begin{equation}
 \sigma_{k,r,j}(x)
@@ -147,7 +147,7 @@ deviation:
 \label{eq:try80_sigma}
 \end{equation}
 The Gaussian variance used by the density is therefore
-\(\sigma^2_{k,r,j}(x)\). Both standard-deviation terms are constrained by
+\(\sigma^2_{k,r,j}(x)\). Both standard deviation terms are constrained by
 sigmoid transforms to lie between \(\sigma_{\min}=0.05\) and
 \(\sigma_{\max}=3.0\). These bounds stabilize the probabilistic head and
 prevent the NLL term, when it is enabled, from collapsing to unrealistically
@@ -156,16 +156,16 @@ tiny uncertainty or exploding to a uselessly flat density.
 The local component logits are transformed with a per-pixel softmax, so
 \(\sum_j p_{k,r,j}(x)=1\). The global mixture weights
 \(\pi^{(g)}_{k,r,j}\) emitted by the global branch belong to the map-level
-distributional branch used when map-level KL-style terms are active; they are
+distributional branch used when map-level KL style terms are active; they are
 not multiplied into the deterministic point map in Eq.~\eqref{eq:try80_point}.
 This distinction is important for the selected final checkpoint, where the
-distributional losses are disabled and RMSE is computed from the local-weighted
+distributional losses are disabled and RMSE is computed from the local weighted
 point prediction.
 
 The architecture supports a full GMM Negative Log Likelihood (NLL), and the
 preceding large-capacity residual stage used non-zero probabilistic weights.
-The selected final model keeps the same GMM head, but the last residual
-fine-tuning stage is RMSE/MAE-dominant: its NLL, KL, moment and
+The selected final model keeps the same GMM-head, but the last residual
+fine-tuning stage is RMSE/MAE dominant: its NLL, KL, moment and
 outlier-budget weights are set to zero in the resolved YAML configuration.
 The deterministic point prediction used for RMSE evaluation is the mixture
 mean in the modelled space:
@@ -218,11 +218,11 @@ Sec.~\ref{sec:try80_objective}.
 \subsection{Architecture: Shared UNet with FiLM}
 
 The final model processes the map inputs through a shared multi-task
-convolutional encoder-decoder. In the final large-capacity configuration,
+convolutional encoder decoder. In the final large-capacity configuration,
 scalar UAV height is encoded into a condition vector
 $\textbf{c} \in \mathbb{R}^{160}$ and injected dynamically into the
 convolutional feature maps at multiple scales via
-\emph{Feature-wise Linear Modulation (FiLM)} layers.
+\emph{Feature wise Linear Modulation (FiLM)} layers.
 
 For a given convolutional feature map $\textbf{X} \in \mathbb{R}^{C \times H \times W}$, a linear projection of the height condition $\textbf{c}$ outputs a scale vector $\textbf{g} \in \mathbb{R}^C$ and a shift vector $\textbf{b} \in \mathbb{R}^C$. The feature map is then modulated via an affine transformation:
 \begin{equation}
@@ -235,9 +235,9 @@ large-capacity variants; only the width of the feature maps changes, so the
 FiLM projection emits \(2C\) parameters for the larger channel counts.
 
 The word ``joint'' in this model refers to shared representation learning and
-joint optimization, not to an autoregressive or cross-output decoder. Path loss,
+joint optimization, not to an autoregressive or cross output decoder. Path loss,
 delay spread and angular spread all pass through the same encoder, the same
-height-conditioning path, the same decoder feature map and the same
+height conditioning path, the same decoder feature map and the same
 prior-anchored GMM assembly rule. After these shared features are computed,
 however, the implementation iterates over the three tasks and applies
 task-specific global and local heads. Therefore PL, DS and AS can exchange
@@ -245,11 +245,11 @@ information through the common spatial representation, but the final residual
 parameters, mixture weights and frozen prior anchor are selected independently
 for each task.
 
-The architecture explicitly enforces the separation of global and local effects via a dual-head design for each task:
+The architecture explicitly enforces the separation of global and local effects via a dual head design for each task:
 
 \begin{itemize}
-\item \textbf{Global Head (Map-Level Context)}: The deepest bottleneck feature map is globally average-pooled to produce a single vector representing the macro-context. This pooled vector, fused with the height condition, is passed through an MLP to predict the non-spatial quantities used by the distributional branch: auxiliary global mixture weights $\pi^{(g)}_{k,r,j}$, global offsets $\delta^{(g)}_{k,r,j}$, and global standard deviations $\sigma^{(g)}_{k,r,j}$.
-\item \textbf{Local Head (Pixel-Level Refinement)}: The high-resolution output of the decoder is passed through $1\times1$ convolutions to predict the spatially varying fields: local component weights $p_{k,r,j}(x)$, $\delta^{(\ell)}_{k,r}(x)$, $\alpha_{k,r}(x)$, and $\tilde\sigma_{k,r}(x)$.
+\item \textbf{Global Head (Map Level Context)}: The deepest bottleneck feature map is globally average pooled to produce a single vector representing the macro context. This pooled vector, fused with the height condition, is passed through an MLP to predict the non spatial quantities used by the distributional branch: auxiliary global mixture weights $\pi^{(g)}_{k,r,j}$, global offsets $\delta^{(g)}_{k,r,j}$, and global standard deviations $\sigma^{(g)}_{k,r,j}$.
+\item \textbf{Local Head (Pixel Level Refinement)}: The high resolution output of the decoder is passed through $1\times1$ convolutions to predict the spatially varying fields: local component weights $p_{k,r,j}(x)$, $\delta^{(\ell)}_{k,r}(x)$, $\alpha_{k,r}(x)$, and $\tilde\sigma_{k,r}(x)$.
 \end{itemize}
 
 \begin{figure}[H]
@@ -429,7 +429,7 @@ f_i
 \draw[condarr] (fuse.east) -- node[above, sloped, font=\scriptsize] {$\mathbb{R}^{160}$} (dec1.west);
 \draw[condarr] (fuse.east) -- node[above, sloped, font=\scriptsize] {$\mathbb{R}^{160}$} (gh.west);
 
-\node[opbox] (filmproj) at (31.0,0.0) {Per-FiLM projection\\Linear $160\!\to\!2C$\\split into $\textbf{g},\textbf{b} \in \mathbb{R}^{C}$};
+\node[opbox] (filmproj) at (31.0,0.0) {Per FiLM projection\\Linear $160\!\to\!2C$\\split into $\textbf{g},\textbf{b} \in \mathbb{R}^{C}$};
 \node[smallbox, fill=purple!10] (affine) at (36.0,0.0) {$\textbf{X}'=\textbf{X}\odot(1+\textbf{g})+\textbf{b}$\\broadcast over $(H,W)$};
 \draw[arr] (dec3.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{160}$} (filmproj.west);
 \draw[arr] (filmproj.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{2C}$} (affine.west);
@@ -438,11 +438,11 @@ f_i
 
 \end{tikzpicture}%
 }
-\caption{Detailed sinusoidal height-conditioning path.}
+\caption{Detailed sinusoidal height conditioning path.}
 \label{fig:try80_film_detail}
 \end{figure}
 
-\paragraph{Detailed prior-anchored GMM head.}
+\paragraph{Detailed prior-anchored GMM-head.}
 For each task
 $k$ and for each region
 $r \in \{\mathrm{LoS},\mathrm{NLoS}\}$, the model predicts a 3-component
@@ -452,9 +452,9 @@ the local head outputs per-pixel maps
 $p^{(\ell)}_{k,r,j}(x)$, $\delta^{(\ell)}_{k,r}(x)$, $\alpha_{k,r}(x)$, and
 $\tilde\sigma_{k,r}(x)$.
 After softmax over components, \(p^{(\ell)}_{k,r,j}(x)\) becomes the local
-probability \(p_{k,r,j}(x)\) used in the regional model-space mean. The auxiliary
+probability \(p_{k,r,j}(x)\) used in the regional model space mean. The auxiliary
 global weights \(\pi^{(g)}_{k,r,j}\) are retained for the distributional
-training branch and diagnostics, but the selected RMSE/MAE-dominant checkpoint
+training branch and diagnostics, but the selected RMSE/MAE dominant checkpoint
 uses the local probabilities for the deterministic output map.
 
 \begin{figure}[H]
@@ -499,7 +499,7 @@ uses the local probabilities for the deterministic output map.
 \draw[arr] (delta.south) -- node[above right, font=\scriptsize] {$\mathbb{R}^{6 \times H \times W}$} (mu.north);
 \draw[arr] (prior.east) -- node[above, font=\scriptsize] {$\mathbb{R}^{2 \times H \times W}$} (mu.west);
 
-\node[mix] (expv) at (17.0,-10.0) {Regional model-space mean\\$\hat z_{k,r}(x)=\sum_{j=1}^{3} p_{k,r,j}(x)\,\mu_{k,r,j}(x)$\\PL: $\hat y=\hat z$; DS/AS: $\hat y=\exp(\hat z)-1$};
+\node[mix] (expv) at (17.0,-10.0) {Regional model space mean\\$\hat z_{k,r}(x)=\sum_{j=1}^{3} p_{k,r,j}(x)\,\mu_{k,r,j}(x)$\\PL: $\hat y=\hat z$; DS/AS: $\hat y=\exp(\hat z)-1$};
 \node[box, fill=orange!15] (mask) at (25.0,-10.0) {Region selection\\LoS/NLoS masks choose\\$\hat y_{k,\mathrm{LoS}}$ or $\hat y_{k,\mathrm{NLoS}}$};
 \node[box, fill=red!10] (out) at (31.0,-10.0) {Final task map\\$\hat y_k(x)$};
 
@@ -509,7 +509,7 @@ uses the local probabilities for the deterministic output map.
 
 \end{tikzpicture}%
 }
-\caption{Detailed prior-anchored GMM head used by the final model.}
+\caption{Detailed prior-anchored GMM-head used by the final model.}
 \label{fig:try80_gmm_detail}
 \end{figure}
 
@@ -522,8 +522,8 @@ uses the local probabilities for the deterministic output map.
 \setlength{\belowdisplayshortskip}{3pt plus 1pt minus 1pt}
 
 The implementation defines a composite loss that can train both the
-probabilistic GMM head and the deterministic residual map. For each task, let
-\(\Omega_k\) be the valid ground-pixel set, let \(q_k(z\mid x)\) be the
+probabilistic GMM-head and the deterministic residual map. For each task, let
+\(\Omega_k\) be the valid ground pixel set, let \(q_k(z\mid x)\) be the
 predicted mixture density in the modelled space, with \(z=y\) for path loss and
 \(z=\log(1+y)\) for delay spread and angular spread, and let \(\hat y_k(x)\) be
 the native-space point prediction used for RMSE. The total objective is:
@@ -557,11 +557,48 @@ w_k
 \label{eq:try80_total_loss}
 \end{equation}
 
+\begin{table}[!htbp]
+\centering
+\caption{Active loss settings in the final residual GMM-head model stages.}
+\label{tab:try80_loss_settings}
+\scriptsize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.22\textwidth}
+>{\raggedright\arraybackslash}p{0.19\textwidth}
+>{\raggedright\arraybackslash}p{0.19\textwidth}
+>{\raggedright\arraybackslash}X}
+\toprule
+Term group & Large-capacity residual stage & Final residual fine-tuning stage & Interpretation \\
+\midrule
+NLL, KL, moment and outlier-budget &
+1.00 / 0.25 / 0.10 / 0.02 &
+0 / 0 / 0 / 0 &
+Active in the preceding large-capacity stage, then disabled in the selected
+deterministic fine-tuning stage. \\
+RMSE / MAE &
+1.50 / 0.10 &
+1.00 / 0.05 &
+Supervised pixel losses in native output units; the final fine-tuning stage
+makes them the dominant active terms. \\
+Anchor / prior guard &
+0.05 / 0.10 &
+0.01 / 0.02 &
+Keep residual corrections small and penalize model states that become worse
+than the frozen priors, with lighter regularization in the fine-tuning stage. \\
+Task weights &
+PL 1.00, DS 1.00, AS 1.00 &
+PL 1.00, DS 0.25, AS 0.25 &
+Equal target weighting before the final fine-tuning stage; then path loss
+becomes the main optimization target while spread supervision remains in the
+joint model. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
 Table~\ref{tab:try80_loss_settings} gives the resolved weights for both the
 large-capacity residual stage and the final residual fine-tuning stage; the
 equations below define the terms used in that table.
 
-\paragraph{Map negative log-likelihood.}
+\paragraph{Map negative log likelihood.}
 The likelihood is computed separately in LoS and NLoS regions, then averaged
 over the non-empty regions. For a transformed target \(z_k(x)\),
 \begin{equation}
@@ -627,7 +664,7 @@ two moments as the target map:
 where bars denote masked means over \(\Omega_k\) and \(s\) denotes masked
 standard deviation. When active, this term prevents a low-NLL solution from
 matching local density while drifting in map-average level. In the final
-fine-tune it is defined by the code but has zero weight.
+fine tune it is defined by the code but has zero weight.
 
 \paragraph{Anchor and guard terms.}
 The anchor penalty keeps the correction small:
@@ -648,7 +685,7 @@ The guard term is Eq.~\eqref{eq:try80_loss}. Together, these two terms encode
 the final design philosophy: the DNN is allowed to improve the
 prior, but it must pay a penalty for large or harmful deviations.
 In Eq.~\eqref{eq:try80_anchor}, the residual variables are the same tensors
-used by the implementation: native-dB offsets for path loss, and the
+used by the implementation: native dB offsets for path loss, and the
 corresponding \(\log(1+y)\)-space offsets for delay and angular spread after
 the native residual caps have been applied. The guard term, by contrast, is
 evaluated in the native units of each task against the frozen prior map.
@@ -716,7 +753,7 @@ The RMSE and MAE terms are conventional masked deterministic losses:
 }
 \caption[Composite final loss family]{Composite final
 loss family. In the final residual fine-tuning stage, the selected final model
-keeps the GMM head and uses RMSE/MAE, anchor and guard penalties; NLL, KL,
+keeps the GMM-head and uses RMSE/MAE, anchor and guard penalties; NLL, KL,
 moment and outlier-budget weights are set to zero. Earlier residual stages
 used non-zero probabilistic weights.}
 \label{fig:try80_loss_terms}

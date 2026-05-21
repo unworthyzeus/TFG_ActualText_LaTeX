@@ -5,7 +5,7 @@
 
 The original appendix listed the internal attempt numbers in several long
 tables. For the reduced thesis, the compiled appendix keeps phases instead of
-eighty row-level entries. The full try-number map remains in
+eighty row level entries. The full attempt number map remains in
 \texttt{appendices.tex} and in the repository history, so the trace is not
 lost; it is simply no longer part of the main PDF.
 
@@ -21,11 +21,11 @@ Attempt range & Phase & Why it matters in the final thesis \\
 \midrule
 1--22 & Direct image-to-image baselines & Established the CKM pipeline, cGAN/U-Net feasibility, bilinear decoder fixes and multiscale supervision. The phase ended because visual realism did not imply physical RMSE. \\
 23--40 & Spread branches and mask reset & Added delay/angular experiments and, most importantly, the ground-only receiver mask. This changed the evaluation contract. \\
-41--50 & Prior-residual PMNet phase & Showed that raw formulas were weak, train-only calibration helped, and residual learning was useful but still NLoS-limited. \\
+41--50 & Prior residual PMNet phase & Showed that raw formulas were weak, train-only calibration helped, and residual learning was useful but still NLoS-limited. \\
 51--66 & PMHHNet and topology experts & Introduced six topology experts, height FiLM, high-frequency paths, obstruction channels and no-prior controls. LoS improved, NLoS remained the bottleneck. \\
 67--75 & Stabilisation and distribution diagnosis & Tested knife-edge channels, quad heads, uncertainty and histogram-focused diagnostics. The key result was the visible NLoS and spread-tail distribution mismatch. \\
 76--77 & Distribution-first models & GMM/spike-plus-tail heads showed that modelling the target distribution before pixel assignment could remove much of the collapse. \\
-78--79 & Frozen calibrated priors & Produced the final train-only path-loss and spread priors, including height-aware LoS two-ray calibration and log-domain spread ridge calibration. \\
+78--79 & Frozen calibrated priors & Produced the final train-only path loss and spread priors, including height-aware LoS two-ray calibration and log-domain spread ridge calibration. \\
 80 & Final prior-anchored residual GMM model & Combined frozen priors with a shared residual GMM-head model and selected the RMSE-dominant fine-tuning stage reported in Chapter~\ref{chap:results}. \\
 \bottomrule
 \end{tabularx}
@@ -38,7 +38,7 @@ priors once their role had become clear.
 
 \section{Expanded phase notes}
 
-The compact table above is intentionally phase-based, but the thesis still
+The compact table above is intentionally phase based, but the thesis still
 needs enough chronology to show that the final model was not chosen in one
 step. The following notes keep the development evidence that most directly
 explains the final design.
@@ -54,7 +54,7 @@ explains the final design.
 Attempt & Public role & Lasting lesson \\
 \midrule
 22 & Clean early image-to-image baseline & Bilinear decoding and multiscale supervision reduced visual artifacts, but direct image realism was still a weak proxy for calibrated radio-map error. \\
-33--40 & Ground-mask reset & Building pixels had to be excluded from loss, metrics and visual error maps; scores before and after this contract are historical, not directly comparable. \\
+33--40 & Ground mask reset & Building pixels had to be excluded from loss, metrics and visual error maps; scores before and after this contract are historical, not directly comparable. \\
 41--45 & First explicit prior-residual models & Raw formulas were weak, train-only calibration helped strongly, and residual learning was useful only when the prior carried real physical structure. \\
 50 & NLoS prior sandbox & Scalar NLoS corrections, tabular deltas and simple hybrid formulas did not solve blocked-link tails. The remaining error was spatial and distributional. \\
 54--66 & PMHHNet/topology experts & Height FiLM, physical channels and six topology experts improved the easy LoS regime, but NLoS stayed dominant even after substantial backbone engineering. \\
@@ -62,19 +62,19 @@ Attempt & Public role & Lasting lesson \\
 76 & Distribution-first PL GMM & Predicting the target distribution before assigning pixels gave the first convincing route for hard path-loss tails. \\
 77 & Distribution-first spread GMM & Delay and angular spread behaved like spike-plus-tail targets rather than smooth images, motivating distribution-aware output heads. \\
 78--79 & Frozen calibrated priors & The strongest non-neural evidence came from height-aware LoS calibration and log-domain spread ridge calibration, both fitted only on training cities. \\
-80 & Final prior-anchored residual GMM model & The selected system is a calibrated-prior estimator plus bounded learned residual distribution head, not a black-box direct regressor. \\
+80 & Final prior-anchored residual GMM model & The selected system is a calibrated prior-estimator plus bounded learned residual distribution head, not a black-box direct regressor. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \paragraph{PMNet transfer check.}
 A separate diagnostic placed official PMNet checkpoints on CKM samples. This
-confirmed that PMNet-family models are relevant as architectural references but
+confirmed that PMNet family models are relevant as architectural references but
 cannot be imported as ready-made solutions for this thesis contract. The
 training and target distributions are structurally different: CKM uses
 continuous UAV height, full \(513\times513\) city maps, city-holdout
-evaluation, and valid ground-receiver metrics. For that reason the PMNet result
-is kept as a transfer check in the appendix, not as a main-method result.
+evaluation, and valid ground receiver metrics. For that reason the PMNet result
+is kept as a transfer check in the appendix, not as a main method result.
 
 \subsection{From image translation to receiver-valid evaluation}
 
@@ -90,19 +90,19 @@ receiver mask was enforced, the task became prediction on ground receivers
 only: buildings and padded pixels are not valid receiver locations. This is why
 the final thesis does not mix early scores with the final leaderboard. They
 remain useful as a development trace, but the valid comparison contract starts
-once the ground mask is fixed.
+once the ground-mask is fixed.
 
 \subsection{Why the prior returned}
 
-The first physical-prior attempts were not successful as formulas alone. A raw
+The first physical prior attempts were not successful as formulas alone. A raw
 prior could be far worse than a neural model, especially in NLoS. However,
 train-only calibration made the prior informative enough to act as an anchor.
 This distinction matters: the prior is not presented as a magic replacement for
 learning, but as a structured baseline that gives the network the correct
 coordinate system.
 
-The negative evidence was equally important. PMNet-style residual models,
-topology experts and NLoS-focused objectives improved parts of the map, but
+The negative evidence was equally important. PMNet style residual models,
+topology experts and NLoS focused objectives improved parts of the map, but
 the hard tails survived. The project therefore moved away from simply enlarging
 the encoder and toward separating regimes, modelling distributions and freezing
 strong calibrated estimators.
@@ -121,6 +121,16 @@ regression established feasibility, masked evaluation fixed the contract,
 PMHHNet identified the remaining NLoS bottleneck, distribution-first models
 showed why tails mattered, and the frozen priors made the final residual model
 small enough to improve rather than overwrite the physical estimator.
+
+\subsection{What was moved out of the main chapters}
+
+The distribution-first PL and spread experiments remain part of the thesis
+evidence, but their detailed per-expert tables are kept here conceptually
+rather than in Chapter~\ref{chap:results}. The main chapters use them only for
+the lesson they provide: direct neural maps can look plausible while averaging
+away rare tails, and the final model should therefore keep calibrated priors
+and a distribution-aware residual head. This keeps the thesis shorter while
+preserving the negative evidence that motivated the final design.
 
 \endgroup
 \chapter{Representative Final Model Panels}
@@ -202,7 +212,7 @@ performance switches do not change the mathematical model.
 CKMGenerator is a deployment wrapper around the final thesis pipeline. It
 accepts topology inputs, prepares them with the same geometric conventions used
 for training and evaluation, computes or imports LoS/NLoS masks, evaluates the
-frozen calibrated path-loss, delay-spread and angular-spread priors, optionally
+frozen calibrated path loss, delay-spread and angular-spread priors, optionally
 runs the final neural residual model, and exports the numerical arrays used for
 reproducible analysis. The Streamlit interface is intended for inspection and
 demonstrations; the command-line interface uses the same backend and is intended
@@ -249,7 +259,7 @@ metadata preview.}
 \begin{subfigure}{\textwidth}
 \centering
 \includegraphics[width=\textwidth,height=0.30\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png}
-\caption{Joint path-loss, delay-spread and angular-spread prediction output.}
+\caption{Joint path loss, delay-spread and angular-spread prediction output.}
 \label{fig:ckm_generator_prediction_appendix}
 \end{subfigure}
 \caption{CKMGenerator application output after running one HDF5 sample.}
@@ -319,12 +329,12 @@ The generator accepts raster topology images (\texttt{.png}, \texttt{.jpg},
 \texttt{.tif}, \texttt{.bmp}), numeric arrays (\texttt{.npy}, \texttt{.npz},
 \texttt{.csv}, \texttt{.txt}, \texttt{.json}) and HDF5 files. HDF5 and NPZ
 inputs may provide topology, LoS/NLoS masks and antenna height directly. Raster
-inputs normally store intensities rather than metre-valued building heights, so
+inputs normally store intensities rather than metre-valued building-height values, so
 the selected maximum image height is used to convert pixel values to metres
 unless the option \texttt{image-values-are-metres} is enabled.
 
 All inputs are fitted to the \(513\times513\) grid used by the final model. The
-model grid represents \SI{1}{m} per pixel, with the transmitter antenna located
+model grid represents \SI{1}{m} per-pixel, with the transmitter antenna located
 at the centre of the map and with variable UAV height. If an input is supplied
 with another physical spacing, \texttt{--meters-per-pixel} is used before the
 centred crop or padding step. Topology arrays are resampled with bilinear
@@ -350,7 +360,7 @@ same masks are also used by the priors. CKMGenerator supports three policies:
 \texttt{generated} ray-casts masks from topology and antenna height; and
 \texttt{auto} uses provided masks when present and otherwise generates them.
 For CKM HDF5 samples, the NLoS support is derived from the raw LoS mask and the
-ground mask,
+ground-mask,
 \[
   m_{\mathrm{LoS}} = m_{\mathrm{LoS,raw}}\,m_{\mathrm{ground}},
   \qquad
@@ -390,7 +400,7 @@ with \texttt{--out}. The authoritative output is the NumPy archive in
 \toprule
 Area & Reproducibility detail \\
 \midrule
-Numerical archive & Stores topology, ground mask, LoS/NLoS masks, generated or reference masks when available, PL/DS/AS priors, PL/DS/AS predictions and metadata on the final \(513\times513\) grid. \\
+Numerical archive & Stores topology, ground-mask, LoS/NLoS masks, generated or reference masks when available, PL/DS/AS priors, PL/DS/AS predictions and metadata on the final \(513\times513\) grid. \\
 Metadata & Records sample id, antenna height, source file, checkpoint path, requested and resolved mask policy, topology class, antenna bin, save options, timings and generated paths. \\
 Visual outputs & Optional PNG exports include binary masks, prior maps, prediction maps and the joint prediction panel used for inspection. \\
 Runtime & CUDA is preferred; CPU and DirectML are fallback paths. The \texttt{ckm\_doctor.py} check verifies PyTorch, CUDA/DirectML availability, checkpoint presence and memory before inference. \\
