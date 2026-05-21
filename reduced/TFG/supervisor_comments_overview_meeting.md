@@ -1,0 +1,7 @@
+## Notes:
+
+- The background/method should have the same structure as the results more or less. To find things easier when you don't understand; General framework (pipelines), path loss, angular spread and then delay spread. (For both background/method and results). Similar naming of the sub/sections between both. 
+- Comparing the different models for the pathloss (channel attenuation) is cool. Add the same for angular and delay spread. In the results or a bit in SOA (without our results in the SOA).
+- Maybe clarify actual inputs of the input of the full framework model (only the topology/building heights and the height of the Tx), then the LoS nLoS mask are computed and the building mask. And then those are the inputs for the prior, which output 5 things (the 3 priors (combined), and the path loss LoS prior and nLoS prior too). And those are the input to the DL model, which outputs only 3 maps (DS, AS and PL full). This should be noted. So 10 inputs to the DL, and 3 outputs. 2 inputs to the full framework, 3 outputs.
+- Use simple words when they are available (morphology, poly-whatever, etc.)
+- Anyone should understand everything with just the thesis. But have a deeper knowledge with the appendix.
