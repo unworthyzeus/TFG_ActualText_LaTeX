@@ -4,7 +4,7 @@ Radio map prediction sits at the intersection of classical wireless propagation
 modelling, statistical channel analysis, and dense computer vision regression.
 This chapter reviews the background needed to understand the final design:
 classical and empirical propagation models, deep learning for radio map
-estimation, physics informed and hybrid neural approaches, distribution-aware
+estimation, physics informed and hybrid neural approaches, distribution aware
 prediction, and fair comparison rules. The goal is to identify the limitations
 of existing work and the tools that will be used later, not to report the
 results of this thesis.
@@ -14,24 +14,24 @@ results of this thesis.
 \label{sec:soa_ckm_context}
 % Section separator
 
-The term channel knowledge map (CKM) refers to a site-specific database of
-location-tagged channel knowledge, such as channel gain, angles, or delay
-information, used to make future radio systems environment-aware
+The term channel knowledge map (CKM) refers to a site specific database of
+location tagged channel knowledge, such as channel gain, angles, or delay
+information, used to make future radio systems environment aware
 \cite{zengx2021ckm,ckmtutorial2024}. This framing is more precise than a
-generic radio map: the map is not only an image-like coverage estimate, but a
-queryable prior that can reduce channel-state acquisition overhead, guide
+generic radio map: the map is not only an image like coverage estimate, but a
+queryable prior that can reduce channel state acquisition overhead, guide
 beamforming, support planning, and provide initial channel knowledge before
 online measurements are available.
 
 Recent CKM literature also clarifies why the thesis uses a large offline
-ray-traced dataset rather than sparse field samples. Xu and Zeng
+ray traced dataset rather than sparse field samples. Xu and Zeng
 \cite{ckmdata2024} analyse how CKM construction error depends on spatial sample
 density and on the number of neighbouring samples used for online prediction,
 showing the explicit cost/accuracy trade off of measurement driven CKM
 construction. For a thesis whose goal is to learn dense \(513\times513\)
-targets under city-holdout, this motivates the simulation first route: it
+targets under city holdout, this motivates the simulation first route: it
 provides full supervision everywhere, while any learned model is still best
-understood as a surrogate for a ray-traced CKM rather than as a replacement for
+understood as a surrogate for a ray traced CKM rather than as a replacement for
 field calibration.
 
 The data ecosystem has also expanded since the first path loss challenge.
@@ -42,27 +42,27 @@ al.\ \cite{jaensch2024directiverme} and CKMImageNet
 \cite{ckmimagenet2025} show the broader move toward open, location specific
 datasets with richer channel and environment representations. The CKM dataset
 used in this thesis sits in the same data driven tradition, but differs in its
-continuous UAV height conditioning, real city-holdout split, and simultaneous
-path loss, delay spread, and angular-spread targets.
+continuous UAV height conditioning, real city holdout split, and simultaneous
+path loss, delay spread, and angular spread targets.
 
 % Section separator
 \section{Path Loss Prediction}
 \label{sec:soa_classical}
 % Section separator
 
-\subsection{Free space and two-ray propagation}
+\subsection{Free space and two ray propagation}
 
-The most fundamental path loss term is the \emph{free-space path loss} (FSPL),
-which depends only on carrier frequency~$f$ and Tx-Rx distance~$d$:
+The most fundamental path loss term is the \emph{free space path loss} (FSPL),
+which depends only on carrier frequency~$f$ and Tx/Rx distance~$d$:
 \begin{equation}
   \mathrm{PL}_{\mathrm{FSPL}} = 20\log_{10}(d) + 20\log_{10}(f)
     + 20\log_{10}\!\left(\frac{4\pi}{c}\right).
 \end{equation}
-FSPL is the single direct-ray reference baseline in unobstructed conditions, not
+FSPL is the single direct ray reference baseline in unobstructed conditions, not
 a lower bound on the final path loss once coherent reflections are present. In
-aerial scenarios a specular ground-reflection can produce constructive or
+aerial scenarios a specular ground reflection can produce constructive or
 destructive interference periodically with distance. Let \(d_{2D}\) be the
-horizontal Tx-Rx distance, \(h_{\mathrm{tx}}\) the UAV height, and
+horizontal Tx/Rx distance, \(h_{\mathrm{tx}}\) the UAV height, and
 \(h_{\mathrm{rx}}\) the receiver height. The direct and reflected path lengths
 are
 \begin{equation}
@@ -72,8 +72,8 @@ are
   d_{\mathrm{ref}} =
   \sqrt{d_{2D}^{2} + (h_{\mathrm{tx}}+h_{\mathrm{rx}})^{2}} .
 \end{equation}
-With wavelength \(\lambda\), the coherent two-ray model adds the direct and
-ground-reflected fields before converting to dB \cite{rappaport,wocc2021}:
+With wavelength \(\lambda\), the coherent two ray model adds the direct and
+ground reflected fields before converting to dB \cite{rappaport,wocc2021}:
 \begin{equation}
   E_{\mathrm{total}}
   =
@@ -82,32 +82,51 @@ ground-reflected fields before converting to dB \cite{rappaport,wocc2021}:
   \Gamma
   \frac{e^{-j2\pi d_{\mathrm{ref}}/\lambda}}{d_{\mathrm{ref}}},
 \end{equation}
-where \(\Gamma\) is the effective ground-reflection coefficient. The received
+where \(\Gamma\) is the effective ground reflection coefficient. The received
 field magnitude \(|E_{\mathrm{total}}|\) is then converted to a path loss like
 dB prediction with a fitted calibration constant. This is the physical origin
-of the radial rings later exploited by the path-loss prior.
+of the radial rings later exploited by the path loss prior.
 
 \begin{figure}[ht]
   \centering
-  \begin{tikzpicture}[scale=0.9]
-    \draw[thick] (-0.5,0) -- (7,0);
-    \node[below] at (3.2,0) {ground};
-    \filldraw[blue] (0.5,3.0) circle (2pt) node[left] {UAV Tx};
-    \filldraw[black] (6.2,0.35) circle (2pt) node[right] {ground Rx};
-    \draw[->,thick] (0.5,3.0) -- node[above] {direct path} (6.2,0.35);
-    \draw[->,thick,dashed] (0.5,3.0) -- node[left] {reflected path} (3.2,0);
-    \draw[->,thick,dashed] (3.2,0) -- (6.2,0.35);
-    \draw[<->] (0.2,0) -- node[left] {\(h_{\mathrm{tx}}\)} (0.2,3.0);
-    \draw[<->] (6.5,0) -- node[right] {\(h_{\mathrm{rx}}\)} (6.5,0.35);
+  \begin{tikzpicture}[x=0.92cm,y=0.92cm,>=Latex,font=\small]
+    \coordinate (Tx) at (0.2,3.25);
+    \coordinate (Rx) at (6.6,0.45);
+    \coordinate (Gtx) at (0.2,0);
+    \coordinate (Grx) at (6.6,0);
+    \coordinate (RxImg) at (6.6,-0.45);
+    \coordinate (R) at (5.82,0);
+
+    \draw[thick] (-0.75,0) -- (7.35,0) node[below right] {ground};
+    \draw[densely dotted] (Tx) -- (Gtx);
+    \draw[densely dotted] (Rx) -- (RxImg);
+
+    \draw[<->] (-0.35,0) -- node[left] {\(h_{\mathrm{tx}}\)} (-0.35,3.25);
+    \draw[<->] (7.02,0) -- node[right] {\scriptsize \(h_{\mathrm{rx}}\)} (7.02,0.45);
+    \draw[<->] (0.2,-0.78) -- node[below] {\(d_{2D}\)} (6.6,-0.78);
+
+    \filldraw[blue] (Tx) circle (2pt) node[above left] {UAV Tx};
+    \filldraw[black] (Rx) circle (2pt) node[above right] {ground Rx};
+    \filldraw[gray] (RxImg) circle (1.3pt)
+      node[below right,gray] {\scriptsize image Rx};
+    \filldraw[gray] (R) circle (1.4pt);
+
+    \draw[->,thick] (Tx) --
+      node[above,pos=0.60,sloped] {direct path} (Rx);
+    \draw[densely dotted,gray] (Tx) -- (RxImg);
+    \draw[->,thick,dashed] (Tx) -- (R);
+    \draw[->,thick,dashed] (R) -- (Rx);
+    \node[fill=white,inner sep=1pt] at (3.1,1.25) {ground reflected path};
+    \node[below,fill=white,inner sep=1pt] at (R) {\scriptsize reflection point};
   \end{tikzpicture}
-  \caption{Direct and ground-reflected paths in the two-ray model.}
+  \caption{Direct and specular ground reflected paths in the two ray model.}
   \label{fig:two_ray_schematic}
 \end{figure}
 
 \subsection{Empirical and semi empirical models}
 
 Empirical models such as the Okumura-Hata and COST-231/Hata formulas extend
-FSPL by incorporating frequency, antenna heights, and city-type correction terms
+FSPL by incorporating frequency, antenna heights, and city type correction terms
 \cite{rappaport,cost231}.  While computationally cheap, they are calibrated on specific
 frequency bands and city/environment types, limiting accuracy when the geometry
 departs from the fitting dataset.
@@ -115,8 +134,8 @@ departs from the fitting dataset.
 The 3GPP Technical Report 38.901 \cite{tr38901} formalises stochastic channel
 models for frequencies from 500~MHz to 100~GHz for urban macro (UMa), urban
 micro (UMi), rural macro (RMa), and indoor scenarios.  It provides separate
-path-loss expressions for LoS and non-LoS (NLoS) conditions, breakpoint
-distances, and shadow-fading standard deviations, which serve as reference
+path loss expressions for LoS and non-LoS (NLoS) conditions, breakpoint
+distances, and shadow fading standard deviations, which serve as reference
 baselines throughout this thesis.
 
 \subsection{UAV and air to ground channel models}
@@ -126,13 +145,13 @@ or below.  Unmanned aerial vehicle (UAV) base station scenarios introduce a
 third dimension: the UAV can fly from near ground level to several hundred
 metres.  Al-Hourani et al.~\cite{alhourani2014} showed that the LoS probability
 increases monotonically with elevation angle and depends on city/environment type
-(suburban, urban, dense urban, high-rise).  The A2G modelling literature
+(suburban, urban, dense urban, high rise).  The A2G modelling literature
 \cite{alhourani2014,khawaja_survey} commonly parameterises this dependence
 through logistic functions of the elevation angle
 $\theta = \arctan\!\bigl((h_{\mathrm{tx}} - h_{\mathrm{rx}})/d_{2D}\bigr)$,
 where $h_{\mathrm{tx}}$ and $h_{\mathrm{rx}}$ are transmit and receive heights
 respectively and $d_{2D}$ is the horizontal distance. 3GPP~TR~38.901
-\cite{tr38901} is used here as standardized LoS/NLoS large-scale channel model
+\cite{tr38901} is used here as standardized LoS/NLoS large scale channel model
 context, not as the direct source of that elevation-logistic A2G formula.
 
 Recent work by Saboor and Vinogradov \cite{saboor2025height} makes this
@@ -153,9 +172,9 @@ network.
 
 \subsection{Spread definitions used later}
 
-Beyond path loss, full channel characterisation requires second-order statistics.
-The \emph{root-mean-square delay spread} $\tau_{\mathrm{rms}}$ measures the
-time domain dispersion of multipath arrivals and drives inter-symbol interference
+Beyond path loss, full channel characterisation requires second order statistics.
+The \emph{root mean square delay spread} $\tau_{\mathrm{rms}}$ measures the
+time domain dispersion of multipath arrivals and drives inter symbol interference
 in wideband systems.  The \emph{azimuth angular spread} $\sigma_{\mathrm{AS}}$
 at the receiver quantifies the spatial diversity of arriving paths.
 
@@ -187,67 +206,67 @@ For angular spread, the mean angle must be computed circularly:
 where \(\operatorname{wrap}(\cdot)\) maps angle differences to the
 \((-\pi,\pi]\) interval.
 
-3GPP~TR~38.901 \cite{tr38901} models both quantities as log-normal random
+3GPP~TR~38.901 \cite{tr38901} models both quantities as log normal random
 variables conditioned on the LoS/NLoS state and distance.  WINNER~II follows
-the same broad log-domain large-scale parameter convention \cite{winner2}.
+the same broad log domain large scale parameter convention \cite{winner2}.
 In practice, the distributions of delay spread and angular spread are
-right-skewed with a heavy exponential tail and often include a spike near-zero
+right skewed with a heavy exponential tail and often include a spike near zero
 representing the dominant LoS path. A Gaussian model cannot represent this
 shape faithfully. This is why the methodology later checks the empirical target
-histograms before choosing distribution-aware heads.
+histograms before choosing distribution aware heads.
 
 % Section separator
-\subsection{Deep learning for path-loss maps}
+\subsection{Deep learning for path loss maps}
 \label{sec:soa_dl}
 % Section separator
 
-\subsubsection{Image-to-image translation baselines}
+\subsubsection{Image to image translation baselines}
 
-The radio map prediction problem can be cast as an image-to-image regression:
+The radio map prediction problem can be cast as an image to image regression:
 given an input topology map (and optionally a transmitter location channel), the
-model predicts a path-loss map of the same spatial extent.  The pix2pix framework
+model predicts a path loss map of the same spatial extent.  The pix2pix framework
 \cite{isola2017pix2pix} established a general recipe for such tasks using a
 conditional GAN with a U-Net generator and a PatchGAN discriminator.  Early
 iterations of this thesis used this formulation.  In practice the adversarial
-objective sharpens spatial texture but does not address the height-dependent
+objective sharpens spatial texture but does not address the height dependent
 radial pattern or the heavy NLoS tails that dominate the error budget in the CKM
 dataset.
 
-RadioUNet \cite{radiounet2020} is the canonical convolutional path-loss map
-baseline before the PMNet challenge family. In its accurate-map settings it
-reports grey-level RMSE values around \(0.0203\)--\(0.0384\); using the paper's
-\SI{80}{dB} grey-level conversion gives an approximate \SI{1.6}{dB}--\SI{3.1}{dB}
-path-loss scale. RadioGUNet \cite{radiogunet2025} extends this outdoor
-RadioMapSeer line with group-equivariant convolutions, reporting
+RadioUNet \cite{radiounet2020} is the canonical convolutional path loss map
+baseline before the PMNet challenge family. In its accurate map settings it
+reports grey level RMSE values around \(0.0203\)--\(0.0384\); using the paper's
+\SI{80}{dB} grey level conversion gives an approximate \SI{1.6}{dB}--\SI{3.1}{dB}
+path loss scale. RadioGUNet \cite{radiogunet2025} extends this outdoor
+RadioMapSeer line with group equivariant convolutions, reporting
 \SI{1.304}{dB} on the easiest DPM setting, \SI{1.936}{dB} on the IRT setting,
 and \SI{1.392}{dB} with cars. These values are used again in
-Chapter~\ref{chap:results} as scale references for the final path-loss result.
+Chapter~\ref{chap:results} as scale references for the final path loss result.
 
-\textbf{Limitations:} These papers are useful path-loss scale references, but
+\textbf{Limitations:} These papers are useful path loss scale references, but
 they do not report dense delay spread or angular spread maps and do not use the
-CKM city-holdout, continuous UAV height contract.
+CKM city holdout, continuous UAV height contract.
 
 \subsubsection{PMNet and the ICASSP outdoor challenge family}
 
 PMNet \cite{pmnet_icassp2023} was the winner of the first ICASSP 2023 Outdoor Pathloss
 Radio Map Prediction Challenge \cite{icassp2023challenge}.  It uses a deep
-encoder-decoder with skip connections, trained and evaluated on the
+encoder decoder with skip connections, trained and evaluated on the
 RadioMap3DSeer dataset~\cite{dataset2212}.  RadioMap3DSeer consists of
 city maps derived from urban 3D geometry with rooftop transmitters placed
 3~m above the selected rooftop in the dataset description, and building
 interior pixels masked to zero error.
 
 The challenge metric is RMSE in normalised image units.  As an approximate
-dB-scale reference, the RadioMap3DSeer image mapping clips path gain to the range
+dB scale reference, the RadioMap3DSeer image mapping clips path gain to the range
 $[\mathrm{PL}_{\mathrm{thr}}, \mathrm{PL}_{\mathrm{max}}] = [-111, -75]\,\mathrm{dB}$,
 yielding a $36\,\mathrm{dB}$ dynamic window under that interpretation.
-Multiplying normalised RMSE by~36 gives the rough dB-scale references listed in
+Multiplying normalised RMSE by~36 gives the rough dB scale references listed in
 Table~\ref{tab:icassp2023corrected}.
 
 \begin{table}[ht]
 \centering
 \caption[Approximate ICASSP 2023 outdoor RMSE scale.]%
-{Approximate dB-scale RMSE references for ICASSP~2023 outdoor challenge methods.
+{Approximate dB scale RMSE references for ICASSP~2023 outdoor challenge methods.
 The normalised scores are taken from the challenge family and converted with the
 \SI{36}{dB} RadioMap3DSeer image window described in the dataset
 paper \cite{icassp2023challenge,dataset2212}.\protect\footnotemark}
@@ -262,7 +281,7 @@ PPNet baseline \cite{icassp2023challenge} & 0.0507 & 1.83 \\
 \end{tabular}
 \end{table}
 \footnotetext{This conversion should be read as an approximate scale reference,
-not as a like for like physical RMSE. It uses the path-gain
+not as a like for like physical RMSE. It uses the path gain
 clipping window $[\mathrm{PL}_{\mathrm{thr}},\mathrm{PL}_{\mathrm{max}}] =
 [-111,-75]\,\mathrm{dB}$ associated with the normalised target image, so the
 physical span is $-75-(-111)=36\,\mathrm{dB}$. Multiplying the normalised RMSE
@@ -279,7 +298,7 @@ continuous UAV altitude, and metrics over valid ground receiver pixels. The
 challenge includes multiple transmitter locations, but it does not test the
 continuous UAV height conditioning used in CKM.
 
-\subsubsection{Transformers, state-space models, and attention-based encoders}
+\subsubsection{Transformers, state space models, and attention based encoders}
 
 The RMTransformer \cite{rmtransformer2025} evaluates a hybrid MaxViT/CNN
 encoder--decoder on the USC/PMNet dataset rather than on the ICASSP challenge
@@ -288,93 +307,93 @@ under a random 90/10 split on \(256\times256\) maps.  The paper normalises
 received power/path loss from \(-254\) to \SI{0}{dBm}, so the reported pixel
 RMSE corresponds to roughly \SI{1.82}{dB} on its own scale, and the reported
 channel prediction error of 0.008099 corresponds to roughly \SI{2.06}{dB}.
-This supports the use of attention for long-range urban context, but it is not
+This supports the use of attention for long range urban context, but it is not
 inserted in Table~\ref{tab:icassp2023corrected} because it is not measured on
 RadioMap3DSeer or under the ICASSP challenge contract.
 
-Recent attention and foundation-model variants extend the effective receptive
+Recent attention and foundation model variants extend the effective receptive
 field of radio map predictors \cite{wicopg2025,fmrme2026}. This is useful when
-large-scale urban context affects the prediction, but these methods normally
+large scale urban context affects the prediction, but these methods normally
 need more data and compute than convolutional models and their reported
 benchmarks do not match the CKM UAV height contract.
 
 \subsubsection{Foundation models for radio maps}
 
 The most recent shift in the literature is towards \emph{wireless channel
-foundation models} pre-trained on large heterogeneous datasets before
-task-specific fine-tuning.  WiCo-PG \cite{wicopg2025} uses dual VQGANs and a
+foundation models} pretrained on large heterogeneous datasets before
+task specific fine tuning.  WiCo-PG \cite{wicopg2025} uses dual VQGANs and a
 transformer with frequency-guided mixture-of-experts.  It exploits RGB drone
 camera images as an auxiliary modality and achieves an NMSE of~0.012 on its
-constructed multi-modal U2G benchmark.  RadioLAM \cite{radiolam2025} targets
-fine-grained 3D radio map estimation from ultra-low sampling rates using a
+constructed multimodal U2G benchmark.  RadioLAM \cite{radiolam2025} targets
+fine grained 3D radio map estimation from ultra low sampling rates using a
 large generative model pipeline.  FM-RME \cite{fmrme2026} frames radio map estimation as a foundation
-modelling problem with self-supervised pre-training on simulated propagation
+modelling problem with self supervised pretraining on simulated propagation
 data.
 
-\textbf{Limitations:} These foundation approaches are relevant as long-term
+\textbf{Limitations:} These foundation approaches are relevant as long term
 background, but they require training corpora and compute budgets beyond a
 single CKM dataset. They are therefore cited as future context, not as methods
 directly compared with the final thesis model.
 
 % Section separator
-\subsection{Physics-informed and hybrid path loss methods}
+\subsection{Physics informed and hybrid path loss methods}
 \label{sec:soa_physics}
 % Section separator
 
-\subsubsection{Geometry-assisted and diffraction-aware deep learning}
+\subsubsection{Geometry assisted and diffraction aware deep learning}
 
-Purely data-driven models must implicitly learn diffraction geometry from the
-topology map.  An alternative is to pre-compute a physics-based channel prior and
+Purely data driven models must implicitly learn diffraction geometry from the
+topology map.  An alternative is to precompute a physics based channel prior and
 provide it as an additional input channel, reducing the learning problem to
 residual estimation.
 
-Shadow-projection methods \cite{vinogradov2026shadow} occupy an intermediate
-point between stochastic LoS-probability models and full ray tracing. They use
+Shadow projection methods \cite{vinogradov2026shadow} occupy an intermediate
+point between stochastic LoS probability models and full ray tracing. They use
 3D building geometry to project blocked ground regions from the aerial
 transmitter, producing a deterministic LoS map that is spatially consistent
-along user trajectories. The CKM dataset already provides a ray-traced LoS
+along user trajectories. The CKM dataset already provides a ray traced LoS
 mask, so this thesis does not need to generate the mask itself; nevertheless,
 the method is directly relevant because it explains why a binary visibility
 channel can carry so much of the structure that the neural network otherwise
 has to infer from the height map alone.
 
-Geometry-assisted diffraction features~\cite{geomDL2024} use virtual obstacles,
-multi screen knife-edge propagation, and scattering-aware local geometry cues to
+Geometry assisted diffraction features~\cite{geomDL2024} use virtual obstacles,
+multi screen knife edge propagation, and scattering aware local geometry cues to
 inject physically meaningful NLoS information into a deep model.  This is
 closely related to the motivation behind the diffraction-prior experiments in
-this thesis, although the implementation used later is a lightweight per-map
-channel rather than the full geometry model-assisted learning framework of that
+this thesis, although the implementation used later is a lightweight per map
+channel rather than the full geometry model assisted learning framework of that
 paper. The limitation is that a single precomputed diffraction cue cannot
 replace a calibrated NLoS model when dense urban shadowing dominates.
 
-\subsubsection{Physics-informed neural networks}
+\subsubsection{Physics informed neural networks}
 
-The ReVeal architecture \cite{reveal2025} operates as a physics-informed neural
-network (PINN) by incorporating a second-order PDE residual as an auxiliary loss
+The ReVeal architecture \cite{reveal2025} operates as a physics informed neural
+network (PINN) by incorporating a second order PDE residual as an auxiliary loss
 term.  This penalises predictions with inconsistent local spatial curvature
-under the derived propagation constraint, reducing corner-transition artefacts.
+under the derived propagation constraint, reducing corner transition artefacts.
 ReVeal achieves~$1.95\,\mathrm{dB}$ RMSE in rural scenarios using only 30
 training points by leveraging the physical constraint as a strong regulariser.
 A lightweight analogue for dense radio maps is a masked Laplacian penalty on
-the residual prediction, which penalises locally non-smooth outputs without
+the residual prediction, which penalises locally nonsmooth outputs without
 solving the full ReVeal operator.
 
 \subsubsection{Prior plus residual correction}
 
 A principled hybrid approach is to \emph{freeze} a calibrated analytic prior and
 train the neural component to predict only the structured residual.  This design
-reduces the effective learning problem from the full path-loss range to a
+reduces the effective learning problem from the full path loss range to a
 narrower residual distribution, improving data efficiency and interpretability.
 
 Chapter~3 applies this philosophy to the three thesis targets. For path loss,
-an enhanced two-ray model fitted per height bin provides a prior map
+an enhanced two ray model fitted per height bin provides a prior map
 $\hat{y}_{\mathrm{PL}}(\textbf{x}) = \mathrm{TwoRay}(d, h_{\mathrm{tx}})$,
 and the neural component predicts the residual
 $\epsilon = y - \hat{y}_{\mathrm{PL}}$. For delay spread and angular spread,
-the same prior-residual idea can be implemented with a ridge-regression model
-in log space using TX-centred geometric features and local morphology
+the same prior residual idea can be implemented with a ridge regression model
+in log space using TX centred geometric features and local morphology
 statistics. The important background point is the decomposition itself: a
-frozen train-calibrated prior defines what the neural model should not have to
+frozen train calibrated prior defines what the neural model should not have to
 rediscover.
 
 % Section separator
@@ -385,70 +404,70 @@ rediscover.
 \subsection{Empirical models for spread parameters}
 
 Standard channel models characterise delay spread and angular spread through
-log-domain large-scale parameters tied to propagation state and scenario.
-TR~38.901 \cite{tr38901} provides scenario-specific tables and formulae for
+log domain large scale parameters tied to propagation state and scenario.
+TR~38.901 \cite{tr38901} provides scenario specific tables and formulae for
 these parameters, with dependencies on variables such as distance, frequency,
 terminal heights, and LoS/NLoS state across UMa, UMi, and RMa scenarios.  These
 parameterisations are limited to the morphology class and frequency band of the
 underlying measurement campaigns.
 
-Log-domain modelling is physically motivated: spread parameters are
+Log domain modelling is physically motivated: spread parameters are
 multiplicative quantities in physical space, so their logarithm is more
-Gaussian-like and additive-noise assumptions are better justified. The calibrated spread prior adopts
+Gaussian like and additive noise assumptions are better justified. The calibrated spread prior adopts
 this convention by working in $\log(1+y)$ space throughout, consistent with the
 3GPP empirical modelling framework.
 
 \subsection{Deep learning for wideband channel statistics}
 
 Work on deep learning for delay and angular spread is sparser than for path
-loss. Most published methods either predict spread globally per-sample (a single scalar)
-rather than per-pixel, or treat it as an ancillary output of a multitask
-path-loss model.  Per-pixel dense prediction of delay spread and angular spread
+loss. Most published methods either predict spread globally per sample (a single scalar)
+rather than per pixel, or treat it as an ancillary output of a multitask
+path loss model.  Per pixel dense prediction of delay spread and angular spread
 over $513 \times 513$ maps is, to the best of the author's knowledge, not
 addressed by published methods at the time of writing.
 
 The closest external quantitative references for spreads are therefore scalar
-channel-characteristic predictors rather than dense CKM-map benchmarks. Huang et al.\
+channel characteristic predictors rather than dense CKM-map benchmarks. Huang et al.\
 \cite{huang2025a2gtransformer} are not used in the results comparison tables
 because their Wireless InSite campus dataset predicts scalar A2G link
 characteristics from coordinates and link features, not dense CKM maps from
 city topologies.
 
 \textbf{Limitation for this thesis.}
-Most reviewed angular-spread work reports scalar link-level channel parameters
-or simulation-specific statistics rather than dense CKM maps under city
+Most reviewed angular spread work reports scalar link level channel parameters
+or simulation specific statistics rather than dense CKM maps under city
 holdout. Chapter~4 therefore compares angular spread mainly against the frozen
 prior, the thesis target, and one or two papers with similar but not equal
 goals.
 
-The main challenge is the spike-plus-exponential distribution shape of spread
-targets.  A model trained only with mean-squared error (MSE) collapses to the
+The main challenge is the spike plus exponential distribution shape of spread
+targets.  A model trained only with mean squared error (MSE) collapses to the
 conditional mean, which lies in the interior of the spike and the exponential
 tail and is therefore a poor representative of either regime. This motivates
-Gaussian-mixture or other distribution-aware heads, especially when a
-log-domain prior is available as an anchor before residual learning.
+Gaussian mixture or other distribution aware heads, especially when a
+log domain prior is available as an anchor before residual learning.
 
 \section{Delay Spread Prediction}
 \label{sec:soa_delay_spread}
 
-Delay spread has the same dense-map gap as angular spread, but the physical
+Delay spread has the same dense map gap as angular spread, but the physical
 interpretation is temporal rather than directional. The target is small for
-many LoS-dominated receivers and can become large in streets or blocks with
+many LoS dominated receivers and can become large in streets or blocks with
 multiple reflected and diffracted paths. This makes the quantity sensitive to
-rare high-delay pixels, so a mean-error metric can hide the tail behaviour that
+rare high delay pixels, so a mean-error metric can hide the tail behaviour that
 matters for wideband links.
 
 \textbf{Limitation for this thesis.}
-Most reviewed delay-spread work reports scalar link-level channel parameters
-or simulation-specific statistics rather than dense \(513\times513\) CKM maps
-under city-holdout. Chapter~4 therefore compares delay spread mainly against
+Most reviewed delay spread work reports scalar link level channel parameters
+or simulation specific statistics rather than dense \(513\times513\) CKM maps
+under city holdout. Chapter~4 therefore compares delay spread mainly against
 the frozen prior, the thesis target, and one or two papers with similar but not
 equal goals.
 
-\subsection{Distributional mismatch and the spike-plus-exponential problem}
+\subsection{Distributional mismatch and the spike plus exponential problem}
 
-The spike-plus-exponential shape, consisting of a Dirac-like concentration near-zero
-(the LoS-dominated case) plus a heavy exponential tail (NLoS multipath), was
+The spike plus exponential shape, consisting of a Dirac like concentration near zero
+(the LoS dominated case) plus a heavy exponential tail (NLoS multipath), was
 confirmed empirically on the CKM dataset.  Skewness exceeds~5 and excess kurtosis
 exceeds~40 for both delay and angular spread in several topology classes.  A
 single Gaussian or even a symmetric loss function does not fit this family.
@@ -457,12 +476,12 @@ Mixture models are the natural solution, but the required number of components
 depends on what is being modelled. A histogram study can select the best
 family for the raw target distributions, where path loss and the spread targets
 may need several components to match the full marginal shape. In a
-prior-residual setting, however, the mixture head models a different quantity:
+prior residual setting, however, the mixture head models a different quantity:
 the residual distribution after a frozen prior has already explained the
-dominant LoS, NLoS, delay-spread, and angular-spread structure. This
+dominant LoS, NLoS, delay spread, and angular spread structure. This
 distinction matters because the prior can remove much of the target side
-multi-modality, leaving a compact mixture to represent under correction,
-near-zero correction, and over correction modes.
+multimodality, leaving a compact mixture to represent under correction,
+near zero correction, and over correction modes.
 
 % Section separator
 \section{Training and Fair Comparison}
@@ -473,8 +492,8 @@ near-zero correction, and over correction modes.
 
 Kendall and Gal \cite{kendall2017uncertainties} established the framework for
 heteroscedastic neural networks in computer vision: predict both a mean output
-$\mu(x)$ and a log-variance $\log \sigma^2(x)$, optimising the negative
-log-likelihood (NLL)
+$\mu(x)$ and a log variance $\log \sigma^2(x)$, optimising the negative
+log likelihood (NLL)
 \begin{equation}
   \mathcal{L} = \frac{(\mu - y)^2}{\sigma^2} + \log \sigma^2.
 \end{equation}
@@ -486,30 +505,30 @@ channel of PMHHNet.
 
 \subsection{Gaussian mixture model heads}
 
-Beyond heteroscedastic Gaussians, the GMM-head allows multi-modal output
-distributions.  Mixture-density networks have already appeared in wireless
+Beyond heteroscedastic Gaussians, the GMM head allows multimodal output
+distributions.  Mixture density networks have already appeared in wireless
 channel modelling: Saleh et al.\ \cite{saleh2021probabilistic} use an MDN to
 predict probabilistic mmWave path loss distributions, Garcia Marti et al.\
-\cite{garciamarti2020mixture} learn a stochastic Gaussian-mixture channel
-model for physical-layer design, and Lee et al.\ \cite{lee2024timevarying}
-derive conditional received-power PDFs with a mixture-density network.  These
+\cite{garciamarti2020mixture} learn a stochastic Gaussian mixture channel
+model for physical layer design, and Lee et al.\ \cite{lee2024timevarying}
+derive conditional received power PDFs with a mixture density network.  These
 works support the use of mixture outputs for wireless propagation, but they
-operate at the level of scalar or channel-sample distributions rather than
+operate at the level of scalar or channel sample distributions rather than
 dense radio map generation.
 
-A dense CKM version of a GMM-head can be implemented with a two-stage
-architecture. Stage~A produces per-sample GMM parameters
+A dense CKM version of a GMM head can be implemented with a two stage
+architecture. Stage~A produces per sample GMM parameters
 $\{\pi_k, \mu_k, \sigma_k\}_{k=1}^{K}$ via a convolutional encoder conditioned
-on UAV height; Stage~B produces per-pixel component assignments \(p_k(i,j)\)
-and within-component deviations \(z(i,j)\). The prediction is
+on UAV height; Stage~B produces per pixel component assignments \(p_k(i,j)\)
+and within component deviations \(z(i,j)\). The prediction is
 \begin{equation}
   \hat{y}(i,j) = \sum_{k=1}^{K} p_k(i,j) \cdot \bigl(\mu_k + z(i,j) \cdot \sigma_k\bigr).
 \end{equation}
-This formulation avoids the mode-collapse failure of MSE regression while
+This formulation avoids the mode collapse failure of MSE regression while
 maintaining a compact architecture. The important idea is therefore not the
 isolated use of a Gaussian mixture, but its role as a global distribution head
 that tells the dense decoder what value distribution the map should contain
-before the model solves the harder pixel-placement problem.
+before the model solves the harder pixel placement problem.
 
 \subsection{Stochastic diffusion models}
 
@@ -518,9 +537,9 @@ physically plausible stochastic variations in deep shadow zones rather than
 predicting a single blurry mean.  The iterative denoising procedure can be
 conditioned on topology maps, transmitter locations, and obstacle prompts.
 RadioDiff reports lower normalised RMSE and higher SSIM/PSNR than CNN and
-sequence-model baselines on static and dynamic RadioMapSeer settings, but its
-metrics are image-normalised rather than physical dB values.  These models are
-computationally expensive at inference time and are listed as a future-work
+sequence model baselines on static and dynamic RadioMapSeer settings, but its
+metrics are image normalised rather than physical dB values.  These models are
+computationally expensive at inference time and are listed as a future work
 horizon for this thesis.
 
 \subsection{Multitask and joint prediction}
@@ -533,10 +552,10 @@ model can therefore use the intermediate feature maps learned for path loss to
 partially explain spread patterns, reducing the effective learning problem.
 
 Chapter~3 uses this idea by sharing the topology and UAV height representation
-across the three targets, while allowing target-specific residual heads for
+across the three targets, while allowing target specific residual heads for
 path loss, delay spread, and angular spread. The literature point is that joint
 training is useful only if the shared representation is anchored by
-target-specific priors and losses; otherwise the easiest target can dominate
+target specific priors and losses; otherwise the easiest target can dominate
 the common backbone.
 
 % Section separator
@@ -547,9 +566,9 @@ the common backbone.
 \noindent
 The methods in this section are included because dense radio map prediction is
 easy to overfit. The model sees complete city maps with strong spatial
-correlations, while validation and test cities are completely held-out. Small
-training subsets, heavy-tailed NLoS errors, and quantized targets can make the
-training loss improve even when the deployment-relevant city-holdout error does
+correlations, while validation and test cities are completely held out. Small
+training subsets, heavy tailed NLoS errors, and quantized targets can make the
+training loss improve even when the deployment-relevant city holdout error does
 not. Stabilisation and regularisation techniques are therefore not cosmetic
 training tricks; they are safeguards against selecting a model that only fits
 the training cities.
@@ -559,7 +578,7 @@ the training cities.
 Stochastic weight averaging (SWA) \cite{izmailov2018swa} averages model weights
 along the training trajectory at a low, approximately constant learning rate.
 This finds wider optima in the loss landscape that generalise better to
-unseen data. The CKM city-holdout evaluation makes generalisation particularly
+unseen data. The CKM city holdout evaluation makes generalisation particularly
 important since validation and test cities are never seen during training.
 In this thesis, SWA was useful as a diagnostic stabilisation tool in earlier
 neural experiments, although it is not part of every final training recipe.
@@ -573,13 +592,13 @@ smoothed score to the ReduceLROnPlateau scheduler. This is useful background
 for interpreting the training choices in Chapter~3, where the final checkpoint
 selection rule is stated explicitly for reproducibility.
 
-\subsubsection{Feature-wise linear modulation}
+\subsubsection{Feature wise linear modulation}
 
-Feature-wise linear modulation (FiLM) \cite{perez2018film} conditions
+Feature wise linear modulation (FiLM) \cite{perez2018film} conditions
 the activations of a neural network on a scalar or vector input by applying
 learned affine transforms $\gamma(c) \cdot \textbf{h} + \beta(c)$ to
 intermediate feature maps.  Sinusoidal positional encoding of the UAV height
-scalar (using log-spaced frequencies over the full 12 to 478~m range) is fed into
+scalar (using log spaced frequencies over the full 12 to 478~m range) is fed into
 FiLM layers at multiple encoder depths.  This ensures that the UAV altitude
 continuously modulates the activation statistics rather than being handled as a
 discrete bin, which is critical when the effective propagation regime changes
@@ -598,7 +617,7 @@ equivalent.  The following evaluation axes are the minimum required for a
 valid comparison:
 
 \begin{enumerate}
-  \item \textbf{Split:} city-holdout vs.\ in-distribution random split vs.\
+  \item \textbf{Split:} city holdout vs.\ in-distribution random split vs.\
         same-scene split.
   \item \textbf{Transmitter height:} fixed rooftop, discrete bins, or
         continuous UAV altitude.
@@ -608,15 +627,15 @@ valid comparison:
         received power (dBm), delay spread (ns), or angular spread (degrees).
   \item \textbf{Dynamic range and clipping:} determines the RMSE floor and
         ceiling independently of model quality.
-  \item \textbf{Inference extras and calibration source:} test-time
+  \item \textbf{Inference extras and calibration source:} test time
         augmentation (TTA), SWA, EMA weights, and whether calibration is
-        train-only, validation-based, or fitted from test/field measurements.
+        train only, validation based, or fitted from test/field measurements.
 \end{enumerate}
 
-This thesis uses a strict city-holdout split, continuous UAV height, valid
+This thesis uses a strict city holdout split, continuous UAV height, valid
 ground receiver metrics (building pixels excluded from loss and metrics), native
-$513 \times 513$ pixel maps, and no test-data or field calibration after the
-train-calibrated priors and the model under evaluation are frozen. Calibration is
+$513 \times 513$ pixel maps, and no test data or field calibration after the
+train calibrated priors and the model under evaluation are frozen. Calibration is
 therefore not shown as a binary column in Table~\ref{tab:fairness}: the relevant
 question is not whether a method has fitted parameters, but whether it adapts
 to the evaluation scene using validation, test, or field measurements.
@@ -649,36 +668,36 @@ Two consequences follow from this checklist. First, method rankings can change
 substantially when the split changes from random maps to unseen cities. A model
 that has learned the texture, street orientation, and height statistics of a
 known city may still fail when the same transmitter height range is evaluated
-on a new morphology. For this reason, this thesis treats city-holdout as a
+on a new morphology. For this reason, this thesis treats city holdout as a
 core part of the task definition rather than as an optional robustness test.
 
 Second, path loss, delay spread, and angular spread should not be treated as
 three copies of the same regression problem. LoS path loss often contains a
 strong deterministic radial component, whereas NLoS path loss depends on
-blocked-link geometry and local morphology. Delay and angular spreads are even
-more distributional: many pixels are near-zero, but physically important tails
+blocked link geometry and local morphology. Delay and angular spreads are even
+more distributional: many pixels are near zero, but physically important tails
 remain. A fair comparison therefore has to report the target, regime, masking
 policy, and split together; otherwise an apparently lower RMSE can simply mean
 that an easier quantity was measured.
 
 \subsubsection{Tarhouni et al.: measured suburban path loss prediction}
 
-Tarhouni et al.\ \cite{tarhouni2025} study machine-learning-based path loss
+Tarhouni et al.\ \cite{tarhouni2025} study machine learning based path loss
 prediction in a sub-\SI{6}{GHz} suburban campus. It is useful because the errors
 are in physical dB and tied to a concrete environment, but it is terrestrial,
-lower-frequency, and not a dense UAV CKM with delay- and angular-spread targets.
-Its role here is qualitative: real-environment generalisation tends to move
-back toward multi-dB errors, which supports keeping city-holdout as part of the
+lower frequency, and not a dense UAV CKM with delay- and angular spread targets.
+Its role here is qualitative: real environment generalisation tends to move
+back toward multi dB errors, which supports keeping city holdout as part of the
 task definition.
 
 \subsubsection{AIRMap: adaptive digital twin radio maps}
 
 AIRMap \cite{airmap2025} is an adaptive U-Net autoencoder processing fixed
 \(200\times200\) elevation-map tensors with variable spatial resolution
-(2.5--15~m/pixel, corresponding to \SI{500}{m}--\SI{3}{km} per side) for ultra-low-latency digital-twin
-synchronisation.  It reports sub-\SI{4}{dB} RMSE against ray-traced path-gain
+(2.5--15~m/pixel, corresponding to \SI{500}{m}--\SI{3}{km} per side) for ultra low latency digital twin
+synchronisation.  It reports sub-\SI{4}{dB} RMSE against ray traced path gain
 maps, and a separate lightweight calibration step using 20\,\% of field
-measurements reduces the median measurement-domain error to about five percent.
+measurements reduces the median measurement domain error to about five percent.
 Its strong numbers are not directly comparable to CKM because the target is path
 gain rather than absolute path loss, the input is a single elevation channel,
 and the transmitter configuration is not the continuous UAV height setting used
@@ -686,52 +705,52 @@ in this thesis. Its reported \(\sim\)\SI{4}{ms} inference time on an NVIDIA L40S
 is nevertheless a strong deployment reference: the value of a CKM surrogate is
 not only accuracy, but producing dense maps fast enough for planning loops.
 
-\subsubsection{Gao et al.: multi-layer segmentation with corridor weighting}
+\subsubsection{Gao et al.: multilayer segmentation with corridor weighting}
 
-Gao et al.\ \cite{gao2026} propose a ResNet-based outdoor path loss predictor
+Gao et al.\ \cite{gao2026} propose a ResNet based outdoor path loss predictor
 with Tx depth maps, Rx depth maps, a distance map, and a weighting map that
-emphasises the direct Tx-Rx corridor.  Using the ICASSP~2023 outdoor data,
+emphasises the direct Tx/Rx corridor.  Using the ICASSP~2023 outdoor data,
 Table~III of the paper reports their method at \SI{5.59}{dB} RMSE, compared
 to \SI{8.09}{dB} for PPNet, \SI{9.56}{dB} for RPNet, and \SI{8.72}{dB} for a
-twelve-layer Vision Transformer baseline; Table~II reports \SI{12.19}{dB}
+twelve layer Vision Transformer baseline; Table~II reports \SI{12.19}{dB}
 RMSE on the ITU Challenge 2024 large-area subset, also ahead of the same
 baselines, with roughly 60\% fewer FLOPs. This formalises an internal lesson of
 the CKM work: the important geometry is not the whole map uniformly, but the
 subset near the propagation corridor.
 
-The lesson for this thesis is methodological: Tx-centred distance and
-obstruction features are useful but are weaker than a true per-receiver
-corridor description. A full Gao-style per-Rx corridor map remains future-work
+The lesson for this thesis is methodological: Tx centred distance and
+obstruction features are useful but are weaker than a true per receiver
+corridor description. A full Gao style per Rx corridor map remains future work
 because generating one for every receiver pixel at \(513\times513\) resolution
-is substantially more expensive than using Tx-centred distance and obstruction
+is substantially more expensive than using Tx centred distance and obstruction
 features.
 
 \subsubsection{PathFinder: multi transmitter domain adaptation}
 
 PathFinder \cite{pathfinder2025} tackles distribution shift via disentangled
-feature encoding and mask-guided low-rank attention, reporting the lowest MSE
+feature encoding and mask guided low rank attention, reporting the lowest MSE
 of~$0.1068$ and RMSE of~$0.3263$ on unseen rural datasets. On the
 RadioMap3DSeer DS-RPP split, its normalised RMSE of~$0.0331$ can be
-approximately converted with the same \SI{36}{dB} RadioMap3DSeer image-window convention,
-giving about \SI{1.19}{dB}. The unseen-rural score would be about
+approximately converted with the same \SI{36}{dB} RadioMap3DSeer image window convention,
+giving about \SI{1.19}{dB}. The unseen rural score would be about
 \SI{11.75}{dB} under the same window, but this is only an approximate scale
 reading because the paper and code report normalised PNG image units and do not
 state a separate rural physical target window. The explicit
-domain-generalisation focus aligns with the CKM city-holdout spirit, though
+domain generalisation focus aligns with the CKM city holdout spirit, though
 PathFinder's setup involves multi transmitter inputs and a different
 normalisation convention. Techniques from PathFinder such as
-transmitter-oriented mixup augmentation are listed as medium-priority future
-work. The same concern motivates the city-holdout split used in this thesis: a
+transmitter oriented mixup augmentation are listed as medium priority future
+work. The same concern motivates the city holdout split used in this thesis: a
 CKM surrogate is useful only if it works on new urban layouts, not only on
 shuffled samples from the same city.
 
 \subsubsection{ICASSP 2025 indoor challenge}
 
 The ICASSP 2025 Indoor Pathloss Challenge \cite{icassp2025indoor} presents a
-structurally different problem, dense wall-penetration NLoS effects in bounded
+structurally different problem, dense wall penetration NLoS effects in bounded
 interior spaces, but its public results are a useful warning against
-over-interpreting sub-\SI{2}{dB} outdoor challenge numbers.  The official result
-page reports that the winning SIP2Net submission obtains a weighted-average RMSE
+overinterpreting sub-\SI{2}{dB} outdoor challenge numbers.  The official result
+page reports that the winning SIP2Net submission obtains a weighted average RMSE
 of \SI{9.411}{dB}; IPP-Net reaches \SI{9.501}{dB}; TerRaIn reaches
 \SI{10.325}{dB}; and TransPathNet reaches \SI{10.397}{dB}
 \cite{indoor2025results,sip2net2025,ippnet2025,transPathNet2025}.  These are
@@ -749,11 +768,11 @@ plain direct regression.
 % Section separator
 
 Across the benchmarks reviewed here, the recurring $9$ to
-$10\,\mathrm{dB}$ error band in harder NLoS-heavy settings reflects the
-difficulty of inferring volumetric propagation from a 2D building-height map.
+$10\,\mathrm{dB}$ error band in harder NLoS heavy settings reflects the
+difficulty of inferring volumetric propagation from a 2D building height map.
 The most plausible routes beyond that wall are richer geometry and
-diffraction priors \cite{geomDL2024}, PDE-style physics losses such as ReVeal
-\cite{reveal2025}, sparse target-domain adaptation such as RadioPiT
+diffraction priors \cite{geomDL2024}, PDE style physics losses such as ReVeal
+\cite{reveal2025}, sparse target domain adaptation such as RadioPiT
 \cite{radiopit2025}, diffusion refinement \cite{radiodiff2025}, and larger
 radio map foundation models \cite{fmrme2026}.
 
@@ -761,7 +780,7 @@ For the present thesis, the literature points to four practical design
 requirements. First, the comparison contract must be explicit because datasets,
 splits, height protocols, and target units differ widely. Second, A2G prediction
 requires continuous UAV height conditioning rather than a fixed transmitter
-height. Third, LoS/NLoS and environment-type effects should be reported
+height. Third, LoS/NLoS and environment type effects should be reported
 separately because one global RMSE hides the hardest regimes. Fourth,
-distribution-aware outputs are useful when targets contain multiple modes or
+distribution aware outputs are useful when targets contain multiple modes or
 long tails. These observations motivate the methodology in Chapter~3.

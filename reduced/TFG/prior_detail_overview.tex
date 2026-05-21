@@ -1,8 +1,14 @@
 This section provides the compact entry point for the ML calibrated physical
-path loss and spread priors and the final joint residual GMM-head model
-architecture. The detailed mathematical derivations and implementation level
-fitting notes follow in the same methodology chapter, so the design and the
-audit trail remain together.
+path loss and spread priors and the final joint residual GMM head model
+architecture. The propagation ingredients follow classical FSPL, two ray,
+empirical NLoS and large scale parameter models
+\cite{rappaport,wocc2021,cost231,tr38901,winner2,khawaja_survey}, while the
+residual network inherits dense prediction, FiLM conditioning and
+distribution aware regression ideas
+\cite{pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic}.
+The detailed mathematical derivations and implementation level fitting notes
+follow in the same methodology chapter, so the design and the audit trail
+remain together.
 
 \subsection{High level architecture}
 
@@ -10,20 +16,23 @@ The central design decision in the final model is \emph{not} to learn path
 loss, delay spread, and angular spread from scratch. Instead:
 
 \begin{itemize}
-\item the path-loss prior provides a frozen prior for \texttt{path\_loss},
+\setlength{\itemsep}{0.12em}
+\setlength{\parsep}{0pt}
+\setlength{\topsep}{0.15em}
+\item the path loss prior provides a frozen prior for \texttt{path\_loss},
 \item the spread prior module provides frozen priors for delay spread
       (\texttt{delay\_spread}) and angular spread
       (\texttt{angular\_spread}),
-\item the final residual GMM-head model learns bounded corrections around those priors.
+\item the final residual GMM head model learns bounded corrections around those priors.
 \end{itemize}
 
 The deterministic or interpretable structure is kept in the prior, and the deep
 model is used only for the residual part that the prior cannot explain.
 Figure~\ref{fig:pipeline} illustrates the overall pipeline.
 
-This prior phase is not presented as a new universal closed-form propagation
+This prior phase is not presented as a new universal closed form propagation
 law. Its value is more practical: it turns physics, morphology, visibility, and
-height-dependent calibration into a strong auditable baseline. The final model
+height dependent calibration into a strong auditable baseline. The final model
 then follows a split of responsibility: calibrated priors
 remove the stable component of the targets, and the neural residual model
 focuses on the local errors that remain.
@@ -34,55 +43,64 @@ performed in the prior stage. It denotes deterministic, frozen estimator maps
 computed before the neural residual correction. The word \emph{prior} is
 therefore used for three concrete estimators, not for a vague physical hint:
 \begin{itemize}
-\item \textbf{LoS path-loss prior.} This is the clearest physical branch:
+\setlength{\itemsep}{0.16em}
+\setlength{\parsep}{0pt}
+\setlength{\topsep}{0.15em}
+\item \textbf{LoS path loss prior.} This is the clearest physical branch:
       \(\mathrm{PL}_{\mathrm{LoS}}=\mathrm{FSPL}+C_{\mathrm{2ray}}+b+r\).
       FSPL uses the 3D direct Tx--Rx distance; \(C_{\mathrm{2ray}}\) comes
-      from a coherent direct plus ground-reflected field-sum; \(b\) is a
-      fitted height-dependent dB offset; and \(r\) is a smoothed radial
+      from a coherent direct plus ground reflected field sum
+      \cite{rappaport,wocc2021}; \(b\) is a fitted height dependent dB offset;
+      and \(r\) is a smoothed radial
       residual table. The UAV is always centred horizontally, so the radial
       coordinate is unambiguous, but \(h_{\mathrm{tx}}\) varies by sample:
       \(\rho(h_{\mathrm{tx}})\), \(\phi(h_{\mathrm{tx}})\), \(b(h_{\mathrm{tx}})\)
       and \(r(d_{2D},h_{\mathrm{tx}})\) are fitted in \SI{5}{m} height bins,
       smoothed, and linearly interpolated at inference. It is not a generic
-      free-space formula and it is not a learned linear regressor.
-\item \textbf{NLoS path-loss prior.} This starts from the raw blocked link
+      free space formula and it is not a learned linear regressor.
+\item \textbf{NLoS path loss prior.} This starts from the raw blocked link
       propagation estimate \(\mathrm{PL}^{(0)}\), which includes
       \(\mathrm{PL}_{\mathrm{NLoS,raw}}\) on obstructed pixels, then calibrates
-      it with local morphology: building-density, building-height, NLoS support,
+      it with local morphology: building density, building height, NLoS support,
       the elevation dependent shadowing proxy \(\sigma_{\mathrm{shadow}}\),
       elevation angle, and interactions. It uses antenna height regimes
       (\texttt{low\_ant}, \texttt{mid\_ant}, \texttt{high\_ant}) because the
       obstruction geometry changes qualitatively when the centred UAV rises
-      above the local skyline. It is deliberately separate from the LoS branch
-      because blocked pixels do not follow the same two-ray mechanism.
-\item \textbf{Delay and angular-spread priors.} These are fitted in
+      above the local skyline, consistent with A2G elevation and scenario
+      modelling practice \cite{cost231,tr38901,alhourani2014,khawaja_survey}.
+      It is deliberately separate from the LoS branch
+      because blocked pixels do not follow the same two ray mechanism.
+\item \textbf{Delay and angular spread priors.} These are fitted in
       \(\log(1+y)\) space. The raw estimate captures propagation state,
       distance, elevation, and local morphology; the final ridge calibration
       adds the 23-feature vector of Sec.~\ref{sec:try79_detail}. That vector
-      includes continuous normalized UAV height, density-weighted transmitter
-      clearance over nearby building pixels, and the local window-area fraction
-      occupied by buildings taller than the transmitter. This is why the spread prior can fit the near-zero LoS mass
+      includes continuous normalized UAV height, density weighted transmitter
+      clearance over nearby building pixels, and the local window area fraction
+      occupied by buildings taller than the transmitter. This follows the
+      log domain convention used for large scale spread statistics and recent
+      A2G spread predictors \cite{tr38901,winner2,yang2019a2gml,huang2025a2gtransformer}.
+      This is why the spread prior can fit the near zero LoS mass
       and the NLoS tail without letting the largest tail values dominate the
-      whole calibration, unlike a native-space global average.
+      whole calibration, unlike a native space global average.
 \end{itemize}
 
 The notation intentionally reuses \(\rho\) in two different blocks:
 \(\rho(h_{\mathrm{tx}})\) is the fitted LoS reflection amplitude, whereas
-\(\rho_k\) is a local building-density fraction in a \(k\times k\) window.
+\(\rho_k\) is a local building density fraction in a \(k\times k\) window.
 They are unrelated quantities; the argument or subscript identifies which one
 is meant.
 The same convention is used for \(b\): \(b(h_{\mathrm{tx}})\) is a LoS
 dB bias, \(b(x)\) is the binary building mask, \(b_{\mathrm{topology}}\) is
-a spread prior log-domain offset, and \(b_{41}\) is the blocker depth feature.
+a spread prior log domain offset, and \(b_{41}\) is the blocker depth feature.
 These symbols are local to their definitions and should not be read as one
 shared physical variable.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{Term by term interpretation of the main frozen prior quantities.}
 \label{tab:prior_term_meanings}
-\footnotesize
-\renewcommand{\arraystretch}{1.08}
+\scriptsize
+\renewcommand{\arraystretch}{1.0}
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.18\textwidth}
 >{\raggedright\arraybackslash}p{0.20\textwidth}
 >{\raggedright\arraybackslash}X}
@@ -94,7 +112,7 @@ Term & Prior block & Interpretation \\
 \(h_{\mathrm{rx}}=\SI{1.5}{m}\) receiver height. \\
 \(d_{\mathrm{ref}}\) & LoS path loss &
 Image source reflected distance. It is the length of the single
-ground-reflected path used in the coherent two-ray correction. \\
+ground reflected path used in the coherent two ray correction. \\
 \(C_{\mathrm{2ray}}\) & LoS path loss &
 Direct plus reflected field correction in dB. Negative values mean constructive
 gain over FSPL; positive values mean destructive fading. \\
@@ -105,10 +123,10 @@ rather than assumed from one fixed ground material. \\
 Height interpolated effective reflection phase. It absorbs the phase offset of
 the simplified one reflection geometry. \\
 \(b(h_{\mathrm{tx}})\) & LoS path loss &
-Height dependent dB bias remaining after the coherent two-ray fit. \\
+Height dependent dB bias remaining after the coherent two ray fit. \\
 \(r(d_{2D},h_{\mathrm{tx}})\) & LoS path loss &
 Smoothed radial residual table. It corrects distance dependent errors that
-remain after FSPL, two-ray interference, and height bias. \\
+remain after FSPL, two ray interference, and height bias. \\
 \(\mathrm{PL}^{(0)}\), \(\mathrm{PL}_{\mathrm{NLoS,raw}}\) & NLoS path loss &
 Raw hybrid formula map and its obstructed pixel branch before
 map morphology calibration. \\
@@ -116,7 +134,7 @@ map morphology calibration. \\
 Fraction of building pixels in a \(k\times k\) neighbourhood; a local density
 proxy. \\
 \(h_k\) & NLoS PL and spreads &
-Local building-height summary in a \(k\times k\) neighbourhood; a proxy for
+Local building height summary in a \(k\times k\) neighbourhood; a proxy for
 nearby reflectors and blockers. \\
 \(n_k\) & NLoS PL and spreads &
 Local NLoS support fraction; indicates how much of the neighbourhood is
@@ -128,7 +146,7 @@ PL and spreads &
 Elevation angle terms. Low elevation links interact with more buildings, so
 \(\theta_{\mathrm{inv}}\) is especially useful for spread tails. \\
 \(b_{41}\), \(c_{41}\), \(t_{41}\) & Spreads &
-Blocker depth, transmitter clearance, and local taller-building fraction; they
+Blocker depth, transmitter clearance, and local taller building fraction; they
 separate open overhead links from obstructed street canyon like links. \\
 \bottomrule
 \end{tabularx}
@@ -147,7 +165,7 @@ separate open overhead links from obstructed street canyon like links. \\
 \node[box, fill=orange!15, right=1.2cm of t78, yshift=-0.62cm] (inject)
       {Prior injection\\(input channels)};
 \node[box, fill=red!15, right=1.2cm of inject] (dnn)
-      {DNN residual\\multi-task};
+      {DNN residual\\multitask};
 \node[box, fill=gray!20, right=1.2cm of dnn] (out)
       {PL, DS, AS\\outputs};
 
@@ -159,8 +177,8 @@ separate open overhead links from obstructed street canyon like links. \\
 \node[below=0.25cm of dnn, font=\scriptsize, text width=2.4cm, align=center]
       {$\delta \in [-\delta_{\max}, +\delta_{\max}]$};
 \end{tikzpicture}
-\caption[Overall prior-anchored pipeline with bounded DNN corrections.]
-{Overall prior-anchored pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta$ around them.}
+\caption[Overall prior anchored pipeline with bounded DNN corrections.]
+{Overall prior anchored pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta$ around them.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -171,9 +189,9 @@ The main lesson from the prior phase is that a useful prior is not just a
 physical looking equation. It is a complete estimator: the formula, fitted
 calibration, feature units, LoS/NLoS mask, topology features, and evaluation
 mask must be identical between fitting and inference. Earlier prior experiments
-used many of the same physical ingredients as the final path-loss prior, but they did
+used many of the same physical ingredients as the final path loss prior, but they did
 not always keep those pieces aligned. The final prior became strong because it
-made the prior self contained and auditable under the same city-holdout
+made the prior self contained and auditable under the same city holdout
 contract used for the final model.
 
 The distinction matters most for NLoS. A calibration fitted for one physical
@@ -181,15 +199,15 @@ formula cannot reliably correct another; local height and density features
 must have the same units when fitted and when applied; and regime assignment
 should come from the sample geometry rather than only from a broad city label.
 Once those constraints were enforced, the prior could separate deterministic
-large-scale structure from the genuinely local residual that the final model later
+large scale structure from the genuinely local residual that the final model later
 learned.
 
 This does not mean that all earlier NLoS failures were only implementation
 mismatches. The no prior and weak prior neural branches also failed because
-single-output point regression was a poor match for blocked, multi-modal,
-heavy-tailed NLoS and spread targets. That is why the thesis keeps both
+single-output point regression was a poor match for blocked, multimodal,
+heavy tailed NLoS and spread targets. That is why the thesis keeps both
 lessons: the final priors fix the prior-estimator problem, while
-the distribution-first predecessors motivate distribution-aware heads and residual
+the distribution first predecessors motivate distribution aware heads and residual
 uncertainty.
 
 \begin{table}[H]
@@ -218,7 +236,7 @@ Distance, height, frequency, and elevation come from propagation theory;
 effective reflection and local morphology corrections are fitted from CKM. \\
 Learn bounded residuals after the prior &
 The final model is allowed to correct local errors without overwriting the calibrated
-large-scale structure. \\
+large scale structure. \\
 Treat calibration artifacts as part of the model &
 Large JSON and coefficient artifacts are not bookkeeping only; they store the
 height, density, visibility, and morphology-specific decisions that make the
@@ -230,14 +248,14 @@ prior a competitive baseline. \\
 \subsection{Literature ingredients and thesis adaptations}
 
 The final pipeline is a hybrid between classical propagation models,
-distribution-aware regression, and dataset-specific calibration.
+distribution aware regression, and dataset-specific calibration.
 Table~\ref{tab:prior_literature_mapping} keeps the mapping explicit; the
 detailed equations and fitting procedures are given in the following
-path-loss prior, spread prior, and residual GMM methodology sections.
+path loss prior, spread prior, and residual GMM methodology sections.
 
 \begin{table}[H]
 \centering
-\caption{Literature to design mapping used by the final prior-anchored model.}
+\caption{Literature to design mapping used by the final prior anchored model.}
 \label{tab:prior_literature_mapping}
 \scriptsize
 \renewcommand{\arraystretch}{1.12}
@@ -248,30 +266,31 @@ path-loss prior, spread prior, and residual GMM methodology sections.
 \toprule
 Block & Literature basis & CKM adaptation & New role in this thesis \\
 \midrule
-LoS path-loss prior &
-FSPL and coherent two-ray propagation. &
+LoS path loss prior &
+FSPL and coherent two ray propagation \cite{rappaport,wocc2021}. &
 Effective complex reflection, height bin interpolation, and radial residual
 fitting on CKM LoS pixels. &
 Reconstructs the radial interference pattern and supplies the frozen LoS
 anchor. \\
 NLoS path loss calibration &
 COST-231/Hata style attenuation, A2G elevation envelopes, and LoS/NLoS
-separation. &
+separation \cite{cost231,tr38901,alhourani2014,khawaja_survey}. &
 Map derived density, height, NLoS support, elevation, and shadowing features
 with regime wise calibration. &
 Turns a broad empirical curve into a local, topology aware NLoS prior. \\
-Delay and angular-spread priors &
+Delay and angular spread priors &
 Log normal spread statistics from 3GPP/WINNER style channel models and UAV
-elevation trends. &
-Log-domain ridge regression with local morphology features and a sparse regime
+elevation trends \cite{tr38901,winner2,yang2019a2gml,huang2025a2gtransformer}. &
+Log domain ridge regression with local morphology features and a sparse regime
 fallback hierarchy. &
 Provides stable spread anchors without pretending that spreads are smooth
-deterministic path-loss maps. \\
+deterministic path loss maps. \\
 Final residual model &
 U-Net style dense prediction, FiLM conditioning, probabilistic regression, and
-mixture density ideas. &
+mixture density ideas
+\cite{isola2017pix2pix,pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic,garciamarti2020mixture}. &
 Prior channels, explicit masks, residual caps, anchor gates, and a shared
-multi-task trunk. &
+multitask trunk. &
 Learns only the bounded local correction and uncertainty left after the
 calibrated priors. \\
 \bottomrule

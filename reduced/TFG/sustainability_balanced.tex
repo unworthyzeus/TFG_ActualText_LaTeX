@@ -1,10 +1,11 @@
 \chapter{Sustainability Analysis and Ethical Implications}
 
-This chapter follows the ETSETB sustainability guide structure, but in a
-condensed form compatible with the reduced thesis. The work does not manufacture
-a physical product; its deployable result is a software pipeline for faster CKM
-prediction. The analysis therefore separates the one time academic development
-cost from the possible operational use of the trained generator.
+The sustainability profile of this thesis is defined by a tradeoff: the
+exploratory computation needed to discover a reliable model versus the much
+lower marginal cost of reusing it for dense CKM generation. Since the result is
+a software pipeline rather than a manufactured device, the analysis focuses on
+energy use, reuse of trained artifacts, reproducibility, and the risks of using
+simulated predictions in planning decisions.
 
 \section{Sustainability matrix}
 
@@ -36,18 +37,18 @@ Bias toward represented city morphologies and risk of overclaiming simulated res
 \section{Environmental impact}
 
 The main environmental cost during development was computation. The final
-residual GMM-head model line used a four GPU RTX~2080~Ti node for approximately
-\SI{12}{h}; the distribution-first and prior calibration phase used additional
+residual GMM head model line used a four GPU RTX~2080~Ti node for approximately
+\SI{12}{h}; the distribution first and prior calibration phase used additional
 GPU/CPU time. Across the full exploratory project, the total exceeded roughly
 400 GPU hours. This is a one time research overhead and includes many failed
 or diagnostic experiments, not only the selected final run.
 
 Several decisions reduced avoidable impact: reusing saved histories and frozen
-calibration artifacts, evaluating city-holdout metrics from stored checkpoints,
+calibration artifacts, evaluating city holdout metrics from stored checkpoints,
 and keeping the final priors frozen instead of recomputing them blindly inside
 every neural experiment. The final design is also relatively efficient at
-inference. On the Barcelona benchmark, the local MATLAB ray-tracing path took
-\SI{99.89}{s} per full-resolution sample, while the complete generator path
+inference. On the Barcelona benchmark, the local MATLAB ray tracing path took
+\SI{99.89}{s} per full resolution sample, while the complete generator path
 with masks, priors, neural prediction and export took \SI{0.88}{s}. The
 sustainability advantage therefore depends on reuse: if the same calibrated
 generator is queried many times, the marginal cost is much lower than repeated
@@ -57,7 +58,7 @@ advantage weakens.
 The life cycle interpretation is therefore important. During the research phase,
 the footprint is dominated by exploration: many failed or partially successful
 attempts were necessary to discover that the final path should combine strong
-priors with a residual GMM-head model. During the use phase, the footprint is
+priors with a residual GMM head model. During the use phase, the footprint is
 dominated by inference and by occasional recalibration. The project is most
 sustainable when the trained model, frozen priors, cached masks and exported
 checkpoints are reused across many planning queries. It would be less
@@ -88,9 +89,9 @@ Socially, faster CKM prediction can support temporary coverage planning for
 public events, rural extensions, emergency response or infrastructure
 restoration. The direct users would be network planners; the indirect
 beneficiaries would be users receiving more reliable wireless coverage. The
-main social risk is overconfidence: a simulated city-holdout result should not
+main social risk is overconfidence: a simulated city holdout result should not
 be treated as certified field performance. Errors should continue to be reported
-by LoS/NLoS state, UAV-height bin and morphology group rather than hidden behind
+by LoS/NLoS state, UAV height bin and morphology group rather than hidden behind
 one global RMSE.
 
 The social value is strongest when the tool is used as decision support rather
@@ -98,12 +99,12 @@ than as an automatic decision maker. A fast surrogate can help planners compare
 candidate UAV heights, identify weak coverage zones, and decide where detailed
 simulation or measurement should be spent. It should not replace domain review:
 the model has been validated on simulated CKM cities and inherits the
-assumptions of the ray tracer, the topology representation, and the ground-mask
+assumptions of the ray tracer, the topology representation, and the ground mask
 definition.
 
 There is also a fairness dimension in the morphology split. The model is tested
 on unseen cities, but the training distribution is still finite and urban
-morphologies are not equally represented. Dense high-rise, unusual street
+morphologies are not equally represented. Dense high rise, unusual street
 canyons, informal settlements, vegetation heavy areas or non European building
 patterns may behave differently from the dominant CKM regimes. For that reason,
 future deployment should report uncertainty or at least split diagnostics by
@@ -113,13 +114,13 @@ indicator.
 \section{Ethical implications and SDGs}
 
 The main ethical obligation is honesty about validity. The dataset is generated
-by ray tracing, so the thesis demonstrates simulator-level generalization to
-unseen cities, not real-world deployment performance. A future operational
+by ray tracing, so the thesis demonstrates simulator level generalization to
+unseen cities, not real world deployment performance. A future operational
 system would require field measurements, calibration and human review,
 especially before public service or emergency use.
 
 A second ethical issue is transparency. The final predictor is not a pure
-black-box CNN: the path loss and spread priors expose the geometric and
+black box CNN: the path loss and spread priors expose the geometric and
 morphological assumptions before the residual network is applied. This makes the
 system easier to audit, because a user can inspect whether an error comes from
 the LoS/NLoS mask, the prior, or the learned residual correction. That audit
@@ -143,7 +144,7 @@ deployment by itself.
 
 Overall, the sustainability conclusion is conditional but positive. The research
 process was computation heavy, but it produced a reusable generator that can
-replace many repeated full-resolution simulations once validated for a target
+replace many repeated full resolution simulations once validated for a target
 domain. The strongest sustainable use case is therefore not ``train a larger
-model'', but ``reuse a documented, prior-anchored surrogate to decide where
+model'', but ``reuse a documented, prior anchored surrogate to decide where
 slower simulation or real measurement is actually needed''.
