@@ -32,7 +32,8 @@ Chapter 3 now explicitly separates:
   ground-receiver mask;
 - the five frozen prior maps: combined path-loss prior, LoS path-loss prior,
   NLoS path-loss prior, delay-spread prior and angular-spread prior;
-- the ten internal inputs to `\textsc{HARP-Net CKM}`;
+- the nine spatial map channels plus separate scalar UAV-height conditioning
+  path used by `\textsc{HARP-Net CKM}`;
 - the three final outputs: path loss, delay spread and angular spread.
 
 This directly addresses the supervisor note that the full framework and the
@@ -120,8 +121,8 @@ The paper also received:
 - [x] Reduced thesis chapters 2, 3 and 4 use visibly matching section order.
 - [x] Chapter 3 states the full framework has two external inputs and three
   final outputs.
-- [x] Chapter 3 states the neural model receives ten internal inputs and outputs
-  three maps.
+- [x] Chapter 3 states the neural model receives nine spatial map channels plus
+  separate scalar UAV-height conditioning and outputs three maps.
 - [x] Chapter 4 has separate path-loss, angular-spread and delay-spread result
   discussions.
 - [x] SOTA does not contain thesis final-result values.

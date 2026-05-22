@@ -436,8 +436,8 @@ The CKM dataset covers stored UAV heights from about \SI{12}{m} to almost
 for this finite draw, because the expected count above that height is only
 0.52. Therefore the conditional error at a single aggregate RMSE can hide
 strong altitude-dependent structure. Tables~\ref{tab:try78_by_height} and
-\ref{tab:try79_by_height} therefore break the path loss prior and the spread prior
-delay spread and angular spread priors into four UAV height bins, using the
+\ref{tab:try79_by_height} therefore break the path-loss prior and the
+delay-spread and angular-spread priors into four UAV height bins, using the
 same pixel weighted aggregation as the headline tables.
 
 \begin{table}[!htbp]
@@ -505,8 +505,8 @@ The headline path loss-prior number (\SI{1.92}{dB} overall RMSE on the
 held out validation+test split, see Table~\ref{tab:try78_results}) hides the
 same building layout structure that the development experiments surfaced. The per sample evaluation
 records were re-aggregated by classifying each evaluated sample into the six
-topology classes with the same routing rule used by the
-the development experiments. The pixel weighted RMSE per topology class is
+topology classes with the same routing rule used by the development
+experiments. The pixel weighted RMSE per topology class is
 reported in
 Table~\ref{tab:try78_by_topology} and visualised in
 Figure~\ref{fig:try78_by_topology}.

@@ -169,7 +169,7 @@
 \contentsline {paragraph}{PMNet transfer check.}{101}{paragraph*.136}%
 \contentsline {subsection}{\numberline {A.1.1}From image translation to receiver-valid evaluation}{102}{subsection.A.1.1}%
 \contentsline {subsection}{\numberline {A.1.2}Why the prior returned}{102}{subsection.A.1.2}%
-\contentsline {subsection}{\numberline {A.1.3}Why Try 80 is the endpoint}{102}{subsection.A.1.3}%
+\contentsline {subsection}{\numberline {A.1.3}Why the final priors + \textsc {HARP-Net CKM} are the endpoint}{102}{subsection.A.1.3}%
 \contentsline {subsection}{\numberline {A.1.4}What was moved out of the main chapters}{103}{subsection.A.1.4}%
 \contentsline {chapter}{\numberline {B}Representative Final Model Panels}{104}{appendix.B}%
 \contentsline {chapter}{\numberline {C}CKMGenerator Interface and Reproducibility Tool}{108}{appendix.C}%

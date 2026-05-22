@@ -4,11 +4,9 @@
 This compact methodology follows the paper structure while keeping the thesis
 evidence that matters: the experimental contract, the development lessons that
 justify the final route, the detailed frozen-prior formulas, and the final
-prior-anchored residual GMM head. The longer derivation files
-\texttt{methodology.tex}, \texttt{prior\_detail\_try78.tex},
-\texttt{prior\_detail\_try79.tex} and \texttt{prior\_detail\_try80.tex}
-remain in the repository as source-level mathematical notes; the compiled text
-below keeps the same formulas in a shorter paper-style form.
+prior-anchored residual GMM head. The longer derivation files remain in the
+repository as source-level mathematical notes; the compiled text below keeps
+the same formulas in a shorter paper-style form.
 
 \section{Dataset and evaluation contract}
 
@@ -341,8 +339,8 @@ fully global fallback, for \(57\) keys per metric and \(114\) across DS and AS.
 \section{Prior-anchored residual GMM-head model}
 \label{sec:try80_detail}
 
-The final model (Try 80 in file names and JSON logs) predicts residual
-distributions around the frozen priors. For target
+The final \textsc{HARP-Net CKM} model predicts residual distributions around
+the frozen priors. For target
 \(t\in\{\mathrm{PL},\mathrm{DS},\mathrm{AS}\}\), visibility regime \(q\) and
 pixel \(x\), the head predicts mixture weights and bounded residual offsets:
 \begin{equation}

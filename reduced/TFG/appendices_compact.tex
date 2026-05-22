@@ -107,12 +107,12 @@ the hard tails survived. The project therefore moved away from simply enlarging
 the encoder and toward separating regimes, modelling distributions and freezing
 strong calibrated estimators.
 
-\subsection{Why Try 80 is the endpoint}
+\subsection{Why the final priors + \textsc{HARP-Net CKM} are the endpoint}
 
-The last attempts are the only ones that form the final methodology. Try 78
-provides the path-loss prior, with a height-aware LoS branch and calibrated
-NLoS residual structure. Try 79 provides delay-spread and angular-spread priors
-with separate LoS/NLoS, height and topology calibration. Try 80 then learns
+The last attempts are the only ones that form the final methodology. The
+path-loss prior provides a height-aware LoS branch and calibrated NLoS residual
+structure. The delay-spread and angular-spread priors provide separate
+LoS/NLoS, height and topology calibration. \textsc{HARP-Net CKM} then learns
 bounded residual corrections over these frozen priors with a shared multi-task
 GMM-head model.
 
@@ -140,10 +140,12 @@ The full generated panel set contains one candidate for each
 (\mathrm{low},\mathrm{mid},\mathrm{high})\) audit group. The expanded reduced
 thesis keeps three full-size qualitative panels: open/low, mixed/mid and
 dense/mid. The remaining panels and their manifest are kept in
-\texttt{img/thesis\_figures/try80\_appendix\_panels/} and can be regenerated
-with the panel-generation script. The removed open/high Nazareth panel is not
-used because its angular-spread map is almost flat and the robust colour scale
-collapses to a misleading near-zero range.
+\texttt{img/thesis\_figures/try80\_appendix\_panels/}; the folder name keeps
+the original run identifier, but the panels are final priors +
+\textsc{HARP-Net CKM} outputs and can be regenerated with the panel-generation
+script. The removed open/high Nazareth panel is not used because its
+angular-spread map is almost flat and the robust colour scale collapses to a
+misleading near-zero range.
 
 \begin{table}[htbp]
 \centering
@@ -240,8 +242,8 @@ wasting a full page on the blank app workspace.
 \caption[CKMGenerator Streamlit controls.]%
 {CKMGenerator Streamlit controls. The sidebar records the assumptions used by
 the generator: receiver height fixed at \SI{1.5}{m}, variable antenna height,
-mask selection, optional Try~80 inference, mixed-precision availability, pixel
-scale and export format.}
+mask selection, optional final priors + \textsc{HARP-Net CKM} inference,
+mixed-precision availability, pixel scale and export format.}
 \label{fig:ckm_generator_controls_appendix}
 \end{figure}
 
@@ -460,9 +462,11 @@ panel records the target-storage limitation discussed in Chapter~\ref{chap:resul
 The nine-panel gallery, row-level 80-attempt log, CKMGenerator screenshot
 manual, all-city subexpert tables and split bars are omitted from this compact
 appendix but remain in \texttt{appendices.tex} and the generated figure
-folders. The Try~78/79/80 mathematical derivations are not repository-only:
-they are included in Chapter~\ref{chap:methodology} through
-\texttt{prior\_detail\_try78.tex}, \texttt{prior\_detail\_try79.tex} and
-\texttt{prior\_detail\_try80.tex}, which also remain as separate source files
-for traceability.
+folders. The final prior + \textsc{HARP-Net CKM} mathematical derivations are
+not repository-only: they are included in Chapter~\ref{chap:methodology}
+through \texttt{prior\_detail\_try78.tex},
+\texttt{prior\_detail\_try79.tex} and \texttt{prior\_detail\_try80.tex}. The
+last filename keeps the original run identifier, but it is the
+\textsc{HARP-Net CKM} residual-model detail; all three files also remain as
+separate source files for traceability.
 \endgroup
