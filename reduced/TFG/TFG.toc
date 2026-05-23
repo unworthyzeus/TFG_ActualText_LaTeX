@@ -135,11 +135,11 @@
 \contentsline {chapter}{\numberline {4}Results}{77}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Final test contract and frozen priors}{77}{section.4.1}%
 \contentsline {subsection}{\numberline {4.1.1}LoS path loss prior progression}{77}{subsection.4.1.1}%
-\contentsline {section}{\numberline {4.2}Path Loss Results}{78}{section.4.2}%
+\contentsline {section}{\numberline {4.2}Channel Attenuation Results}{78}{section.4.2}%
 \contentsline {paragraph}{Split comparability note.}{78}{paragraph*.116}%
 \contentsline {subsection}{\numberline {4.2.1}RMSE by UAV transmitter height}{79}{subsection.4.2.1}%
 \contentsline {subsection}{\numberline {4.2.2}Path loss prior by topology class}{80}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Path loss: prior versus \textsc {HARP-Net CKM}}{81}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.3}Channel attenuation: prior versus \textsc {HARP-Net CKM}}{81}{subsection.4.2.3}%
 \contentsline {section}{\numberline {4.3}Angular Spread Results}{82}{section.4.3}%
 \contentsline {section}{\numberline {4.4}Delay Spread Results}{82}{section.4.4}%
 \contentsline {section}{\numberline {4.5}State of the Art Context and Runtime}{83}{section.4.5}%

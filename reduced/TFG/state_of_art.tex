@@ -43,7 +43,7 @@ al.\ \cite{jaensch2024directiverme} and CKMImageNet
 datasets with richer channel and environment representations. The CKM dataset
 used in this thesis sits in the same data driven tradition, but differs in its
 continuous UAV height conditioning, real city holdout split, and simultaneous
-path loss, delay spread, and angular spread targets.
+channel attenuation, delay spread, and angular spread targets.
 
 % Section separator
 \section{Path Loss Prediction}
@@ -240,7 +240,7 @@ path loss scale. RadioGUNet \cite{radiogunet2025} extends this outdoor
 RadioMapSeer line with group equivariant convolutions, reporting
 \SI{1.304}{dB} on the easiest DPM setting, \SI{1.936}{dB} on the IRT setting,
 and \SI{1.392}{dB} with cars. These values are used again in
-Chapter~\ref{chap:results} as scale references for the final path loss result.
+Chapter~\ref{chap:results} as scale references for the final channel attenuation result.
 
 \textbf{Limitations:} These papers are useful path loss scale references, but
 they do not report dense delay spread or angular spread maps and do not use the
@@ -385,8 +385,8 @@ train the neural component to predict only the structured residual.  This design
 reduces the effective learning problem from the full path loss range to a
 narrower residual distribution, improving data efficiency and interpretability.
 
-Chapter~3 applies this philosophy to the three thesis targets. For path loss,
-an enhanced two ray model fitted per height bin provides a prior map
+Chapter~3 applies this philosophy to the three thesis targets. For the channel
+attenuation target, an enhanced two ray path loss model fitted per height bin provides a prior map
 $\hat{y}_{\mathrm{PL}}(\textbf{x}) = \mathrm{TwoRay}(d, h_{\mathrm{tx}})$,
 and the neural component predicts the residual
 $\epsilon = y - \hat{y}_{\mathrm{PL}}$. For delay spread and angular spread,
@@ -545,15 +545,15 @@ horizon for this thesis.
 \subsection{Multitask and joint prediction}
 
 Training a single shared backbone across multiple output targets can improve
-sample efficiency and consistency between targets.  Path loss, delay spread, and
+sample efficiency and consistency between targets.  Channel attenuation, delay spread, and
 angular spread are physically correlated: a deep shadow corresponds to high
 delay spread and potentially wide angular spread from diffracted paths.  A joint
-model can therefore use the intermediate feature maps learned for path loss to
+model can therefore use the intermediate feature maps learned for attenuation to
 partially explain spread patterns, reducing the effective learning problem.
 
 Chapter~3 uses this idea by sharing the topology and UAV height representation
 across the three targets, while allowing target specific residual heads for
-path loss, delay spread, and angular spread. The literature point is that joint
+channel attenuation, delay spread, and angular spread. The literature point is that joint
 training is useful only if the shared representation is anchored by
 target specific priors and losses; otherwise the easiest target can dominate
 the common backbone.
@@ -671,7 +671,7 @@ known city may still fail when the same transmitter height range is evaluated
 on a new morphology. For this reason, this thesis treats city holdout as a
 core part of the task definition rather than as an optional robustness test.
 
-Second, path loss, delay spread, and angular spread should not be treated as
+Second, channel attenuation, delay spread, and angular spread should not be treated as
 three copies of the same regression problem. LoS path loss often contains a
 strong deterministic radial component, whereas NLoS path loss depends on
 blocked link geometry and local morphology. Delay and angular spreads are even

@@ -3,17 +3,17 @@
 \section{Conclusions}
 
 This thesis demonstrates a variable-height UAV CKM predictor under a strict
-city-holdout protocol. The final system jointly predicts dense path loss, delay
+city holdout protocol. The final system jointly predicts dense path loss, delay
 spread, and angular spread for unseen cities while conditioning on continuous
 UAV height. The strongest result is not a pure black-box network, but a hybrid
 pipeline: calibrated priors explain the stable physical and statistical
 structure, and a neural residual model corrects what remains.
 
 The final numbers meet the original targets. The path-loss prior reaches
-\SI{1.9246}{dB} RMSE on the held-out validation+test split and
+\SI{1.9246}{dB} RMSE on the held out validation+test split and
 \SI{1.9383}{dB} when used as the frozen prior on the final test split. The spread priors reach
 \SI{28.10}{ns} DS RMSE and \(13.74^\circ\) AS RMSE on the same final test
-split. The final residual GMM-head model improves those RMSE anchors on 14
+split. The final residual GMM head model improves those RMSE anchors on 14
 unseen test cities, reaching
 \SI{1.6519}{dB}, \SI{26.5570}{ns}, and \(11.3854^\circ\) for PL, DS, and AS.
 The prior is therefore not a weak baseline; it is already a strong estimator.
@@ -22,11 +22,11 @@ The answer to \textbf{RQ1} is yes within the fixed CKM contract: dense PL/DS/AS
 prediction is viable under strict city holdout, and the final model does it
 jointly with one generator. The answer to \textbf{RQ2} is that the useful split
 is calibrated physics/statistics first and bounded neural residuals second. The
-priors combine two-ray LoS behaviour, height-aware calibration, NLoS morphology,
+priors combine two ray LoS behaviour, height aware calibration, NLoS morphology,
 and log-domain DS/AS ridge models; the network learns local residuals around
 these anchors. The answer to \textbf{RQ3} is also positive: continuous UAV
-height is handled through height-aware priors and a sinusoidal FiLM conditioning
-path, while low-altitude and NLoS-heavy cases remain the most difficult.
+height is handled through height aware priors and a sinusoidal FiLM conditioning
+path, while low altitude and NLoS-heavy cases remain the most difficult.
 
 The main contributions are therefore:
 \begin{itemize}
@@ -34,10 +34,10 @@ The main contributions are therefore:
         and angular spread on unseen cities;
   \item a calibrated prior family that combines physical propagation structure,
         morphology, visibility, height regimes, and empirical spread statistics;
-  \item a distribution-first modelling lesson showing why GMM-style residual
+  \item a distribution first modelling lesson showing why GMM-style residual
         prediction and histogram checks are needed for NLoS path-loss modes and
         spread tails;
-  \item a reproducible city-holdout evaluation contract with ground-only
+  \item a reproducible city holdout evaluation contract with ground-only
         masking and LoS/NLoS/height diagnostics.
 \end{itemize}
 
@@ -51,13 +51,13 @@ The negative results justify the final design. Pure image-translation models,
 larger CNN variants, topology experts, multi-scale outputs, and uncertainty
 heads exposed useful failure modes, but none solved the distribution mismatch
 alone. The final model is stronger because it combines auditable priors with a
-distribution-aware residual head instead of only increasing neural capacity.
+distribution aware residual head instead of only increasing neural capacity.
 
 \section{Future directions}
 
 The nearest continuation is a controlled ablation of the final residual line:
 remove individual prior channels, residual caps, GMM terms, anchor/guard losses,
-and height-conditioning paths while keeping the same city-holdout contract.
+and height-conditioning paths while keeping the same city holdout contract.
 This would quantify which parts of the final gain are essential.
 
 The next modelling step is broader conditioning. The current dataset fixes

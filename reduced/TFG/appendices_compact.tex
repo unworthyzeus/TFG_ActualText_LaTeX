@@ -19,14 +19,14 @@ lost; it is simply no longer part of the main PDF.
 \toprule
 Attempt range & Phase & Why it matters in the final thesis \\
 \midrule
-1--22 & Direct image-to-image baselines & Established the CKM pipeline, cGAN/U-Net feasibility, bilinear decoder fixes and multiscale supervision. The phase ended because visual realism did not imply physical RMSE. \\
+1--22 & Direct image to image baselines & Established the CKM pipeline, cGAN/U-Net feasibility, bilinear decoder fixes and multiscale supervision. The phase ended because visual realism did not imply physical RMSE. \\
 23--40 & Spread branches and mask reset & Added delay/angular experiments and, most importantly, the ground-only receiver mask. This changed the evaluation contract. \\
-41--50 & Prior residual PMNet phase & Showed that raw formulas were weak, train-only calibration helped, and residual learning was useful but still NLoS-limited. \\
+41--50 & Prior residual PMNet phase & Showed that raw formulas were weak, train only calibration helped, and residual learning was useful but still NLoS-limited. \\
 51--66 & PMHHNet and topology experts & Introduced six topology experts, height FiLM, high-frequency paths, obstruction channels and no-prior controls. LoS improved, NLoS remained the bottleneck. \\
 67--75 & Stabilisation and distribution diagnosis & Tested knife-edge channels, quad heads, uncertainty and histogram-focused diagnostics. The key result was the visible NLoS and spread-tail distribution mismatch. \\
-76--77 & Distribution-first models & GMM/spike-plus-tail heads showed that modelling the target distribution before pixel assignment could remove much of the collapse. \\
-78--79 & Frozen calibrated priors & Produced the final train-only path loss and spread priors, including height-aware LoS two-ray calibration and log-domain spread ridge calibration. \\
-80 & Final prior-anchored residual GMM model & Combined frozen priors with a shared residual GMM-head model and selected the RMSE-dominant fine-tuning stage reported in Chapter~\ref{chap:results}. \\
+76--77 & Distribution first models & GMM/spike-plus-tail heads showed that modelling the target distribution before pixel assignment could remove much of the collapse. \\
+78--79 & Frozen calibrated priors & Produced the final train only attenuation and spread priors, including height aware LoS two ray calibration and log-domain spread ridge calibration. \\
+80 & Final prior anchored residual GMM model & Combined frozen priors with a shared residual GMM head model and selected the RMSE-dominant fine tuning stage reported in Chapter~\ref{chap:results}. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -53,16 +53,16 @@ explains the final design.
 \toprule
 Attempt & Public role & Lasting lesson \\
 \midrule
-22 & Clean early image-to-image baseline & Bilinear decoding and multiscale supervision reduced visual artifacts, but direct image realism was still a weak proxy for calibrated radio-map error. \\
+22 & Clean early image to image baseline & Bilinear decoding and multiscale supervision reduced visual artifacts, but direct image realism was still a weak proxy for calibrated radio map error. \\
 33--40 & Ground mask reset & Building pixels had to be excluded from loss, metrics and visual error maps; scores before and after this contract are historical, not directly comparable. \\
-41--45 & First explicit prior-residual models & Raw formulas were weak, train-only calibration helped strongly, and residual learning was useful only when the prior carried real physical structure. \\
+41--45 & First explicit prior-residual models & Raw formulas were weak, train only calibration helped strongly, and residual learning was useful only when the prior carried real physical structure. \\
 50 & NLoS prior sandbox & Scalar NLoS corrections, tabular deltas and simple hybrid formulas did not solve blocked-link tails. The remaining error was spatial and distributional. \\
 54--66 & PMHHNet/topology experts & Height FiLM, physical channels and six topology experts improved the easy LoS regime, but NLoS stayed dominant even after substantial backbone engineering. \\
 67--75 & Stabilisation and histogram diagnosis & Knife-edge channels, quad heads and uncertainty improved diagnosis more than final RMSE. Histogram plots made the NLoS and spread-tail mismatch explicit. \\
-76 & Distribution-first PL GMM & Predicting the target distribution before assigning pixels gave the first convincing route for hard path-loss tails. \\
-77 & Distribution-first spread GMM & Delay and angular spread behaved like spike-plus-tail targets rather than smooth images, motivating distribution-aware output heads. \\
-78--79 & Frozen calibrated priors & The strongest non-neural evidence came from height-aware LoS calibration and log-domain spread ridge calibration, both fitted only on training cities. \\
-80 & Final prior-anchored residual GMM model & The selected system is a calibrated prior-estimator plus bounded learned residual distribution head, not a black-box direct regressor. \\
+76 & Distribution first PL GMM & Predicting the target distribution before assigning pixels gave the first convincing route for hard attenuation tails. \\
+77 & Distribution first spread GMM & Delay and angular spread behaved like spike-plus-tail targets rather than smooth images, motivating distribution aware output heads. \\
+78--79 & Frozen calibrated priors & The strongest non-neural evidence came from height aware LoS calibration and log-domain spread ridge calibration, both fitted only on training cities. \\
+80 & Final prior anchored residual GMM model & The selected system is a calibrated prior-estimator plus bounded learned residual distribution head, not a black-box direct regressor. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -72,14 +72,14 @@ A separate diagnostic placed official PMNet checkpoints on CKM samples. This
 confirmed that PMNet family models are relevant as architectural references but
 cannot be imported as ready-made solutions for this thesis contract. The
 training and target distributions are structurally different: CKM uses
-continuous UAV height, full \(513\times513\) city maps, city-holdout
+continuous UAV height, full \(513\times513\) city maps, city holdout
 evaluation, and valid ground receiver metrics. For that reason the PMNet result
 is kept as a transfer check in the appendix, not as a main method result.
 
 \subsection{From image translation to receiver-valid evaluation}
 
 The first part of the project treated CKM prediction as aligned
-image-to-image regression. This was useful for building the dataset pipeline:
+image to image regression. This was useful for building the dataset pipeline:
 the topology map, LoS/NLoS support, distance field and targets all live on the
 same \(513\times513\) grid. The early cGAN and U-Net variants also exposed
 practical issues such as checkerboard artifacts, excessive adversarial pressure
@@ -96,7 +96,7 @@ once the ground-mask is fixed.
 
 The first physical prior attempts were not successful as formulas alone. A raw
 prior could be far worse than a neural model, especially in NLoS. However,
-train-only calibration made the prior informative enough to act as an anchor.
+train only calibration made the prior informative enough to act as an anchor.
 This distinction matters: the prior is not presented as a magic replacement for
 learning, but as a structured baseline that gives the network the correct
 coordinate system.
@@ -110,26 +110,26 @@ strong calibrated estimators.
 \subsection{Why the final priors + \textsc{HARP-Net CKM} are the endpoint}
 
 The last attempts are the only ones that form the final methodology. The
-path-loss prior provides a height-aware LoS branch and calibrated NLoS residual
-structure. The delay-spread and angular-spread priors provide separate
+path loss prior provides a height aware LoS branch and calibrated NLoS residual
+structure. The delay spread and angular spread priors provide separate
 LoS/NLoS, height and topology calibration. \textsc{HARP-Net CKM} then learns
-bounded residual corrections over these frozen priors with a shared multi-task
-GMM-head model.
+bounded residual corrections over these frozen priors with a shared multi task
+GMM head model.
 
 In other words, the final route is evolutionary but not arbitrary: direct
 regression established feasibility, masked evaluation fixed the contract,
-PMHHNet identified the remaining NLoS bottleneck, distribution-first models
+PMHHNet identified the remaining NLoS bottleneck, distribution first models
 showed why tails mattered, and the frozen priors made the final residual model
 small enough to improve rather than overwrite the physical estimator.
 
 \subsection{What was moved out of the main chapters}
 
-The distribution-first PL and spread experiments remain part of the thesis
+The distribution first PL and spread experiments remain part of the thesis
 evidence, but their detailed per-expert tables are kept here conceptually
 rather than in Chapter~\ref{chap:results}. The main chapters use them only for
 the lesson they provide: direct neural maps can look plausible while averaging
 away rare tails, and the final model should therefore keep calibrated priors
-and a distribution-aware residual head. This keeps the thesis shorter while
+and a distribution aware residual head. This keeps the thesis shorter while
 preserving the negative evidence that motivated the final design.
 
 \endgroup
@@ -144,7 +144,7 @@ dense/mid. The remaining panels and their manifest are kept in
 the original run identifier, but the panels are final priors +
 \textsc{HARP-Net CKM} outputs and can be regenerated with the panel-generation
 script. The removed open/high Nazareth panel is not used because its
-angular-spread map is almost flat and the robust colour scale collapses to a
+angular spread map is almost flat and the robust colour scale collapses to a
 misleading near-zero range.
 
 \begin{table}[htbp]
@@ -156,9 +156,9 @@ misleading near-zero range.
 \toprule
 Audit group & City & Sample & Status & Reason \\
 \midrule
-open/low & Segovia & sample\_13213 & PDF & Open low-altitude case with visible geometry and residual correction. \\
+open/low & Segovia & sample\_13213 & PDF & Open low altitude case with visible geometry and residual correction. \\
 mixed/mid & Nice & sample\_10828 & PDF & Mixed morphology and mid-height regime. \\
-dense/mid & Vancouver & sample\_15265 & PDF & Dense held-out test morphology; also used as the main paper/TFG qualitative panel. \\
+dense/mid & Vancouver & sample\_15265 & PDF & Dense held out test morphology; also used as the main paper/TFG qualitative panel. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -172,7 +172,7 @@ should correct the sign and location of the prior error.
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovia_sample_13213_6x3.png}
-\caption{Final residual GMM-head inspection panel for an open, low-antenna
+\caption{Final residual GMM head inspection panel for an open, low-antenna
 validation sample in Segovia.}
 \label{fig:appendix_try80_open_low}
 \end{figure}
@@ -181,7 +181,7 @@ validation sample in Segovia.}
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_sample_10828_6x3.png}
-\caption{Final residual GMM-head inspection panel for a mixed, mid-antenna
+\caption{Final residual GMM head inspection panel for a mixed, mid-antenna
 validation sample in Nice.}
 \label{fig:appendix_try80_mixed_mid}
 \end{figure}
@@ -190,8 +190,8 @@ validation sample in Nice.}
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Vancouver_sample_15265_6x3.png}
-\caption{Final residual GMM-head inspection panel for a dense, mid-antenna
-held-out test sample in Vancouver.}
+\caption{Final residual GMM head inspection panel for a dense, mid-antenna
+held out test sample in Vancouver.}
 \label{fig:try80_panel}
 \end{figure}
 
@@ -203,7 +203,7 @@ held-out test sample in Vancouver.}
 \small
 
 This appendix documents the standalone CKMGenerator delivered with the final
-prior-anchored residual GMM-head pipeline. The complete user manual belongs in
+prior anchored residual GMM head pipeline. The complete user manual belongs in
 the repository README, but the thesis keeps the scientific and reproducibility
 contract: which inputs are accepted, how they are converted to the model grid,
 how receivers and LoS/NLoS masks are defined, what the tool exports, and which
@@ -214,7 +214,7 @@ performance switches do not change the mathematical model.
 CKMGenerator is a deployment wrapper around the final thesis pipeline. It
 accepts topology inputs, prepares them with the same geometric conventions used
 for training and evaluation, computes or imports LoS/NLoS masks, evaluates the
-frozen calibrated path loss, delay-spread and angular-spread priors, optionally
+frozen calibrated attenuation, delay spread and angular spread priors, optionally
 runs the final neural residual model, and exports the numerical arrays used for
 reproducible analysis. The Streamlit interface is intended for inspection and
 demonstrations; the command-line interface uses the same backend and is intended
@@ -261,7 +261,7 @@ metadata preview.}
 \begin{subfigure}{\textwidth}
 \centering
 \includegraphics[width=\textwidth,height=0.30\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png}
-\caption{Joint path loss, delay-spread and angular-spread prediction output.}
+\caption{Joint channel attenuation, delay spread and angular spread prediction output.}
 \label{fig:ckm_generator_prediction_appendix}
 \end{subfigure}
 \caption{CKMGenerator application output after running one HDF5 sample.}
@@ -336,7 +336,7 @@ the selected maximum image height is used to convert pixel values to metres
 unless the option \texttt{image-values-are-metres} is enabled.
 
 All inputs are fitted to the \(513\times513\) grid used by the final model. The
-model grid represents \SI{1}{m} per-pixel, with the transmitter antenna located
+model grid represents \SI{1}{m} per pixel, with the transmitter antenna located
 at the centre of the map and with variable UAV height. If an input is supplied
 with another physical spacing, \texttt{--meters-per-pixel} is used before the
 centred crop or padding step. Topology arrays are resampled with bilinear
@@ -377,12 +377,12 @@ that preserves the model interface when a user does not have the original HDF5
 mask fields.
 
 After preprocessing, the tool evaluates the frozen priors from the final
-pipeline. These are the same height-aware, calibrated priors described in
-Chapter~\ref{chap:methodology}: a LoS/NLoS path-loss prior with centre-antenna
+pipeline. These are the same height aware, calibrated priors described in
+Chapter~\ref{chap:methodology}: a LoS/NLoS path loss prior with centre-antenna
 geometry and antenna-height calibration, and spread priors with separate
 calibrated structure for delay spread and angular spread. When neural inference
 is enabled, the prepared topology, masks, priors and height context are passed
-to the final residual GMM-head model. The generator therefore changes neither
+to the final residual GMM head model. The generator therefore changes neither
 the model definition nor the validation contract; it packages the final method
 for reproducible use.
 
@@ -439,7 +439,7 @@ generated image folders.
 \begin{subfigure}{\textwidth}
 \centering
 \includegraphics[width=\textwidth,height=0.25\textheight,keepaspectratio]{img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png}
-\caption{Full non-residual DL GMM-head model for PL. Thick curves show summed
+\caption{Full non residual DL GMM head model for PL. Thick curves show summed
 LoS/NLoS GMM densities; faint dotted curves show the individual Gaussian
 components.}
 \label{fig:try76_los_vs_nlos_distribution}
@@ -454,7 +454,7 @@ released targets contain staircase-like and sparse integer-valued structures.}
 \label{fig:try79_quantized_spread_example}
 \end{subfigure}
 \caption{Compact additional diagnostics. The GMM plot exposed different
-LoS/NLoS marginals and motivated distribution-aware heads; the quantisation
+LoS/NLoS marginals and motivated distribution aware heads; the quantisation
 panel records the target-storage limitation discussed in Chapter~\ref{chap:results}.}
 \end{figure}
 

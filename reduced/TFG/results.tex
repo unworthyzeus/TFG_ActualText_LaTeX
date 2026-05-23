@@ -62,7 +62,7 @@ a better fit numerically; it is a physically motivated explanation of the
 dominant LoS residual shape in CKM, and it is why the final model uses the two ray
 output directly as a frozen anchor rather than re-learning it from pixels.
 
-\section{Path Loss Results}
+\section{Channel Attenuation Results}
 
 \paragraph{Split comparability note.}
 The final priors and \textsc{HARP-Net CKM} use the same \texttt{city\_holdout}
@@ -166,16 +166,16 @@ Angular spread ($^\circ$) & 13.74 & 15.28 & 8.66 \\
 \end{table}
 
 \iffalse
-\subsection{Distribution first path loss reference}
+\subsection{Distribution first channel attenuation reference}
 
-The distribution first path loss predecessor is not the final model of this thesis, but its result is quoted here
+The distribution first channel attenuation predecessor is not the final model of this thesis, but its result is quoted here
 because it is the piece of evidence that motivated the final path loss design.
 Trained with no physical prior of any kind, no COST-231 formula, no knife edge
 channel, and no residual-over-prior structure, the distribution first
-family reached a pixel weighted NLoS path loss RMSE of approximately
+family reached a pixel weighted NLoS channel attenuation RMSE of approximately
 \SI{3.34}{dB} on its own city holdout test split. The two lessons it provided
 were (i) a plain MSE/Huber regressor with a single Gaussian shaped output head
-cannot represent the NLoS path loss target because that marginal is strongly
+cannot represent the NLoS channel attenuation target because that marginal is strongly
 multimodal, and (ii) once the output head is a Gaussian mixture conditioned
 on the UAV height, the NLoS mode collapse that dominated the error budget of
 the PMHHNet diagnostic phase disappears. This is a small RMSE difference compared to the
@@ -185,7 +185,7 @@ result because it is obtained without injecting any physics.
 \subsubsection*{Per expert breakdown (12 experts: 6 topology classes
 $\times$ LoS / NLoS)}
 
-The distribution first path loss predecessor trains twelve specialised GMM experts. A sequential DirectML
+The distribution first channel attenuation predecessor trains twelve specialised GMM experts. A sequential DirectML
 evaluation of the 6 LoS and 6 NLoS trained expert models on the shared test split
 gives an aggregated NLoS metric of \SI{3.34}{dB} pixel weighted and
 \SI{2.64}{dB} sample weighted; the matching LoS aggregate is
@@ -198,8 +198,8 @@ interpretable.
 
 \begin{table}[!htbp]
 \centering
-\caption[Distribution first path loss RMSE per expert.]%
-{Distribution first path loss DirectML test RMSE per expert on the shared
+\caption[Distribution first channel attenuation RMSE per expert.]%
+{Distribution first channel attenuation DirectML test RMSE per expert on the shared
 city holdout test split, together with the standard deviation of the
 corresponding target histogram. RMSE values are pixel weighted over
 valid ground pixels. Source: internal DirectML evaluation JSON.}
@@ -223,13 +223,13 @@ dense\_block\_highrise  & 4.79 & 4.18 & 5.91 & 4.67 \\
 \end{table}
 
 The headline finding here is counter intuitive at first sight:
-\textbf{LoS path loss is consistently harder for the distribution first path loss model than NLoS path
-loss}. In Table~\ref{tab:try76_per_expert}, the LoS RMSE is higher than the
+\textbf{LoS channel attenuation is consistently harder for the distribution first channel attenuation model than NLoS channel
+attenuation}. In Table~\ref{tab:try76_per_expert}, the LoS RMSE is higher than the
 NLoS RMSE in every topology class, with a class-wise gap ranging from about
 \SI{0.6}{dB} to \SI{1.7}{dB}. The same pattern survives any choice of aggregation, and it
 contradicts the intuition built up during the PMHHNet diagnostic phase, where NLoS was
 the dominant source of error and also what made the most physical sense.
-This reversal motivated the later return to explicit priors for both path loss
+This reversal motivated the later return to explicit priors for both attenuation
 and spread.
 
 \subsubsection*{Why LoS is harder than NLoS in the GMM regime}
@@ -239,11 +239,11 @@ of the model. The histogram study reports the following global
 sanity check statistics over all CKM ground pixels:
 
 \begin{itemize}
-  \item \textbf{LoS path loss target}: $\mu \approx \SI{96.95}{dB}$,
+  \item \textbf{LoS channel attenuation target}: $\mu \approx \SI{96.95}{dB}$,
   $\sigma \approx \SI{5.34}{dB}$, skewness $\approx 0.04$, excess
   kurtosis $\approx 0.61$. This is not a perfect Gaussian: the bulk is
   broad, with rare high loss outliers and topology dependent shoulders.
-  \item \textbf{NLoS path loss target}: $\mu \approx \SI{107.06}{dB}$,
+  \item \textbf{NLoS channel attenuation target}: $\mu \approx \SI{107.06}{dB}$,
   $\sigma \approx \SI{4.32}{dB}$, skewness $\approx -0.08$, excess
   kurtosis $\approx 2.25$. This is much more peaked but has clearly
   heavier tails (kurtosis nearly four times that of the LoS marginal),
@@ -265,14 +265,14 @@ makes the remaining RMSE budget harder to collapse into a few dominant
 components.
 
 The global comparison is only a first-order diagnostic: the distribution first
-path loss model trains one LoS and one NLoS GMM expert per topology class,
+channel attenuation model trains one LoS and one NLoS GMM expert per topology class,
 not one collapsed pair. This also explains the topology ranking inside each
 regime. The LoS target standard deviation grows from \SI{5.22}{dB} in
 \texttt{mixed\_compact\_lowrise} to \SI{5.91}{dB} in
 \texttt{dense\_block\_highrise}, and the LoS RMSE broadly follows the same
 trend, with small reorderings in the middle classes
 (best \SI{4.15}{dB}, worst \SI{4.79}{dB}). Denser, taller cities scatter the
-LoS path loss over a wider range, so even with perfect calibration the
+LoS attenuation over a wider range, so even with perfect calibration the
 RMSE budget grows. The same monotonic growth is visible on the NLoS
 side, but with a smaller absolute gap because NLoS is the regime where
 the GMM head pays back the most.
@@ -291,8 +291,8 @@ absolute benefit at the same time.
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try76_los_vs_nlos.png}
-\caption[Distribution first path loss DirectML test RMSE per expert.]
-{Distribution first path loss DirectML test RMSE per expert. \emph{Left}: bars are
+\caption[Distribution first channel attenuation DirectML test RMSE per expert.]
+{Distribution first channel attenuation DirectML test RMSE per expert. \emph{Left}: bars are
 RMSE for LoS (orange) and NLoS (green); diamond markers report the
 standard deviation of the underlying target histogram. \emph{Right}:
 the same data normalised as RMSE / target $\sigma$. LoS is harder in
@@ -305,16 +305,16 @@ distribution that the GMM head can attack directly.}
 
 \subsubsection*{Why priors came back after distribution first modelling}
 
-Reading the project in chronological order, the move from distribution first path loss modelling to the final path loss prior can
+Reading the project in chronological order, the move from distribution first channel attenuation modelling to the final path loss prior can
 look contradictory: the first demonstrates that a distribution aware neural
-head does not need a physical prior to solve NLoS path loss, and the second
+head does not need a physical prior to solve NLoS attenuation, and the second
 goes back to an explicit analytic prior. The sequence is consistent once the
 order in which the evidence arrived is spelled out. The distribution first model came
 \emph{immediately after} the histogram diagnosis. That diagnosis
 showed that the main deficit of the PMHHNet family was not a missing physical
 channel, but an output distribution mismatch. The first response was therefore
 to fix the deep learning side: change the objective, change the output head,
-and show that NLoS path loss can in fact be modelled without extra physics.
+and show that NLoS attenuation can in fact be modelled without extra physics.
 Once that point was made, the question changed. Given that the full target
 distribution is tractable, which part of the prediction pipeline is the
 cheapest and most auditable? For LoS path loss the answer turned out to be a
@@ -329,10 +329,10 @@ result.
 
 \subsection{Distribution first spread experts}
 
-The distribution first spread predecessor applies the path loss mixture recipe to delay spread and
+The distribution first spread predecessor applies the attenuation mixture recipe to delay spread and
 angular spread. It partitions the dataset into the same six topology
 classes and trains two GMM experts per class (one per spread target),
-for a total of twelve experts. Unlike the path loss predecessor, the LoS / NLoS split is
+for a total of twelve experts. Unlike the channel attenuation predecessor, the LoS / NLoS split is
 not enforced inside this spread model because the spread targets are defined over
 all ground pixels (the Stage-A GMM components recover the
 spike plus tail shape themselves, as shown by the distribution-class
@@ -357,7 +357,7 @@ calibration thresholds of Eq.~\eqref{eq:ant_bin_v2}: low is at or below
 broader reporting bins used in the height-stratified prior tables.
 
 A sequential DirectML pass over the 12 mirrored expert models now gives
-test metrics on the same 2590-sample holdout used by the distribution first path loss predecessor and the final model.
+test metrics on the same 2590-sample holdout used by the distribution first channel attenuation predecessor and the final model.
 Table~\ref{tab:try77_per_expert} reports both sample mean and
 pixel weighted RMSE. The distinction matters for spread targets because
 large maps with broad valid ground support can dominate the pixel weighted
@@ -436,8 +436,8 @@ The CKM dataset covers stored UAV heights from about \SI{12}{m} to almost
 for this finite draw, because the expected count above that height is only
 0.52. Therefore the conditional error at a single aggregate RMSE can hide
 strong altitude-dependent structure. Tables~\ref{tab:try78_by_height} and
-\ref{tab:try79_by_height} therefore break the path-loss prior and the
-delay-spread and angular-spread priors into four UAV height bins, using the
+\ref{tab:try79_by_height} therefore break the path loss prior and the
+delay spread and angular spread priors into four UAV height bins, using the
 same pixel weighted aggregation as the headline tables.
 
 \begin{table}[!htbp]
@@ -460,7 +460,7 @@ UAV height bin & Overall & LoS & NLoS & Samples \\
 
 \begin{table}[!htbp]
 \centering
-\caption{Delay-spread and angular spread calibrated pixel weighted RMSE
+\caption{Delay spread and angular spread calibrated pixel weighted RMSE
 by UAV transmitter height, on the city holdout test split.}
 \label{tab:try79_by_height}
 \small
@@ -570,9 +570,9 @@ calibrated prior is easiest and hardest.}
 \label{fig:try78_by_topology}
 \end{figure}
 
-\subsection{Path loss: prior versus \textsc{HARP-Net CKM}}
+\subsection{Channel attenuation: prior versus \textsc{HARP-Net CKM}}
 
-\textsc{HARP-Net CKM} freezes the path loss and spread priors and learns a bounded residual correction
+\textsc{HARP-Net CKM} freezes the attenuation and spread priors and learns a bounded residual correction
 for the three radio maps. It is tested on the city holdout test split with
 2590 samples from 14 cities that were not seen in training. The model should
 be read as a two stage final
@@ -597,7 +597,7 @@ prediction claim. For a target \(t\), group \(G\), and valid pixel set
 The prior RMSE uses the same formula with the frozen prior prediction
 \(y^{\mathrm{prior}}_{i,p,t}\) in place of \(\hat{y}_{i,p,t}\). Therefore
 \texttt{model\_rmse} in the evaluation JSON is target specific: it is the RMSE
-for path loss, delay spread, or angular spread individually, not a sum of the
+for channel attenuation, delay spread, or angular spread individually, not a sum of the
 three RMSE values. The three targets are kept separate because their units are
 incompatible.
 
@@ -612,7 +612,7 @@ priors. Negative \(\Delta\) means that the model improves the prior.}
 \toprule
 Target & Model RMSE & Prior RMSE & \(\Delta\) RMSE & Model MAE & Prior MAE & \(\Delta\) MAE & Unit \\
 \midrule
-Path loss & 1.6519 & 1.9383 & -0.2865 & 0.9298 & 1.2319 & -0.3020 & dB \\
+Attenuation & 1.6519 & 1.9383 & -0.2865 & 0.9298 & 1.2319 & -0.3020 & dB \\
 Delay spread & 26.5570 & 28.1023 & -1.5453 & 7.9897 & 7.3033 & +0.6864 & ns \\
 Angular spread & 11.3854 & 13.7416 & -2.3562 & 5.0088 & 4.9890 & +0.0198 & \(^{\circ}\) \\
 \bottomrule
@@ -629,8 +629,8 @@ cities are unseen during training.}
 \toprule
 Target & Scope & Model RMSE & Prior RMSE & \(\Delta\) RMSE \\
 \midrule
-Path loss & LoS & 1.4675 & 1.7519 & -0.2844 \\
-Path loss & NLoS & 3.1482 & 3.5143 & -0.3661 \\
+Attenuation & LoS & 1.4675 & 1.7519 & -0.2844 \\
+Attenuation & NLoS & 3.1482 & 3.5143 & -0.3661 \\
 Delay spread & LoS & 25.4419 & 27.4851 & -2.0432 \\
 Delay spread & NLoS & 29.2045 & 29.6157 & -0.4112 \\
 Angular spread & LoS & 12.3510 & 15.2818 & -2.9308 \\
@@ -639,7 +639,7 @@ Angular spread & NLoS & 8.4424 & 8.6614 & -0.2191 \\
 \end{tabular}
 \end{table}
 
-Path loss is the cleanest final result because both RMSE and MAE improve over
+Channel attenuation is the cleanest final result because both RMSE and MAE improve over
 the frozen prior on unseen test cities. Overall RMSE drops from
 \SI{1.9383}{dB} to \SI{1.6519}{dB}, while MAE drops from \SI{1.2319}{dB} to
 \SI{0.9298}{dB}. The LoS and NLoS rows in
@@ -715,15 +715,15 @@ why the final test delay spread RMSE is higher than the validation
 re evaluation row, while still improving over the prior.
 
 Together, the three target sections show the main generalisation result: the
-test cities are completely unseen, and the residual model reduces RMSE for path
-loss, angular spread and delay spread simultaneously.
+test cities are completely unseen, and the residual model reduces RMSE for
+channel attenuation, angular spread and delay spread simultaneously.
 
 \section{State of the Art Context and Runtime}
 
 \subsection{Target vs final result}
 
 The selected final model clears the original numerical targets on the unseen city
-test split: \SI{1.65}{dB} path loss against the \SI{5}{dB} target,
+test split: \SI{1.65}{dB} channel attenuation against the \SI{5}{dB} target,
 \SI{26.56}{ns} delay spread against the \SI{50}{ns} target, and
 \(11.39^\circ\) angular spread against the \(20^\circ\) target. The same
 target check also holds on validation and on the all city aggregation; even
@@ -737,12 +737,12 @@ subexpert audit, the corresponding worst cases are \SI{2.45}{dB},
 The state of the art numbers cannot be used as a direct leaderboard because
 their datasets, height assumptions, city splits, and target definitions differ.
 Still, Table~\ref{tab:soa_result_comparison} places the final test result next
-to the closest available metrics from Section~\ref{sec:soa_position}. Path loss
+to the closest available metrics from Section~\ref{sec:soa_position}. Channel attenuation
 has several external dB scale references, but no external paper found here
 reports the same dense CKM city holdout contract for delay spread and angular
 spread. The table is therefore limited to path loss like external rows plus the
 final model reference row; scalar channel parameter papers are kept out of this
-results table. In the table, PL means path loss RMSE and lower RMSE is better.
+results table. In the table, PL means channel attenuation RMSE and lower RMSE is better.
 The better/worse ratios should be read cautiously because the rows use different
 data, different inputs, or different evaluation contracts. Earlier internal
 baselines are discussed in the ablation results instead of repeated here.
@@ -766,10 +766,10 @@ because those numbers are not dense CKM-style map benchmarks.}
 Reference & What it reports & Verdict for our final model & Why the verdict is limited \\
 \midrule
 RadioUNet \cite{radiounet2020} &
-\SI{1.6}{dB}--\SI{3.1}{dB} equivalent path loss RMSE in accurate map settings &
+\SI{1.6}{dB}--\SI{3.1}{dB} equivalent channel attenuation RMSE in accurate map settings &
 Our final PL RMSE lies inside the reported \SI{1.6}{dB}--\SI{3.1}{dB}
 dB scale band. &
-2D path loss maps only; no UAV height conditioning or spread targets. \\
+2D channel attenuation maps only; no UAV height conditioning or spread targets. \\
 RadioGUNet \cite{radiogunet2025} &
 \SI{1.304}{dB} DPM, \SI{1.936}{dB} IRT, and \SI{1.392}{dB} DPM with cars on
 RadioMapSeer &
@@ -886,10 +886,10 @@ spread priors and project targets.} \\
 \endgroup
 \end{table}
 
-This comparison supports a cautious interpretation. The final path loss number
+This comparison supports a cautious interpretation. The final channel attenuation number
 is not claimed to beat every published benchmark in absolute terms; PMNet's
 reported ICASSP score is lower on a different contract, and RadioGUNet is lower
-on the easiest RadioMapSeer setting. The path loss result is nevertheless in the
+on the easiest RadioMapSeer setting. The channel attenuation result is nevertheless in the
 same broad outdoor simulated-map band as RadioUNet and RadioGUNet, below the
 PathFinder unseen rural value under the approximate RM3D scaling, numerically
 well below Gao et al.'s recent corridor weighted segmentation numbers, close to
@@ -914,7 +914,7 @@ area is represented by a receiver at \SI{1.5}{m}. Two Barcelona layouts and five
 UAV heights per layout give ten full resolution CKM samples. The local MATLAB
 installation does not include Parallel Computing Toolbox, so the ray tracer was
 run on CPU with the same propagation settings as the supplied script:
-one reflection, no diffraction, \SI{7.125}{GHz}, and extraction of path loss,
+one reflection, no diffraction, \SI{7.125}{GHz}, and extraction of channel attenuation,
 delay spread, and angular spread from the ray tracing paths.
 
 The surrogate timing uses the same ten Barcelona topologies and antenna
@@ -932,7 +932,7 @@ or rendered maps.
 \caption[Full pipeline runtime and ray tracing comparison.]
 {Full pipeline runtime comparison for one \(513\times513\) Barcelona CKM sample.
 Both rows are measured on the same Ryzen~5~5600H / RTX~3050~Ti Laptop machine. The surrogate row includes geometric
-mask generation, prior computation, and prediction of path loss, delay spread,
+mask generation, prior computation, and prediction of channel attenuation, delay spread,
 and angular spread, including the default numerical \texttt{.npz} export.
 Checkpoint loading, one time CUDA warm up, and optional PNG exports are
 excluded.}
@@ -971,7 +971,7 @@ GT ray-caster with zero LoS/NLoS differences on the Barcelona samples and on
 \section{Qualitative Analysis}
 \label{sec:qualitative_analysis}
 
-The qualitative evidence supports the quantitative story without needing the full diagnostic gallery in the main body. The early path loss histograms showed NLoS mode collapse: visually plausible maps could follow the radial LoS trend while missing the blocked link tail. The selected final model removes the worst of that collapse, reduces RMSE relative to the frozen priors across the split and LoS/NLoS checks, and applies residual corrections whose sign follows the prior error maps. The complete histogram figures, split/regime bar plots, and representative inspection panel are kept in Appendix~\ref{app:qualitative_diagnostics}.
+The qualitative evidence supports the quantitative story without needing the full diagnostic gallery in the main body. The early channel attenuation histograms showed NLoS mode collapse: visually plausible maps could follow the radial LoS trend while missing the blocked link tail. The selected final model removes the worst of that collapse, reduces RMSE relative to the frozen priors across the split and LoS/NLoS checks, and applies residual corrections whose sign follows the prior error maps. The complete histogram figures, split/regime bar plots, and representative inspection panel are kept in Appendix~\ref{app:qualitative_diagnostics}.
 
 The main lesson is that LoS path loss in this dataset has a strong radial ring structure, so a calibrated two ray prior is more efficient than asking a CNN to learn the same pattern from pixels. The remaining qualitative failures are concentrated in sparse NLoS and high spread cases, which is why future spread work should include an explicit high-tail or outlier diagnostic.
 \section{Limitations}
@@ -979,7 +979,7 @@ The main lesson is that LoS path loss in this dataset has a strong radial ring s
 
 The dataset is produced by ray tracing, not by field measurements. The results
 therefore measure agreement with a simulator and not direct over the air
-deployment performance. The path loss target is stored as uint8, which imposes
+deployment performance. The channel attenuation target is stored as uint8, which imposes
 approximately \SI{1}{dB} quantization. The spread targets are also stored as
 integer maps: delay spread as uint16 in ns and angular spread as uint8 in
 degrees. A more suitable dataset for the final modelling stage would preserve
@@ -987,8 +987,8 @@ the continuous ray traced targets, for example as float32 or as documented
 scaled integers, before any display-oriented quantisation.
 This should not be confused with a quantized model output: the final residual
 GMM head model emits continuous PL/DS/AS values. In that light, the final
-path loss MAE of \SI{0.9298}{dB} on labels stored at approximately
-\SI{1}{dB} resolution is already close to the path loss label step, even
+channel attenuation MAE of \SI{0.9298}{dB} on labels stored at approximately
+\SI{1}{dB} resolution is already close to the channel attenuation label step, even
 though the RMSE remains \SI{1.6519}{dB} because it is dominated by the harder
 tail errors.
 
@@ -1003,7 +1003,7 @@ so
   \label{eq:quant_floor}
 \end{equation}
 With \(\Delta=1\) in the physical units used here, the hidden uncertainty is
-\(0.289\,\mathrm{dB}\) for path loss, \(0.289\,\mathrm{ns}\) for delay spread,
+\(0.289\,\mathrm{dB}\) for channel attenuation, \(0.289\,\mathrm{ns}\) for delay spread,
 and \(0.289^\circ\) for angular spread. This is not the dominant error in the
 reported final model, but it is an irreducible resolution limit of the
 saved labels and becomes important once residual errors approach the sub unit
@@ -1020,7 +1020,7 @@ used in this thesis.}
 \toprule
 Target & Stored type & Current integer step & Current floor \\
 \midrule
-Path loss & uint8 & \SI{1}{dB} & \SI{0.289}{dB} \\
+Attenuation & uint8 & \SI{1}{dB} & \SI{0.289}{dB} \\
 Delay spread & uint16 & \SI{1}{ns} & \SI{0.289}{ns} \\
 Angular spread & uint8 & \(1^\circ\) & \(0.289^\circ\) \\
 \bottomrule

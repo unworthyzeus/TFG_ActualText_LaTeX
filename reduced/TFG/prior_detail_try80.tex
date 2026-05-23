@@ -55,7 +55,7 @@ emits a \emph{Gaussian Mixture Model (GMM)}-parameterized residual head at each
 pixel, rather than only a direct scalar output. For each task \(k \in \{\mathrm{PL},\, \mathrm{DS},\, \mathrm{AS}\}\),
 region \(r\in\{\mathrm{LoS},\mathrm{NLoS}\}\), component
 \(j\in\{1,2,3\}\), and valid pixel \(x\), the model predicts a mixture
-weight, a mean and a standard deviation. Path loss is modeled in native dB
+weight, a mean and a standard deviation. Channel attenuation is modeled in native dB
 space, while delay spread and angular spread are modeled in transformed
 \(\log(1+y)\) space inside the probabilistic head and converted back to
 native units for deterministic metrics.

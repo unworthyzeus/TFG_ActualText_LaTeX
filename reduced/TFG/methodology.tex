@@ -8,13 +8,13 @@ fastest defensible path: fix the evaluation contract, use the early neural
 models as diagnostics, identify the target distributions, calibrate frozen
 priors, and train a bounded residual model around those priors. The emphasis is
 on decisions that affect reproducibility: masking, splitting, conditioning, and
-the distinction between raw deep prediction and prior-anchored residual
+the distinction between raw deep prediction and prior anchored residual
 prediction.
 
 \section{Dataset and split}
 
 Each sample is a complete $513\times513$ pixel CKM. The spatial resolution is
-\SI{1}{m}\(\times\)\SI{1}{m} per-pixel, so each map covers a
+\SI{1}{m}\(\times\)\SI{1}{m} per pixel, so each map covers a
 \SI{513}{m}\(\times\)\SI{513}{m} square. The UAV transmitter is horizontally
 fixed at the centre of the map, while its antenna height \(h_{\mathrm{tx}}\)
 varies from sample to sample and is treated as a primary conditioning variable.
@@ -23,7 +23,7 @@ Every non-building pixel is an active receiver location, with the receiver anten
 excluded from the training loss and reported metrics rather than being counted
 as easy background pixels. The model never receives a random crop as an
 independent training city. Instead, the split is performed at city level. For
-the distribution-first and final neural models the split uses
+the distribution first and final neural models the split uses
 \texttt{split\_seed = 42}, with 15\% validation and 15\% test samples after
 city assignment. This avoids the most common optimistic error in spatial radio
 prediction: training on one part of a city and testing on another visually
@@ -102,11 +102,11 @@ examples, so their lower RMSE later in the thesis is evidence that those cases
 are physically easier, not that they are better represented in the training
 set.
 
-The prior artifacts use the same city-holdout contract as the final model:
+The prior artifacts use the same city holdout contract as the final model:
 \texttt{val\_ratio = 0.15}, \texttt{test\_ratio = 0.15}, and
-\texttt{split\_seed = 42}. The path-loss prior and the spread priors are
+\texttt{split\_seed = 42}. The path loss prior and the spread priors are
 fitted on the 10840 training samples. Standalone prior audits can then use
-the full held-out validation+test pool of 5340 samples, while final
+the full held out validation+test pool of 5340 samples, while final
 model-versus-prior comparisons use the 2590-sample final test split. This keeps
 training cities, validation cities, and final test cities separated throughout
 the prior and residual-model evaluations.
@@ -114,7 +114,7 @@ the prior and residual-model evaluations.
 \begin{table}[ht]
 \centering
 \scriptsize
-\caption{City-holdout assignment used by the distribution-first and final neural models.}
+\caption{City holdout assignment used by the distribution first and final neural models.}
 \label{tab:split_city_assignment}
 \begin{tabularx}{\textwidth}{lrrX}
 \toprule
@@ -179,9 +179,9 @@ With the evaluation contract fixed, the methodology used for the final thesis
 version is deliberately short. First, the CKM split and receiver mask are frozen
 so that all reported results use unseen cities and valid ground receivers only.
 Second, the target distributions are inspected before selecting the output
-model: path loss is separated into LoS and NLoS regimes, while delay spread and
+model: channel attenuation is separated into LoS and NLoS regimes, while delay spread and
 angular spread are treated as right-skewed, tail-sensitive quantities. Third,
-train-only priors are calibrated for the three targets. Finally,
+train only priors are calibrated for the three targets. Finally,
 \textsc{HARP-Net CKM} learns only bounded residual corrections around those
 frozen priors.
 
@@ -200,14 +200,14 @@ Building height map and UAV transmitter height \(h_{\mathrm{tx}}\). \\
 Internally computed support maps &
 LoS/NLoS visibility mask and building/ground receiver mask. \\
 Frozen prior outputs &
-Combined path-loss prior, path loss LoS prior, path loss NLoS prior,
-delay-spread prior, angular-spread prior. \\
+Combined path loss prior, path loss LoS prior, path loss NLoS prior,
+delay spread prior, angular spread prior. \\
 Inputs to \textsc{HARP-Net CKM} &
 Building height map, UAV height conditioning, ground-mask, LoS mask, NLoS mask,
-combined path-loss prior, path loss LoS prior, path loss NLoS prior,
-delay-spread prior, angular-spread prior. \\
+combined path loss prior, path loss LoS prior, path loss NLoS prior,
+delay spread prior, angular spread prior. \\
 Final outputs &
-Path loss map, delay-spread map, angular-spread map. \\
+Channel attenuation map, delay spread map, angular spread map. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -220,18 +220,18 @@ distinction between the deployable framework and the internal neural model: the
 user provides only a city height map and the UAV height, while the pipeline
 constructs the remaining maps before inference.
 
-The earlier U-Net, cGAN, PMNet, PMHHNet, and distribution-first experiments are
+The earlier U-Net, cGAN, PMNet, PMHHNet, and distribution first experiments are
 not part of the main method. They are retained in Appendix~A as development
 evidence because they explain why the thesis stopped expanding generic
-backbones and instead moved toward prior-anchored residual learning. Their
+backbones and instead moved toward prior anchored residual learning. Their
 practical lessons are folded into the final pipeline as constraints: no
 building pixel credit, no random city leakage, explicit UAV height
-conditioning, separate treatment of LoS/NLoS regimes, and distribution-aware
+conditioning, separate treatment of LoS/NLoS regimes, and distribution aware
 residual heads when the target is multi-modal or heavy-tailed.
 
 The rest of this chapter therefore describes the final method rather than the
 chronological path used to discover it. Section~\ref{sec:priors_overview}
-summarises the frozen path loss, delay spread, and angular-spread priors;
+summarises the frozen attenuation and spread priors;
 Sections~\ref{sec:try78_detail} and~\ref{sec:try79_detail} give their
 mathematical construction; and Section~\ref{sec:try80_detail} describes the
 joint residual network trained on top of them.
@@ -242,7 +242,7 @@ joint residual network trained on top of them.
 The middle development phase moved from direct map prediction to residual learning, as
 formulated in Eq.~\ref{eq:prior_residual}. This phase was heavily influenced by
 the \texttt{PMNet} architecture \cite{pmnet2023}, which established the
-viability of using U-Net-like backbones for path-loss map prediction in
+viability of using U-Net style backbones for channel attenuation map prediction in
 terrestrial cellular networks.
 \begin{equation}
   \hat{\textbf{Y}}
@@ -313,22 +313,22 @@ propagation law in NLoS regions.
 
 \begin{quote}
 \textit{Legacy of PMHHNet:} While the full architecture was eventually superseded
-by the final prior-anchored GMM approach, its core components, the
+by the final prior anchored GMM approach, its core components, the
 HF stem and sinusoidal FiLM, remain highly effective for point-prediction
 tasks or real-time implementations where the distributional complexity of a GMM
 is not required.
 \end{quote}
 
-\section{Distribution-first modelling}
+\section{Distribution first modelling}
 \label{sec:dist_first}
 
-The decisive late-stage diagnosis was that NLoS path loss was not merely a
+The decisive late-stage diagnosis was that NLoS channel attenuation was not merely a
 harder regression target; it possessed a fundamentally different error
 distribution.  This diagnosis came from comparing predicted and ground-truth
 histograms: the maps showed where the model was wrong, but the histograms
 showed \emph{what} the model had misunderstood.  The central idea of the late
 pipeline was therefore to identify the target distribution before asking a
-network to perform pixel-by-pixel prediction. The distribution-first path loss
+network to perform pixel by pixel prediction. The distribution first channel attenuation
 model addressed this by
 emitting a Gaussian Mixture Model (GMM)-parameterized residual head rather than
 only a direct scalar map.
@@ -371,10 +371,10 @@ only a direct scalar map.
 \end{pgfonlayer}
 \node[lbl] at (inp_box.north west) {Inputs and routing};
 
-%% Stage A: GMM-head (right)
+%% Stage A: GMM head (right)
 \node[sa, below=1.2cm of exp]       (enc)  {Encoder with FiLM(height)};
 \node[sa, below=0.4cm of enc]       (gap)  {Global average pooling};
-\node[sa, below=0.4cm of gap]       (gmm)  {GMM-head};
+\node[sa, below=0.4cm of gap]       (gmm)  {GMM head};
 \node[sa, below=0.4cm of gmm]       (outa) {$\pi_k,\,\mu_k,\,\sigma_k$};
 
 \draw[->] (exp) -- (enc);
@@ -390,7 +390,7 @@ only a direct scalar map.
 %% Stage B: map head (left of Stage A)
 \node[sb, left=1.6cm of enc, yshift=-0.4cm]  (dec)  {U-Net decoder};
 \node[sb, below=0.4cm of dec]                 (cond) {Condition on height +\\GMM summary};
-\node[sb, below=0.4cm of cond]                (pix)  {Per-pixel $p_k,\,z_k,\,\log\sigma_k$};
+\node[sb, below=0.4cm of cond]                (pix)  {Per pixel $p_k,\,z_k,\,\log\sigma_k$};
 \node[sb, below=0.4cm of pix]                 (yhat) {$\hat{y}=\sum p_k(\mu_k+z_k\sigma_k)$};
 
 \draw[->] (dec)  -- (cond);
@@ -423,26 +423,26 @@ only a direct scalar map.
 
 \end{tikzpicture}%
 }
-\caption[Distribution-first path loss system. Stage A learns global GMM
-parameters from pooled features and Stage B predicts per-pixel assignments.]%
-{Distribution-first path loss system. Stage~A learns global
+\caption[Distribution first channel attenuation system. Stage A learns global GMM
+parameters from pooled features and Stage B predicts per pixel assignments.]%
+{Distribution first channel attenuation system. Stage~A learns global
 GMM parameters $(\pi_k,\mu_k,\sigma_k)$ from pooled features conditioned on
-UAV height; Stage~B produces per-pixel soft assignments and
+UAV height; Stage~B produces per pixel soft assignments and
 within-component offsets anchored to those parameters.}
 \label{fig:try76_system}
 \end{figure}
 
-The distribution-first spread model applied the same two-stage idea to delay
+The distribution first spread model applied the same two stage idea to delay
 spread and angular spread, but changed the mixture shape to match the targets:
 a near-zero LoS spike plus a heavy NLoS tail. The architecture is therefore not
 redrawn as a second full diagram; it follows the same routing and Stage-A /
-Stage-B structure as Figure~\ref{fig:try76_system}, with the path loss LoS/NLoS
-experts replaced by delay-spread and angular-spread experts.
+Stage-B structure as Figure~\ref{fig:try76_system}, with the channel attenuation LoS/NLoS
+experts replaced by delay spread and angular spread experts.
 
-For path loss, the distribution-first model utilized 12 specialized experts: six topology classes partitioned by LoS
+For channel attenuation, the distribution first model utilized 12 specialized experts: six topology classes partitioned by LoS
 and NLoS regions. As shown in Figure~\ref{fig:try76_system}, Stage A acts as a distribution head, predicting the global GMM parameters
 $(\pi_k,\mu_k,\sigma_k)$ from map features and altitude conditioning.
-Stage B then decodes these priors spatially, predicting per-pixel soft component assignments and within-component
+Stage B then decodes these priors spatially, predicting per pixel soft component assignments and within-component
 offsets. The final map reconstruction can be written as:
 \begin{equation}
   \hat y(i,j)
@@ -452,7 +452,7 @@ offsets. The final map reconstruction can be written as:
   \label{eq:gmm_reconstruction}
 \end{equation}
 
-The spread counterpart extended this distribution-first philosophy to delay spread and angular spread. These targets
+The spread counterpart extended this distribution first philosophy to delay spread and angular spread. These targets
 are not cleanly Gaussian; their empirical distributions resemble a near-zero spike (representing the LoS direct path) combined with a
 heavy tail (representing NLoS scattering). Standard Mean Squared Error (MSE) objectives tend to underrepresent these rare
 but physically significant heavy-tail spread values, necessitating a dedicated mixture head.
@@ -463,42 +463,42 @@ but physically significant heavy-tail spread values, necessitating a dedicated m
 The main lesson from the deep-learning experiments is that architecture is
 secondary to the question: \emph{what statistical object is the network being
 asked to predict?} If the project were restarted with the final evidence
-available, the first step would be to define the city-holdout, ground-only
+available, the first step would be to define the city holdout, ground-only
 metric contract; the second would be to inspect the target distributions; and
 only then would the backbone, loss, prior, and routing design be chosen. The
 project did not discover this in one step. It moved from direct image
 translation, to residual learning over physical estimates, to topology experts,
-to distribution-first heads, and finally to frozen priors plus bounded neural
+to distribution first heads, and finally to frozen priors plus bounded neural
 residuals.
 
 This evolution reframes the role of priors. Midway through the project, the
 best models were residual-over-prior systems, which made the prior appear to be
-the essential ingredient. The distribution-first path-loss model changed that
-interpretation. It used no COST-231 prior, no enhanced two-ray prior, no
+the essential ingredient. The distribution first channel attenuation model changed that
+interpretation. It used no COST-231 prior, no enhanced two ray prior, no
 knife-edge channel, and no residual-over-prior decomposition, yet it reached
 NLoS results close to the final prior family by modelling the NLoS marginal
 directly. Therefore, the prior is useful but not magic: it is not external
 knowledge that solves the task by itself. It is a stable and auditable estimator
-of large-scale structure, especially when that structure is simpler to fit than
+of large scale structure, especially when that structure is simpler to fit than
 to relearn with a high-capacity network.
 
 The final pipeline reintroduces priors without contradicting the
-distribution-first lesson. The histogram diagnosis showed that the PMHHNet
+distribution first lesson. The histogram diagnosis showed that the PMHHNet
 family was failing because the output distribution was wrong, not simply
 because one more physical channel was missing. The first response was therefore
-to fix the deep-learning side and prove that NLoS path loss can be modelled
+to fix the deep-learning side and prove that NLoS channel attenuation can be modelled
 without a prior when the head represents the target distribution. Once that was
 clear, the question became practical: which parts of the prediction are
 cheapest, most stable, and easiest to audit? For LoS path loss, a calibrated
-two-ray/radial model is more efficient than asking a CNN to relearn the same
-ring structure. For blocked NLoS path loss and the spread targets, the neural
+two ray/radial model is more efficient than asking a CNN to relearn the same
+ring structure. For blocked NLoS channel attenuation and the spread targets, the neural
 model is still valuable because the problem is no longer just estimating a
 smooth mean; it is placing local residuals and rare tails in the right parts of
 the map.
 
-Path loss also cannot be treated as one homogeneous target. LoS is not only the
+Channel attenuation also cannot be treated as one homogeneous target. LoS is not only the
 easy subset: it contains a deterministic spatial law driven by distance,
-height, and coherent two-ray structure. A convolutional network can learn a
+height, and coherent two ray structure. A convolutional network can learn a
 smooth radial trend from distance and topology channels, but it does not
 naturally learn the calibrated ring pattern if the objective rewards only the
 average pixel error. NLoS is different. In valid CKM ground pixels its marginal
@@ -526,7 +526,7 @@ The resulting rule set is compact but chronological. First, identify whether
 the target is smooth, narrow, multi-modal, spike-plus-tail, or heavy-tailed
 before choosing MSE, Huber, GMM, NLL, or residual losses. Second, treat LoS and
 NLoS as semantic regimes, not only as reporting columns. Third, keep masks,
-units, city-holdout, topology class, antenna height, and tail-risk policy
+units, city holdout, topology class, antenna height, and tail-risk policy
 visible during validation. Finally, use visual realism only as a qualitative
 check: cGAN sharpness and larger PMNet/PMHHNet-style backbones did not solve
 the physical RMSE problem until the target distribution itself was represented.
@@ -534,7 +534,7 @@ the physical RMSE problem until the target distribution itself was represented.
 \section{GMM component count and distribution choice}
 \label{sec:gmm_k_choice}
 
-The Stage-A distribution heads in the distribution-first models
+The Stage-A distribution heads in the distribution first models
 represent each per-sample target marginal as a parametric family. Choosing
 the family and its number of components $K$ is not a free hyperparameter; it
 is constrained by the empirical shape of the CKM histograms. A dedicated
@@ -562,11 +562,11 @@ KL-ranking study.}
 \toprule
 Target & Best family & Shape notes \\
 \midrule
-Path loss, LoS   & GMM-4 & Single dominant mode near \SI{97}{dB} with a mild
+Channel attenuation, LoS   & GMM-4 & Single dominant mode near \SI{97}{dB} with a mild
                               low-tail; GMM-4 wins on the raw target
                               histogram, but a Gaussian is already
                               competitive. \\
-Path loss, NLoS  & GMM-5 & Narrow peak near \SI{107}{dB} plus a secondary
+Channel attenuation, NLoS  & GMM-5 & Narrow peak near \SI{107}{dB} plus a secondary
                               low-variance mode; a single Gaussian is too
                               wide. \\
 Delay spread     & GMM-5 & Near-zero spike plus a long exponential tail;
@@ -580,22 +580,22 @@ Angular spread   & spike-plus-exp. & Dirac-like spike near 0\textdegree{} plus
 \end{table}
 
 Three consequences follow. First, a single Gaussian (or any unimodal head) is
-never the best family for NLoS path loss or for the two spreads. This is
+never the best family for NLoS channel attenuation or for the two spreads. This is
 exactly the regime in which the earlier PMHHNet family produced mode-collapse
 with a single-output MSE head. Second, the number of components that wins is
-consistently $K\in\{4, 5\}$ for the raw path loss and spread targets, not
+consistently $K\in\{4, 5\}$ for the raw channel attenuation and spread targets, not
 $K=3$. The Stage-A heads in this thesis therefore use $K=5$ by default on
-the target-distribution experts, even though the code supports
+the target distribution experts, even though the code supports
 $K\in\{2,\dots,5\}$. The final \texttt{num\_components} field
 configuration (\(K=3\)) controls a different quantity: the shared backbone's
 residual distribution head after the frozen priors have already
-explained the main LoS, NLoS, delay-spread, and angular-spread structure. In
+explained the main LoS, NLoS, delay spread, and angular spread structure. In
 that residual space, three modes are sufficient to model negative correction,
 near-zero correction, and positive correction, while avoiding a larger mixture
-that would be harder to stabilize during the final multi-task training. Third, the
-angular-spread target is better served by a native spike-plus-exponential
+that would be harder to stabilize during the final multi task training. Third, the
+angular spread target is better served by a native spike-plus-exponential
 head than by a GMM, because its marginal is effectively degenerate at
-\ang{0}; this is implemented directly in the distribution-first angular-spread
+\ang{0}; this is implemented directly in the distribution first angular spread
 experts.
 
 \section{Loss functions of the final pipeline}
@@ -632,7 +632,7 @@ All sums are restricted to valid receiver pixels.
 
 \begin{table}[!htbp]
 \centering
-\caption{Active loss settings in the final residual GMM-head model stages.}
+\caption{Active loss settings in the final residual GMM head model stages.}
 \label{tab:try80_loss_settings}
 \scriptsize
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.22\textwidth}
@@ -640,27 +640,27 @@ All sums are restricted to valid receiver pixels.
 >{\raggedright\arraybackslash}p{0.19\textwidth}
 >{\raggedright\arraybackslash}X}
 \toprule
-Term group & Large-capacity residual stage & Final residual fine-tuning stage & Interpretation \\
+Term group & Large-capacity residual stage & Final residual fine tuning stage & Interpretation \\
 \midrule
 NLL, KL, moment and outlier-budget &
 1.00 / 0.25 / 0.10 / 0.02 &
 0 / 0 / 0 / 0 &
 Active in the preceding large-capacity stage, then disabled in the selected
-deterministic fine-tuning stage. \\
+deterministic fine tuning stage. \\
 RMSE / MAE &
 1.50 / 0.10 &
 1.00 / 0.05 &
-Supervised pixel losses in native output units; the final fine-tuning stage
+Supervised pixel losses in native output units; the final fine tuning stage
 makes them the dominant active terms. \\
 Anchor / prior guard &
 0.05 / 0.10 &
 0.01 / 0.02 &
 Keep residual corrections small and penalize model states that become worse
-than the frozen priors, with lighter regularization in the fine-tuning stage. \\
+than the frozen priors, with lighter regularization in the fine tuning stage. \\
 Task weights &
 PL 1.00, DS 1.00, AS 1.00 &
 PL 1.00, DS 0.25, AS 0.25 &
-Equal target weighting before the final fine-tuning stage; then path loss
+Equal target weighting before the final fine tuning stage; then channel attenuation
 becomes the main optimization target while spread supervision remains in the
 joint model. \\
 \bottomrule
@@ -669,16 +669,16 @@ joint model. \\
 
 This is a deliberate simplification relative to the earlier branches. The
 PMHHNet diagnostic runs used masked MSE with multi scale and Laplacian-style auxiliaries; the
-distribution-first models removed those structural losses and focused on target
-shape. The final model keeps the residual GMM-head machinery available: it
+distribution first models removed those structural losses and focused on target
+shape. The final model keeps the residual GMM head machinery available: it
 still emits mixture parameters and uses the local-weighted model-space mixture
 mean as the deterministic point prediction; for delay and angular spread this
 mean is computed in \(\log(1+y)\) space and inverse-transformed before native
 RMSE/MAE are reported. The probabilistic NLL, KL, moment and outlier
 terms were active in the preceding large-capacity training stage, but the
 selected final model is chosen after a deterministic RMSE/MAE-dominant
-fine-tuning stage because the frozen priors already explain the main
-large-scale structure. Consequently, the final claim is an RMSE improvement
+fine tuning stage because the frozen priors already explain the main
+large scale structure. Consequently, the final claim is an RMSE improvement
 over the frozen priors, not a calibrated probabilistic prediction claim.
 Checkpoint selection in this final stage uses the validation composite
 \(\mathrm{PL}_{\mathrm{RMSE}}+0.30\,\mathrm{DS}_{\mathrm{RMSE}}
@@ -689,8 +689,8 @@ Checkpoint selection in this final stage uses the validation composite
 \label{sec:hyperparams}
 
 Table~\ref{tab:hyperparams} summarises the training configuration of the
-final prior-anchored pipeline. The values for the distribution-first predecessors
-and the final residual GMM-head model are reported as methodological settings
+final prior anchored pipeline. The values for the distribution first predecessors
+and the final residual GMM head model are reported as methodological settings
 rather than as file-path artifacts. Older runs are reported more compactly
 because the final thesis line inherits only the architectural lessons from
 them, not the training stack.
@@ -708,7 +708,7 @@ and gradient accumulation over 8 steps.}
                             >{\raggedright\arraybackslash}X
                             >{\raggedright\arraybackslash}X}
 \toprule
-Config & Distribution-first experts & Final joint GMM & PMHHNet diagnostics \\
+Config & Distribution first experts & Final joint GMM & PMHHNet diagnostics \\
 \midrule
 Input channels   & topology, LoS, NLoS, ground-mask (4 + scalar height) & topology + frozen priors + masks (9) & topology, LoS, distance, formula prior, knife-edge (5 to 6) \\
 Optimizer        & AdamW ($\beta_1{=}0.9, \beta_2{=}0.999$) & AdamW & AdamW \\
@@ -717,7 +717,7 @@ Weight decay     & 0.01 & 0.01 & 0.015 to 0.030 \\
 Batch size       & 1 & 1 & 1 \\
 Grad accumulation & 8 & 8 & 16 (68) / 8 (69) \\
 Warmup epochs    & 2 & 1 & 2 to 5 \\
-Epochs           & 120 & 40 fine-tune epochs & 80 \\
+Epochs           & 120 & 40 fine tune epochs & 80 \\
 Scheduler        & ReduceLROnPlateau, patience 15 & cosine \texttt{LambdaLR} after warmup & ReduceLROnPlateau (post-April~2025 patch) \\
 SWA              & Off & Off & On, start fraction 0.60 \\
 Label noise      & Off & Off & On, $\sigma_{\mathrm{dB}}=0.5$ \\
@@ -731,48 +731,48 @@ GMM components $K$ & 5 (Stage A, path/delay), spike+exp (angular) & 3 (residual 
 \end{table}
 
 Two patterns deserve emphasis. First, the move from PMHHNet diagnostics to the
-distribution-first and final prior-anchored stages is a simplification, not a
+distribution first and final prior anchored stages is a simplification, not a
 complication: SWA, EMA, CutMix, label noise and the older auxiliary
-stabilisation tricks are removed. The distribution-first experts use AdamW with
+stabilisation tricks are removed. The distribution first experts use AdamW with
 ReduceLROnPlateau, whereas the final joint GMM uses AdamW with the
 warmup-plus-cosine \texttt{LambdaLR} schedule implemented in the final
-training script. This is consistent with the distribution-first
+training script. This is consistent with the distribution first
 philosophy: once the output head and target distribution are correct, the
 classical training-stabilisation tricks become unnecessary.
-Second, the final model uses a smaller learning rate than the distribution-first experts
-(\num{5e-5} vs \num{3e-4}) because it is fine-tuning a residual head whose
+Second, the final model uses a smaller learning rate than the distribution first experts
+(\num{5e-5} vs \num{3e-4}) because it is fine tuning a residual head whose
 inputs already include the strong frozen priors; pushing the learning
 rate higher pulls the residual head away from the anchors faster than
 \texttt{prior\_guard} can catch it.
 
-\section{Final residual GMM-head model training progression}
+\section{Final residual GMM head model training progression}
 \label{sec:try80_training_progression}
 
-The final residual GMM-head model was not obtained in a single run. Training began with
-the joint prior-anchored residual design, but the first complete runs produced
+The final residual GMM head model was not obtained in a single run. Training began with
+the joint prior anchored residual design, but the first complete runs produced
 only small improvements over the frozen priors. As a diagnostic,
 this showed that the priors were already strong, but also that the residual
 model was initially too constrained to correct the remaining errors, especially
-for path loss.
+for channel attenuation.
 
 The training path then followed four stages:
 
 \begin{enumerate}
-\item \textbf{Wide residual model.} The first full version used a shared multi-task
+\item \textbf{Wide residual model.} The first full version used a shared multi task
 U-Net with \(96\) base channels and a \(128\)-dimensional FiLM condition
-vector. Its residual caps were conservative, especially for path loss
+vector. Its residual caps were conservative, especially for channel attenuation
 (\(\pm2\) dB in LoS and \(\pm4\) dB in NLoS), and the objective retained the
 complete probabilistic bundle: GMM likelihood, distribution matching,
 prior anchoring, prior guard, RMSE, and MAE. This stage mainly tested whether
 a residual network could improve the frozen priors without degrading them. The
-multi-task sharing was deliberately placed in the encoder-decoder representation;
+multi task sharing was deliberately placed in the encoder-decoder representation;
 the PL, DS and AS residual heads remained task-specific.
 
 \item \textbf{Wide residual model with relaxed residual bounds.} The second stage kept the same
 network capacity but loosened the allowed correction range. In the selected
-fine-tuned configuration, the path loss caps are \(\pm7\) dB in LoS and
-\(\pm25\) dB in NLoS, the delay-spread caps are \(\pm20\) ns in both regimes,
-and the angular-spread caps are \(\pm17^\circ\) in LoS and \(\pm15^\circ\) in
+fine tuned configuration, the attenuation caps are \(\pm7\) dB in LoS and
+\(\pm25\) dB in NLoS, the delay spread caps are \(\pm20\) ns in both regimes,
+and the angular spread caps are \(\pm17^\circ\) in LoS and \(\pm15^\circ\) in
 NLoS. This made the residual head less constrained and produced a
 clearer, but still limited, improvement.
 
@@ -781,21 +781,21 @@ capacity to \(128\) base channels and a \(160\)-dimensional conditioning
 vector, while keeping the relaxed residual philosophy. It also placed more
 weight on the deterministic RMSE term. This stage tested whether the remaining
 gap was capacity-limited rather than only cap-limited. The larger model helped
-the spread tasks, but path loss improvement remained too small while the full
+the spread tasks, but channel attenuation improvement remained too small while the full
 probabilistic objective was still active.
 
-\item \textbf{Final residual fine-tuning stage.} The final stage kept the
+\item \textbf{Final residual fine tuning stage.} The final stage kept the
 large-capacity architecture and relaxed caps, lowered the learning rate, and
-changed the objective into a short RMSE-dominant fine-tuning stage. The
+changed the objective into a short RMSE-dominant fine tuning stage. The
 probabilistic terms were disabled, the prior guard and anchor were kept only
-as light stabilizers, and path loss received the strongest task weight. This
+as light stabilizers, and channel attenuation received the strongest task weight. This
 selected final model is used for the reported final results: the GMM structure
 remains the residual output head, but model selection is driven by
 deterministic validation performance.
 \end{enumerate}
 
 For this reason, the methodology does not treat training curves themselves as
-evidence for the final claim. The relevant evidence is the same city-holdout
+evidence for the final claim. The relevant evidence is the same city holdout
 validation and test evaluation used throughout the thesis, reported in
 Chapter~\ref{chap:results}. Training curves were used only as diagnostics for
 deciding which stage should be continued or replaced.
@@ -814,15 +814,15 @@ deciding which stage should be continued or replaced.
 \subsection*{Reader map}
 
 This section is intentionally detailed because it is the mathematical
-core of the final path-loss result. A reader only interested in the modelling
+core of the final channel attenuation result. A reader only interested in the modelling
 logic can follow it in four passes. First, the LoS branch starts from FSPL and
-adds an enhanced two-ray field-sum, which explains the radial ring structure
+adds an enhanced two ray field-sum, which explains the radial ring structure
 observed in the CKM maps. Second, the NLoS branch uses a calibrated
 regime wise model over topology and obstruction features, because a LoS shaped
 formula cannot explain blocked streets by itself. Third, both branches are
 fitted only on the training split and then evaluated with the same
 pixel-weighted ground-mask RMSE used elsewhere in the thesis. Finally, the
-prior output becomes the frozen path loss anchor consumed by the final residual GMM-head model.
+prior output becomes the frozen attenuation anchor consumed by the final residual GMM head model.
 
 The corresponding quantitative audit is reported in Chapter~\ref{chap:results};
 this methodology section focuses on how the prior is constructed and why its
@@ -834,7 +834,7 @@ output is frozen before residual learning.
 \label{sec:try79_detail}
 
 Angular spread uses the shared spread prior described below. Its final
-prediction is the frozen angular-spread prior plus the bounded residual
+prediction is the frozen angular spread prior plus the bounded residual
 correction predicted by \textsc{HARP-Net CKM}. The target is reported in
 degrees and is evaluated only on valid ground receiver pixels.
 

@@ -36,25 +36,25 @@ Bias toward represented city morphologies and risk of overclaiming simulated res
 \subsection{Environmental impact}
 
 \textbf{Development of BT.} The main environmental cost of the academic
-work was electricity for computation. The final residual GMM-head model line used four RTX~2080
+work was electricity for computation. The final residual GMM head model line used four RTX~2080
 Ti GPUs for approximately \SI{12}{h}, consuming about \SI{18}{kWh}.
-The 12-expert distribution-first training also used the
+The 12-expert distribution first training also used the
 same four-GPU node, adding roughly \SI{18}{h} of GPU time and about
-\SI{27}{kWh}. The ML-calibrated priors are lighter than the residual GMM-head
+\SI{27}{kWh}. The ML-calibrated priors are lighter than the residual GMM head
 training, but they are not free: their calibration and evaluation still take
 several hours, either on a single GPU/DirectML workstation or on CPU. The
 ``distribution/prior phase'' in Table~\ref{tab:sustainability_budget} therefore
-includes both the distribution-first GMM work and the hours spent calibrating
+includes both the distribution first GMM work and the hours spent calibrating
 and validating the priors, while the main carbon cost still comes from the
 deep-learning stages. The complete exploratory project exceeded
 \SI{400}{GPU-h}; at the same approximation of \SI{1.5}{kW} per four-GPU node,
 this corresponds to roughly \SI{150}{kWh} and approximately
 \SI{30}{kgCO2e} at an illustrative factor of 0.2~kgCO2e/kWh (a rough
 order-of-magnitude based on public grid-mix references for Spain in~2024).
-This exploratory footprint is a one-time research overhead, not the marginal
+This exploratory footprint is a one time research overhead, not the marginal
 cost of using the final system in deployment.
 
-Several decisions reduced avoidable impact: using city-holdout validation
+Several decisions reduced avoidable impact: using city holdout validation
 instead of repeated full retraining for every diagnostic, reusing calibration
 artifacts from the calibrated priors in the final model, plotting from saved histories, and
 keeping final priors frozen rather than recomputing them blindly in every
@@ -66,15 +66,15 @@ still needed to generate reliable training data and to validate new regimes,
 but that cost is concentrated in dataset creation and periodic recalibration
 rather than in every planning query. For the simulated FR3 UAV setting studied
 in this thesis, centred on \SI{7.125}{GHz}, the surrogate can generalise across
-the held-out cities without launching a new ray-tracing run for each UAV height
+the held out cities without launching a new ray-tracing run for each UAV height
 or urban map.
 The surrogate can also be used for fast what-if analyses during planning:
 it is not a replacement for ray tracing in every scenario, but it can evaluate
 many UAV heights or urban alternatives at much lower marginal energy cost.
 The runtime measurements in Chapter~\ref{chap:results} make this concrete for
-the present dataset scale. On the Barcelona benchmark, pixel-level MATLAB ray
+the present dataset scale. On the Barcelona benchmark, pixel level MATLAB ray
 tracing took \SI{99.89}{s} per full-resolution CKM sample, while the complete
-final prior-anchored generator took \SI{0.88}{s} per sample under the same
+final prior anchored generator took \SI{0.88}{s} per sample under the same
 benchmark contract.
 Extrapolated to 16{,}180 samples, this is \SI{448.96}{h} for ray tracing versus
 \SI{3.95}{h} for the surrogate. Under the simple same-laptop full-load
@@ -115,8 +115,8 @@ Dataset and baseline implementation & 90\,h        & 12\,EUR/h        & 1\,080\,
 Experiment design and debugging    & 180\,h        & 12\,EUR/h        & 2\,160\,EUR & Priors, experts, evaluation \\
 Writing and figures                & 120\,h        & 12\,EUR/h        & 1\,440\,EUR & Thesis text and diagrams \\
 Supervision meetings and supervisors' time for dataset generation from simulation & 50\,h         & 40\,EUR/h        & 2\,000\,EUR & Advisor time \\
-GPU compute, final residual GMM-head model    & 48\,GPU-h     & 0.25\,EUR/GPU-h  &    12\,EUR  & 4$\times$ RTX\,2080\,Ti, 12\,h \\
-GPU compute, distribution/prior phase & 72\,GPU-h  & 0.25\,EUR/GPU-h  &    18\,EUR  & Distribution-first GMM plus ML-prior calibration \\
+GPU compute, final residual GMM head model    & 48\,GPU-h     & 0.25\,EUR/GPU-h  &    12\,EUR  & 4$\times$ RTX\,2080\,Ti, 12\,h \\
+GPU compute, distribution/prior phase & 72\,GPU-h  & 0.25\,EUR/GPU-h  &    18\,EUR  & Distribution first GMM plus ML-prior calibration \\
 Exploratory compute                & $\approx$400\,GPU-h & 0.25\,EUR/GPU-h & $\approx$100\,EUR & Research iterations \\
 Electricity                        & N/A           & incl.\ in GPU-h  &     0\,EUR  & Covered by GPU rental rate \\
 Storage and code hosting           & N/A           & free             &     0\,EUR  & GitHub \\
@@ -162,7 +162,7 @@ quality indicator.
 
 \section{Ethical implications}
 
-The work addresses the need for faster and more transparent radio-map
+The work addresses the need for faster and more transparent radio map
 prediction in UAV-enabled networks. That need was initially defined by the
 project proposal and refined through experiment results: pure deep learning was
 not enough, so the final method keeps interpretable priors and reports
@@ -170,8 +170,8 @@ regime-level errors.
 
 The main ethical obligation is honesty about validity. The dataset is simulated
 through ray tracing, so the thesis must not claim real-world deployment
-performance without field measurements. The final residual GMM-head model results are reported
-from a single selected model state on the city-holdout protocol, so the relevant
+performance without field measurements. The final residual GMM head model results are reported
+from a single selected model state on the city holdout protocol, so the relevant
 caveat is no longer incompleteness but scope: the results show simulator-level
 generalisation to unseen cities, not certified real-world deployment
 performance.
@@ -190,7 +190,7 @@ The thesis is most closely aligned with:
   \item \textbf{SDG 9: Industry, Innovation and Infrastructure.} The project
   develops a method for faster planning and evaluation of wireless
   infrastructure.
-  \item \textbf{SDG 11: Sustainable Cities and Communities.} Better radio-map
+  \item \textbf{SDG 11: Sustainable Cities and Communities.} Better radio map
   prediction can support temporary and resilient urban connectivity while
   reducing the resources needed to evaluate alternative wireless-infrastructure
   plans.
