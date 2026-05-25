@@ -589,9 +589,19 @@ calibration:
 The path loss prior is therefore not one formula with a small correction. It
 is two different calibrated feature extractors. The LoS side calibrates
 height binned two ray amplitude/phase, height bias, and radial residual curves.
-The NLoS side adds height-, building topology-, and density dependent
-calibration, using the raw blocked link prior as only one feature in a 15-term
-morphology vector:
+The NLoS side adds calibration terms for height, building topology, and
+density. This feature choice follows the same modelling instinct as COST 231
+Walfisch Ikegami: NLoS urban loss should depend on the surrounding built form,
+not only on range and frequency \cite{cost231}. The Walfisch Bertoni component
+treats rows of buildings as repeated diffraction screens \cite{walfisch1988}.
+The Ikegami street level component motivates descriptors such as building
+height, street width, street orientation, and mobile height \cite{ikegami1984}.
+In the CKM maps these coarse planning variables are replaced by directly
+observed local windows: building density, mean building height, and NLoS
+support fractions. A modern machine learning analogue is Juang's path profile
+work, where building profile statistics are used in a linear model to explain
+urban path loss predictions \cite{juang2021pathprofile}. The raw blocked link
+prior is therefore only one feature in a 15 term morphology vector:
 \begin{equation}
 \begin{aligned}
 \mathbf{x}_{78}=[&

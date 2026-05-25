@@ -259,6 +259,21 @@ T.~Izydorczyk, F.~M.~L. Tavares, G.~Berardinelli, M.~Bucur, and P.~Mogensen,
   \url{https://ieeexplore.ieee.org/document/8739910}
 \BIBentrySTDinterwordspacing
 
+\bibitem{walfisch1988}
+J.~Walfisch and H.~L. Bertoni, ``A theoretical model of {UHF} propagation in
+  urban environments,'' \emph{IEEE Transactions on Antennas and Propagation},
+  vol.~36, no.~12, pp. 1788--1796, 1988.
+
+\bibitem{ikegami1984}
+F.~Ikegami, S.~Yoshida, T.~Takeuchi, and M.~Umehira, ``Propagation factors
+  controlling mean field strength on urban streets,'' \emph{IEEE Transactions
+  on Antennas and Propagation}, vol.~32, no.~8, pp. 822--829, 1984.
+
+\bibitem{juang2021pathprofile}
+R.-T. Juang, ``Explainable deep-learning-based path loss prediction from path
+  profiles in urban environments,'' \emph{Applied Sciences}, vol.~11, no.~15,
+  p. 6690, 2021.
+
 \bibitem{perez2018film}
 \BIBentryALTinterwordspacing
 E.~Perez, F.~Strub, H.~de~Vries, V.~Dumoulin, and A.~Courville, ``{FiLM}:

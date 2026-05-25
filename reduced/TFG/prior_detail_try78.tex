@@ -933,23 +933,24 @@ From $\mathrm{PL}^{(0)}(x)$ and the map topology, a 15-element feature
 vector is computed:
 
 The choice of these features is deliberately close to classical urban
-propagation modelling, but adapted to the dense CKM setting. In particular, the
-map morphology terms are inspired by the COST-231 Walfisch--Ikegami family,
-where NLoS loss is not only a function of distance and frequency but also of
-urban descriptors such as average building height, street width, building
-separation and street orientation \cite{cost231,walfisch1988,ikegami1984}.
-Here those hand-designed city descriptors are replaced by quantities that can
-be computed directly and locally from the 513 by 513 topology map: windowed
-building density, mean building height and local NLoS support. The elevation
-and LoS/NLoS split follow the same physical intuition as A2G models, where
-shadowing and blockage statistics vary strongly with elevation angle and
-environment type \cite{alhourani2014,khawaja_survey}. The closest modern
-machine-learning analogue is the path-profile work of Juang, which uses
-building-height and street/profile statistics to explain urban path-loss
-predictions with a linear regression surrogate \cite{juang2021pathprofile}.
-The Try 78/80 NLoS branch keeps that explanatory spirit, but fits the
-coefficients train-only on CKM pixels and applies the resulting calibration as
-a frozen prior rather than as a universal propagation law.
+propagation modelling, but adapted to the dense CKM setting. The broad
+motivation is the COST 231 Walfisch Ikegami model: urban NLoS loss depends on
+the surrounding built form, not only on distance and frequency \cite{cost231}.
+The Walfisch Bertoni part represents rows of buildings as repeated diffraction
+screens \cite{walfisch1988}. The Ikegami street level part motivates
+descriptors such as mean building height, street width, street orientation with
+respect to the link, and mobile height \cite{ikegami1984}. In this thesis those
+planning variables are replaced by quantities measured directly around each
+receiver in the 513 by 513 topology map: windowed building density, local mean
+building height, and local NLoS support. The elevation and LoS/NLoS split
+follow the same physical intuition as A2G models, where shadowing and blockage
+statistics vary strongly with elevation angle and environment type
+\cite{alhourani2014,khawaja_survey}. The closest modern machine learning
+analogue is Juang's path profile work, which uses building profile statistics
+in a linear surrogate for urban path loss \cite{juang2021pathprofile}. The
+Try 78/80 NLoS branch keeps that explanatory spirit, but fits the coefficients
+on training city pixels only and applies the resulting calibration as a frozen
+prior rather than as a universal propagation law.
 
 \begin{equation}
 \textbf{x}_{78}(x)
