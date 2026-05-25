@@ -2320,6 +2320,119 @@
       \verb 10.1017/CBO9780511841224
       \endverb
     \endentry
+    \entry{walfisch1988}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=c330162326bffd01f5a1be50736f44da}{%
+           family={Walfisch},
+           familyi={W\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=2ed12afa62fd338ef59b584a7705dd57}{%
+           family={Bertoni},
+           familyi={B\bibinitperiod},
+           given={H.\bibnamedelimi L.},
+           giveni={H\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{8176233a4a9eaf5091cd6adbe0ea11c2}
+      \strng{fullhash}{8176233a4a9eaf5091cd6adbe0ea11c2}
+      \strng{fullhashraw}{8176233a4a9eaf5091cd6adbe0ea11c2}
+      \strng{bibnamehash}{8176233a4a9eaf5091cd6adbe0ea11c2}
+      \strng{authorbibnamehash}{8176233a4a9eaf5091cd6adbe0ea11c2}
+      \strng{authornamehash}{8176233a4a9eaf5091cd6adbe0ea11c2}
+      \strng{authorfullhash}{8176233a4a9eaf5091cd6adbe0ea11c2}
+      \strng{authorfullhashraw}{8176233a4a9eaf5091cd6adbe0ea11c2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Transactions on Antennas and Propagation}
+      \field{number}{12}
+      \field{title}{A Theoretical Model of {UHF} Propagation in Urban Environments}
+      \field{volume}{36}
+      \field{year}{1988}
+      \field{pages}{1788\bibrangedash 1796}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1109/8.14401
+      \endverb
+    \endentry
+    \entry{ikegami1984}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=16188a770e4194039b012af1da3ef75d}{%
+           family={Ikegami},
+           familyi={I\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+        {{hash=28dd60c668368be906203a719533d6de}{%
+           family={Yoshida},
+           familyi={Y\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=ccb6e086ac8eff94699cd028c513870d}{%
+           family={Takeuchi},
+           familyi={T\bibinitperiod},
+           given={T.},
+           giveni={T\bibinitperiod}}}%
+        {{hash=0b0069221e65bde09037b32106cadd51}{%
+           family={Umehira},
+           familyi={U\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{c2267c128b3d66b74a0246161cdbe96e}
+      \strng{fullhash}{868681bb03f82309f935f1e9a17c4739}
+      \strng{fullhashraw}{868681bb03f82309f935f1e9a17c4739}
+      \strng{bibnamehash}{c2267c128b3d66b74a0246161cdbe96e}
+      \strng{authorbibnamehash}{c2267c128b3d66b74a0246161cdbe96e}
+      \strng{authornamehash}{c2267c128b3d66b74a0246161cdbe96e}
+      \strng{authorfullhash}{868681bb03f82309f935f1e9a17c4739}
+      \strng{authorfullhashraw}{868681bb03f82309f935f1e9a17c4739}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Transactions on Antennas and Propagation}
+      \field{number}{8}
+      \field{title}{Propagation Factors Controlling Mean Field Strength on Urban Streets}
+      \field{volume}{32}
+      \field{year}{1984}
+      \field{pages}{822\bibrangedash 829}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1109/TAP.1984.1143419
+      \endverb
+    \endentry
+    \entry{juang2021pathprofile}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=f35cc8182dd8112018385a595dcfb40b}{%
+           family={Juang},
+           familyi={J\bibinitperiod},
+           given={Rong-Terng},
+           giveni={R\bibinithyphendelim T\bibinitperiod}}}%
+      }
+      \strng{namehash}{f35cc8182dd8112018385a595dcfb40b}
+      \strng{fullhash}{f35cc8182dd8112018385a595dcfb40b}
+      \strng{fullhashraw}{f35cc8182dd8112018385a595dcfb40b}
+      \strng{bibnamehash}{f35cc8182dd8112018385a595dcfb40b}
+      \strng{authorbibnamehash}{f35cc8182dd8112018385a595dcfb40b}
+      \strng{authornamehash}{f35cc8182dd8112018385a595dcfb40b}
+      \strng{authorfullhash}{f35cc8182dd8112018385a595dcfb40b}
+      \strng{authorfullhashraw}{f35cc8182dd8112018385a595dcfb40b}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Applied Sciences}
+      \field{number}{15}
+      \field{title}{Explainable Deep-Learning-Based Path Loss Prediction from Path Profiles in Urban Environments}
+      \field{volume}{11}
+      \field{year}{2021}
+      \field{pages}{6690}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.3390/app11156690
+      \endverb
+    \endentry
     \entry{cai2019}{misc}{}{}
       \name{author}{6}{}{%
         {{hash=89eb62d21c9a7b2dbf67b6cb00cd59a1}{%
