@@ -76,7 +76,7 @@
 \contentsline {subsubsection}{Calibrated LoS prior}{44}{subsubsection*.54}%
 \contentsline {subsection}{\numberline {3.4.2}Calibration of the LoS two ray model}{46}{subsection.3.4.2}%
 \contentsline {subsubsection}{Data preparation}{46}{subsubsection*.56}%
-\contentsline {subsubsection}{Grid search for $(\mitrho , \mitphi )$}{46}{subsubsection*.57}%
+\contentsline {subsubsection}{Grid search for $(\rho , \phi )$}{46}{subsubsection*.57}%
 \contentsline {subsubsection}{Post fit Gaussian smoothing across height bins}{47}{subsubsection*.58}%
 \contentsline {subsubsection}{Radial residual correction}{48}{subsubsection*.59}%
 \contentsline {subsubsection}{Smoothed deployed parameter values}{48}{subsubsection*.60}%
@@ -87,7 +87,7 @@
 \contentsline {paragraph}{Elevation-aware UAV envelope.}{50}{paragraph*.67}%
 \contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:a2g_nlos}.}{51}{paragraph*.68}%
 \contentsline {subsubsection}{Stage 2: raw hybrid prior assembly}{51}{subsubsection*.69}%
-\contentsline {subsubsection}{Stage 3: map derived morphology features}{53}{subsubsection*.70}%
+\contentsline {subsubsection}{Stage 3: map derived morphology features}{52}{subsubsection*.70}%
 \contentsline {paragraph}{Base masks.}{54}{paragraph*.72}%
 \contentsline {paragraph}{Quadratic raw prior feature.}{55}{paragraph*.73}%
 \contentsline {paragraph}{Distance term.}{55}{paragraph*.74}%
@@ -124,12 +124,12 @@
 \contentsline {subsection}{\numberline {3.7.1}Experimental protocol and reporting status}{70}{subsection.3.7.1}%
 \contentsline {subsection}{\numberline {3.7.2}Prior Anchored GMM Residual Model}{70}{subsection.3.7.2}%
 \contentsline {subsection}{\numberline {3.7.3}Architecture: Shared UNet with FiLM}{72}{subsection.3.7.3}%
-\contentsline {paragraph}{Detailed sinusoidal height embedding and FiLM path.}{74}{paragraph*.104}%
+\contentsline {paragraph}{Detailed sinusoidal height embedding and FiLM path.}{73}{paragraph*.104}%
 \contentsline {paragraph}{Detailed prior anchored GMM head.}{74}{paragraph*.106}%
 \contentsline {subsection}{\numberline {3.7.4}Composite Optimization Objective}{74}{subsection.3.7.4}%
 \contentsline {paragraph}{Map negative log likelihood.}{75}{paragraph*.109}%
 \contentsline {paragraph}{Distributional KL term.}{75}{paragraph*.110}%
-\contentsline {paragraph}{Moment matching.}{76}{paragraph*.111}%
+\contentsline {paragraph}{Moment matching.}{75}{paragraph*.111}%
 \contentsline {paragraph}{Anchor and guard terms.}{76}{paragraph*.112}%
 \contentsline {paragraph}{Outlier budget and deterministic losses.}{76}{paragraph*.113}%
 \contentsline {chapter}{\numberline {4}Results}{77}{chapter.4}%
