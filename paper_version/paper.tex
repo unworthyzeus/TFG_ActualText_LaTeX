@@ -1326,6 +1326,9 @@ Backbone & GroupNorm U-Net, base width 128, FiLM dim. 160 \\
 Residual head & 3 mixture components, bounded residuals \\
 Optimizer & AdamW, learning rate \(5\times10^{-5}\), weight decay 0.01 \\
 Batching & batch size 1, gradient accumulation 8 \\
+Scheduler & 1 warmup epoch plus cosine \texttt{LambdaLR}; early stopping patience 10 \\
+Augmentation & Training D4 rotations/reflections only; evaluation uses no augmentation \\
+Checkpoint selection & Validation composite PL RMSE \(+0.30\) DS RMSE \(+0.25\) AS RMSE \\
 Loss schedule & Large capacity residual/GMM stage plus final residual
 fine tuning; see Table~\ref{tab:loss-schedule} \\
 \bottomrule
@@ -1454,9 +1457,9 @@ AS & NLoS & 8.4424 & 8.6614 & -0.2191 \\
 \end{tabular}
 \end{table}
 
-The validation/test sanity check is also useful. The validation row reports an
-external re evaluation of the selected checkpoint, while the test row is the
-real generalization result. Delay spread worsens more on test because the
+The validation/test sanity check is also useful. The validation row evaluates
+the selected checkpoint on validation cities, while the test row is the real
+generalization result. Delay spread worsens more on test because the
 held out city mix contains harder high delay cases. The frozen delay spread
 prior shows the same validation to test worsening, confirming that this is a
 city mix effect rather than an evaluator change.

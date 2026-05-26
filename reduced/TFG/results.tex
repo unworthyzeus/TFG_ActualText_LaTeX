@@ -578,8 +578,8 @@ for the three radio maps. It is tested on the city holdout test split with
 be read as a two stage final
 pipeline, not only as the last fine tuning loss:
 the large capacity residual/GMM stage keeps NLL, KL, moment matching and
-outlier budget terms active, while the selected reported checkpoint is the
-validation selected state after the deterministic RMSE/MAE dominant
+outlier budget terms active, while the reported checkpoint is the state
+selected on validation after the deterministic RMSE/MAE dominant
 fine tuning stage. The exact weights of both stages are listed in
 Table~\ref{tab:try80_loss_settings}. The final claim is therefore an RMSE
 improvement over the frozen priors rather than a calibrated probabilistic
@@ -679,18 +679,17 @@ channel characteristics or use different simulation contracts, so the main
 comparison is the frozen delay spread prior plus the original
 \SI{50}{ns} project target.
 
-The validation metrics are not the final test claim. They are an external
-validation re evaluation of the same selected checkpoint on the validation
-cities. The same selected model is then evaluated on the separate test cities,
-so the table checks validation/test drift without changing checkpoint or
-metric.
+The validation metrics are not the final test claim. They evaluate the same
+selected checkpoint on the validation cities. The same selected model is then
+evaluated on the separate test cities, so the table checks validation to test
+drift without changing checkpoint or metric.
 Table~\ref{tab:try80_val_test_sanity} reports the two scopes side by side.
 
 \begin{table}[!htbp]
 \centering
-\caption[Validation versus-test sanity check.]%
-{Validation versus-test sanity check for the same selected final model. The
-validation row re evaluates the selected checkpoint on validation cities; the
+\caption[Validation versus test sanity check.]%
+{Validation versus test sanity check for the same selected final model. The
+validation row evaluates the selected checkpoint on validation cities; the
 test row is the final unseen city generalisation result.}
 \label{tab:try80_val_test_sanity}
 \scriptsize
@@ -698,7 +697,7 @@ test row is the final unseen city generalisation result.}
 \toprule
 Split & Samples & PL RMSE & DS RMSE & DS prior RMSE & AS RMSE & Meaning \\
 \midrule
-Validation & 2750 & 1.6157 & 22.1061 & 23.4494 & 11.3782 & External validation re evaluation of the selected model state. \\
+Validation & 2750 & 1.6157 & 22.1061 & 23.4494 & 11.3782 & Same selected model state evaluated on validation cities. \\
 Test & 2590 & 1.6519 & 26.5570 & 28.1023 & 11.3854 & Separate 14-city holdout; this is the thesis generalisation number. \\
 \bottomrule
 \end{tabularx}
@@ -712,7 +711,7 @@ residual is applied. In particular, Kuala Lumpur contributes only 13.2\% of
 the valid delay spread test pixels but 36.2\% of the test delay spread squared
 error, with \SI{44.00}{ns} model RMSE and \SI{46.93}{ns} prior RMSE. This is
 why the final test delay spread RMSE is higher than the validation
-re evaluation row, while still improving over the prior.
+row, while still improving over the prior.
 
 Together, the three target sections show the main generalisation result: the
 test cities are completely unseen, and the residual model reduces RMSE for
