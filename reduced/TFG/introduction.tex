@@ -116,10 +116,10 @@ The main contributions corresponding to these questions are:
         The evaluation uses \(513\times513\) maps,
         city holdout train/validation/test splits, valid ground receiver pixels
         only, and continuous UAV transmitter height conditioning.
-  \item A train calibrated channel attenuation prior based on enhanced two ray
-        LoS path loss propagation and ordinary least squares (OLS) NLoS calibration over
-        environment features. On held out cities this prior already reaches
-        \SI{1.75}{dB} LoS and \SI{3.40}{dB} NLoS RMSE.
+  \item A train calibrated channel attenuation prior that combines enhanced two ray
+        LoS propagation with NLoS calibration over environment features. The
+        prior provides a transparent baseline whose exact held out city accuracy
+        is reported in Chapter~\ref{chap:results}.
   \item Train calibrated delay spread and angular spread priors based on
         log domain ridge regression over geometry, visibility, transmitter height, and
         environment features.

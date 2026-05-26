@@ -509,9 +509,10 @@ log likelihood (NLL)
 \end{equation}
 Pixels with high aleatoric uncertainty (deep NLoS shadows, building edges)
 receive lower effective weight, while the network is penalised for
-overestimating uncertainty everywhere. A PMHHNet uncertainty diagnostic applied this
-loss to path loss prediction, with $\sigma^2$ predicted as a second output
-channel of PMHHNet.
+overestimating uncertainty everywhere. In radio map prediction this formulation
+is useful when visually similar urban pixels can have different shadowing or
+multipath outcomes, because the model can express uncertainty without treating
+all errors as equally informative.
 
 \subsection{Gaussian mixture model heads}
 
@@ -588,19 +589,16 @@ the training cities.
 Stochastic weight averaging (SWA) \cite{izmailov2018swa} averages model weights
 along the training trajectory at a low, approximately constant learning rate.
 This finds wider optima in the loss landscape that generalise better to
-unseen data. The CKM city holdout evaluation makes generalisation particularly
-important since validation and test cities are never seen during training.
-In this thesis, SWA was useful as a diagnostic stabilisation tool in earlier
-neural experiments, although it is not part of every final training recipe.
+unseen data. In city holdout radio map prediction, this idea is relevant because
+the validation and test cities are never seen during training.
 
 \subsubsection{Exponential moving average weights}
 
 Separate from SWA, exponential moving average (EMA) tracking of the model
-weights at a decay rate of~0.9975 can produce smoother validation checkpoints.
-Earlier diagnostic branches used EMA weights for validation scoring and fed a
-smoothed score to the ReduceLROnPlateau scheduler. This is useful background
-for interpreting the training choices in Chapter~3, where the final checkpoint
-selection rule is stated explicitly for reproducibility.
+weights can produce smoother validation checkpoints by reducing short term
+training noise. EMA is therefore often discussed together with plateau based
+learning rate schedules and checkpoint selection, although it is a training
+stabilisation tool rather than a propagation model.
 
 \subsubsection{Feature wise linear modulation}
 
