@@ -262,9 +262,13 @@ Channel attenuation map, delay spread map, angular spread map. \\
 \end{figure}
 
 Figure~\ref{fig:methodology_block_diagram} is the reader map for the rest of
-the chapter. Sections~\ref{sec:priors_overview} to~\ref{sec:delay_method_summary}
-define the frozen prior maps, and Section~\ref{sec:try80_detail} defines the
-residual model and evaluation protocol.
+the chapter. Sections~\ref{sec:priors_overview} to~\ref{sec:try80_detail}
+define the final method at the level needed to reproduce the reported pipeline:
+which maps are fitted, which maps are frozen, which channels enter
+\textsc{HARP-Net CKM}, and how the deterministic outputs are evaluated. The
+formula level derivations and implementation notes are kept in
+Appendix~\ref{app:method_details}, so the main methodology chapter stays
+focused on the final design rather than on a long technical manual.
 
 Therefore, the full framework has two external inputs and three final outputs.
 The neural residual model receives nine spatial map channels plus a separate
@@ -274,21 +278,12 @@ distinction between the deployable framework and the internal neural model: the
 user provides only a city height map and the transmitter height, while the pipeline
 constructs the remaining maps before inference.
 
-The earlier U-Net, cGAN, PMNet, PMHHNet, and distribution first experiments are
-not part of the main method. They are retained in Appendix~A as development
-evidence because they explain why the thesis stopped expanding generic
-backbones and instead moved toward prior anchored residual learning. Their
-practical lessons are folded into the final pipeline as constraints: no
-building pixel credit, no random city leakage, explicit transmitter height
-conditioning, separate treatment of LoS/NLoS regimes, and distribution aware
-residual heads when the target is multi-modal or heavy-tailed.
-
-The rest of this chapter therefore describes the final method rather than the
-chronological path used to discover it. Section~\ref{sec:priors_overview}
-summarises the frozen attenuation and spread priors;
-Sections~\ref{sec:try78_detail} and~\ref{sec:try79_detail} give their
-mathematical construction; and Section~\ref{sec:try80_detail} describes the
-joint residual network trained on top of them.
+The rest of this chapter therefore describes the selected final method rather
+than the chronological path used to discover it. Appendix~A keeps the
+development evidence and discarded routes; this chapter keeps only the final
+constraints that survive into the reported system: no building pixel credit, no
+random city leakage, explicit transmitter height conditioning, separate
+LoS/NLoS support, frozen train only priors, and bounded residual correction.
 
 \section{Final priors: overview and literature basis}
 \label{sec:priors_overview}
@@ -298,30 +293,24 @@ joint residual network trained on top of them.
 \section[Channel Attenuation Prior]{Channel Attenuation Prior and Residual Prediction}
 \label{sec:try78_detail}
 
-\subsection*{Reader map}
+The CKM dataset stores the attenuation target under the code name
+\texttt{path\_loss}. The final attenuation prior is therefore built from
+physical path loss formulas, but its dense output is reported in the thesis as
+channel attenuation. The prior is frozen before neural training and has two
+branches.
 
-This section is intentionally detailed because it is the mathematical core of
-the final channel attenuation result. The CKM dataset stores this target under
-the name \texttt{path\_loss}, and the LoS branch is a physical path loss model
-in the standard propagation sense. In the thesis prose, however, the final
-dense predicted dB map is called channel attenuation, following the terminology
-note in Chapter~1.
+The LoS branch starts from free space path loss, adds a coherent two ray
+ground reflection correction, and then applies height dependent bias and radial
+residual calibration. This captures the ring like structure visible around the
+centred transmitter. The NLoS branch starts from a blocked link propagation
+estimate and calibrates it with local morphology, obstruction and elevation
+features. Both branches are fitted only on training cities. At inference, the
+explicit LoS/NLoS support mask selects the branch at each ground receiver pixel,
+producing the frozen attenuation prior used by \textsc{HARP-Net CKM}.
 
-A reader only interested in the modelling logic can follow it in four passes.
-First, the LoS branch starts from FSPL and adds an enhanced two ray field sum,
-which explains the radial ring structure observed in the CKM maps. Second, the
-NLoS branch uses a calibrated regime wise model over topology and obstruction
-features, because a LoS shaped formula cannot explain blocked streets by
-itself. Third, both branches are fitted only on the training split and then
-evaluated with the same pixel weighted ground mask RMSE used elsewhere in the
-thesis. Finally, the prior output becomes the frozen attenuation anchor
-consumed by \textsc{HARP-Net CKM}.
-
-The corresponding quantitative audit is reported in Chapter~\ref{chap:results};
-this methodology section focuses on how the prior is constructed and why its
-output is frozen before residual learning.
-
-\input{prior_detail_try78}
+Chapter~\ref{chap:results} reports the quantitative prior audit. The full
+equations, feature inventory and fitting details are in
+Appendix~\ref{app:method_details}.
 
 \section{Angular Spread Prior and Residual Prediction}
 \label{sec:try79_detail}
@@ -339,11 +328,40 @@ in nanoseconds and is more sensitive to rare high delay pixels. The model
 therefore uses the prior as a stable baseline and learns only a bounded
 correction.
 
-\subsection*{Shared spread prior details}
+For both spread targets, the prior is fitted in \(\log(1+y)\) space because
+the maps are nonnegative, strongly skewed, and contain near zero LoS mass plus
+heavier NLoS tails. The raw spread estimate combines propagation state,
+distance, elevation and local morphology. A train only ridge calibration then
+specializes this estimate by metric, topology class, LoS/NLoS state and
+transmitter height bin, with fallback keys for sparse regimes. The calibrated
+prior is inverse transformed to native units before it is compared with
+ray-traced ground truth or passed to \textsc{HARP-Net CKM}.
 
-\input{prior_detail_try79}
+The full spread feature vector, ridge objective and fallback structure are
+given in Appendix~\ref{app:method_details}.
 
 \section{Training and Evaluation Protocol}
 \label{sec:try80_detail}
 
-\input{prior_detail_try80}
+\textsc{HARP-Net CKM} receives nine spatial channels plus a separate scalar
+transmitter height conditioning path. The channels are the normalized topology
+map, LoS mask, NLoS mask, ground mask, combined attenuation prior, LoS
+attenuation prior, calibrated NLoS attenuation branch, delay spread prior and
+angular spread prior. The scalar height is encoded with sinusoidal features and
+injected through FiLM layers rather than copied as a constant image.
+
+The network is a shared GroupNorm U-Net with task specific residual heads. For
+each target and visibility region, the head predicts bounded residual
+components around the frozen prior. The probabilistic parameterization is kept
+because it represents residual tails during training, but the reported maps are
+deterministic: channel attenuation is read in native dB space, while delay
+spread and angular spread are predicted in \(\log(1+y)\) model space and then
+mapped back to ns or degrees. The explicit LoS/NLoS masks select the final
+regional branch at each valid ground receiver pixel.
+
+Training uses the same city holdout split, receiver mask and pixel weighted
+RMSE contract defined at the start of this chapter. The selected final stage is
+RMSE/MAE oriented, with small anchor and prior guard terms so that the residual
+model improves the frozen priors without freely overwriting them. The full
+architecture diagram, residual assembly equations and loss family are included
+in Appendix~\ref{app:method_details}.

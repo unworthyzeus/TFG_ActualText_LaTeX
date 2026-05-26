@@ -5,7 +5,7 @@ it defines the nearest research families and the fair-comparison caveats, rather
 than providing an encyclopaedic survey of every adjacent radio map method. The
 longer survey draft remains in \texttt{state\_of\_art.tex} as source material,
 but the compiled thesis now keeps only the material needed to justify the final
-prior anchored CKM model.
+\textsc{HARP-Net CKM} model.
 
 \section{Channel knowledge maps and dense radio map prediction}
 \label{sec:soa_ckm_context}
@@ -103,7 +103,7 @@ Runtime path & A surrogate must be compared against a clearly specified ray-trac
 
 The closest state of the art references are useful as scale checks, not as a
 single leaderboard. The final result is strongest when stated narrowly: under
-the CKM city holdout protocol, a prior anchored residual GMM model improves
+the CKM city holdout protocol, \textsc{HARP-Net CKM} improves
 strong frozen priors for dense PL/DS/AS maps, while keeping a fast generator
 path. Table~\ref{tab:position} summarizes that position.
 
@@ -131,5 +131,5 @@ AIRMap \cite{airmap2025} & Digital-twin radio map generation with path-gain erro
 
 The novelty is therefore not that a CNN is used for radio maps. The novelty is
 the combination of train only height aware priors, dense UAV CKM targets,
-LoS/NLoS and morphology regime handling, and a residual GMM head that improves
+LoS/NLoS and morphology regime handling, and a residual head that improves
 rather than replaces the frozen estimators.

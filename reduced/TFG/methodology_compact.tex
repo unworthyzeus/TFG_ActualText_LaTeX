@@ -147,7 +147,7 @@ their empirical distributions are different.
 \node[prior] (nlos) at (3.4,0) {NLoS PL\\COST/A2G envelope\\\(\mathbf{x}_{78}\) OLS};
 \node[prior] (spread) at (3.4,-1.35) {DS/AS\\\(\log(1+y)\) raw prior\\\(\mathbf{x}_{79}\) ridge};
 \node[cal] (stack) at (6.9,0) {Frozen prior maps\\PL, DS, AS};
-\node[model] (net) at (10.2,0) {Shared U-Net\\FiLM height conditioning\\residual GMM heads};
+\node[model] (net) at (10.2,0) {Shared U-Net\\FiLM height conditioning\\residual heads};
 \node[input, fill=orange!18] (out) at (13.4,0) {Continuous PL, DS, AS};
 \draw[arr] (support.east) -- ++(0.45,0) |- (los.west);
 \draw[arr] (support.east) -- (nlos.west);
@@ -158,8 +158,8 @@ their empirical distributions are different.
 \draw[arr] (stack.east) -- (net.west);
 \draw[arr] (net.east) -- (out.west);
 \end{tikzpicture}}
-\caption{Final prior anchored CKM pipeline. Frozen height aware priors are
-computed first and then used as input channels for the residual GMM model.}
+\caption{\textsc{HARP-Net CKM} pipeline. Frozen height aware priors are
+computed first and then used as input channels for the final residual model.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -339,7 +339,7 @@ implementation adds \(12\) height-collapsed topology/visibility fallbacks,
 \(6\) topology-wide fallbacks, \(2\) global visibility fallbacks and \(1\)
 fully global fallback, for \(57\) keys per metric and \(114\) across DS and AS.
 
-\section{Prior anchored residual GMM head model}
+\section{\textsc{HARP-Net CKM} residual head}
 \label{sec:try80_detail}
 
 The final \textsc{HARP-Net CKM} model predicts residual distributions around
@@ -381,9 +381,9 @@ training and it produces a continuous pixel-wise prediction at inference.
 ]
 \node[inp] (x) at (0,0) {9 map channels\\+ \(h_{\mathrm{tx}}\) code};
 \node[enc] (stem) at (3.2,0) {Shared U-Net\\GroupNorm + FiLM};
-\node[head] (pl) at (6.6,1.1) {PL residual GMM\\\(\pi,\mu,\sigma\)};
-\node[head] (ds) at (6.6,0) {DS residual GMM\\\(\pi,\mu,\sigma\)};
-\node[head] (as) at (6.6,-1.1) {AS residual GMM\\\(\pi,\mu,\sigma\)};
+\node[head] (pl) at (6.6,1.1) {PL mixture branch\\\(\pi,\mu,\sigma\)};
+\node[head] (ds) at (6.6,0) {DS mixture branch\\\(\pi,\mu,\sigma\)};
+\node[head] (as) at (6.6,-1.1) {AS mixture branch\\\(\pi,\mu,\sigma\)};
 \node[inp, fill=green!10] (out) at (10.1,0) {Mixture expectation\\dense PL/DS/AS maps};
 \draw[arr] (x.east) -- (stem.west);
 \draw[arr] (stem.east) -- ++(0.3,0) |- (pl.west);
@@ -393,7 +393,7 @@ training and it produces a continuous pixel-wise prediction at inference.
 \draw[arr] (ds.east) -- (out.west);
 \draw[arr] (as.east) -- ++(0.25,0) |- (out.west);
 \end{tikzpicture}}
-\caption{Final residual GMM head structure. The shared network predicts
+\caption{\textsc{HARP-Net CKM} residual head structure. The shared network predicts
 task-specific residual distributions; the pixel-wise output is the expectation
 of each anchored mixture.}
 \label{fig:try80_arch}

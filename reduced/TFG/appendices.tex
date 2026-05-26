@@ -285,8 +285,8 @@ The distribution first spread expert line transferred the same philosophy to
 delay and angular spread. It was
 not the final deployed spread baseline, but it explained why spread targets
 should not be treated as ordinary smooth images. Together, the two
-distribution first lines are the conceptual bridge to the GMM residual head
-retained in the final attempt.
+distribution first lines are the conceptual bridge to the mixture based
+\textsc{HARP-Net CKM} residual head retained in the final attempt.
 
 \subsection{Frozen calibrated priors}
 
@@ -321,7 +321,7 @@ last stage kept the large architecture and relaxed caps, but used an
 RMSE-dominant fine-tune with light anchor and prior-guard terms. This is the
 selected final model reported in Chapter~\ref{chap:results}.
 
-\chapter{Representative Final Residual GMM-Head Model Inspection Panels}
+\chapter{Representative \textsc{HARP-Net CKM} Inspection Panels}
 
 The qualitative appendix is generated with the panel-generation script. It uses
 the validation split, the selected final model state, DirectML
@@ -348,7 +348,7 @@ The six inspection stages, in order, are:
   \item \textbf{Ground truth}: the ray-traced reference field.
   \item \textbf{Frozen calibrated prior}: the calibrated analytic prior
         that \textsc{HARP-Net CKM} receives as an input channel and anchors to.
-  \item \textbf{Final residual GMM head model prediction}: the residual-over-prior output
+  \item \textbf{\textsc{HARP-Net CKM} prediction}: the residual-over-prior output
         of the joint model, in the same colour scale as columns 1 and 2.
   \item \textbf{Context}: topology height for the path-loss row, NLoS
         support for the delay spread row, and LoS support for the
@@ -365,14 +365,14 @@ The six inspection stages, in order, are:
 \end{enumerate}
 
 Rows 5 and 6 are therefore the main \emph{diagnostic} rows: the thesis
-claim is that \textsc{HARP-Net CKM} is a prior anchored residual corrector, and the visible
+claim is that \textsc{HARP-Net CKM} is a bounded residual corrector, and the visible
 agreement (in sign and location) between the prior-error map and the
 model-correction map is the direct qualitative evidence for that claim.
 
 \begin{table}[H]
 \centering
 \caption[Final-model appendix panel index.]%
-{Final residual GMM head model appendix panels generated from selected validation/test samples with the
+{\textsc{HARP-Net CKM} appendix panels generated from selected validation/test samples with the
 selected final model.}
 \label{tab:try80_appendix_panels}
 \footnotesize
@@ -398,7 +398,7 @@ The panel manifest stores the exact PNG filenames and per sample RMSE values.
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovia_sample_13213_6x3.png}
-\caption{Final residual GMM head model \(6\times3\) inspection panel for an open, low-antenna
+\caption{\textsc{HARP-Net CKM} \(6\times3\) inspection panel for an open, low-antenna
 validation sample in Segovia.}
 \label{fig:appendix_try80_open_low}
 \end{figure}
@@ -407,7 +407,7 @@ validation sample in Segovia.}
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_open_mid_ant_Segovia_sample_13215_6x3.png}
-\caption{Final residual GMM head model \(6\times3\) inspection panel for an open, mid-antenna
+\caption{\textsc{HARP-Net CKM} \(6\times3\) inspection panel for an open, mid-antenna
 validation sample in Segovia.}
 \label{fig:appendix_try80_open_mid}
 \end{figure}
@@ -416,7 +416,7 @@ validation sample in Segovia.}
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_mixed_low_ant_Dubrovnik_sample_05288_6x3.png}
-\caption{Final residual GMM head model \(6\times3\) inspection panel for a mixed, low-antenna
+\caption{\textsc{HARP-Net CKM} \(6\times3\) inspection panel for a mixed, low-antenna
 validation sample in Dubrovnik.}
 \label{fig:appendix_try80_mixed_low}
 \end{figure}
@@ -425,7 +425,7 @@ validation sample in Dubrovnik.}
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_sample_10828_6x3.png}
-\caption{Final residual GMM head model \(6\times3\) inspection panel for a mixed, mid-antenna
+\caption{\textsc{HARP-Net CKM} \(6\times3\) inspection panel for a mixed, mid-antenna
 validation sample in Nice.}
 \label{fig:appendix_try80_mixed_mid}
 \end{figure}
@@ -434,7 +434,7 @@ validation sample in Nice.}
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_mixed_high_ant_Nice_sample_10814_6x3.png}
-\caption{Final residual GMM head model \(6\times3\) inspection panel for a mixed, high-antenna
+\caption{\textsc{HARP-Net CKM} \(6\times3\) inspection panel for a mixed, high-antenna
 validation sample in Nice.}
 \label{fig:appendix_try80_mixed_high}
 \end{figure}
@@ -443,7 +443,7 @@ validation sample in Nice.}
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_low_ant_Chiang_Mai_sample_04519_6x3.png}
-\caption{Final residual GMM head model \(6\times3\) inspection panel for a dense, low-antenna
+\caption{\textsc{HARP-Net CKM} \(6\times3\) inspection panel for a dense, low-antenna
 validation sample in Chiang Mai.}
 \label{fig:appendix_try80_dense_low}
 \end{figure}
@@ -452,7 +452,7 @@ validation sample in Chiang Mai.}
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Vancouver_sample_15265_6x3.png}
-\caption{Final residual GMM head model \(6\times3\) inspection panel for a dense, mid-antenna
+\caption{\textsc{HARP-Net CKM} \(6\times3\) inspection panel for a dense, mid-antenna
 held out test sample in Vancouver.}
 \label{fig:appendix_try80_dense_mid}
 \end{figure}
@@ -461,7 +461,7 @@ held out test sample in Vancouver.}
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_high_ant_Tunis_sample_14694_6x3.png}
-\caption{Final residual GMM head model \(6\times3\) inspection panel for a dense, high-antenna
+\caption{\textsc{HARP-Net CKM} \(6\times3\) inspection panel for a dense, high-antenna
 validation sample in Tunis.}
 \label{fig:appendix_try80_dense_high}
 \end{figure}
@@ -472,7 +472,7 @@ validation sample in Tunis.}
 \label{app:ckm_generator}
 
 This appendix documents the standalone CKM Generator delivered with the final
-residual GMM head pipeline. The tool was built to make the trained model usable outside
+\textsc{HARP-Net CKM} pipeline. The tool was built to make the trained model usable outside
 the training scripts: it accepts topology inputs, prepares them with the same
 geometric conventions used in the thesis, computes or imports LoS/NLoS masks,
 evaluates the frozen calibrated priors, optionally runs the final neural model,
@@ -975,7 +975,7 @@ is dominated by sparse high-valued quantised pixels.}
 {Late diagnostic path-loss histograms on the validation samples with UAV
 heights between \SI{45}{m} and \SI{55}{m}. This stage exposed the NLoS
 path-loss mode collapse that motivated the distribution first and
-prior anchored final attempts. The binned curves are lightly smoothed for
+\textsc{HARP-Net CKM} final attempts. The binned curves are lightly smoothed for
 readability.}
 \label{fig:try74_75_diagnostic_histograms_results}
 \end{figure}
@@ -1405,7 +1405,7 @@ to the measured \SI{0.88}{s} path.
 \begin{table}[H]
 \centering
 \caption[Final-generator runtime component breakdown.]%
-{Mean component timing for the final prior anchored generator on the same ten
+{Mean component timing for the \textsc{HARP-Net CKM} generator on the same ten
 Barcelona samples and the same Ryzen~5~5600H / RTX~3050~Ti Laptop hardware
 used in the ray-tracing comparison. The LoS/NLoS mask is
 generated with the vectorized CUDA backend, which was checked to produce zero
@@ -1421,7 +1421,7 @@ Component & Mean time per sample & Share of final-generator path \\
 Topology preparation & \SI{0.002}{s} & \(<0.2\%\) \\
 Geometric LoS/NLoS mask generation & \SI{0.30}{s} & \(33.9\%\) \\
 Torch computation of final calibrated path-loss and spread priors & \SI{0.04}{s} & \(4.7\%\) \\
-Final residual GMM head neural prediction for PL, DS and AS, plus default \texttt{.npz} export & \SI{0.54}{s} & \(61.2\%\) \\
+\textsc{HARP-Net CKM} neural prediction for PL, DS and AS, plus default \texttt{.npz} export & \SI{0.54}{s} & \(61.2\%\) \\
 \midrule
 Complete final-generator path & \SI{0.88}{s} & \(100\%\) \\
 \bottomrule

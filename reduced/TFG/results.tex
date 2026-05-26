@@ -2,7 +2,7 @@
 \label{chap:results}
 
 This chapter reports the final test results of \textsc{HARP-Net CKM}, the
-joint prior anchored residual model used in the reduced thesis. The standalone
+final residual CKM model used in the reduced thesis. The standalone
 path loss prior audit uses the city holdout validation+test pool: 5340 samples
 from 29 unseen cities. The selected final model is then evaluated on the final
 2590-sample, 14-city test split. Two path loss prior numbers therefore appear
@@ -288,7 +288,7 @@ for the three radio maps. It is tested on the city holdout test split with
 2590 samples from 14 cities that were not seen in training. The model should
 be read as a two stage final
 pipeline, not only as the last fine tuning loss:
-the large capacity residual/GMM stage keeps NLL, KL, moment matching and
+the large capacity probabilistic residual stage keeps NLL, KL, moment matching and
 outlier budget terms active, while the reported checkpoint is the state
 selected on validation after the deterministic RMSE/MAE dominant
 fine tuning stage. The exact weights of both stages are listed in
@@ -656,7 +656,7 @@ excluded.}
 Method & Timed path & Resource note & Time per sample & Dataset-scale extrapolation \\
 \midrule
 MATLAB ray tracing & Pixel level receivers outside buildings; PL, DS and AS parsed from paths & Ryzen~5~5600H CPU; GPU off, PCT unavailable & \SI{99.89}{s} & \SI{448.96}{h} (\(\approx\)18.7 days), \(1\times\) \\
-Final prior anchored generator & Generated LoS/NLoS masks, final calibrated priors, PL/DS/AS prediction, and default \texttt{.npz} export & RTX~3050~Ti Laptop GPU; mixed fp16, \(b=1\) & \SI{0.88}{s} & \SI{3.95}{h}, \(113.7\times\) faster \\
+\textsc{HARP-Net CKM} generator & Generated LoS/NLoS masks, final calibrated priors, PL/DS/AS prediction, and default \texttt{.npz} export & RTX~3050~Ti Laptop GPU; mixed fp16, \(b=1\) & \SI{0.88}{s} & \SI{3.95}{h}, \(113.7\times\) faster \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -665,7 +665,7 @@ Final prior anchored generator & Generated LoS/NLoS masks, final calibrated prio
 The ten ray traced samples contain 156{,}088 and 115{,}825 valid receiver
 pixels in the two Barcelona layouts, respectively. The measured average is
 \SI{99.89}{s} per full resolution sample for ray tracing and \SI{0.88}{s} per
-sample for the complete final prior anchored generator, including masks,
+sample for the complete \textsc{HARP-Net CKM} generator, including masks,
 priors, predictions, and the default numerical \texttt{.npz} archive export,
 but not optional PNG exports. The
 resulting \(113.7\times\) speedup exceeds the original 10 to 100\(\times\)

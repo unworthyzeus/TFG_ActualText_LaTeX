@@ -41,7 +41,7 @@ work was electricity for computation. The \textsc{HARP-Net CKM} line used four R
 Ti GPUs for approximately \SI{12}{h}, consuming about \SI{18}{kWh}.
 The 12-expert distribution first training also used the
 same four-GPU node, adding roughly \SI{18}{h} of GPU time and about
-\SI{27}{kWh}. The ML-calibrated priors are lighter than the residual GMM head
+\SI{27}{kWh}. The ML-calibrated priors are lighter than the \textsc{HARP-Net CKM} residual head
 training, but they are not free: their calibration and evaluation still take
 several hours, either on a single GPU/DirectML workstation or on CPU. The
 ``distribution/prior phase'' in Table~\ref{tab:sustainability_budget} therefore
@@ -76,7 +76,7 @@ energy cost.
 The runtime measurements in Chapter~\ref{chap:results} make this concrete for
 the present dataset scale. On the Barcelona benchmark, pixel level MATLAB ray
 tracing took \SI{99.89}{s} per full-resolution CKM sample, while the complete
-final prior anchored generator took \SI{0.88}{s} per sample under the same
+\textsc{HARP-Net CKM} generator took \SI{0.88}{s} per sample under the same
 benchmark contract.
 Extrapolated to 16{,}180 samples, this is \SI{448.96}{h} for ray tracing versus
 \SI{3.95}{h} for the surrogate. Under the simple same-laptop full-load

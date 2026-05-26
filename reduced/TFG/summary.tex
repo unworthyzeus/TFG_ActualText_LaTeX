@@ -11,19 +11,19 @@ Aquest TFG estudia la predicció de mapes de coneixement de canal per a xarxes
 mostres, mapes urbans de $513\times513$ píxels amb màscares LoS/NLoS i altura
 d'antena contínua entre 12 i 478 m) es prediuen atenuació de canal, dispersió
 temporal / delay spread i dispersió angular / angular spread sota un protocol
-estricte de validació per ciutats completes. Després de provar U-Nets, cGANs,
-experts i priors físics, el treball convergeix en un model híbrid: priors
-interpretables calibrats per atenuació de canal i spreads, més un model final
-amb cap GMM residual conjunt. En els resultats finals, aquest cap s'avalua
-mitjançant la predicció determinista de la mitjana de la mescla, no com una
-densitat predictiva calibrada.
+estricte de validació per ciutats completes. El sistema final és un model híbrid:
+\textsc{HARP-Net CKM}, el Height-Aware Residual Prior Network for Channel
+Knowledge Map prediction, que combina priors interpretables calibrats amb un
+corrector neural residual. En els resultats finals, el seu cap intern de mescla
+s'avalua mitjançant la predicció determinista de la mitjana, no com una densitat
+predictiva calibrada.
 
-El resultat final no és un prior pur ni una xarxa neuronal pura: el model final
+El resultat final no és un prior pur ni una xarxa neuronal pura: \textsc{HARP-Net CKM}
 usa deep learning com a corrector multitasca condicionat per la geometria
 urbana, l'altura del UAV, les màscares LoS/NLoS i els mapes prior. En el split
 final de test de 14 ciutats no vistes, els priors congelats assoleixen
-1.94 dB, 28.10 ns i 13.74 graus RMSE, mentre que el model final amb residuals
-ancorats als priors els millora fins a 1.65 dB, 26.56 ns i 11.39 graus. Això
+1.94 dB, 28.10 ns i 13.74 graus RMSE, mentre que \textsc{HARP-Net CKM}
+els millora fins a 1.65 dB, 26.56 ns i 11.39 graus. Això
 fa que els priors siguin una baseline forta per si mateixa, no només un pas
 intermedi: concentren la calibració per règims de densitat urbana, altura
 d'edificis, visibilitat i altura d'antena, i deixen al model neuronal només el
@@ -39,19 +39,19 @@ con UAVs. A partir del conjunto de datos CKM (66 ciudades reales, 16{,}180
 muestras, mapas urbanos de $513\times513$ píxeles con máscaras LoS/NLoS y altura de
 antena continua entre 12 y 478 m) se predicen atenuación de canal, dispersión
 temporal / delay spread y dispersión angular / angular spread bajo un protocolo
-estricto de validación por ciudades completas. Tras probar U-Nets, cGANs,
-expertos y priors físicos, el trabajo converge en un modelo híbrido: priors
-interpretables calibrados para atenuación de canal y spreads, más un modelo
-final con cabeza GMM residual conjunta. En los resultados finales, esa cabeza
-se evalúa mediante la predicción determinista de la media de la mezcla, no como
-una densidad predictiva calibrada.
+estricto de validación por ciudades completas. El sistema final es un modelo híbrido:
+\textsc{HARP-Net CKM}, el Height-Aware Residual Prior Network for Channel
+Knowledge Map prediction, que combina priors interpretables calibrados con un
+corrector neural residual. En los resultados finales, su cabeza interna de mezcla
+se evalúa mediante la predicción determinista de la media, no como una densidad
+predictiva calibrada.
 
-El resultado final no es un prior puro ni una red neuronal pura: el modelo final
+El resultado final no es un prior puro ni una red neuronal pura: \textsc{HARP-Net CKM}
 usa deep learning como corrector multitarea condicionado por la geometría urbana,
 la altura del UAV, las máscaras LoS/NLoS y los mapas prior. En el split final de
 test de 14 ciudades no vistas, los priors congelados alcanzan 1.94 dB,
-28.10 ns y 13.74 grados RMSE, mientras que el modelo final con residuales
-anclados a los priors los mejora hasta 1.65 dB, 26.56 ns y 11.39 grados. Esto
+28.10 ns y 13.74 grados RMSE, mientras que \textsc{HARP-Net CKM}
+los mejora hasta 1.65 dB, 26.56 ns y 11.39 grados. Esto
 convierte a los priors en una baseline fuerte por sí misma, no solo en un paso
 intermedio: concentran la calibración por regímenes de densidad urbana, altura
 de edificios, visibilidad y altura de antena, y dejan al modelo neuronal solo el
@@ -67,10 +67,11 @@ networks. Using the CKM dataset (66 real cities, 16{,}180 samples, $513\times
 513$ urban maps with LoS/NLoS masks and a continuous UAV antenna height
 between 12 and 478 m), the project predicts channel attenuation, delay spread, and
 angular spread under a strict city holdout evaluation protocol, where entire
-cities are reserved for validation and test. After testing U-Nets, cGANs,
-expert models, and physical priors, the project converges on a hybrid design:
-calibrated interpretable priors for channel attenuation and spreads, plus
-\textsc{HARP-Net CKM}. In the final reported results, its internal mixture head
+cities are reserved for validation and test. The final system is
+\textsc{HARP-Net CKM}, the Height-Aware Residual Prior Network for Channel
+Knowledge Map prediction: a hybrid design that combines calibrated interpretable
+priors for channel attenuation and spreads with a neural residual corrector. In
+the final reported results, its internal mixture head
 is evaluated through the deterministic mixture mean prediction, not as a
 calibrated predictive density.
 

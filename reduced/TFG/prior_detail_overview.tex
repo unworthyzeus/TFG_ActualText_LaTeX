@@ -7,8 +7,8 @@ residual network inherits dense prediction, FiLM conditioning and
 distribution aware regression ideas
 \cite{pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic}.
 The detailed mathematical derivations and implementation level fitting notes
-follow in the same methodology chapter, so the design and the audit trail
-remain together.
+are kept in Appendix~\ref{app:method_details}, so the methodology chapter can
+stay short while the full audit trail remains available.
 
 \subsection{High level architecture}
 
@@ -177,8 +177,8 @@ separate open overhead links from obstructed street canyon like links. \\
 \node[below=0.25cm of dnn, font=\scriptsize, text width=2.4cm, align=center]
       {$\delta \in [-\delta_{\max}, +\delta_{\max}]$};
 \end{tikzpicture}
-\caption[Overall prior anchored pipeline with bounded DNN corrections.]
-{Overall prior anchored pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta$ around them.}
+\caption[\textsc{HARP-Net CKM} pipeline with bounded DNN corrections.]
+{\textsc{HARP-Net CKM} pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta$ around them.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -207,8 +207,8 @@ mismatches. The no prior and weak prior neural branches also failed because
 single-output point regression was a poor match for blocked, multimodal,
 heavy tailed NLoS and spread targets. That is why the thesis keeps both
 lessons: the final priors fix the prior-estimator problem, while
-the distribution first predecessors motivate distribution aware heads and residual
-uncertainty.
+the distribution aware head represents residual uncertainty without turning the
+main method into an unconstrained direct regressor.
 
 \begin{table}[H]
 \centering
@@ -250,12 +250,13 @@ prior a competitive baseline. \\
 The final pipeline is a hybrid between classical propagation models,
 distribution aware regression, and dataset-specific calibration.
 Table~\ref{tab:prior_literature_mapping} keeps the mapping explicit; the
-detailed equations and fitting procedures are given in the following
-path loss prior, spread prior, and residual GMM methodology sections.
+detailed equations and fitting procedures are given in
+Appendix~\ref{app:method_details}, covering the attenuation prior, spread
+prior, and \textsc{HARP-Net CKM} residual model.
 
 \begin{table}[H]
 \centering
-\caption{Literature to design mapping used by the final prior anchored model.}
+\caption{Literature to design mapping used by \textsc{HARP-Net CKM}.}
 \label{tab:prior_literature_mapping}
 \scriptsize
 \renewcommand{\arraystretch}{1.12}

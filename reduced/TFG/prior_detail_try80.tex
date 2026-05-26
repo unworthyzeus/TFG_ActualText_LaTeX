@@ -48,9 +48,9 @@ uses these frozen path loss and spread priors as anchors. This
 section therefore documents both the frozen prior inputs and the residual
 architecture used by the final evaluation.
 
-\subsection{Prior Anchored GMM Residual Model}
+\subsection{\textsc{HARP-Net CKM} Residual Head}
 
-The final model introduces a joint multitask residual GMM head architecture that
+The final model introduces a joint multitask residual mixture head architecture that
 emits a \emph{Gaussian Mixture Model (GMM)}-parameterized residual head at each
 pixel, rather than only a direct scalar output. For each task \(k \in \{\mathrm{PL},\, \mathrm{DS},\, \mathrm{AS}\}\),
 region \(r\in\{\mathrm{LoS},\mathrm{NLoS}\}\), component
@@ -238,7 +238,7 @@ The word ``joint'' in this model refers to shared representation learning and
 joint optimization, not to an autoregressive or cross output decoder. Path loss,
 delay spread and angular spread all pass through the same encoder, the same
 height conditioning path, the same decoder feature map and the same
-prior anchored GMM assembly rule. After these shared features are computed,
+\textsc{HARP-Net CKM} residual assembly rule. After these shared features are computed,
 however, the implementation iterates over the three tasks and applies
 task specific global and local heads. Therefore PL, DS and AS can exchange
 information through the common spatial representation, but the final residual
@@ -444,7 +444,7 @@ f_i
 \label{fig:try80_film_detail}
 \end{figure}
 
-\paragraph{Detailed prior anchored GMM head.}
+\paragraph{Detailed \textsc{HARP-Net CKM} residual head.}
 For each task
 $k$ and for each region
 $r \in \{\mathrm{LoS},\mathrm{NLoS}\}$, the model predicts a 3-component
@@ -511,7 +511,7 @@ uses the local probabilities for the deterministic output map.
 
 \end{tikzpicture}%
 }
-\caption{Detailed prior anchored GMM head used by the final model.}
+\caption{Detailed \textsc{HARP-Net CKM} residual head used by the final model.}
 \label{fig:try80_gmm_detail}
 \end{figure}
 

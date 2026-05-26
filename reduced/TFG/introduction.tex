@@ -10,25 +10,24 @@ environment, or the deployment assumptions change. In the 6G literature, a
 channel knowledge map is a site-specific, location-tagged repository of channel
 information that can support environment-aware planning and reduce online
 channel-acquisition overhead \cite{zengx2021ckm,ckmtutorial2024}. This thesis
-studies whether \textsc{HARP-Net CKM}, a height aware residual prior surrogate,
-can predict dense CKM target maps directly from urban geometry while preserving
-enough physical structure to generalize to cities not seen during training. The
-dataset defines this transmitter as a UAV, but the same fixed centre,
-height conditioned task can also be read as planning for elevated radio access
-nodes operating at the same \SI{7.125}{GHz} carrier and within the sampled
-height range.
+studies \textsc{HARP-Net CKM}: the Height-Aware Residual Prior Network for
+Channel Knowledge Map prediction. Its task is to predict dense CKM maps from a
+city building height map and a UAV transmitter height, while still generalizing
+to cities that were not seen during training. The dataset defines this
+transmitter as a UAV, but the same fixed centre, height conditioned task can
+also be read as planning for elevated radio access nodes operating at the same
+\SI{7.125}{GHz} carrier and within the sampled height range.
 
 The project is formulated as dense image to image regression on
-$513\times513$ pixel city maps. The complete inference pipeline starts from a
-building height topology map and transmitter antenna height, derives or reads the
-geometric support masks needed by the experiment, builds the frozen prior maps
-described later in the thesis, and then applies the neural residual model. In
-the CKM experiments the LoS/NLoS visibility mask is read from the dataset; for
-topology only deployment it can be generated geometrically from the building
-map and transmitter height. The predicted outputs are channel attenuation, delay
-spread, and angular spread. The neural network therefore does not infer
-visibility from scratch; it uses visibility as one of the physical support
-inputs and learns the residual radio map structure around the calibrated priors.
+$513\times513$ pixel city maps. At a high level, the pipeline first builds
+physically meaningful support maps and train calibrated prior estimates, and
+then \textsc{HARP-Net CKM} corrects the remaining errors. In the CKM
+experiments the LoS/NLoS visibility mask is read from the dataset; for topology
+only deployment it can be generated geometrically from the building map and
+transmitter height. The predicted outputs are channel attenuation, delay
+spread, and angular spread. The neural network therefore focuses on residual
+radio map structure instead of being asked to rediscover all propagation
+geometry from scratch.
 
 \textbf{Terminology.} The CKM HDF5 file and the training code name the dB
 attenuation target \texttt{path\_loss}, and the implementation keeps the
@@ -38,7 +37,7 @@ attenuation}. The term \emph{path loss} is kept when discussing standard
 propagation formulas, cited path loss models, or code and dataset names that
 explicitly use it.
 
-\textsc{HARP-Net CKM} is the final Height-Aware Residual Prior Network for
+\textsc{HARP-Net CKM} stands for Height-Aware Residual Prior Network for
 Channel Knowledge Map prediction. The name reflects its central design choice:
 calibrated physical/statistical priors explain the stable propagation
 structure, while a height conditioned neural network learns the remaining

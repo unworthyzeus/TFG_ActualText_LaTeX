@@ -27,9 +27,9 @@
 \usepackage[hidelinks]{hyperref}
 \urlstyle{same}
 \hypersetup{
-  pdftitle={HARP-Net CKM: Prior Anchored Deep Learning for Dense UAV Channel Knowledge Maps},
+  pdftitle={HARP-Net CKM: Hybrid Deep Learning for Dense UAV Channel Knowledge Maps},
   pdfauthor={Guillem Moreno Garcia, Evgenii Vinogradov, Sergi Abadal},
-  pdfsubject={Dense UAV channel knowledge map prediction with prior anchored residual learning},
+  pdfsubject={Dense UAV channel knowledge map prediction with frozen priors and bounded residual learning},
   pdfkeywords={channel knowledge map, UAV, 6G, channel attenuation, delay spread, angular spread, Gaussian mixture model}
 }
 
@@ -41,7 +41,7 @@
 \setlength{\dbltextfloatsep}{6pt plus 1pt minus 2pt}
 \setlength{\dblfloatsep}{6pt plus 1pt minus 2pt}
 
-\title{\textsc{HARP-Net CKM}: Prior Anchored Deep Learning for Dense UAV Channel Knowledge Maps}
+\title{\textsc{HARP-Net CKM}: Hybrid Deep Learning for Dense UAV Channel Knowledge Maps}
 
 \author{Guillem Moreno Garcia, Evgenii Vinogradov, and Sergi Abadal%
 \thanks{G. Moreno Garcia, E. Vinogradov, and S. Abadal are with the
@@ -57,9 +57,10 @@ guillem.moreno.garcia@estudiantat.upc.edu.}%
 Channel knowledge maps (CKMs) promise fast environment aware radio planning, but
 dense UAV CKM generation remains difficult when channel attenuation, delay spread, and
 angular spread must all generalize to unseen cities. This paper presents
-\textsc{HARP-Net CKM}, a hybrid surrogate that freezes physical and statistical
-priors calibrated on the training split and learns bounded residual maps with a Gaussian
-mixture head. The model predicts \(513\times513\) dense channel attenuation,
+\textsc{HARP-Net CKM} (Height-Aware Residual Prior Network for Channel
+Knowledge Map prediction), a hybrid surrogate that freezes physical and
+statistical priors calibrated on the training split and learns bounded residual
+maps with a probabilistic residual head. The model predicts \(513\times513\) dense channel attenuation,
 DS, and AS maps from
 topology, geometric masks, UAV transmitter height, and frozen priors through a
 probabilistic residual stage followed by deterministic RMSE oriented fine
@@ -88,18 +89,15 @@ the link \cite{khawaja_survey,saboor2025height}. A practical CKM surrogate,
 however, must generalize to urban layouts not seen during training and must not
 hide hard propagation regimes behind a single global score.
 
-A pure dense image to image formulation was not sufficient for this setting.
-Early U-Net and cGAN models could draw plausible maps, yet their physical
-errors remained large under a ground only metric. PMNet inspired and U-Net
-style backbones improved smooth LoS structure but did not solve NLoS mode
-collapse or the spike plus tail nature of spread targets. The final design
-therefore moved away from ``bigger backbone first'' and toward a stricter
-sequence: define the evaluation contract, diagnose target distributions,
-calibrate train only priors, and then train a bounded residual model around
-those frozen anchors. The contribution is \textsc{HARP-Net CKM}, a dense CKM
-recipe for one fixed UAV simulation contract: strict city holdout, valid
-receiver masking, explicit LoS/NLoS and height reporting, and a bounded
-\textsc{HARP-Net CKM} neural correction around frozen priors.
+The central difficulty is that the three targets do not behave like one smooth
+image regression problem. LoS attenuation has strong radial and height
+structure, NLoS attenuation depends on blocked link regimes, and delay and
+angular spread contain near zero LoS values with heavier NLoS tails. The
+contribution is \textsc{HARP-Net CKM}, the Height-Aware Residual Prior Network
+for Channel Knowledge Map prediction. It is a dense CKM recipe for one fixed
+UAV simulation contract: strict city holdout, valid receiver masking, explicit
+LoS/NLoS and height reporting, priors calibrated only on the training split,
+and a bounded neural correction around those priors.
 
 \subsection{Radio Map and Channel Parameter Predictors}
 
@@ -318,52 +316,14 @@ small residual improvements and spread map boundaries.
 
 \subsection{Why the Final Method Is Hybrid}
 
-The development path exposed three distinct target regimes. First, LoS path
-loss contains stable radial, height dependent, and coherent two ray structure.
-Second, NLoS channel attenuation is not just a smooth residual; it is a blocked link
-distribution placement problem. Third, delay spread and angular spread contain
-near zero LoS spikes and NLoS heavy tails. Thus a single point regression CNN is
-asked to solve three different statistical problems at once.
-
-The final method uses a division of labour. Frozen priors provide a strong mean
-prediction for structure that can be calibrated reliably from training data.
-The neural model receives those priors and learns bounded residual corrections.
-This makes the prior useful but not magical: distribution first neural models
-showed that NLoS structure can be learned without explicit priors when the
-target distribution is represented correctly. The priors are reintroduced
-because they are cheaper, more stable, and more auditable for the predictable
-part of the map.
-
-\begin{table}[!t]
-\centering
-\caption{Design path behind the final model. Historical diagnostics are included
-to explain the choice of head and prior, not as the final leaderboard.}
-\label{tab:design-path}
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\begin{tabularx}{\linewidth}{p{0.24\linewidth}p{0.22\linewidth}X}
-\toprule
-Stage & Role & Main lesson \\
-\midrule
-Direct dense CNNs / cGANs &
-Early baselines &
-Could draw plausible CKM texture, but did not reliably solve NLoS tails or
-spread quantization under the ground only city holdout metric. \\
-Earlier GMM heads without priors &
-Distribution diagnostic &
-Worse than the final system, but showed that channel attenuation, DS, and AS are jointly
-predictable when the head represents LoS/NLoS and heavy tailed targets. \\
-Frozen attenuation and spread priors &
-Structured anchor &
-Captured most radial, visibility, height, and spread scale structure using
-train only calibration. \\
-\textsc{HARP-Net CKM} &
-Reported model &
-Keeps the distribution aware head, but moves it into bounded residual space
-around the frozen priors and then fine tunes the deterministic point map. \\
-\bottomrule
-\end{tabularx}
-\end{table}
+\textsc{HARP-Net CKM} separates stable structure from the residual structure
+that remains hard to model analytically. First, the attenuation prior captures
+LoS distance, height and two ray effects and adds a calibrated NLoS branch for
+blocked regions. Second, the spread priors use log domain regime calibration
+for delay spread and angular spread. Third, the neural model receives these
+frozen maps and predicts only bounded residual corrections. This division keeps
+the predictable part of the map auditable and reserves learning capacity for
+the local errors that the frozen estimators cannot explain.
 
 In this paper, a \emph{prior} means a frozen estimator fitted only on training
 cities, not a hand tuned curve evaluated on the test set. The prior sees the
@@ -407,7 +367,7 @@ must improve an already calibrated predictor rather than merely beat FSPL.
 \draw[arr] (stack.east) -- (net.west);
 \draw[arr] (net.east) -- (out.west);
 \end{tikzpicture}}
-\caption{Compact prior anchored pipeline used for \textsc{HARP-Net CKM}.
+\caption{Compact \textsc{HARP-Net CKM} pipeline.
 The transmitter is always centred, but its height varies by sample. Frozen
 height aware priors are produced first and then used as channels for the final
 \textsc{HARP-Net CKM} model.}
@@ -954,7 +914,7 @@ Angular spread & 13.7416 & 15.2818 & 8.6614 & deg \\
 \end{tabular}
 \end{table}
 
-\subsection{Prior Anchored Residual Model}
+\subsection{HARP-Net CKM Residual Model}
 
 The neural model receives nine aligned channels: topology, LoS mask, NLoS
 mask, ground mask, combined path loss prior, LoS path loss prior, NLoS
@@ -1045,7 +1005,7 @@ training a separate network per altitude bin.
 \node[cond] (hmlp) at (5.35,-1.35) {Height MLP\\\(\mathbf{c}\in\mathbb{R}^{160}\)};
 \node[head] (global) at (11.0,-1.75) {Global heads\\GAP bottleneck\\+\ height code\\\(\pi^{(g)},\delta^{(g)},\sigma^{(g)}\)};
 \node[prior] (taskprior) at (15.0,-2.55) {Per task frozen\\prior map\\\(y_k^{\mathrm{prior}}\)};
-\node[gmm] (assembly) at (19.3,-1.75) {Prior anchored\\GMM assembly\\LoS/NLoS branches};
+\node[gmm] (assembly) at (19.3,-1.75) {\textsc{HARP-Net CKM}\\residual assembly\\LoS/NLoS branches};
 \node[prior, fill=orange!18] (out) at (22.8,-1.75) {Continuous maps\\attenuation, DS, AS};
 
 \draw[arr] (height.east) -- (embed.west);
@@ -1078,15 +1038,14 @@ diagram. The map stack carries topology, masks, and frozen priors; the scalar
 Transmitter height is encoded separately and injected through FiLM. Encoder FiLM uses
 the height code; decoder FiLM and global heads use the fused height/bottleneck
 context. A shared U-Net produces local residual fields, pooled bottleneck
-features produce global GMM parameters, and the prior anchored GMM assembly
+features produce global GMM parameters, and the \textsc{HARP-Net CKM} residual assembly
 emits continuous channel attenuation, DS, and AS maps.
 The blue dashed arrows show the four encoder--decoder concatenations used in
 the implementation.}
 \label{fig:dl-architecture}
 \end{figure*}
 
-The head keeps the two stage logic of the distribution first predecessors, but
-moves it into residual space around the frozen prior. The global stage asks:
+The head uses a two stage residual logic around the frozen prior. The global stage asks:
 ``what residual distribution does this whole map, height, and topology imply?''
 The local stage asks: ``where should each residual component be placed in the
 \(513\times513\) map?'' This is the key distinction from a direct U-Net
@@ -1163,7 +1122,7 @@ The mixture variances combine map level and local uncertainty,
 },
 \label{eq:sigma-paper}
 \end{equation}
-with both terms constrained to \([0.05,3.0]\). During the residual/GMM stage
+with both terms constrained to \([0.05,3.0]\). During the probabilistic residual stage
 these variances and mixture weights define a pixel wise likelihood; during the
 final fine tuning stage the same head remains in place but the reported output
 is the deterministic point map above.
@@ -1172,7 +1131,7 @@ The two mixture weight objects have different jobs. The global weights
 \(\pi^{(g)}_{k,r,j}\) describe the sample level residual histogram and are
 used by the distributional regularizer. The local weights \(p_{k,r,j}(p)\)
 are the pixel wise assignment probabilities used in the final dense map. During
-the residual/GMM stage the per pixel density is
+the probabilistic residual stage the per pixel density is
 \begin{equation}
 q_{k,r}(z_k(p)\mid p)
 =
@@ -1242,11 +1201,11 @@ pixel by pixel through component weights, residual refinements, gates and local
 uncertainty. Component means are anchored to the frozen prior and the
 deterministic map is obtained from the pixel wise model space mixture mean after LoS/NLoS
 selection.}
-\label{fig:gmm-head}
+\label{fig:residual-head}
 \end{figure*}
 
 \textsc{HARP-Net CKM} should not be read as only the final fine tuning loss. It has two active
-training phases: a large capacity residual/GMM stage with probabilistic losses
+training phases: a large capacity probabilistic residual stage with probabilistic losses
 enabled, followed by an RMSE/MAE dominant fine tuning stage. The composite
 objective implemented by the model is
 \begin{equation}
@@ -1267,7 +1226,7 @@ objective implemented by the model is
 \label{eq:loss}
 \end{equation}
 
-The probabilistic terms matter during the residual/GMM stage. The NLL term
+The probabilistic terms matter during the probabilistic residual stage. The NLL term
 teaches the head to place mixture mass around the transformed target, the KL
 and moment terms keep the mixture distribution from becoming a numerically
 convenient but physically uninformative density, and the outlier budget term
@@ -1293,16 +1252,16 @@ purpose.}
 \toprule
 Term & Active stage & Role \\
 \midrule
-GMM NLL & residual/GMM stage &
+GMM NLL & probabilistic residual stage &
 Fits the per pixel mixture density in native attenuation (PL) space and log transformed
 spread space. \\
-Distribution KL & residual/GMM stage &
+Distribution KL & probabilistic residual stage &
 Regularizes the learned mixture so it remains close to the intended
 distributional structure instead of using degenerate weights or variances. \\
-Moment matching & residual/GMM stage &
+Moment matching & probabilistic residual stage &
 Encourages the model space mean and spread of the mixture to agree with target
 moments, stabilizing deterministic extraction from the GMM. \\
-Outlier budget & residual/GMM stage &
+Outlier budget & probabilistic residual stage &
 Keeps rare large residuals visible in the objective instead of letting the
 global average hide them. \\
 Anchor & both stages &
@@ -1336,7 +1295,7 @@ Batching & batch size 1, gradient accumulation 8 \\
 Scheduler & 1 warmup epoch plus cosine \texttt{LambdaLR}; early stopping patience 10 \\
 Augmentation & Training D4 rotations/reflections only; evaluation uses no augmentation \\
 Checkpoint selection & Validation composite PL RMSE \(+0.30\) DS RMSE \(+0.25\) AS RMSE \\
-Loss schedule & Large capacity residual/GMM stage plus final residual
+Loss schedule & Large capacity probabilistic residual stage plus final residual
 fine tuning; see Table~\ref{tab:loss-schedule} \\
 \bottomrule
 \end{tabularx}
@@ -1344,14 +1303,14 @@ fine tuning; see Table~\ref{tab:loss-schedule} \\
 
 \begin{table}[t]
 \centering
-\caption{\textsc{HARP-Net CKM} loss schedule. The pre fine tuning residual/GMM stage is part
+\caption{\textsc{HARP-Net CKM} loss schedule. The pre fine tuning probabilistic residual stage is part
 of the final pipeline, even though the reported checkpoint is selected after
 the deterministic fine tuning stage.}
 \label{tab:loss-schedule}
 \scriptsize
 \begin{tabularx}{\linewidth}{lXX}
 \toprule
-Setting & Residual/GMM stage & Final fine tuning \\
+Setting & Probabilistic residual stage & Final fine tuning \\
 \midrule
 NLL / KL / moment / outlier & 1.00 / 0.25 / 0.10 / 0.02 & 0 / 0 / 0 / 0 \\
 RMSE / MAE & 1.50 / 0.10 & 1.00 / 0.05 \\
@@ -1624,25 +1583,14 @@ Group & Samples & Atten. & DS & AS \\
 \end{tabular}
 \end{table}
 
-\subsection{Why Distribution Diagnostics Matter}
+\subsection{Metric Interpretation}
 
-A retained distribution diagnostic changed the modeling strategy: LoS and NLoS
-channel attenuation do not form a single easy Gaussian map target. The
-distribution first predecessor modeled the marginal with GMM heads and showed
-that the NLoS collapse was not inevitable. The final model keeps this lesson
-but anchors the residual around explicit priors.
-
-The internal diagnostic numbers are kept as scale references, not as final
-claims. The earlier distribution first channel attenuation GMM fits reached \SI{4.43}{dB} LoS
-and \SI{3.34}{dB} NLoS pixel aggregate RMSE, showing that NLoS collapse was a
-modeling choice rather than a necessity. The earlier distribution first spread fits
-reached \SI{30.96}{ns} delay spread RMSE and \(11.78^\circ\) angular spread
-RMSE, motivating log domain and mixture aware treatment of spread targets. The
-frozen priors then provided stronger anchors: the standalone path loss prior
-reached \SI{1.9246}{dB} RMSE on its held out validation+test split and
-\SI{1.9383}{dB} when frozen on the final test split, while the spread priors
-reached \SI{28.10}{ns} delay spread RMSE and \(13.74^\circ\)
-angular spread RMSE on that same final test split.
+The reported model is deterministic at evaluation time: all tables compare the
+continuous \textsc{HARP-Net CKM} point maps with the stored ray-traced target
+maps over valid ground receiver pixels. The residual head is distribution aware
+during training because attenuation, delay spread and angular spread have
+different LoS/NLoS regimes and tail behaviour, but the final claim is the RMSE
+and MAE of the exported point prediction.
 
 For spread targets, quantized labels make visual and RMSE interpretation harder.
 The released delay and angular maps are integer valued; smooth predictions can
@@ -1837,8 +1785,8 @@ implementation is collected separately in the final code repository
 \cite{moreno2026finalcode}; it is the source record for reproducing the paper
 metrics. The reported tables are tied to the selected \texttt{best\_model.pt}
 checkpoint and its exported comparison summary and deep breakdown JSON files,
-rather than to a later interactive demo run. For traceability, the broader development history
-and the LaTeX thesis source are also archived in public repositories
+rather than to a later interactive demo run. For traceability, the LaTeX thesis
+source and project source archive are also available in public repositories
 \cite{moreno2026tfgprogress,moreno2026tfgtext}. Large data and model artifacts
 are treated as external artifacts or Git LFS objects rather than ordinary
 source files.

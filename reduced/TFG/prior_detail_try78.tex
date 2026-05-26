@@ -1379,7 +1379,7 @@ form solution, when \(\textbf{X}_r^\top\textbf{X}_r\) is nonsingular:
 where $\textbf{X}_r$ stacks the feature vectors and $\textbf{y}_r$ stacks
 the measured path loss values. The runtime code does not refit this model; it
 loads the stored coefficient vectors from
-\texttt{try78\_nlos\_regime\_calibration.json}. At inference, if the exact
+\path{try78_nlos_regime_calibration.json}. At inference, if the exact
 antenna height key is absent, the implementation only tries alternative
 antenna bins in the order current, mid, low, high while keeping the same
 path loss-prior city type and LoS/NLoS label. It does not use the broader cross-topology
