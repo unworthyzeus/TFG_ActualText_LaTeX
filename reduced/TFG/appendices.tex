@@ -1,4 +1,5 @@
 \chapter{Detailed Attempt Log}
+\label{app:detailed_attempt_log}
 \begingroup
 \small
 \setlength{\parskip}{3pt plus 1pt minus 1pt}
@@ -609,10 +610,11 @@ The \texttt{Image max height (m)} setting applies only to raster images. It
 exists because PNG, JPG, TIFF and BMP files normally store integer intensities
 rather than physical building heights. When image pixels are not already metres,
 the conversion is
-\[
+\begin{equation}
   h_{\mathrm{m}}(x) =
   \frac{I(x)}{I_{\max}}\,h_{\max},
-\]
+\label{eq:generator_image_height_scaling}
+\end{equation}
 where \(I_{\max}=255\) for 8-bit images and \(I_{\max}=65535\) for 16-bit
 images. The value \(h_{\max}\) is the selected image maximum height in metres.
 
@@ -633,11 +635,12 @@ before priors or neural inference are computed.
 The \texttt{Distance between pixels (m)} or \texttt{--meters-per-pixel} value
 describes the physical spacing of the input grid. The loader first converts the
 input to a \SI{1}{m}/pixel grid:
-\[
+\begin{equation}
   H_{\mathrm{out}} = \mathrm{round}(H_{\mathrm{in}}\,s),
   \qquad
   W_{\mathrm{out}} = \mathrm{round}(W_{\mathrm{in}}\,s),
-\]
+\label{eq:generator_grid_resampling}
+\end{equation}
 where \(s\) is the input spacing in metres per pixel. A value of
 \(s=1\) leaves the physical sampling unchanged, \(s<1\) downsamples a finer
 grid, and \(s>1\) upsamples a coarser grid.
@@ -661,10 +664,11 @@ After resampling, the array is fitted to the \(513\times513\) model grid:
 \end{itemize}
 
 The receiver-valid ground mask is derived after this fitting step:
-\[
+\begin{equation}
   m_{\mathrm{ground}}(x) =
   \mathbf{1}\{h_{\mathrm{topology}}(x) \le 10^{-6}\}.
-\]
+\label{eq:generator_ground_mask}
+\end{equation}
 Only zero-height pixels are treated as receiver locations. Building pixels and
 padded outside pixels are excluded from both LoS and NLoS support.
 
@@ -684,11 +688,12 @@ also used by the physical priors. The available policies are:
 
 The original CKM HDF5 data normally stores the LoS mask. The NLoS mask is
 derived rather than read as an independent ground truth label:
-\[
+\begin{equation}
   m_{\mathrm{LoS}} = m_{\mathrm{LoS,raw}}\,m_{\mathrm{ground}},
   \qquad
   m_{\mathrm{NLoS}} = (1-m_{\mathrm{LoS,raw}})\,m_{\mathrm{ground}}.
-\]
+\label{eq:generator_support_masks}
+\end{equation}
 The multiplication by \(m_{\mathrm{ground}}\) is essential; otherwise building
 pixels would be labelled as NLoS receiver pixels.
 

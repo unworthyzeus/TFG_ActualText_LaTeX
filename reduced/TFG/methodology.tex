@@ -8,10 +8,21 @@ building height map and UAV transmitter height are converted into support masks 
 prior maps; \textsc{HARP-Net CKM} receives those maps and predicts bounded
 residual corrections; the final outputs are channel attenuation, delay spread
 and angular spread maps. The development history that led to this choice is
-kept in Appendix~A, while this chapter contains both the high level pipeline
+kept in Appendix~\ref{app:detailed_attempt_log}, while this chapter contains
+both the high level pipeline
 and the formula level details needed to reproduce the reported results.
 
 \section{Dataset and split}
+
+The data source is \texttt{CKM\_Dataset\_270326.h5}, a project HDF5 version of
+the CKM radio map data associated with the public path loss and ToA radio map
+dataset of Yapar et al.~\cite{dataset2212}. At dataset level, it contains
+16180 ray traced urban samples from 66 real city scenarios. The fields used by
+the final pipeline are the building topology map, the CKM target stored as
+\texttt{path\_loss}, the LoS/NLoS support mask, the UAV transmitter height
+\texttt{uav\_height}, \texttt{delay\_spread}, and
+\texttt{angular\_spread}. The rest of this section moves from that dataset
+level view to the per sample and per pixel evaluation contract.
 
 Each sample is a complete $513\times513$ pixel CKM. The spatial resolution is
 \SI{1}{m}\(\times\)\SI{1}{m} per pixel, so each map covers a
@@ -33,18 +44,28 @@ city assignment. This avoids the most common optimistic error in spatial radio
 prediction: training on one part of a city and testing on another visually
 similar part of the same city.
 
-The transmitter height samples are not uniformly distributed. Comparing the
-stored HDF5 histogram with the tested affine beta-mixture variants shows that
-the closest nominal sampler is
-\(h_{\mathrm{design}}\approx 10+490X\), where
-\[
+The transmitter height samples are not uniformly distributed. They are produced
+by the dataset generator through the affine beta mixture
+\(h_{\mathrm{design}}=10+490X\), where
+\begin{equation}
 X\sim 0.75\,\mathrm{Beta}(3,23)+0.25\,\mathrm{Beta}(4,4).
-\]
+\label{eq:height_beta_mixture}
+\end{equation}
+For \(a,b>0\), \(\mathrm{Beta}(a,b)\) denotes the distribution with density
+\begin{equation}
+  f_{a,b}(x)=
+  \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}
+  x^{a-1}(1-x)^{b-1},\qquad 0\le x\le 1,
+  \label{eq:beta_density}
+\end{equation}
+and density zero outside \([0,1]\). Thus the generator first draws a normalized
+height variable from the mixture density
+\(0.75 f_{3,23}(x)+0.25 f_{4,4}(x)\), then maps it to metres.
 However, the finite HDF5 database is the relevant distribution for training
 and reporting. Reading the stored \texttt{uav\_height} field for all 16180
 samples gives an empirical range of \SIrange{11.61}{477.54}{m}, usually
 rounded in the text as about \SIrange{12}{478}{m}; \SI{477.54}{m} is the
-largest sampled HDF5 value, not a hard endpoint of the approximate beta law.
+largest sampled HDF5 value, not a hard endpoint of the generator distribution.
 This is statistically normal: under \(10+490X\),
 \(P(h_{\mathrm{tx}}>\SI{478}{m})=3.19\times10^{-5}\) per draw, so only
 0.52 such samples are expected in 16180 draws and the probability of drawing
@@ -222,38 +243,34 @@ Channel attenuation map, delay spread map, angular spread map. \\
 
 \begin{figure}[htbp]
   \centering
-  \resizebox{\textwidth}{!}{%
   \begin{tikzpicture}[
     >=Latex,
-    node distance=0.75cm and 0.95cm,
-    block/.style={draw, rounded corners=2pt, align=center, minimum height=0.8cm,
-      minimum width=2.65cm, font=\scriptsize},
+    node distance=0.75cm and 0.55cm,
+    block/.style={draw, rounded corners=2pt, align=center, text width=0.20\textwidth,
+      minimum height=1.25cm, inner sep=4pt, font=\footnotesize},
     input/.style={block, fill=blue!8},
-    support/.style={block, fill=orange!10},
-    prior/.style={block, fill=green!10},
+    derived/.style={block, fill=green!8},
     model/.style={block, fill=purple!8},
-    output/.style={block, fill=red!8}
+    output/.style={block, fill=red!8},
+    metric/.style={draw, rounded corners=2pt, align=center, text width=0.30\textwidth,
+      minimum height=0.85cm, inner sep=4pt, font=\footnotesize, fill=orange!10}
   ]
-    \node[input] (topology) {Building height\\map};
-    \node[input, below=of topology] (height) {Transmitter\\height};
+    \node[input] (inputs) {\textbf{External inputs}\\[2pt]
+      Building height map\\UAV Tx height};
+    \node[derived, right=of inputs] (maps) {\textbf{Computed maps}\\[2pt]
+      Ground mask\\LoS/NLoS masks\\Frozen PL, DS, AS priors};
+    \node[model, right=of maps] (harp) {\textbf{\textsc{HARP-Net CKM}}\\[2pt]
+      Residual model\\height FiLM};
+    \node[output, right=of harp] (outputs) {\textbf{Dense outputs}\\[2pt]
+      Channel attenuation\\delay spread\\angular spread};
+    \node[metric, below=0.70cm of harp] (eval) {\textbf{Reported evaluation}\\
+      city holdout, valid ground pixels};
 
-    \node[support, right=of topology] (masks) {Ground mask\\LoS/NLoS mask};
-    \node[prior, right=of masks] (priors) {Frozen priors\\PL, DS, AS};
-    \node[model, right=of priors] (harp) {\textsc{HARP-Net CKM}\\residual model};
-    \node[output, right=of harp] (outputs) {Channel attenuation\\delay spread\\angular spread};
-    \node[support, below=of harp] (eval) {City holdout\\ground pixel metrics};
-
-    \draw[->] (topology) -- (masks);
-    \draw[->] (height) -| (masks);
-    \draw[->] (topology) -- ++(1.0,0) |- (priors);
-    \draw[->] (height) -- ++(1.0,0) |- (priors);
-    \draw[->] (masks) -- (priors);
-    \draw[->] (priors) -- (harp);
-    \draw[->] (masks) -- ++(0,-1.1) -| (harp);
-    \draw[->] (height) -- ++(3.2,0) |- (harp);
-    \draw[->] (harp) -- (outputs);
-    \draw[->] (outputs) |- (eval);
-  \end{tikzpicture}}
+    \draw[->, thick] (inputs) -- (maps);
+    \draw[->, thick] (maps) -- (harp);
+    \draw[->, thick] (harp) -- (outputs);
+    \draw[->, thick] (outputs.south) |- (eval.east);
+  \end{tikzpicture}
   \caption{High level methodology flow. The user supplies the city height map
   and transmitter height. The pipeline constructs support masks and frozen
   prior maps, then \textsc{HARP-Net CKM} predicts residual corrections for the
@@ -277,8 +294,9 @@ user provides only a city height map and the transmitter height, while the pipel
 constructs the remaining maps before inference.
 
 The rest of this chapter therefore describes the selected final method rather
-than the chronological path used to discover it. Appendix~A keeps the
-development evidence and discarded routes; this chapter keeps only the final
+than the chronological path used to discover it.
+Appendix~\ref{app:detailed_attempt_log} keeps the development evidence and
+discarded routes; this chapter keeps only the final
 constraints that survive into the reported system: no building pixel credit, no
 random city leakage, explicit transmitter height conditioning, separate
 LoS/NLoS support, frozen train only priors, and bounded residual correction.

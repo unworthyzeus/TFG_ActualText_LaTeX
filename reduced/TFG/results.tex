@@ -14,7 +14,7 @@ test split. All final model-versus-prior comparisons use the latter.
 The prior is not a weak reference included only for comparison. It is one of
 the central results of the thesis: a strong, train calibrated baseline that
 absorbs the stable part of the map before the residual model is asked to solve
-the harder local errors. Appendix~A keeps the development history and negative
+the harder local errors. Appendix~\ref{app:detailed_attempt_log} keeps the development history and negative
 attempts; this chapter focuses on the frozen priors and final test evaluation.
 
 \section{Final test contract and frozen priors}
@@ -261,7 +261,7 @@ to limit deployment in dense urban environments.
 This topology breakdown also makes the central methodological claim of the
 thesis quantitative. The train calibrated prior is not only strong on average,
 but also auditable by city type and LoS/NLoS case. The longer comparison with
-the appendix diagnostic models is kept in Appendix~A.
+the appendix diagnostic models is kept in Appendix~\ref{app:detailed_attempt_log}.
 
 \subsection{Channel attenuation: prior versus \textsc{HARP-Net CKM}}
 
@@ -440,7 +440,8 @@ final model reference row; scalar channel parameter papers are kept out of this
 results table. In the table, PL means channel attenuation RMSE and lower RMSE is better.
 The better/worse ratios should be read cautiously because the rows use different
 data, different inputs, or different evaluation contracts. Earlier internal
-baselines are discussed in the ablation results instead of repeated here.
+baselines are summarized in Appendix~\ref{app:detailed_attempt_log} instead of
+repeated here.
 
 \begin{table}[!htbp]
 \centering
@@ -744,11 +745,12 @@ This also explains why getting very close to the best possible error is
 mathematically harder than the headline RMSE suggests. If model error and
 quantisation error are approximately independent, the observed squared error
 decomposes as
-\[
+\begin{equation}
   \mathbb{E}\!\left[(\hat{y}-y_q)^2\right]
   \approx
   \mathbb{E}\!\left[(\hat{y}-y^\star)^2\right] + \sigma_q^2 .
-\]
+\label{eq:quantization_error_decomposition}
+\end{equation}
 Near \(\sigma_q\), a real reduction in model error produces only a small change
 in total RMSE because of the square-root compression. In addition, many
 different continuous ray tracing values collapse to the same stored integer, so
