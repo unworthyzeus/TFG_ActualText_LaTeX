@@ -25,17 +25,17 @@ reduced LoS RMSE from roughly \SI{3.95}{dB} with FSPL to
 \SI{1.75}{dB}. The final hybrid prior reached \SI{1.9246}{dB} overall under the
 pixel weighted metric on the held out validation+test pool.
 
-\subsection{LoS path loss prior progression}
+\subsection{LoS path loss prior component comparison}
 
-The LoS branch of the final path loss prior was developed as a short waterfall of three
-increasingly physical models fitted on the same city holdout split, so the gain
-from each modelling choice can be isolated
+The LoS branch of the final path loss prior is compared through three
+increasingly physical component variants fitted on the same city holdout split,
+so the gain from each modelling choice can be isolated
 (Table~\ref{tab:try78_los_waterfall}).
 
 \begin{table}[!htbp]
 \centering
-\caption[LoS path loss prior progression.]%
-{LoS path loss prior progression: three priors evaluated on the same
+\caption[LoS path loss prior component comparison.]%
+{LoS path loss prior component comparison: three priors evaluated on the same
 held out validation+test pool (pixel weighted RMSE).}
 \label{tab:try78_los_waterfall}
 \begin{tabular}{lcc}
@@ -689,7 +689,7 @@ histograms showed NLoS mode collapse: visually plausible maps could follow the
 radial LoS trend while missing the blocked link tail. The selected final model
 removes the worst of that collapse, reduces RMSE relative to the frozen priors
 across the split and LoS/NLoS checks, and applies residual corrections whose
-sign follows the prior error maps. The compact diagnostic appendix keeps the
+sign follows the prior error maps. The diagnostic appendix keeps the
 histogram and spread quantisation checks; the wider gallery and split bar plots
 remain in the generated figure archive.
 
@@ -698,9 +698,8 @@ remain in the generated figure archive.
 \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Vancouver_sample_15265_6x3.png}
 \caption[Representative final model inspection panel.]%
 {Representative final model inspection panel for a dense, mid altitude,
-held out test sample in Vancouver. Related compact diagnostics are kept in
-Appendix~\ref{app:qualitative_diagnostics}; this panel is kept here because it
-shows the final prior, residual correction and prediction side by side.}
+held out test sample in Vancouver. This panel is kept here because it shows the
+final prior, residual correction and prediction side by side.}
 \label{fig:try80_panel_results}
 \end{figure}
 

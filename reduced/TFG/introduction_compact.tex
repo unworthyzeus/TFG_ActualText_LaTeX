@@ -5,7 +5,7 @@ systems in which UAVs or other elevated radio access nodes may act as aerial
 base stations, relays, or temporary coverage nodes. Ray tracing can produce
 detailed channel knowledge maps, but it
 is too expensive to repeat for every transmitter height, city morphology or
-deployment hypothesis. This thesis studies whether a learned surrogate can
+deployment hypothesis. This thesis studies whether a hybrid predictive model can
 predict dense channel maps directly from urban geometry while preserving enough
 physical structure to generalize to cities not seen during training. The CKM
 files name the transmitter as a UAV, but the same fixed centre
@@ -86,7 +86,7 @@ The initial plan was a standard image to image pipeline: literature review,
 dataset preparation, U-Net/cGAN baselines, model improvement and evaluation. The
 actual route became more diagnostic. Early CNNs produced plausible maps but did
 not control physical RMSE; the ground-mask reset changed the metric; PMHHNet and
-topology experts improved LoS but not NLoS tails; distribution first GMM heads
+topology experts improved LoS but not NLoS tails; distribution aware diagnostics
 showed that the target distributions were multi-modal or spike-plus-tail; and
 the final solution returned to strong frozen priors plus bounded neural
 residuals.

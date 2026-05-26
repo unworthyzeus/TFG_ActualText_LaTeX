@@ -73,6 +73,40 @@ expensive ray tracing baselines. Reproducible experiments are not only a
 scientific requirement; they reduce wasted computation caused by ambiguous
 settings, hidden preprocessing changes or repeated debugging runs.
 
+For the development footprint, a rough quantitative estimate can be recovered
+from the experiment history. The final \textsc{HARP-Net CKM} line used four
+RTX~2080~Ti GPUs for approximately \SI{12}{h}, about \SI{18}{kWh} under a
+\SI{1.5}{kW} four GPU node approximation. The distribution first and prior
+calibration phase added roughly another \SI{18}{h} of four GPU time, about
+\SI{27}{kWh}, plus lighter CPU and DirectML calibration runs. Across the full
+exploratory thesis line, including failed and diagnostic experiments, the total
+exceeded roughly \num{400} GPU hours. With the same power approximation this is
+about \SI{150}{kWh}, or approximately \SI{30}{kgCO2e} if an illustrative
+\SI{0.2}{kgCO2e/kWh} grid factor is used. This is not a full life cycle
+assessment and does not include embodied carbon of shared GPUs or data centre
+infrastructure, but it gives an order of magnitude for the academic research
+phase.
+
+Because this is a software thesis, raw material use is indirect: the laptop,
+shared GPU node, storage and network infrastructure already existed. No dedicated
+device or project specific material was purchased. Supplier environmental reports
+for the hardware were not audited, which is a limitation of the analysis. At the
+end of life, the project mainly generates digital artefacts that can be archived
+or deleted; no project specific physical waste is expected. If the work were
+repeated, the footprint could be reduced by freezing the experiment plan earlier,
+running smaller pilot subsets before full training, reusing checkpoints more
+aggressively and scheduling heavy jobs when cleaner electricity is available.
+
+For the use phase, the older detailed estimate remains useful because it
+connects the benchmark with energy rather than only speed. Extrapolating the
+Barcelona runtime to the \num{16180} CKM samples gives \SI{448.96}{h} for the
+local ray tracing path and \SI{3.95}{h} for the surrogate. Under a simple
+\SI{100}{W} same laptop full load assumption, this corresponds to about
+\SI{44.9}{kWh} versus \SI{0.39}{kWh}. The assumptions are deliberately simple,
+but the conclusion is robust in direction: the environmental case depends on
+amortizing the research footprint through many reused predictions, not on
+claiming that model training itself is free.
+
 \section{Economic and social impact}
 
 Economically, this work is not yet a product ready to take to market. Its value
@@ -86,6 +120,45 @@ academic project, but it is still relevant because the full exploration
 required many GPU hours. In a planning workflow, a mature version of this
 surrogate could reduce repeated simulation runs and enable faster scenario
 studies over elevated transmitter heights or city layouts.
+
+Table~\ref{tab:sustainability_budget} gives an indicative professional cost
+view of the BT development. It is not a billed project budget, but it answers
+the guide's request to quantify human and material resources, including working
+hours, hourly costs, computation and operating assumptions.
+The approximate calendar was literature review and proposal in the first stage,
+dataset handling and baseline implementation next, experiment design and
+debugging in the central stage, and writing, figures and review in the final
+stage, with supervision distributed throughout. No subcontracting, new computer
+purchase, material purchase or separate tax item is included; electricity is
+included in the shared compute estimate. Cost was reduced by using open source
+software, shared university compute, cached outputs and reusable scripts instead
+of buying dedicated hardware or repeating ray tracing unnecessarily.
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.08}
+\caption{Indicative economic cost of the BT development.}
+\label{tab:sustainability_budget}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrr>{\raggedright\arraybackslash}p{3cm}}
+\toprule
+Task or resource & Quantity & Unit cost & Cost & Notes \\
+\midrule
+Literature review and proposal & 60\,h & 12\,EUR/h & 720\,EUR & Initial scope and state of the art \\
+Dataset and baseline implementation & 90\,h & 12\,EUR/h & 1\,080\,EUR & HDF5, U-Net/cGAN, masking \\
+Experiment design and debugging & 180\,h & 12\,EUR/h & 2\,160\,EUR & Priors, experts, evaluation \\
+Writing and figures & 120\,h & 12\,EUR/h & 1\,440\,EUR & Thesis text and diagrams \\
+Supervision meetings and supervisors' dataset simulation time & 50\,h & 40\,EUR/h & 2\,000\,EUR & Advisor time \\
+GPU compute, \textsc{HARP-Net CKM} & 48 GPU hours & 0.25\,EUR/GPU hour & 12\,EUR & 4$\times$ RTX~2080~Ti, 12\,h \\
+GPU compute, distribution and prior phase & 72 GPU hours & 0.25\,EUR/GPU hour & 18\,EUR & Distribution first models plus prior calibration \\
+Exploratory compute & $\approx$400 GPU hours & 0.25\,EUR/GPU hour & $\approx$100\,EUR & Research iterations \\
+Electricity & N/A & included in GPU hours & 0\,EUR & Covered by shared compute rate \\
+Storage and code hosting & N/A & free & 0\,EUR & GitHub and local storage \\
+\midrule
+\textbf{Total indicative cost} & & & \textbf{$\approx$7\,530\,EUR} & \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 The most realistic economic path is a planning tool rather than a standalone
 consumer product. A mature version could be licensed as software for network
@@ -102,6 +175,18 @@ this thesis, because CKMs, radio map prediction and hybrid physics neural
 models already exist in the literature; the more plausible near term value is
 know how, implementation, calibration data and integration into operator
 planning workflows.
+
+The economic limitations are therefore not only computational. The project
+would also need packaging, documentation, support, validation datasets, update
+procedures and periodic recalibration if it were maintained as planning
+software. The cost of dismantling is small because the project is software, but
+archival responsibility remains: code, checkpoints, data provenance and model
+metadata should be preserved so that future users do not have to rerun the same
+experiments only to recover the assumptions.
+The main viability risks are that operators may need other frequencies, antenna
+patterns, map formats or field validated accuracy levels, which would increase
+calibration cost. Other projects could still benefit from the reusable priors,
+mask generation code, evaluation scripts and documented city holdout protocol.
 
 Socially, faster CKM prediction can support temporary coverage planning for
 public events, rural extensions, emergency response or infrastructure
@@ -120,6 +205,30 @@ the model has been validated on simulated CKM cities and inherits the
 assumptions of the ray tracer, the topology representation, and the ground mask
 definition.
 
+From the development perspective, the work also had a personal and professional
+training impact. It required propagation theory, machine learning, HPC
+workflows, reproducible evaluation, scientific writing and continuous critical
+review of failed approaches. Inclusive language is used where applicable, and
+the thesis does not assign technical roles, expected users or beneficiaries by
+gender. From the project execution perspective, usability matters because the
+tool would likely be used by engineers rather than by the general public: input
+metadata, mask policy, antenna height, checkpoint version and limitations
+should be visible enough that users with different levels of ML expertise can
+understand what the generated map does and does not certify.
+
+The current sector context is a growing use of digital twins, simulation assisted
+planning and machine learning surrogates for network design. The same problem
+could also be addressed with full ray tracing, measurement campaigns, empirical
+propagation formulas or commercial planning tools; those options shift the
+balance between cost, accuracy, transparency and accessibility. The main barriers
+to this prototype are technical: users need access to map inputs, metadata and
+basic interpretation of uncertainty and masks. A future interface should provide
+accessible plots, documented defaults and clear warnings so that age, disability,
+cultural background or limited ML expertise do not become hidden barriers. A
+dependency risk also exists: if planners rely only on the surrogate and stop
+running measurements or high fidelity simulation, users could become vulnerable
+to systematic model errors.
+
 There is also a fairness dimension in the morphology split. The model is tested
 on unseen cities, but the training distribution is still finite and urban
 morphologies are not equally represented. Dense high rise, unusual street
@@ -130,6 +239,14 @@ morphology and height, instead of using the global average as the only quality
 indicator.
 
 \section{Ethical implications and SDGs}
+
+The exact need addressed is faster dense CKM generation for UAV and elevated base
+station planning under the thesis dataset contract. This need was defined by the
+BT proposal, the supervisors' research context and the broader network planning
+problem of replacing repeated simulation with documented surrogates where this
+is justified. Consequences beyond the intended use include misplaced confidence
+in coverage maps, pressure to skip measurements, or inappropriate use outside the
+frequency, city and antenna assumptions evaluated here.
 
 The main ethical obligation is honesty about validity. The dataset is generated
 by ray tracing, so the thesis demonstrates simulator level generalization to
@@ -153,12 +270,30 @@ checkpoint version and known limitations. Keeping that metadata with the
 prediction is part of the ethical responsibility of making a fast tool: speed is
 useful only if the output remains traceable.
 
+The project also aligns with the professional ethics expected in engineering
+and research work by documenting assumptions, avoiding data leakage between
+cities, reporting limitations, and keeping the evaluation contract explicit.
+In UPC terms, the relevant principles are those of the Code of Ethics and the
+Code of Research Integrity: transparency, honesty in reporting results,
+responsible use of resources, and respect for the people who may be affected by
+technical decisions. A future operational version should include human review
+before coverage maps affect public service, emergency response or critical
+infrastructure decisions.
+
 The project aligns most directly with SDG~9, because it develops a faster tool
 for wireless infrastructure planning; SDG~11, because it can support resilient
 urban and temporary connectivity; and SDG~13, because a validated surrogate can
 reduce repeated simulation energy. These contributions are indirect: the thesis
 provides a reproducible method and generator, not an operational network
 deployment by itself.
+
+In the guide's language, these SDG links are indirect but specific:
+SDG~9 is supported through a faster infrastructure planning method, SDG~11
+through resilient urban and temporary connectivity planning, and SDG~13 through
+lower repeated simulation energy when the surrogate is reused responsibly. The
+work does not by itself deploy infrastructure or guarantee better coverage; it
+provides a reproducible method that can help future planning tools prioritize
+where slower simulation or real measurement is most needed.
 
 Overall, the sustainability conclusion is conditional but positive. The research
 process was computation heavy, but it produced a reusable generator that can

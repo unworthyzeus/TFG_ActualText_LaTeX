@@ -58,10 +58,10 @@ then asks the neural model to improve the residual.
 
 Distribution aware prediction is the other essential ingredient. A single MSE
 head assumes that the conditional target is well summarized by its mean. The
-late project diagnostics showed that this was false: LoS and NLoS path-loss
-marginals are different, and delay/angular spread maps contain a near-zero LoS
-spike plus NLoS-heavy tails. Heteroscedastic losses, mixture-density networks,
-GMM heads and diffusion-style generative models all address this mismatch in
+late project diagnostics showed that this was false: LoS and NLoS path loss
+marginals are different, and delay/angular spread maps contain a near zero LoS
+spike plus NLoS heavy tails. Heteroscedastic losses, mixture density networks,
+distribution aware heads and diffusion style generative models all address this mismatch in
 different ways \cite{kendall2017uncertainties,saleh2021probabilistic,
 garciamarti2020mixture,radiodiff2025}. \textsc{HARP-Net CKM} keeps the practical
 part of that lesson: it emits residual mixture parameters around the frozen

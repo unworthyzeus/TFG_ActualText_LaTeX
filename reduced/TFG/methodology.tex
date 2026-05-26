@@ -8,8 +8,8 @@ building height map and UAV transmitter height are converted into support masks 
 prior maps; \textsc{HARP-Net CKM} receives those maps and predicts bounded
 residual corrections; the final outputs are channel attenuation, delay spread
 and angular spread maps. The development history that led to this choice is
-kept in Appendix~A, while this chapter keeps only the final ingredients needed
-to reproduce the reported results.
+kept in Appendix~A, while this chapter contains both the high level pipeline
+and the formula level details needed to reproduce the reported results.
 
 \section{Dataset and split}
 
@@ -265,10 +265,8 @@ Figure~\ref{fig:methodology_block_diagram} is the reader map for the rest of
 the chapter. Sections~\ref{sec:priors_overview} to~\ref{sec:try80_detail}
 define the final method at the level needed to reproduce the reported pipeline:
 which maps are fitted, which maps are frozen, which channels enter
-\textsc{HARP-Net CKM}, and how the deterministic outputs are evaluated. The
-formula level derivations and implementation notes are kept in
-Appendix~\ref{app:method_details}, so the main methodology chapter stays
-focused on the final design rather than on a long technical manual.
+\textsc{HARP-Net CKM}, how the deterministic outputs are assembled, and how
+the final maps are evaluated.
 
 Therefore, the full framework has two external inputs and three final outputs.
 The neural residual model receives nine spatial map channels plus a separate
@@ -309,19 +307,17 @@ explicit LoS/NLoS support mask selects the branch at each ground receiver pixel,
 producing the frozen attenuation prior used by \textsc{HARP-Net CKM}.
 
 Chapter~\ref{chap:results} reports the quantitative prior audit. The full
-equations, feature inventory and fitting details are in
-Appendix~\ref{app:method_details}.
+equations, feature inventory and fitting details are included below.
 
-\section{Angular Spread Prior and Residual Prediction}
+\input{prior_detail_try78}
+
+\section{Delay and Angular Spread Prior and Residual Prediction}
 \label{sec:try79_detail}
 
 Angular spread uses the shared spread prior described below. Its final
 prediction is the frozen angular spread prior plus the bounded residual
 correction predicted by \textsc{HARP-Net CKM}. The target is reported in
 degrees and is evaluated only on valid ground receiver pixels.
-
-\section{Delay Spread Prior and Residual Prediction}
-\label{sec:delay_method_summary}
 
 Delay spread uses the same shared spread prior machinery, but it is evaluated
 in nanoseconds and is more sensitive to rare high delay pixels. The model
@@ -338,7 +334,9 @@ prior is inverse transformed to native units before it is compared with
 ray-traced ground truth or passed to \textsc{HARP-Net CKM}.
 
 The full spread feature vector, ridge objective and fallback structure are
-given in Appendix~\ref{app:method_details}.
+given below.
+
+\input{prior_detail_try79}
 
 \section{Training and Evaluation Protocol}
 \label{sec:try80_detail}
@@ -364,4 +362,6 @@ RMSE contract defined at the start of this chapter. The selected final stage is
 RMSE/MAE oriented, with small anchor and prior guard terms so that the residual
 model improves the frozen priors without freely overwriting them. The full
 architecture diagram, residual assembly equations and loss family are included
-in Appendix~\ref{app:method_details}.
+below.
+
+\input{prior_detail_try80}

@@ -1,4 +1,4 @@
-This section provides the compact entry point for the ML calibrated physical
+This section provides the entry point for the ML calibrated physical
 path loss and spread priors and the \textsc{HARP-Net CKM} residual architecture.
 The propagation ingredients follow classical FSPL, two ray,
 empirical NLoS and large scale parameter models
@@ -7,8 +7,8 @@ residual network inherits dense prediction, FiLM conditioning and
 distribution aware regression ideas
 \cite{pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic}.
 The detailed mathematical derivations and implementation level fitting notes
-are kept in Appendix~\ref{app:method_details}, so the methodology chapter can
-stay short while the full audit trail remains available.
+are included in this methodology chapter, so the final pipeline can be read
+without leaving the method section.
 
 \subsection{High level architecture}
 
@@ -247,9 +247,8 @@ prior a competitive baseline. \\
 The final pipeline is a hybrid between classical propagation models,
 distribution aware regression, and dataset-specific calibration.
 Table~\ref{tab:prior_literature_mapping} keeps the mapping explicit; the
-detailed equations and fitting procedures are given in
-Appendix~\ref{app:method_details}, covering the attenuation prior, spread
-prior, and \textsc{HARP-Net CKM} residual model.
+detailed equations and fitting procedures follow in this chapter, covering the
+attenuation prior, spread prior, and \textsc{HARP-Net CKM} residual model.
 
 \begin{table}[H]
 \centering

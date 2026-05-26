@@ -9,10 +9,8 @@ z(x) = \log(1 + y(x)),\qquad \hat y(x) = \exp(\hat z(x)) - 1
 \label{eq:log_transform_79}
 \end{equation}
 
-The constant 1 keeps exact zeros finite, avoids
-\(\log(0)\), and makes the same transform usable for both delay spread in
-nanoseconds and angular spread in degrees. If two pixels have native spread
-values \(y_a\) and \(y_b\), their difference in transformed space is
+For two pixels with native spread values \(y_a\) and \(y_b\), their difference
+in transformed space is
 \begin{equation}
 z_a-z_b
 =
@@ -154,26 +152,28 @@ the raw prior block \(\textbf{x}_{\mathrm{prior}}\), the
 range/elevation/height block \(\textbf{x}_{\mathrm{geom}}\), the local building
 block \(\textbf{x}_{\mathrm{morph}}\), one bias term, and the interaction block
 \(\textbf{x}_{\mathrm{int}}\).
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
-\small
-\begin{tabularx}{\textwidth}{p{3.2cm} X X}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{0.88}
+\begin{tabularx}{\textwidth}{p{2.7cm} p{3.3cm} X}
 \toprule
 \textbf{Term} & \textbf{Mathematical role} & \textbf{Physical interpretation} \\
 \midrule
-\(z^{(0)}(x)^2\) & Quadratic raw prior basis. & Allows the calibration to correct curvature in the first spread estimate. \\
-\(z^{(0)}(x)\) & Linear raw prior basis. & Keeps the calibrated model tied to the log domain physical prior. \\
-\(\log(1+d_{2D})\) & Smooth distance basis. & Longer links can produce wider delay and angle supports because more scatterers can contribute. \\
-\(\theta_{\mathrm{norm}}\) & Normalized elevation angle. & Separates overhead links from grazing links. \\
-\(\theta_{\mathrm{inv}}\) & Inverse elevation angle. & Gives a large value to low elevation links, where A2G models report stronger obstruction sensitivity \cite{khawaja_survey,tr38901}. \\
-\(h_{\mathrm{norm}},h_{\mathrm{norm}}^2\) & UAV height basis and quadratic height basis. & Allows the model to learn a nonlinear effect of transmitter height on spread. \\
-\(\rho_{15},\rho_{41}\) & Fine/coarse local building density. & Measures how many nearby reflectors and blockers exist at two scales. \\
-\(h_{15},h_{41}\) & Fine/coarse density weighted building height. & Distinguishes low rise clutter from high rise clutter. \\
-\(n_{15},n_{41}\) & Fine/coarse local NLoS support. & Measures how much nearby ground is geometrically shielded. \\
-\(b_{41}\) & Blocker depth term. & Measures how far nearby buildings protrude above receiver height. \\
-\(1\) & Bias term. & Gives each regime its own additive offset. \\
-\(c_{41}\) & Transmitter clearance term. & Density weighted window area mean of UAV clearance above nearby building pixels. \\
-\(t_{41}\) & Taller building area fraction. & Fraction of the full local window occupied by buildings whose height exceeds the UAV height. \\
+\(z^{(0)}(x)^2\) & Quadratic raw prior basis. & Corrects curvature in the first spread estimate. \\
+\(z^{(0)}(x)\) & Linear raw prior basis. & Anchors the fit to the log domain prior. \\
+\(\log(1+d_{2D})\) & Smooth distance basis. & Captures range growth in delay and angle support. \\
+\(\theta_{\mathrm{norm}}\) & Normalized elevation angle. & Separates overhead from grazing links. \\
+\(\theta_{\mathrm{inv}}\) & Inverse elevation angle. & Highlights low elevation links with stronger obstruction sensitivity \cite{khawaja_survey,tr38901}. \\
+\(h_{\mathrm{norm}},h_{\mathrm{norm}}^2\) & Linear and quadratic UAV height basis. & Learns nonlinear height effects. \\
+\(\rho_{15},\rho_{41}\) & Fine/coarse local building density. & Counts nearby reflectors and blockers. \\
+\(h_{15},h_{41}\) & Fine/coarse density weighted height. & Distinguishes low rise from high rise clutter. \\
+\(n_{15},n_{41}\) & Fine/coarse local NLoS support. & Measures nearby geometric shielding. \\
+\(b_{41}\) & Blocker depth term. & Measures building protrusion above receiver height. \\
+\(1\) & Bias term. & Gives each regime an additive offset. \\
+\(c_{41}\) & Transmitter clearance term. & Measures UAV clearance above local buildings. \\
+\(t_{41}\) & Taller building area fraction. & Measures local area occupied by buildings above the UAV. \\
 \bottomrule
 \end{tabularx}
 \caption{Term by term inventory of the direct terms in the spread calibration vector.}
@@ -190,19 +190,21 @@ features. Individual fitted coefficients should therefore not be read as
 isolated physical constants; the terms were kept because the calibrated prior
 improved with them.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
-\small
-\begin{tabularx}{\textwidth}{p{3.2cm} X X}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{0.88}
+\begin{tabularx}{\textwidth}{p{3.0cm} p{3.2cm} X}
 \toprule
 \textbf{Term} & \textbf{Mathematical role} & \textbf{Physical interpretation} \\
 \midrule
-\(n_{41}\log(1+d_{2D})\) & NLoS distance interaction. & Lets range matter differently in blocked streets than in open ground. \\
-\(\rho_{41}\theta_{\mathrm{inv}}\) & Density elevation interaction. & Activates when dense morphology and low elevation occur together. \\
-\(\theta_{\mathrm{norm}}\rho_{41}\) & Overhead density interaction. & Allows dense areas to behave differently when viewed from high elevation. \\
-\(c_{41}\theta_{\mathrm{inv}}\) & Clearance elevation interaction. & Lets density weighted rooftop clearance matter differently at grazing elevation. \\
-\(t_{41}\rho_{41}\) & Tall building density interaction. & Highlights dense high rise blocks where a large window area contains buildings above the UAV. \\
-\(t_{41}n_{41}\) & Tall building NLoS interaction. & Activates in blocked regions where taller building area is also present. \\
+\(n_{41}\log(1+d_{2D})\) & NLoS distance interaction. & Lets range act differently in blocked streets. \\
+\(\rho_{41}\theta_{\mathrm{inv}}\) & Density elevation interaction. & Activates dense, low elevation morphology. \\
+\(\theta_{\mathrm{norm}}\rho_{41}\) & Overhead density interaction. & Allows dense areas to change under high elevation. \\
+\(c_{41}\theta_{\mathrm{inv}}\) & Clearance elevation interaction. & Couples rooftop clearance with grazing geometry. \\
+\(t_{41}\rho_{41}\) & Tall building density interaction. & Highlights dense blocks with buildings above the UAV. \\
+\(t_{41}n_{41}\) & Tall building NLoS interaction. & Activates where tall buildings and shielding coincide. \\
 \bottomrule
 \end{tabularx}
 \caption{Interaction terms in the spread calibration vector.}
