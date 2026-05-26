@@ -201,7 +201,7 @@ shrink. Path loss NLoS RMSE drops from \SI{3.76}{dB} at low altitudes to
 for the absolute number of samples: the dataset is dominated by the
 \SI{50}{\mathrm{-}}\SI{150}{m} band, so the global aggregate RMSE reflects that
 regime more than the higher-altitude extremes. Together with the empirical HDF5
-histogram of Eq.~\eqref{eq:height_empirical_histogram} and the counts reported in
+histogram of \eqref{eq:height_empirical_histogram} and the counts reported in
 Chapter~\ref{chap:methodology}, this means the high altitude rows are better
 despite having much less training support, not because they are
 over represented in the dataset. A practical consequence for
@@ -212,12 +212,11 @@ where a distribution aware residual can matter.
 
 \subsection{Path loss prior by topology class}
 
-The headline path loss-prior number (\SI{1.92}{dB} overall RMSE on the
+The headline path loss prior number (\SI{1.92}{dB} overall RMSE on the
 held out validation+test split, see Table~\ref{tab:try78_results}) hides the
-same building layout structure that the development experiments surfaced. The per sample evaluation
-records were re-aggregated by classifying each evaluated sample into the six
-topology classes with the same routing rule used by the development
-experiments. The pixel weighted RMSE per topology class is
+same building layout structure captured by the topology aware breakdown. The per sample evaluation
+records were aggregated again by classifying each evaluated sample into the six
+topology classes with the same final routing rule. The pixel weighted RMSE per topology class is
 reported in
 Table~\ref{tab:try78_by_topology} and visualised in
 Figure~\ref{fig:try78_by_topology}.
@@ -229,7 +228,7 @@ Figure~\ref{fig:try78_by_topology}.
 held out validation+test split, broken down by topology class. The
 overall row reproduces the RMSE values in Table~\ref{tab:try78_results}; the
 sample count is the sum of samples assigned to the six topology classes. The
-aggregate Try~78 evaluator contains 4994 topology assigned samples.}
+aggregate prior evaluator contains 4994 topology assigned samples.}
 \label{tab:try78_by_topology}
 \footnotesize
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrrr}
@@ -253,7 +252,7 @@ own ground reflection ring against an LoS marginal whose width grows with city
 density and building height, so the LoS RMSE of the analytic model rises from
 \SI{1.39}{dB} in the open sparse lowrise class to
 \SI{2.44}{dB} in the dense block highrise class. The NLoS branch is less
-ordered by building layout: the best Try~78 NLoS class is
+ordered by building layout: the best NLoS topology class is
 \emph{mixed compact lowrise} at \SI{2.91}{dB}, while the worst is
 \emph{dense block highrise} at \SI{4.09}{dB}. The dataset is also unbalanced in
 this respect: dense block highrise contributes only 104 of
@@ -267,7 +266,7 @@ Figure~\ref{fig:try78_by_topology} shows that the calibrated prior remains
 stable across the six building layout classes. This is the relevant main text
 result: the train calibrated prior is not only strong on average, but also
 auditable by city type and LoS/NLoS case. The longer comparison with the
-distribution first diagnostic models is kept in Appendix~A.
+appendix diagnostic models is kept in Appendix~A.
 
 \begin{figure}[!htbp]
 \centering

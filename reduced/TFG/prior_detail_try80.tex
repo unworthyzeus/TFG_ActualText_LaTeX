@@ -157,7 +157,7 @@ The local component logits are transformed with a per pixel softmax, so
 \(\sum_j p_{k,r,j}(x)=1\). The global mixture weights
 \(\pi^{(g)}_{k,r,j}\) emitted by the global branch belong to the map level
 distributional branch used when map level KL style terms are active; they are
-not multiplied into the deterministic point map in Eq.~\eqref{eq:try80_point}.
+not multiplied into the deterministic point map in \eqref{eq:try80_point}.
 This distinction is important for the selected final checkpoint, where the
 distributional losses are disabled and RMSE is computed from the local weighted
 point prediction.
@@ -626,7 +626,7 @@ and the regional NLL is
 \log q_{k,r}\!\left(z_k(x)\mid x\right).
 \label{eq:try80_nll}
 \end{equation}
-The implemented version evaluates Eq.~\eqref{eq:try80_nll} using
+The implemented version evaluates \eqref{eq:try80_nll} using
 \(\log\sum\exp\) for numerical stability.
 
 \paragraph{Distributional KL term.}
@@ -683,10 +683,10 @@ The anchor penalty keeps the correction small:
 \right].
 \label{eq:try80_anchor}
 \end{equation}
-The guard term is Eq.~\eqref{eq:try80_loss}. Together, these two terms encode
+The guard term is \eqref{eq:try80_loss}. Together, these two terms encode
 the final design philosophy: the DNN is allowed to improve the
 prior, but it must pay a penalty for large or harmful deviations.
-In Eq.~\eqref{eq:try80_anchor}, the residual variables are the same tensors
+In \eqref{eq:try80_anchor}, the residual variables are the same tensors
 used by the implementation: native dB offsets for path loss, and the
 corresponding \(\log(1+y)\)-space offsets for delay and angular spread after
 the native residual caps have been applied. The guard term, by contrast, is

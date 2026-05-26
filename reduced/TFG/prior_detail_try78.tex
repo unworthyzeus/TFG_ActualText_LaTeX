@@ -104,7 +104,7 @@ In dB:
 \end{align}
 
 The constant $32.45 = 20\log_{10}(4\pi \cdot 10^3 \cdot 10^6 / (3\times
-10^8)) \approx 32.45$ dB. In Eq.~\eqref{eq:fspl}, $d_{\mathrm{LoS}}(x)/1000$
+10^8)) \approx 32.45$ dB. In \eqref{eq:fspl}, $d_{\mathrm{LoS}}(x)/1000$
 converts metres to kilometres.
 
 \paragraph{Physical meaning.} FSPL grows quadratically with distance ($\propto
@@ -188,7 +188,7 @@ destructive interference around the transmitter.
 
 \subsubsection{Comparison with literature two ray models}
 
-The field sum in Eq.~\eqref{eq:c2ray} is the standard \emph{exact} coherent
+The field sum in \eqref{eq:c2ray} is the standard \emph{exact} coherent
 two ray equation from the literature: a direct ray plus one ground reflected
 ray summed before conversion to dB. The practical adaptation in this thesis
 is not an extra term inside the two ray equation, but the way the reflection
@@ -246,7 +246,7 @@ and receiver antenna gains, and \(P_r(d)\) is the received power at distance
 \(d\).
 This approximation assumes a perfect reflection ($\Gamma = -1$) and small
 grazing angles. Our implementation uses the \emph{exact} field sum
-(Eq.~\eqref{eq:field_sum}) without the $d^4$ approximation. This is still a
+(\eqref{eq:field_sum}) without the $d^4$ approximation. This is still a
 standard literature form; it simply avoids a far field approximation that is
 not appropriate when UAV height is not negligible relative to horizontal
 distance.
@@ -262,7 +262,7 @@ propagation term.
 
 \paragraph{Extra calibrated terms outside the two ray model.}
 The quantities $b(h_{\mathrm{tx}})$ and $r(d_{2D}, h_{\mathrm{tx}})$ in
-Eq.~\eqref{eq:pl_los} are not part of the literature two ray formula itself.
+\eqref{eq:pl_los} are not part of the literature two ray formula itself.
 They are post fit calibration terms added on top of the standard two ray
 prediction to absorb residual systematic errors.
 
@@ -292,7 +292,7 @@ where:
       distance bin after the two ray fit.
 \end{itemize}
 
-The four terms in Eq.~\eqref{eq:pl_los} are applied sequentially:
+The four terms in \eqref{eq:pl_los} are applied sequentially:
 FSPL gives the geometric baseline; the two ray correction adds the
 interference pattern; the bias corrects for a systematic global offset per
 height; and the radial term corrects for range dependent systematic errors.
@@ -364,7 +364,7 @@ The entries are computed as follows:
 \item \(C_{\mathrm{2ray}}(x)\) is then computed by substituting
       \(d_{\mathrm{LoS}}/d_{\mathrm{ref}}\), the geometric phase,
       \(\rho(h_{\mathrm{tx}})\), and \(\phi(h_{\mathrm{tx}})\) into
-      Eq.~\eqref{eq:c2ray}. This is the actual coherent direct plus reflected
+      \eqref{eq:c2ray}. This is the actual coherent direct plus reflected
       correction in dB. A negative value means constructive gain relative to
       FSPL; a positive value means a fading loss.
 \item \(b(h_{\mathrm{tx}})\) is the constant dB offset fitted together with
@@ -694,7 +694,7 @@ a(h_{\mathrm{rx}})
 \label{eq:cost231_a}
 \end{equation}
 
-Equation~\eqref{eq:cost231} should therefore be read as a calibrated
+\eqref{eq:cost231} should therefore be read as a calibrated
 \emph{feature basis}, not as a trusted absolute predictor or as a claim that
 COST-231 itself transfers to this \SI{7.125}{GHz} UAV geometry. COST-231
 contributes the expected log distance growth, transmitter height dependence and
@@ -702,7 +702,7 @@ receiver height correction of an urban empirical model. The subsequent
 train only calibration stage is what adapts that shape to the ray tracing
 setting used here.
 
-\paragraph{Interpretation of Eq.~\eqref{eq:cost231}.}
+\paragraph{Interpretation of \eqref{eq:cost231}.}
 \begin{itemize}
 \item $46.3 + 33.9\log_{10}(f_{\mathrm{MHz}})$: frequency dependent offset.
       The coefficient $33.9$ (compare to $20$ for FSPL) reflects stronger
@@ -724,7 +724,7 @@ setting used here.
       to the dense-urban correction in the original model \cite{cost231}.
       In this thesis it is retained only as an implementation basis constant,
       together with the small/medium city receiver height correction in
-      Eq.~\eqref{eq:cost231_a}. This deliberate mixture is not a canonical
+      \eqref{eq:cost231_a}. This deliberate mixture is not a canonical
       COST-231 deployment recipe; it is one empirical axis later refitted by
       the regime wise calibration.
 \end{itemize}
@@ -764,7 +764,7 @@ These A2G constants are implementation constants in the path-loss prior code
 rather than entries in the calibration JSON files; the JSON artifacts store the
 fitted LoS two ray curves and the regime wise NLoS calibration coefficients.
 
-\paragraph{Interpretation of Eq.~\eqref{eq:a2g_nlos}.}
+\paragraph{Interpretation of \eqref{eq:a2g_nlos}.}
 \begin{itemize}
 \item $\lambda_0$: the free space reference level used inside the raw A2G NLoS
       envelope before the empirical NLoS offset and elevation angle modulation
@@ -802,7 +802,7 @@ The raw NLoS prior is then the conservative (higher) of the two estimates:
 \label{eq:nlos_raw}
 \end{equation}
 
-The maximum in Eq.~\eqref{eq:nlos_raw} is deliberately pessimistic. If the
+The maximum in \eqref{eq:nlos_raw} is deliberately pessimistic. If the
 empirical COST-231 curve predicts stronger attenuation than the A2G envelope,
 the model keeps the urban macro value; if the elevation aware envelope predicts
 stronger attenuation, the model keeps the A2G value. This prevents the raw
@@ -814,8 +814,8 @@ source model is fully valid on its own.
 The NLoS construction above defines only the obstructed branch. The full raw
 formula map used by the NLoS calibration stage is assembled only after both
 legacy branch estimates are available: the auxiliary LoS blend from
-Eq.~\eqref{eq:los_blend}, and the conservative NLoS branch from
-Eq.~\eqref{eq:nlos_raw}. This auxiliary LoS blend is not the final enhanced
+\eqref{eq:los_blend}, and the conservative NLoS branch from
+\eqref{eq:nlos_raw}. This auxiliary LoS blend is not the final enhanced
 two ray LoS prior; it is retained only because \(\mathrm{PL}^{(0)}\) is one
 input feature of the calibrated NLoS branch.
 
@@ -848,11 +848,11 @@ d_{\mathrm{c}}
 \label{eq:legacy_crossover}
 \end{equation}
 
-Equation~\eqref{eq:legacy_los_path} switches from FSPL to the classical
+\eqref{eq:legacy_los_path} switches from FSPL to the classical
 asymptotic two ray \(d^4\) path loss law after the crossover distance
 \(d_{\mathrm{c}}\). It is an older helper used only to construct the raw
 \(\mathrm{PL}^{(0)}\) feature for the NLoS calibration, not the final enhanced
-coherent two ray LoS prior of Eq.~\eqref{eq:pl_los}.
+coherent two ray LoS prior of \eqref{eq:pl_los}.
 
 The legacy LoS blend is then defined as:
 
@@ -865,7 +865,7 @@ The legacy LoS blend is then defined as:
 \end{equation}
 
 This auxiliary LoS envelope uses the same \(\lambda_0\) term as
-Eq.~\eqref{eq:lambda0}; the sine clamp matches the implementation and avoids a
+\eqref{eq:lambda0}; the sine clamp matches the implementation and avoids a
 singularity at grazing elevation. It is a legacy helper for
 \(\mathrm{PL}^{(0)}\), not the final LoS prior.
 
@@ -877,15 +877,15 @@ singularity at grazing elevation. It is a legacy helper for
 \label{eq:los_blend}
 \end{equation}
 
-The $0.7/0.3$ blend in Eq.~\eqref{eq:los_blend} gives 70\% weight to the
+The $0.7/0.3$ blend in \eqref{eq:los_blend} gives 70\% weight to the
 legacy LoS path model and 30\% weight to the lower-loss of the legacy path
 model and the A2G LoS envelope. Because lower dB means a stronger received
 signal, the \(\min(\cdot)\) operation should not be read as a conservative
 guard against low path loss peaks; it is simply the older low-loss auxiliary blend inherited
 by the raw \(\mathrm{PL}^{(0)}\) feature. Here
 $\mathrm{PL}_{\mathrm{LoS,path}}(x)$ denotes the \emph{legacy} LoS path term
-defined in Eq.~\eqref{eq:legacy_los_path}. It is not the calibrated enhanced
-two ray map of Eq.~\eqref{eq:pl_los}.
+defined in \eqref{eq:legacy_los_path}. It is not the calibrated enhanced
+two ray map of \eqref{eq:pl_los}.
 
 The full raw prior combines the LoS and NLoS estimates using the binary LoS
 mask $m_{\mathrm{LoS}}(x) \in \{0,1\}$:
@@ -899,13 +899,13 @@ m_{\mathrm{LoS}}(x)\,\mathrm{PL}_{\mathrm{LoS,blend}}(x)
 \label{eq:pl0}
 \end{equation}
 
-Since $m_{\mathrm{LoS}}(x)$ is binary, Eq.~\eqref{eq:pl0} is a hard switch:
+Since $m_{\mathrm{LoS}}(x)$ is binary, \eqref{eq:pl0} is a hard switch:
 it selects the auxiliary LoS expression on LoS pixels and the NLoS expression
-on NLoS pixels. The auxiliary blend in Eq.~\eqref{eq:los_blend} was used in
+on NLoS pixels. The auxiliary blend in \eqref{eq:los_blend} was used in
 older variants to keep the LoS formula below an A2G envelope. In the final
 frozen path, LoS output pixels come directly from the separate enhanced
-two ray prior \(\mathrm{PL}_{\mathrm{LoS}}\) of Eq.~\eqref{eq:pl_los}; the raw
-hybrid map \(\mathrm{PL}^{(0)}\) in Eq.~\eqref{eq:pl0} is still computed only
+two ray prior \(\mathrm{PL}_{\mathrm{LoS}}\) of \eqref{eq:pl_los}; the raw
+hybrid map \(\mathrm{PL}^{(0)}\) in \eqref{eq:pl0} is still computed only
 as an input feature for the calibrated NLoS path loss branch.
 The LoS/NLoS mask used here is the explicit CKM mask provided with the
 dataset and treated as an available side channel. A deployment version would
@@ -915,7 +915,7 @@ evaluated in this thesis.
 
 \subsubsection{Stage 3: map derived morphology features}
 
-The raw hybrid prior $\mathrm{PL}^{(0)}(x)$ defined in Eq.~\eqref{eq:pl0} is
+The raw hybrid prior $\mathrm{PL}^{(0)}(x)$ defined in \eqref{eq:pl0} is
 the scalar formula input to the calibrated NLoS path loss branch. It combines the
 legacy FSPL/two ray LoS path, the A2G envelopes and COST-231, but it still
 knows nothing about the detailed local morphology around each receiver. The
@@ -1079,7 +1079,7 @@ f_{\mathrm{padded}}(r, j)$ and similarly at all four edges. This ensures
 border pixels receive a full $k^2$-pixel average, with the map reflected back
 inward rather than zero-padded.
 
-Equation~\eqref{eq:boxmean} is evaluated efficiently using a
+\eqref{eq:boxmean} is evaluated efficiently using a
 \emph{2D summed-area table} (integral image). Let $I(i,j)=\sum_{i'\le
 i, j'\le j} f_{\mathrm{padded}}(i',j')$ be the prefix-sum array. Then:
 
@@ -1168,7 +1168,7 @@ n_k(x)=\mathrm{BoxMean}_k\!\left(n_{\mathrm{raw}}(\cdot)\right)(x)
 \label{eq:n_k}
 \end{equation}
 
-Since $n_{\mathrm{raw}}(x') \in \{0,1\}$ (Eq.~\eqref{eq:nlos_mask_v2}),
+Since $n_{\mathrm{raw}}(x') \in \{0,1\}$ (\eqref{eq:nlos_mask_v2}),
 $n_k(x)$ is the \emph{absolute fraction of the window area} that consists of
 ground pixels in NLoS. Just as $h_k(x)$ conflates building coverage and building
 height, $n_k(x)$ conflates ground coverage and NLoS probability. We can write:
@@ -1308,7 +1308,7 @@ $\bar\rho_{\mathrm{map}}$ is simply the fraction of map pixels that are
 buildings. $\bar h_{\mathrm{map}}$ is the mean building height
 \emph{over building pixels only} (the denominator excludes ground pixels).
 This is different from the per pixel feature $h_k(x)$ in
-Eq.~\eqref{eq:h_k_interp}, which divides the same numerator by the full
+\eqref{eq:h_k_interp}, which divides the same numerator by the full
 window area $k^2$ instead of by the number of building pixels.
 
 For the calibrated path loss prior, these two quantities are converted into
@@ -1382,10 +1382,10 @@ loads the stored coefficient vectors from
 \path{try78_nlos_regime_calibration.json}. At inference, if the exact
 antenna height key is absent, the implementation only tries alternative
 antenna bins in the order current, mid, low, high while keeping the same
-path loss-prior city type and LoS/NLoS label. It does not use the broader cross-topology
+path loss prior city type and LoS/NLoS label. It does not use the broader cross-topology
 fallback hierarchy of the spread prior calibration.
 
-The terms in Eq.~\eqref{eq:ols_closed} are standard linear least squares
+The terms in \eqref{eq:ols_closed} are standard linear least squares
 quantities. The matrix \(\textbf{X}_r^\top\textbf{X}_r\) is the
 \emph{Gram matrix}; its diagonal entries measure the energy of each feature
 inside regime \(r\), and its off-diagonal entries measure correlations between
@@ -1397,7 +1397,7 @@ solution, but applied separately per propagation regime rather than globally.
 Because the feature vector intentionally contains correlated terms, the
 important object is the least squares coefficient vector stored in
 \texttt{try78\_nlos\_regime\_calibration.json}; if a normal equation matrix is
-rank deficient or ill conditioned, Eq.~\eqref{eq:ols_closed} should be
+rank deficient or ill conditioned, \eqref{eq:ols_closed} should be
 understood as the full-rank notation for the corresponding least squares or
 pseudoinverse solution, not as a requirement that every calibration block be
 perfectly invertible.
@@ -1473,7 +1473,7 @@ This is a single square root over all pooled valid pixels, not an average of
 per sample RMSEs. Units are dB (path loss), ns (delay spread), and
 degrees (angular spread), all in the native non-transformed domain.
 
-\subsection{Observed path loss-prior results}
+\subsection{Observed path loss prior results}
 
 The headline path loss numbers for the calibrated prior are reported in the
 results chapter (LoS waterfall in Table~\ref{tab:try78_los_waterfall}): the

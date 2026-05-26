@@ -408,8 +408,8 @@ visibility mask, receiver mask, and frozen prior maps.
 \subsection{Frozen Priors}
 
 The path loss prior combines a coherent two ray LoS branch with a calibrated
-NLoS branch. More precisely, Eq.~\eqref{eq:fspl-paper} is the Friis/free space
-dB term and Eq.~\eqref{eq:tworay-paper} is the standard coherent direct plus
+NLoS branch. More precisely, \eqref{eq:fspl-paper} is the Friis/free space
+dB term and \eqref{eq:tworay-paper} is the standard coherent direct plus
 ground reflected image source construction \cite{rappaport,goldsmith}, also
 used in low altitude A2G two ray modeling \cite{wocc2021}. The fitted
 \(\rho,\phi,b\), and \(r\) curves are not taken from those references; they are
@@ -766,7 +766,7 @@ with fallback to stored antenna height keys within the same morphology and
 LoS/NLoS group when the exact antenna height key is unavailable. At deployment,
 the same deterministic features select
 one stored coefficient vector and produce the clipped NLoS prior in
-Eq.~\eqref{eq:nlos-prior-paper}. This is an ordinary least squares objective,
+\eqref{eq:nlos-prior-paper}. This is an ordinary least squares objective,
 not a requirement that every regime have a nonsingular normal matrix; if a
 calibration block is rank deficient or ill conditioned, the stored solution is
 interpreted as the numerical least squares or pseudoinverse solution associated
@@ -798,7 +798,7 @@ z^{(0)}
 \end{aligned}
 \label{eq:spread-raw-paper}
 \end{equation}
-The constants in Eq.~\eqref{eq:spread-raw-paper} are fixed before ridge
+The constants in \eqref{eq:spread-raw-paper} are fixed before ridge
 calibration. For delay spread, \(b_{\mathrm{LoS}}^{\mathrm{nat}}=\SI{4.0}{ns}\),
 \(b_{\mathrm{NLoS}}^{\mathrm{nat}}=\SI{11.0}{ns}\), and
 \((a_1,\ldots,a_6)=(0.11,0.62,0.48,0.32,0.86,0.60)\). For angular spread,
@@ -1099,7 +1099,7 @@ u^{\mathrm{nat}}&=y^{\mathrm{prior,nat}}+\alpha\Delta,\\
 \end{equation}
 where \([u^{\mathrm{nat}}]_+=\max(u^{\mathrm{nat}},0)\) and
 \(0\leq\alpha_{k,r}(p)\leq1\). The attenuation branch (PL) is modeled in native dB space, while DS and
-AS use the log transform in Eq.~\eqref{eq:spread-transform-paper}. The
+AS use the log transform in \eqref{eq:spread-transform-paper}. The
 deterministic map used for RMSE is the mixture mean in the modelled space:
 \begin{equation}
 \hat z_{k,r}(p)

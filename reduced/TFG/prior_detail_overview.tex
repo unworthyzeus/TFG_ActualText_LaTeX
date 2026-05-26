@@ -185,13 +185,11 @@ separate open overhead links from obstructed street canyon like links. \\
 \subsection{Prior design rules}
 \label{sec:good_prior_design}
 
-The main lesson from the prior phase is that a useful prior is not just a
-physical looking equation. It is a complete estimator: the formula, fitted
-calibration, feature units, LoS/NLoS mask, topology features, and evaluation
-mask must be identical between fitting and inference. Earlier prior experiments
-used many of the same physical ingredients as the final path loss prior, but they did
-not always keep those pieces aligned. The final prior became strong because it
-made the prior self contained and auditable under the same city holdout
+The main prior design rule is that a useful prior is not just a physical
+looking equation. It is a complete estimator: the formula, fitted calibration,
+feature units, LoS/NLoS mask, topology features, and evaluation mask must be
+identical between fitting and inference. The final prior is strong because it
+keeps those pieces self contained and auditable under the same city holdout
 contract used for the final model.
 
 The distinction matters most for NLoS. A calibration fitted for one physical
@@ -202,13 +200,12 @@ Once those constraints were enforced, the prior could separate deterministic
 large scale structure from the genuinely local residual that the final model later
 learned.
 
-This does not mean that all earlier NLoS failures were only implementation
-mismatches. The no prior and weak prior neural branches also failed because
-single-output point regression was a poor match for blocked, multimodal,
-heavy tailed NLoS and spread targets. That is why the thesis keeps both
-lessons: the final priors fix the prior-estimator problem, while
-the distribution aware head represents residual uncertainty without turning the
-main method into an unconstrained direct regressor.
+This also explains why the final network is residual and distribution aware.
+Blocked NLoS and spread targets are multimodal and heavy tailed, so a single
+point estimate without a strong anchor tends to average incompatible regimes.
+\textsc{HARP-Net CKM} therefore keeps the priors as frozen anchors and lets the
+neural head model bounded residual structure and uncertainty without turning
+the main method into an unconstrained direct regressor.
 
 \begin{table}[H]
 \centering

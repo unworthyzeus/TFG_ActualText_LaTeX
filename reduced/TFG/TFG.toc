@@ -132,9 +132,9 @@
 \contentsline {subsection}{\numberline {D.1.3}NLoS branch}{86}{subsection.D.1.3}%
 \contentsline {subsubsection}{Stage 1: raw NLoS propagation prior}{86}{subsubsection*.94}%
 \contentsline {paragraph}{COST-231 term.}{86}{paragraph*.95}%
-\contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:cost231}.}{86}{paragraph*.96}%
+\contentsline {paragraph}{Interpretation of \eqref {eq:cost231}.}{86}{paragraph*.96}%
 \contentsline {paragraph}{Elevation-aware UAV envelope.}{87}{paragraph*.97}%
-\contentsline {paragraph}{Interpretation of Eq.~\eqref {eq:a2g_nlos}.}{87}{paragraph*.98}%
+\contentsline {paragraph}{Interpretation of \eqref {eq:a2g_nlos}.}{87}{paragraph*.98}%
 \contentsline {subsubsection}{Stage 2: raw hybrid prior assembly}{88}{subsubsection*.99}%
 \contentsline {subsubsection}{Stage 3: map derived morphology features}{89}{subsubsection*.100}%
 \contentsline {paragraph}{Base masks.}{91}{paragraph*.102}%
@@ -152,7 +152,7 @@
 \contentsline {paragraph}{How $\textbf {w}^{78}_{r}$ is fitted.}{96}{paragraph*.114}%
 \contentsline {subsubsection}{Stage 5: region replacement and clipping}{97}{subsubsection*.115}%
 \contentsline {subsection}{\numberline {D.1.4}Evaluation metric: pixel weighted RMSE}{97}{subsection.D.1.4}%
-\contentsline {subsection}{\numberline {D.1.5}Observed path loss-prior results}{97}{subsection.D.1.5}%
+\contentsline {subsection}{\numberline {D.1.5}Observed path loss prior results}{97}{subsection.D.1.5}%
 \contentsline {section}{\numberline {D.2}Delay and Angular Spread Prior Details}{98}{section.D.2}%
 \contentsline {subsection}{\numberline {D.2.1}Physical motivation for log domain modeling}{98}{subsection.D.2.1}%
 \contentsline {subsection}{\numberline {D.2.2}Pixel wise notation for the spread prior fit}{99}{subsection.D.2.2}%

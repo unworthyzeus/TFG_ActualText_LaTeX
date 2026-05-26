@@ -68,9 +68,9 @@ a_3\rho_{41}
 \label{eq:raw_spread}
 \end{equation}
 
-where $\theta_{\mathrm{inv}}(x) = 1 - \theta_{\mathrm{norm}}(x)$ (high value at low elevation). Example coefficients for delay spread: the native anchors are $b^{\mathrm{native}}_{\mathrm{LoS}} = 4.0$ ns and $b^{\mathrm{native}}_{\mathrm{NLoS}} = 11.0$ ns, which the implementation converts to $\log(1+4.0)$ and $\log(1+11.0)$ before adding the remaining log domain terms. The delay coefficients are $a_1 = 0.11$, $a_2 = 0.62$, $a_3 = 0.48$, $a_4 = 0.32$, $a_5 = 0.86$, $a_6 = 0.60$. After Eq.~\eqref{eq:raw_spread}, the raw log prior is clipped to $[0,8]$, inverse transformed with $\exp(\cdot)-1$, and clipped to the metric upper bound. For reproducibility, the \(z^{(0)}(x)\) entries used later in \(\textbf{x}_{79}\) denote the log value recovered from this clipped native raw prior, i.e.,
+where $\theta_{\mathrm{inv}}(x) = 1 - \theta_{\mathrm{norm}}(x)$ (high value at low elevation). Example coefficients for delay spread: the native anchors are $b^{\mathrm{native}}_{\mathrm{LoS}} = 4.0$ ns and $b^{\mathrm{native}}_{\mathrm{NLoS}} = 11.0$ ns, which the implementation converts to $\log(1+4.0)$ and $\log(1+11.0)$ before adding the remaining log domain terms. The delay coefficients are $a_1 = 0.11$, $a_2 = 0.62$, $a_3 = 0.48$, $a_4 = 0.32$, $a_5 = 0.86$, $a_6 = 0.60$. After \eqref{eq:raw_spread}, the raw log prior is clipped to $[0,8]$, inverse transformed with $\exp(\cdot)-1$, and clipped to the metric upper bound. For reproducibility, the \(z^{(0)}(x)\) entries used later in \(\textbf{x}_{79}\) denote the log value recovered from this clipped native raw prior, i.e.,
 \(\log(1+\mathrm{raw\_prior}_{\mathrm{clipped}}(x))\), not an unconstrained
-copy of Eq.~\eqref{eq:raw_spread}.
+copy of \eqref{eq:raw_spread}.
 
 The raw prior is not a 3GPP formula copied directly into CKM. Instead, it
 takes the 3GPP/WINNER lesson that spread statistics should be separated by
@@ -83,7 +83,7 @@ raw prior constants used before the regime wise ridge calibration.
 
 \begin{table}[H]
 \centering
-\caption{Fixed constants used in the raw spread prior of Eq.~\eqref{eq:raw_spread}.}
+\caption{Fixed constants used in the raw spread prior of \eqref{eq:raw_spread}.}
 \label{tab:try79_raw_constants}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -113,7 +113,7 @@ high rise, the delay spread offsets are
 offsets are \(0.00, 0.09, 0.05, 0.16, 0.18, 0.24\). These are log domain
 offsets, not native ns/degree offsets.
 
-Every term in Eq.~\eqref{eq:raw_spread} has a physical interpretation:
+Every term in \eqref{eq:raw_spread} has a physical interpretation:
 \begin{itemize}
 \item \(b_{\mathrm{LoS/NLoS}}\) is the base spread level for the propagation
       state. NLoS starts higher because blocked paths arrive after additional
@@ -149,7 +149,7 @@ c_{41},\ t_{41},\ \theta_{\mathrm{norm}}\rho_{41},\ c_{41}\theta_{\mathrm{inv}},
 \end{equation}
 \endgroup
 
-For reading, the vector in Eq.~\eqref{eq:x79} can be grouped into five blocks:
+For reading, the vector in \eqref{eq:x79} can be grouped into five blocks:
 the raw prior block \(\textbf{x}_{\mathrm{prior}}\), the
 range/elevation/height block \(\textbf{x}_{\mathrm{geom}}\), the local building
 block \(\textbf{x}_{\mathrm{morph}}\), one bias term, and the interaction block
@@ -336,7 +336,7 @@ they are not additional per pixel morphology features.
 
 The regime $r$ for the spread prior is keyed by: metric (DS or AS), topology class (6 classes), propagation state (LoS or NLoS), antenna height bin, giving up to $2 \times 6 \times 2 \times 3 = 72$ regimes.
 The antenna height bins use the same tertile style thresholds as
-Eq.~\eqref{eq:ant_bin_v2}: \texttt{low\_ant} for
+\eqref{eq:ant_bin_v2}: \texttt{low\_ant} for
 \(h_{\mathrm{tx}}\le\SI{58.12}{m}\), \texttt{mid\_ant} for
 \(\SI{58.12}{m}<h_{\mathrm{tx}}\le\SI{103.85}{m}\), and
 \texttt{high\_ant} above \SI{103.85}{m}. These calibration bins are
@@ -370,7 +370,7 @@ targets. The coefficient vector
 \end{equation}
 where \(\textbf{D}=\mathrm{diag}(d_1,\ldots,d_{23})\), with \(d_{23}=0\)
 and \(d_i=1\) for \(i\ne23\). Thus, the final interaction term
-\(t_{41}n_{41}\), which is the last entry of Eq.~\eqref{eq:x79}, is left
+\(t_{41}n_{41}\), which is the last entry of \eqref{eq:x79}, is left
 unpenalized by the ridge term in the frozen calibration used by the final
 model. This is an implementation detail of the stored artifact, not a separate
 physical assumption. The regularizer is small, but it prevents unstable
