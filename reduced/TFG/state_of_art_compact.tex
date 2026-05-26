@@ -63,11 +63,10 @@ marginals are different, and delay/angular spread maps contain a near-zero LoS
 spike plus NLoS-heavy tails. Heteroscedastic losses, mixture-density networks,
 GMM heads and diffusion-style generative models all address this mismatch in
 different ways \cite{kendall2017uncertainties,saleh2021probabilistic,
-garciamarti2020mixture,radiodiff2025}. The final model keeps the practical
-part of that lesson: a prior anchored residual GMM head emits mixture
-parameters around the frozen prior, then the selected RMSE-dominant checkpoint
-exports a local-weighted point map rather than making a calibrated
-probabilistic-density claim.
+garciamarti2020mixture,radiodiff2025}. \textsc{HARP-Net CKM} keeps the practical
+part of that lesson: it emits residual mixture parameters around the frozen
+prior, then the selected RMSE dominant checkpoint exports a local weighted point
+map rather than making a calibrated probabilistic density claim.
 
 \section{Fair comparison protocol}
 \label{sec:soa_benchmarks}
@@ -102,7 +101,7 @@ Runtime path & A surrogate must be compared against a clearly specified ray-trac
 \section{Position of the final model}
 \label{sec:soa_position}
 
-The closest state-of-the-art references are useful as scale checks, not as a
+The closest state of the art references are useful as scale checks, not as a
 single leaderboard. The final result is strongest when stated narrowly: under
 the CKM city holdout protocol, a prior anchored residual GMM model improves
 strong frozen priors for dense PL/DS/AS maps, while keeping a fast generator
@@ -110,7 +109,7 @@ path. Table~\ref{tab:position} summarizes that position.
 
 \begin{table}[htbp]
 \centering
-\caption{Compact state-of-the-art positioning.}
+\caption{Compact state of the art positioning.}
 \label{tab:position}
 \scriptsize
 \setlength{\tabcolsep}{3pt}

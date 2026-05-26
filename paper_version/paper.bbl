@@ -74,15 +74,18 @@ J.-H. Lee, J.~Lee, S.-H. Lee, and A.~F. Molisch, ``{PMNet}: Large-scale channel
 \bibitem{icassp2023challenge}
 \BIBentryALTinterwordspacing
 \c{C}a\u{g}kan Yapar, F.~Jaensch, R.~Levie, G.~Kutyniok, and G.~Caire, ``The
-  first pathloss radio map prediction challenge,'' arXiv:2310.07658, 2023.
-  [Online]. Available: \url{https://arxiv.org/abs/2310.07658}
+  first pathloss radio map prediction challenge,'' in \emph{{ICASSP} 2023 -
+  2023 {IEEE} International Conference on Acoustics, Speech and Signal
+  Processing ({ICASSP})}, 2023, pp. 1--2. [Online]. Available:
+  \url{https://doi.org/10.1109/ICASSP49357.2023.10433928}
 \BIBentrySTDinterwordspacing
 
 \bibitem{rmtransformer2025}
 \BIBentryALTinterwordspacing
 Y.~Li, C.~Zhang, W.~Wang, and Y.~Huang, ``{RMTransformer}: Accurate radio map
-  construction and coverage prediction,'' arXiv:2501.05190, 2025. [Online].
-  Available: \url{https://arxiv.org/abs/2501.05190}
+  construction and coverage prediction,'' in \emph{2025 {IEEE} 101st Vehicular
+  Technology Conference ({VTC2025-Spring})}, 2025, pp. 1--5. [Online].
+  Available: \url{https://doi.org/10.1109/VTC2025-Spring65109.2025.11174709}
 \BIBentrySTDinterwordspacing
 
 \bibitem{radiogunet2025}
@@ -96,16 +99,16 @@ Z.~Yang, F.~Liu, Y.~Jin, and K.~Vandikas, ``Group equivariant convolutional
 \BIBentryALTinterwordspacing
 Z.~Zhong, Z.~Yu, P.~Li, J.~Lv, C.~L.~P. Chen, and M.~Chen, ``{PathFinder}:
   Advancing path loss prediction for single-to-multi-transmitter scenario,''
-  arXiv:2512.14150, 2025. [Online]. Available:
-  \url{https://arxiv.org/abs/2512.14150}
+  \emph{Pattern Recognition}, vol. 179, p. 113725, 2026. [Online]. Available:
+  \url{https://doi.org/10.1016/j.patcog.2026.113725}
 \BIBentrySTDinterwordspacing
 
 \bibitem{gao2026}
 \BIBentryALTinterwordspacing
 Y.~Gao, T.~Wen, W.~Xie, J.~Du, Y.~Zeng, D.~Niyato, and S.~Xu, ``Effective
   outdoor pathloss prediction: A multi-layer segmentation approach with
-  weighting map,'' arXiv:2601.08436, 2026. [Online]. Available:
-  \url{https://arxiv.org/abs/2601.08436}
+  weighting map,'' \emph{IEEE Transactions on Vehicular Technology}, pp. 1--6,
+  2026. [Online]. Available: \url{https://doi.org/10.1109/TVT.2026.3658966}
 \BIBentrySTDinterwordspacing
 
 \bibitem{airmap2025}
@@ -124,9 +127,10 @@ X.~Xu and Y.~Zeng, ``How much data is needed for channel knowledge map
 \bibitem{reveal2025}
 \BIBentryALTinterwordspacing
 M.~Shahid, K.~Das, H.~Ushaq, H.~Zhang, J.~Song, D.~Qiao, S.~Babu, Y.~Guan,
-  Z.~Zhu, and A.~Ahmed, ``{ReVeal}: A physics-informed neural network for
-  high-fidelity radio environment mapping,'' arXiv:2502.19646, 2025. [Online].
-  Available: \url{https://arxiv.org/abs/2502.19646}
+  Z.~Zhu, and A.~Ahmad, ``{ReVeal}: A physics-informed neural network for
+  high-fidelity radio environment mapping,'' in \emph{2025 {IEEE} International
+  Symposium on Dynamic Spectrum Access Networks ({DySPAN})}, 2025, pp. 1--10.
+  [Online]. Available: \url{https://doi.org/10.1109/DYSPAN64764.2025.11115911}
 \BIBentrySTDinterwordspacing
 
 \bibitem{rappaport}
@@ -223,8 +227,9 @@ D.~G. Marti, J.~Palacios, J.~O. Lacruz, and J.~Widmer, ``A mixture density
 \bibitem{lee2024timevarying}
 \BIBentryALTinterwordspacing
 Y.~Lee, X.~Ma, and A.~S. I.~D. Lang, ``Modeling of time-varying wireless
-  communication channel with fading and shadowing,'' arXiv:2405.08199, 2024.
-  [Online]. Available: \url{https://arxiv.org/abs/2405.08199}
+  communication channel with fading and shadowing,'' in \emph{2024 {IEEE} 100th
+  Vehicular Technology Conference ({VTC2024-Fall})}, 2024, pp. 1--6. [Online].
+  Available: \url{https://doi.org/10.1109/VTC2024-Fall63153.2024.10757531}
 \BIBentrySTDinterwordspacing
 
 \bibitem{radiodiff2025}
@@ -245,10 +250,11 @@ P.~Ky\"osti \emph{et~al.}, ``{WINNER II} channel models,'' IST-4-027756 WINNER
 
 \bibitem{cai2019}
 \BIBentryALTinterwordspacing
-X.~Cai, J.~R.-P. neiro, X.~Yin, B.~Ai, G.~F. Pedersen, and A.~P. Yuste, ``An
-  empirical air-to-ground channel model based on passive measurements in
-  {LTE},'' arXiv:1901.07930, 2019. [Online]. Available:
-  \url{https://arxiv.org/abs/1901.07930}
+X.~Cai, J.~Rodr{\'i}guez-Pi{\~n}eiro, X.~Yin, N.~Wang, B.~Ai, G.~F. Pedersen,
+  and A.~P. Yuste, ``An empirical air-to-ground channel model based on passive
+  measurements in {LTE},'' \emph{IEEE Transactions on Vehicular Technology},
+  vol.~68, no.~2, pp. 1140--1154, 2019. [Online]. Available:
+  \url{https://doi.org/10.1109/TVT.2018.2886961}
 \BIBentrySTDinterwordspacing
 
 \bibitem{izydorczyk2019}

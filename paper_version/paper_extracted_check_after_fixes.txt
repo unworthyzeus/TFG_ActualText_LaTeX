@@ -14,47 +14,69 @@
 ronment aware radio planning, but dense UAV CKM generation
 remains difficult when channel attenuation, delay spread, and               Dense radio map prediction is often framed as image to
 angular spread must all generalize to unseen cities. This paper          image regression. RadioUNet [5], PMNet, and the ICASSP
-presents HARP-N ET CKM, a hybrid surrogate that freezes train            path loss challenge family showed that U-Net style models
-only calibrated physical/statistical priors and learns bounded           can be strong dense channel attenuation baselines [6]–[8].
-residual maps with a Gaussian mixture head. The model pre-               Later work adds attention, equivariance, domain shift handling,
-dicts 513 × 513 dense channel attenuation, DS, and AS maps
-from topology, geometric masks, UAV height, and frozen priors            corridor weighting, or digital twin generation [9]–[13]. These
-through a probabilistic residual stage followed by deterministic         papers give the closest dense channel attenuation context, but
-RMSE oriented fine tuning. On held out cities it reaches 1.6519 dB       not the same contract: continuous UAV height, strict city
-channel attenuation RMSE, 26.5570 ns delay spread RMSE, and              holdout on CKM samples, and three dense targets (channel
-11.3854◦ angular spread RMSE, reducing RMSE relative to the              attenuation/PL, DS, AS).
-frozen priors for all three targets. The result supports a hybrid
-design principle: freeze stable radial, visibility, height, and spread      CKM work also emphasizes that a radio map is not merely
-structure in auditable priors, and reserve neural capacity for the       an image but a position indexed channel side information
-residual distribution those priors cannot explain.                       object [1], [2], [14]. A random image split can place visually
-  Index Terms—channel knowledge maps, UAV communications,                similar urban layouts in both training and testing; a city split
-radio map prediction, channel attenuation, delay spread, angular         tests transfer to unseen layouts, so the evaluation protocol is
-spread, Gaussian mixture models, physics informed learning.              part of the method.
-                                                                            Physics informed and hybrid methods address a different
+presents HARP-N ET CKM, a hybrid surrogate that freezes                  path loss challenge family showed that U-Net style models
+physical and statistical priors calibrated on the training split and     can be strong dense channel attenuation baselines [6]–[8].
+learns bounded residual maps with a Gaussian mixture head.               Later work adds attention, equivariance, domain shift handling,
+The model predicts 513 × 513 dense channel attenuation, DS,
+and AS maps from topology, geometric masks, UAV height, and              corridor weighting, or digital twin generation [9]–[13]. These
+frozen priors through a probabilistic residual stage followed by         papers give the closest dense channel attenuation context, but
+deterministic RMSE oriented fine tuning. On held out cities it           not the same contract: continuous UAV height, strict city
+reaches 1.6519 dB channel attenuation RMSE, 26.5570 ns delay             holdout on CKM samples, and three dense targets (channel
+spread RMSE, and 11.3854◦ angular spread RMSE, reducing                  attenuation/PL, DS, AS).
+RMSE relative to the frozen priors for all three targets. The
+result supports a hybrid design principle: freeze stable radial,            CKM work also emphasizes that a radio map is not merely
+visibility, height, and spread structure in auditable priors, and        an image but a position indexed channel side information
+reserve neural capacity for the residual distribution those priors       object [1], [2], [14]. A random image split can place visually
+cannot explain.                                                          similar urban layouts in both training and testing; a city split
+  Index Terms—channel knowledge maps, UAV communications,                tests transfer to unseen layouts, so the evaluation protocol is
+radio map prediction, channel attenuation, delay spread, angular         part of the method.
+spread, Gaussian mixture models, physics informed learning.                 Physics informed and hybrid methods address a different
                                                                          weakness of pure image regression: the model should not
           I. I NTRODUCTION AND R ELATED W ORK                            need to rediscover stable propagation effects from pixels alone.
-   Channel knowledge maps (CKMs) store or predict radio                  ReVeal [15] uses physics informed constraints for radio envi-
-channel quantities as functions of position and environment,             ronment mapping, while classical air to ground, COST/Hata,
-enabling faster planning and adaptation than repeated ray                and two ray models encode known distance, height, reflection,
-tracing or exhaustive measurements [1], [2]. In UAV enabled              and elevation angle structure [3], [16]–[21]. This paper uses
-6G networks, CKMs are especially attractive because altitude             those models only as shape priors; all deployment coefficients
-changes both the geometry and the line of sight probability of           are calibrated from training cities under the same CKM
-the link [3], [4]. A practical CKM surrogate, however, must              masking convention used at inference.
-generalize to urban layouts not seen during training and must               The spread side has fewer direct dense map references.
-not hide hard propagation regimes behind a single global score.          Yang et al. predict A2G delay spread with classical regressors
-   A pure dense image to image formulation was not suffi-                [22]; Huang et al. use a Transformer style UAV mmWave
-cient for this setting. Early U-Net and cGAN models could                predictor for received power, RMS delay spread, and RMS
-draw plausible maps, yet their physical errors remained large            angular spread [23]; and Mi et al. predict mmWave channel
-under a ground only metric. PMNet inspired and U-Net                     attenuation (PL), DS, AS, and K-factor from measurement
-style backbones improved smooth LoS structure but did not                linked point clouds [24]. These works are close in target type
-solve NLoS mode collapse or the spike plus tail nature of                but still predict link level or sparse channel parameters, not
-spread targets. The final design therefore moved away from               dense 513 × 513 CKM maps for unseen cities.
-“bigger backbone first” and toward a stricter sequence: define              Finally, heteroscedastic regression [25], mixture density
-the evaluation contract, diagnose target distributions, calibrate        wireless predictors [26]–[28], and stochastic radio map models
-train only priors, and then train a bounded residual model               [29] all point to the same issue: NLoS and spread targets
-around those frozen anchors. The contribution is HARP-N ET               are not well represented by a single symmetric residual. For
-CKM, a dense CKM recipe for one fixed UAV simulation                     DS/AS, the closest external references are therefore context
-contract: strict city holdout, valid receiver masking, explicit          rather than direct CKM benchmarks.
+                                                                         ReVeal [15] uses physics informed constraints for radio envi-
+   Channel knowledge maps (CKMs) store or predict radio
+                                                                         ronment mapping, while classical air to ground, COST/Hata,
+channel quantities as functions of position and environment,
+                                                                         and two ray models encode known distance, height, reflection,
+enabling faster planning and adaptation than repeated ray
+                                                                         and elevation angle structure [3], [16]–[21]. This paper uses
+tracing or exhaustive measurements [1], [2]. In UAV enabled
+                                                                         those models only as shape priors; all deployment coefficients
+6G networks, CKMs are especially attractive because altitude
+                                                                         are calibrated from training cities under the same CKM
+changes both the geometry and the line of sight probability of
+                                                                         masking convention used at inference.
+the link [3], [4]. A practical CKM surrogate, however, must
+                                                                            The spread side has fewer direct dense map references.
+generalize to urban layouts not seen during training and must
+                                                                         Yang et al. predict A2G delay spread with classical regressors
+not hide hard propagation regimes behind a single global score.
+                                                                         [22]; Huang et al. use a Transformer style UAV mmWave
+   A pure dense image to image formulation was not suffi-
+                                                                         predictor for received power, RMS delay spread, and RMS
+cient for this setting. Early U-Net and cGAN models could
+                                                                         angular spread [23]; and Mi et al. predict mmWave channel
+draw plausible maps, yet their physical errors remained large
+                                                                         attenuation (PL), DS, AS, and K-factor from measurement
+under a ground only metric. PMNet inspired and U-Net
+                                                                         linked point clouds [24]. These works are close in target type
+style backbones improved smooth LoS structure but did not
+                                                                         but still predict link level or sparse channel parameters, not
+solve NLoS mode collapse or the spike plus tail nature of
+                                                                         dense 513 × 513 CKM maps for unseen cities.
+spread targets. The final design therefore moved away from
+                                                                            Finally, heteroscedastic regression [25], mixture density
+“bigger backbone first” and toward a stricter sequence: define
+                                                                         wireless predictors [26]–[28], and stochastic radio map models
+the evaluation contract, diagnose target distributions, calibrate
+                                                                         [29] all point to the same issue: NLoS and spread targets
+train only priors, and then train a bounded residual model
+                                                                         are not well represented by a single symmetric residual. For
+around those frozen anchors. The contribution is HARP-N ET
+                                                                         DS/AS, the closest external references are therefore context
+CKM, a dense CKM recipe for one fixed UAV simulation
+                                                                         rather than direct CKM benchmarks.
+contract: strict city holdout, valid receiver masking, explicit
 LoS/NLoS and height reporting, and a bounded HARP-N ET
 CKM neural correction around frozen priors.                                          II. DATASET AND TASK C ONTRACT
                                                                             Each sample is a 513 × 513 urban topology map from
@@ -85,7 +107,7 @@ guillem.moreno.garcia@estudiantat.upc.edu.                               is fixe
  Targets                   Channel attenuation / PL (dB), DS (ns), AS (deg), one
                            dense map per target
  Metric mask               Non building ground receivers only; building pixels        Fig. 1. Empirical UAV transmitter height density read directly from the CKM
-                           excluded                                                   HDF5 database using the 3 m histogram of Eq. 2, linearly interpolated between
+                           excluded                                                   HDF5 database using the 3 m histogram of (2), linearly interpolated between
  Split policy              City holdout; validation selects the checkpoint, test is   bin centres for display. Most training support lies in the low and middle
                            final only                                                 altitude bands.
  Samples                   Train 10840; validation 2750; test 2590; all 16180
@@ -122,7 +144,7 @@ specific pixel weighted RMSE is                                                 
                                                                                       model outputs are not quantized to these grids: the residual
 The same receiver-mask formula is used for all three targets.                         network emits continuous values, and all reported metrics
 For DS and AS, each valid ground pixel is still a receiver with                       compare those continuous outputs against the stored targets.
-a ray-traced ground-truth spread value, so the reported spread                        This matters for interpretation: the final path loss MAE is
+a ray-traced ground truth spread value, so the reported spread                        This matters for interpretation: the final path loss MAE is
 RMSE is the dense prediction compared with the dense CKM                              0.9298 dB, close to the label step, while RMSE remains
 target over all valid ground receivers.                                               1.6519 dB because it emphasizes hard tails. Less quantized
    The split is city based rather than random over pixels or                          labels would likely expose more of the continuous surrogate’s
@@ -816,186 +838,93 @@ reporting. They are not simply baselines for the final neural                   
 model; they encode most of the stable geometry and therefore                         1.92 dB.
 determine what residual problem the network sees. Because                               The final residual model improves the priors consistently
 these prior calibrations are deterministic, non DL estimators,                       across data splits, not only on the validation split used for
-                                                                                                                                                 11
+                                                                                                                                                         11
 
 
 
-                         TABLE XVI
-   RMSE IMPROVEMENT OVER FROZEN PRIORS BY SPLIT. N EGATIVE
+                         TABLE XVI                                                             TABLE XVIII
+   RMSE IMPROVEMENT OVER FROZEN PRIORS BY SPLIT. N EGATIVE                C OMPACT COMPARISON WITH NEARBY PATH LOSS SIDE METRICS .
      VALUES MEAN THE RESIDUAL MODEL IMPROVES THE PRIOR .
+                                                                      Reference               Attenuation / PL side Reading / caveat
+              Split        Samples    Atten.       DS        AS                               metric
 
-
-              Split        Samples    Atten.       DS        AS
-              Train         10840    -0.2895   -2.0157   -2.3578
-              Validation     2750    -0.2758   -1.3433   -2.4396
-              Test           2590    -0.2865   -1.5453   -2.3562
-              All           16180    -0.2867   -1.8406   -2.3710
-
-
-                           TABLE XVII
-A LL CITY FINAL MODEL RMSE DELTAS BY MORPHOLOGY / HEIGHT AUDIT
-   GROUP. N EGATIVE VALUES MEAN THE FINAL MODEL IMPROVES THE
-                         FROZEN PRIOR .
-
-
-            Group           Samples     Atten.       DS        AS     Fig. 6. Full non residual DL GMM head model for channel attenuation
-            dense/high         1957    -0.3602   -0.6473   -2.6405    (PL/path_loss): target GMM-5 fits by topology group. Thick curves
-            dense/low          2018    -0.3359   -1.5779   -2.3994    show the summed LoS/NLoS mixture densities, faint dotted curves show the
-            dense/mid          2055    -0.3288   -1.4074   -2.8587    individual Gaussian components, and dashed vertical lines mark the marginal
-            mixed/high         2156    -0.2931   -0.6794   -2.3186    means. The diagnostic exposed different LoS/NLoS marginals and motivated
-            mixed/low          2060    -0.2745   -2.8379   -2.5845    distribution aware heads before returning to prior anchored residual learning.
+              Train         10840    -0.2895   -2.0157   -2.3578      RadioUNet [5]          1.6 dB–3.1 dB equiva- Final attenuation result is in this
+              Validation     2750    -0.2758   -1.3433   -2.4396                             lent PL RMSE           band; no UAV height or spread tar-
+              Test           2590    -0.2865   -1.5453   -2.3562                                                    gets.
+              All           16180    -0.2867   -1.8406   -2.3710      RadioGUNet [10]        1.304 dB        DPM; Final attenuation result is between
+                                                                                             1.936 dB IRT           those values; outdoor RadioMapSeer
+                                                                                                                    setting.
+                           TABLE XVII                                 PMNet / ICASSP [7], approx. 1.38 dB con- Final attenuation result is close but
+A LL CITY FINAL MODEL RMSE DELTAS BY MORPHOLOGY / HEIGHT AUDIT        [8]                    verted score           higher under a different benchmark
+   GROUP. N EGATIVE VALUES MEAN THE FINAL MODEL IMPROVES THE                                                        contract; scale context only, no joint
+                         FROZEN PRIOR .                                                                             spread prediction.
+                                                                      Gao et al. [12]        5.59 dB                Final attenuation result is numeri-
+                                                                                             ICASSP          2023; cally lower, but this is scale context
+            Group           Samples     Atten.       DS        AS                            12.19 dB ITU 2024      rather than a like for like win: recent
+                                                                                                                    corridor weighted outdoor PL predic-
+            dense/high         1957    -0.3602   -0.6473   -2.6405
+                                                                                                                    tor, no variable height UAV or joint
+            dense/low          2018    -0.3359   -1.5779   -2.3994
+                                                                                                                    spread outputs.
+            dense/mid          2055    -0.3288   -1.4074   -2.8587
+                                                                      ReVeal [15]            1.95 dB       outdoor Final attenuation result is in the same
+            mixed/high         2156    -0.2931   -0.6794   -2.3186
+                                                                                             sparse measurement range; sparse mapping rather than
+            mixed/low          2060    -0.2745   -2.8379   -2.5845
+                                                                                             RMSE                   dense generation.
             mixed/mid          2094    -0.2781   -2.0522   -2.8200
+                                                                      RMTransformer        / ≈        1.82 dB / Useful          scale      checks,      but
             open/high          1272    -0.2721   -0.5428   -1.2874
-            open/low           1269    -0.2363   -3.1170   -2.0271    and 1.9383 dB when frozen on the final test split, while the
-            open/mid           1299    -0.2941   -1.5789   -1.7804    spread priors reached 28.10 ns delay spread RMSE and 13.74◦
-                                                                      angular spread RMSE on that same final test split.
-model selection. Table XVI reports the model minus prior                 For spread targets, quantized labels make visual and RMSE
-RMSE deltas. The test row is the main generalization claim.           interpretation harder. The released delay and angular maps are
-The all city row is not used for model selection, but it checks       integer valued; smooth predictions can be penalized across
-that the gain is not a held out split artifact.                       staircase like target boundaries even when the morphology is
-   The all city morphology/height audit groups samples by             plausible. This does not invalidate RMSE, but it warns against
-broad urban form (open, mixed, dense) and antenna height              overinterpreting small local residuals.
-bin (low, mid, high), using the same 58.12 m and 103.85 m
-thresholds as the frozen prior calibration keys. These rows           E. External Metric Context
-are not nine separately trained final neural networks. They are          Table XVIII places the final channel attenuation result
-evaluation buckets that mirror the regime structure used by the       beside the closest available path loss side references. The
-frozen priors and fallback tables: morphology is derived from         table is deliberately compact and cautious: datasets, height
-building density/height thresholds, and the height tag comes          assumptions, target definitions, and splits differ. No scalar
-from the UAV altitude range. This is a stricter check than the        indoor or link level spread predictor is used as a direct dense
-global row because it asks whether the same residual model            map leaderboard.
-helps across the deployed prior regimes rather than only in              Table XIX gives the corresponding spread side context.
-one easy subset. Table XVII reports RMSE deltas for the nine          These rows are not direct rankings, because the external works
-groups. All entries are negative, so the residual correction          report scalar or link level channel parameters rather than dense
-improves every morphology and height group for all three              CKM maps. They are included so that the DS/AS results are
-targets.                                                              still positioned against the nearest published spread prediction
-                                                                      literature.
-D. Why Distribution Diagnostics Matter                                   The fair conclusion is narrow but useful. The final channel
-   Fig. 6 shows the diagnostic that changed the modeling strat-       attenuation number is in the same band as strong dense radio
-egy: LoS and NLoS channel attenuation do not form a single            map references. It is numerically below the recent Gao et
-easy Gaussian map target. The distribution first predecessor          al. outdoor segmentation results, but that comparison remains
-modeled the marginal with GMM heads and showed that the               cross dataset scale context rather than a leaderboard result.
-NLoS collapse was not inevitable. The final model keeps this          The spread results now have explicit nearby literature context
-lesson but anchors the residual around explicit priors.               in Table XIX, but should still be interpreted primarily against
-   The internal diagnostic numbers are kept as scale references,      same protocol internal baselines because no external dense
-not as final claims. The earlier distribution first channel attenu-   CKM channel attenuation/DS/AS benchmark was found.
-ation GMM fits reached 4.43 dB LoS and 3.34 dB NLoS pixel
-aggregate RMSE, showing that NLoS collapse was a modeling             F. Qualitative Residual Behavior
-choice rather than a necessity. The earlier distribution first           Fig. 7 is the qualitative check. The model receives the frozen
-spread fits reached 30.96 ns delay spread RMSE and 11.78◦             prior and predicts a correction. The useful visual evidence is
-angular spread RMSE, motivating log domain and mixture                not merely that the prediction resembles the target; it is that
-aware treatment of spread targets. The frozen priors then             the correction row tends to correlate negatively with the prior
-provided stronger anchors: the standalone path loss prior             error row, which is the expected behavior of a HARP-N ET
-reached 1.9246 dB RMSE on its held out validation+test split          CKM residual corrector.
-                                                                                                                                                   12
-
-
-
-
-Fig. 7. Representative final model inspection panel for a dense, mid antenna held out test sample in Vancouver. Columns are channel attenuation, delay
-spread, and angular spread. Rows show ground truth, frozen prior, final prediction, context/support, prior error, and model correction.
-
-G. Runtime                                                                  across train, validation, test, and every morphology/height au-
-   The final generator was compared against the supplied                    dit group. That makes the gain harder to dismiss as overfitting
-MATLAB ray tracing path on Barcelona layouts at full 513 ×                  to a single easy city mix. At the same time, the modest size of
-513 resolution on the same laptop: an AMD Ryzen 5 5600H                     the delay spread gain is a useful warning: once the calibrated
-CPU and an NVIDIA RTX 3050 Ti Laptop GPU. The sur-                          prior has absorbed the large geometry trend, the remaining
-rogate includes LoS/NLoS mask generation, frozen priors,                    spread error is dominated by rare tails and target quantization,
-final neural prediction, and default numeric export after the               not by a smooth missing term. The residual errors that remain
-checkpoint is loaded once. It runs in 0.88 s per sample versus              are most likely where low UAV elevation, dense local clutter,
-99.89 s for the local ray tracing path, a 113.7× speedup under              and NLoS support coincide, because those pixels depend on
-this measurement setup. The ray tracing row uses the CPU                    the particular blocked/scattered path selected by the ray tracer
-path; the surrogate row uses the laptop GPU with mixed                      rather than only on broad radial or morphology statistics.
-precision.
-                                                                               Several limitations remain. First, the labels come from
-                                                                            ray tracing rather than field measurements, so the result is
-H. Interpretation and Limitations                                           simulator agreement, not over the air validation. Second, target
-   The final result is best interpreted as evidence for a hybrid            quantization limits how much sub unit error structure can be
-CKM design rather than as a claim that one backbone solves                  learned. This is not a limitation of the output layer: the model
-radio mapping in general. The strongest technical signal is                 outputs continuous channel attenuation, DS, and AS values. It
-that the residual model improves a high quality frozen prior                is a limitation of the stored labels. For channel attenuation, a
-                                                                                                                                                                 13
-
-
-
-                         TABLE XVIII                                                    and 11.3854◦ , respectively, while using one centred UAV
-    C OMPACT COMPARISON WITH NEARBY PATH LOSS SIDE METRICS .                            generator across the sampled height range. The result is not
-Reference               Attenuation / PL side Reading / caveat
-                                                                                        only a neural architecture result. Its main contribution is a
-                        metric                                                          hybrid recipe: first build strong train only calibrated priors for
-RadioUNet [5]          1.6 dB–3.1 dB equiva- Final attenuation result is in this        the structure that is predictable, then learn bounded residual
-                       lent PL RMSE           band; no UAV height or spread tar-        distributions around those anchors.
-                                              gets.
-RadioGUNet [10]        1.304 dB        DPM; Final attenuation result is between            The calibrated priors are themselves an important part of
-                       1.936 dB IRT           those values; outdoor RadioMapSeer        the method. They put together coherent two ray LoS path
-                                              setting.
-PMNet / ICASSP [7], approx. 1.38 dB con- Final attenuation result is close but          loss, height dependent calibration, morphology aware NLoS
-[8]                    verted score           higher under a different benchmark        correction, visibility switching, and log domain DS/AS spread
-                                              contract; scale context only, no joint
-                                              spread prediction.                        statistics. These frozen anchors already explain most radial,
-Gao et al. [12]        5.59 dB                Final attenuation result is numeri-       visibility, height, and spread scale structure; the final residual
-                       ICASSP          2023; cally lower, but this is scale context
-                       12.19 dB ITU 2024      rather than a like for like win: recent   model then improves them by 0.2865 dB, 1.5453 ns, and
-                                              corridor weighted outdoor PL predic-      2.3562◦ RMSE on the held out test set. Continuous UAV
-                                              tor, no variable height UAV or joint
-                                              spread outputs.                           height is handled through both the height aware priors and a
-ReVeal [15]            1.95 dB       outdoor Final attenuation result is in the same    sinusoidal FiLM conditioning path, so the same model covers
-                       sparse measurement range; sparse mapping rather than
-                       RMSE                   dense generation.                         the varying height regime without per altitude retraining.
-RMTransformer        / ≈        1.82 dB / Useful          scale      checks,      but      The distribution first diagnosis remains the key modelling
-PathFinder [9], [11]   ≈            1.19 dB random/specialized          splits    and
-                       converted references   different assumptions.                    lesson. NLoS channel attenuation residuals are mixture-like
-AIRMap [13]            Path gain error < Same broad digital twin motivation,            and prone to mode collapse, while DS/AS targets are quantized
-                       4 dB against ray trac- but path gain and a fixed 200 × 200
-                       ing                    input grid with variable physical ex-     and spike plus tail rather than single smooth residuals. GMM
-                                              tent.                                     style residual heads and histogram checks therefore matter
-Final model (ours)     1.6519 dB              Strict CKM city holdout, centred
-                       attenuation;           variable height UAV, dense 513 ×          because they prevent visually plausible maps from hiding col-
-                       26.5570 ns        DS; 513 channel attenuation/DS/AS.             lapsed marginals. The remaining spread errors are consistent
-                                ◦
-                       11.3854 AS
-                                                                                        with this interpretation: the large scale DS/AS structure is
-0.9298 dB final MAE against labels quantized at about 1 dB                              usually recovered, but rare high spread pixel groups can still
-is already close to the label step, even though the RMSE still                          be missed, and some false positive high spread patches remain.
-reveals harder tails. Third, the final model is selected under                             The main practical conclusion is narrow and useful. For this
-one city holdout split and one final training seed. Fourth, the                         fixed ray traced CKM simulation contract, HARP-N ET CKM
-dataset fixes frequency, antenna pattern, and simulator assump-                         is accurate, fast, and interpretable enough to replace repeated
-tions; deployment would require conditioning or calibration                             map generation for many planning experiments, achieving
-across those variables.                                                                 a measured 113.7× speedup over the local MATLAB ray
-                                                                                        tracing path. The result is a reproducible surrogate for a
-                                                                                        defined dataset, split, carrier, antenna setup, and receiver mask,
-                        V. C ODE AVAILABILITY
-                                                                                        and its clearest lesson is methodological: diagnose the target
-   The reproducibility record is public as live source reposito-                        distribution, freeze the stable structure in auditable priors, and
-ries. The citations below identify the public source locations                          spend neural capacity on the residual structure that the priors
-and snapshot commits or tags used for this manuscript. The                              cannot explain.
-standalone CKM Generator repository contains the Streamlit
-interface, command line generator, frozen calibration files,
-                                                                                                                     R EFERENCES
-final model runtime code, and the published checkpoint path
-used by the demonstrator [37]; it is the inference/demo entry                            [1] Y. Zeng and X. Xu, “Toward environment-aware 6G communications
-                                                                                             via channel knowledge map,” IEEE Wireless Communications, vol. 28,
-point. The final training and evaluation implementation is                                   no. 3, pp. 84–91, 2021.
-collected separately in the final code repository [38]; it is the                        [2] Y. Zeng, J. Chen, J. Xu, D. Wu, X. Xu, S. Jin, X. Gao, D. Gesbert,
-source record for reproducing the paper metrics. The reported                                S. Cui, and R. Zhang, “A tutorial on environment-aware communications
-                                                                                             via channel knowledge map for 6G,” IEEE Communications Surveys &
-tables are tied to the selected best_model.pt checkpoint                                     Tutorials, vol. 26, no. 3, pp. 1478–1519, 2024.
-and its exported comparison summary and deep breakdown                                   [3] W. Khawaja, I. Guvenc, D. W. Matolak, U.-C. Fiebig, and N. Schneck-
-JSON files, rather than to a later interactive demo run. For                                 enberger, “A survey of air-to-ground propagation channel modeling for
-                                                                                             unmanned aerial vehicles,” IEEE Communications Surveys & Tutorials,
-traceability, the broader development history and the LaTeX                                  vol. 21, no. 3, pp. 2361–2391, 2019.
-thesis source are also archived in public repositories [39], [40].                       [4] A. Saboor and E. Vinogradov, “Millimeter-wave UAV channel model
-Large data and model artifacts are treated as external artifacts                             with height-dependent path loss and shadowing in urban scenarios,”
-                                                                                             arXiv:2511.10763, 2025. [Online]. Available: https://arxiv.org/abs/2511
-or Git LFS objects rather than ordinary source files.                                        .10763
-                                                                                         [5] R. Levie, Çağkan Yapar, G. Kutyniok, and G. Caire, “RadioUNet:
-                             VI. C ONCLUSION                                                 Fast radio map estimation with convolutional neural networks,”
-                                                                                             IEEE Transactions on Wireless Communications, vol. 20, no. 6, pp.
-  This paper presents a dense variable height UAV CKM sur-                                   4001–4015, 2021. [Online]. Available: https://arxiv.org/abs/1911.09002
-rogate that jointly predicts channel attenuation, delay spread,                          [6] J.-H. Lee, O. G. Serbetci, D. P. Selvam, and A. F. Molisch, “PMNet:
-                                                                                             Robust pathloss map prediction via supervised learning,” in Proc. IEEE
-and angular spread on unseen cities. Under the strict city hold-                             Global Communications Conference (GLOBECOM), 2023. [Online].
-out contract, the final model reaches 1.6519 dB, 26.5570 ns,                                 Available: https://arxiv.org/abs/2211.10527
-                                                                                                                                                                    14
+                                                                      PathFinder [9], [11]   ≈            1.19 dB random/specialized          splits    and
+            open/low           1269    -0.2363   -3.1170   -2.0271
+                                                                                             converted references   different assumptions.
+            open/mid           1299    -0.2941   -1.5789   -1.7804
+                                                                      AIRMap [13]            Path gain error < Same broad digital twin motivation,
+                                                                                             4 dB against ray trac- but path gain and a fixed 200 × 200
+model selection. Table XVI reports the model minus prior                                     ing                    input grid with variable physical ex-
+                                                                                                                    tent.
+RMSE deltas. The test row is the main generalization claim.           Final model (ours)     1.6519 dB              Strict CKM city holdout, centred
+The all city row is not used for model selection, but it checks                              attenuation;           variable height UAV, dense 513 ×
+                                                                                             26.5570 ns        DS; 513 channel attenuation/DS/AS.
+that the gain is not a held out split artifact.                                                       ◦
+                                                                                             11.3854 AS
+   The all city morphology/height audit groups samples by
+broad urban form (open, mixed, dense) and antenna height              and 1.9383 dB when frozen on the final test split, while the
+bin (low, mid, high), using the same 58.12 m and 103.85 m             spread priors reached 28.10 ns delay spread RMSE and 13.74◦
+thresholds as the frozen prior calibration keys. These rows           angular spread RMSE on that same final test split.
+are not nine separately trained final neural networks. They are          For spread targets, quantized labels make visual and RMSE
+evaluation buckets that mirror the regime structure used by the       interpretation harder. The released delay and angular maps are
+frozen priors and fallback tables: morphology is derived from         integer valued; smooth predictions can be penalized across
+building density/height thresholds, and the height tag comes          staircase like target boundaries even when the morphology is
+from the UAV altitude range. This is a stricter check than the        plausible. This does not invalidate RMSE, but it warns against
+global row because it asks whether the same residual model            overinterpreting small local residuals.
+helps across the deployed prior regimes rather than only in
+one easy subset. Table XVII reports RMSE deltas for the nine          E. External Metric Context
+groups. All entries are negative, so the residual correction
+                                                                         Table XVIII places the final channel attenuation result
+improves every morphology and height group for all three
+                                                                      beside the closest available path loss side references. The
+targets.
+                                                                      table is deliberately compact and cautious: datasets, height
+                                                                      assumptions, target definitions, and splits differ. No scalar
+D. Why Distribution Diagnostics Matter                                indoor or link level spread predictor is used as a direct dense
+   A retained distribution diagnostic changed the modeling            map leaderboard.
+strategy: LoS and NLoS channel attenuation do not form a sin-            Table XIX gives the corresponding spread side context.
+gle easy Gaussian map target. The distribution first predecessor      These rows are not direct rankings, because the external works
+modeled the marginal with GMM heads and showed that the               report scalar or link level channel parameters rather than dense
+NLoS collapse was not inevitable. The final model keeps this          CKM maps. They are included so that the DS/AS results are
+lesson but anchors the residual around explicit priors.               still positioned against the nearest published spread prediction
+   The internal diagnostic numbers are kept as scale references,      literature.
+not as final claims. The earlier distribution first channel attenu-      The fair conclusion is narrow but useful. The final channel
+ation GMM fits reached 4.43 dB LoS and 3.34 dB NLoS pixel             attenuation number is in the same band as strong dense radio
+aggregate RMSE, showing that NLoS collapse was a modeling             map references. It is numerically below the recent Gao et
+choice rather than a necessity. The earlier distribution first        al. outdoor segmentation results, but that comparison remains
+spread fits reached 30.96 ns delay spread RMSE and 11.78◦             cross dataset scale context rather than a leaderboard result.
+angular spread RMSE, motivating log domain and mixture                The spread results now have explicit nearby literature context
+aware treatment of spread targets. The frozen priors then             in Table XIX, but should still be interpreted primarily against
+provided stronger anchors: the standalone path loss prior             same protocol internal baselines because no external dense
+reached 1.9246 dB RMSE on its held out validation+test split          CKM channel attenuation/DS/AS benchmark was found.
+                                                                                                                                                                    12
 
 
 
@@ -1019,85 +948,173 @@ Final model                   26.5570 ns DS RMSE and 11.3854◦ AS RMSE.        
                                                                                            contract.                          under the same protocol.
 
 
-                         TABLE XX                                                    [19] A. Al-Hourani, S. Kandeepan, and S. Lardner, “Optimal LAP altitude
- RUNTIME COMPARISON FOR ONE FULL RESOLUTION BARCELONA CKM                                 for maximum coverage,” IEEE Wireless Communications Letters, vol. 3,
-    SAMPLE ON THE SAME RYZEN 5 5600H / RTX 3050 T I L APTOP                               no. 6, pp. 569–572, 2014.
-                         HARDWARE .                                                  [20] 3GPP, “Study on channel model for frequencies from 0.5 to 100
-                                                                                          GHz,” 3rd Generation Partnership Project, Tech. Rep. TR 38.901,
- Method             Timed path                                              Time          2026, specification archive, accessed 15 May 2026. [Online]. Available:
-                                                                                          https://www.3gpp.org/ftp/Specs/archive/38_series/38.901/
- MATLAB RT          Pixel receivers outside buildings; attenuation/DS/AS   99.89 s
+                         TABLE XX                                                    and NLoS support coincide, because those pixels depend on
+ RUNTIME COMPARISON FOR ONE FULL RESOLUTION BARCELONA CKM                            the particular blocked/scattered path selected by the ray tracer
+    SAMPLE ON THE SAME RYZEN 5 5600H / RTX 3050 T I L APTOP
+                         HARDWARE .                                                  rather than only on broad radial or morphology statistics.
+                                                                                        Several limitations remain. First, the labels come from
+ Method             Timed path                                              Time     ray tracing rather than field measurements, so the result is
+ MATLAB RT          Pixel receivers outside buildings; attenuation/DS/AS   99.89 s   simulator agreement, not over the air validation. Second, target
                     parsed from paths; CPU path
-                                                                                     [21] C.-C. Chiu, A.-H. Tsai, H.-P. Lin, C.-Y. Lee, and L.-C. Wang, “Channel
- Final generator    Masks, priors, attenuation/DS/AS prediction, numeric    0.88 s        modeling of air-to-ground signal measurement with two-ray ground-
-                    export; CUDA mixed precision                                          reflection model for UAV communication systems,” in 2021 30th Wire-
-                                                                                          less and Optical Communications Conference (WOCC), 2021, pp. 251–
-                                                                                          256.
- [7] J.-H. Lee, J. Lee, S.-H. Lee, and A. F. Molisch, “PMNet: Large-scale            [22] G. Yang, Y. Zhang, Z. He, J. Wen, Z. Ji, and Y. Li, “Machine-
-     channel prediction system for ICASSP 2023 first pathloss radio map                   learning-based prediction methods for path loss and delay spread in
-     prediction challenge,” in Proc. IEEE International Conference on                     air-to-ground millimetre-wave channels,” IET Microwaves, Antennas &
-     Acoustics, Speech and Signal Processing (ICASSP), 2023, pp. 1–2.                     Propagation, vol. 13, no. 8, pp. 1113–1121, 2019. [Online]. Available:
-     [Online]. Available: https://doi.org/10.1109/ICASSP49357.2023.10095                  https://onlinelibrary.wiley.com/doi/10.1049/iet-map.2018.6187
-     257                                                                             [23] B. Huang, Z. Xin, F. Yang, Y. Zhang, Y. Liu, J. Huang,
- [8] Çağkan Yapar, F. Jaensch, R. Levie, G. Kutyniok, and G. Caire, “The                 and J. Bian, “Transformer-based air-to-ground mmwave channel
-     first pathloss radio map prediction challenge,” arXiv:2310.07658, 2023.              characteristics prediction for 6g uav communications,” Sensors,
-     [Online]. Available: https://arxiv.org/abs/2310.07658                                vol. 25, no. 12, p. 3731, 2025. [Online]. Available: https:
- [9] Y. Li, C. Zhang, W. Wang, and Y. Huang, “RMTransformer: Accurate                     //www.mdpi.com/1424-8220/25/12/3731
-     radio map construction and coverage prediction,” arXiv:2501.05190,              [24] H. Mi, B. Ai, R. He, A. Bodi, R. Caromi, J. Wang, J. Senic, C. Gentile,
-     2025. [Online]. Available: https://arxiv.org/abs/2501.05190                          and Y. Miao, “Measurement-based prediction of mmwave channel
-[10] Z. Yang, F. Liu, Y. Jin, and K. Vandikas, “Group equivariant                         parameters using deep learning and point cloud,” IEEE Open Journal of
-     convolutional networks for pathloss estimation,” arXiv:2511.17841,                   Vehicular Technology, vol. 5, pp. 1059–1072, 2024. [Online]. Available:
-     2025. [Online]. Available: https://arxiv.org/abs/2511.17841                          https://doi.org/10.1109/OJVT.2024.3436857
-[11] Z. Zhong, Z. Yu, P. Li, J. Lv, C. L. P. Chen, and M. Chen,                      [25] A. Kendall and Y. Gal, “What uncertainties do we need in
-     “PathFinder: Advancing path loss prediction for single-to-multi-                     Bayesian deep learning for computer vision?” in Advances in
-     transmitter scenario,” arXiv:2512.14150, 2025. [Online]. Available:                  Neural Information Processing Systems, 2017. [Online]. Available:
-     https://arxiv.org/abs/2512.14150                                                     https://arxiv.org/abs/1703.04977
-[12] Y. Gao, T. Wen, W. Xie, J. Du, Y. Zeng, D. Niyato, and S. Xu,                   [26] T. Saleh, D. Petrov, O. Tirkkonen, and V. Räisänen, “Probabilistic path
-     “Effective outdoor pathloss prediction: A multi-layer segmentation                   loss predictors for mmwave networks,” in Proceedings of the IEEE 93rd
-     approach with weighting map,” arXiv:2601.08436, 2026. [Online].                      Vehicular Technology Conference, 2021, pp. 1–6. [Online]. Available:
-     Available: https://arxiv.org/abs/2601.08436                                          https://doi.org/10.1109/VTC2021-Spring51267.2021.9448967
-[13] A. Saeizadeh, M. Tehrani-Moayyed, D. Villa, J. G. B. Jr., P. Johari,            [27] D. G. Marti, J. Palacios, J. O. Lacruz, and J. Widmer, “A
-     S. Basagni, and T. Melodia, “AIRMap: AI-generated radio maps for                     mixture density channel model for deep learning-based wireless
-     wireless digital twins,” arXiv:2511.05522, 2025. [Online]. Available:                physical layer design,” in Proceedings of the 23rd International
-     https://arxiv.org/abs/2511.05522                                                     ACM Conference on Modeling, Analysis and Simulation of Wireless
-[14] X. Xu and Y. Zeng, “How much data is needed for channel knowledge                    and Mobile Systems. ACM, 2020, pp. 53–62. [Online]. Available:
-     map construction?” IEEE Transactions on Wireless Communications,                     https://dspace.networks.imdea.org/handle/20.500.12761/886
-     vol. 23, no. 10, pp. 13 011–13 021, 2024.                                       [28] Y. Lee, X. Ma, and A. S. I. D. Lang, “Modeling of time-varying wireless
-[15] M. Shahid, K. Das, H. Ushaq, H. Zhang, J. Song, D. Qiao,                             communication channel with fading and shadowing,” arXiv:2405.08199,
-     S. Babu, Y. Guan, Z. Zhu, and A. Ahmed, “ReVeal: A physics-                          2024. [Online]. Available: https://arxiv.org/abs/2405.08199
-     informed neural network for high-fidelity radio environment mapping,”           [29] X. Wang, K. Tao, N. Cheng, Z. Yin, Z. Li, Y. Zhang, and X. Shen,
-     arXiv:2502.19646, 2025. [Online]. Available: https://arxiv.org/abs/2502              “RadioDiff: An effective generative diffusion model for sampling-free
-     .19646                                                                               dynamic radio map construction,” IEEE Transactions on Cognitive
-[16] T. S. Rappaport, Wireless Communications: Principles and Practice,                   Communications and Networking, vol. 11, no. 2, pp. 738–750, 2025.
-     2nd ed. Prentice Hall, 2002. [Online]. Available: https://www.pearso                 [Online]. Available: https://arxiv.org/abs/2408.08593
-     n.com/en-us/subject-catalog/p/wireless-communications-principles-and            [30] P. Kyösti et al., “WINNER II channel models,” IST-4-027756
-     -practice/P200000003199                                                              WINNER II Deliverable, Tech. Rep., 2007. [Online]. Available:
-[17] A. Goldsmith, Wireless Communications. Cambridge University Press,                   https://www.cept.org/files/8339/winner2%20-%20final%20report.pdf
-     2005.                                                                           [31] X. Cai, J. R.-P. neiro, X. Yin, B. Ai, G. F. Pedersen, and A. P.
-[18] COST Action 231, “Digital mobile radio towards future generation                     Yuste, “An empirical air-to-ground channel model based on passive
-     systems: Final report,” Office for Official Publications of the European             measurements in LTE,” arXiv:1901.07930, 2019. [Online]. Available:
-     Communities, Luxembourg, Tech. Rep., 1999. [Online]. Available:                      https://arxiv.org/abs/1901.07930
-     https://op.europa.eu/en/publication-detail/-/publication/f2f42003-402           [32] T. Izydorczyk, F. M. L. Tavares, G. Berardinelli, M. Bucur, and
-     8-4496-af95-beaa38fd475f                                                             P. Mogensen, “Angular distribution of cellular signals for UAVs in
-                                                                                 15
+ Final generator    Masks, priors, attenuation/DS/AS prediction, numeric    0.88 s
+                                                                                     quantization limits how much sub unit error structure can be
+                    export; CUDA mixed precision                                     learned. This is not a limitation of the output layer: the model
+                                                                                     outputs continuous channel attenuation, DS, and AS values. It
+F. Qualitative Residual Behavior                                                     is a limitation of the stored labels. For channel attenuation, a
+   Fig. 6 is the qualitative check. The model receives the frozen                    0.9298 dB final MAE against labels quantized at about 1 dB
+prior and predicts a correction. The useful visual evidence is                       is already close to the label step, even though the RMSE still
+not merely that the prediction resembles the target; it is that                      reveals harder tails. Third, the final model is selected under
+the correction row tends to correlate negatively with the prior                      one city holdout split and one final training seed. Fourth, the
+error row, which is the expected behavior of a HARP-N ET                             dataset fixes frequency, antenna pattern, and simulator assump-
+CKM residual corrector.                                                              tions; deployment would require conditioning or calibration
+                                                                                     across those variables.
+G. Runtime                                                                                                    V. C ODE AVAILABILITY
+   The final generator was compared against the supplied                                The reproducibility record is public as live source reposito-
+MATLAB ray tracing path on Barcelona layouts at full 513 ×                           ries. The citations below identify the public source locations
+513 resolution on the same laptop: an AMD Ryzen 5 5600H                              and snapshot commits or tags used for this manuscript. The
+CPU and an NVIDIA RTX 3050 Ti Laptop GPU. The sur-                                   standalone CKM Generator repository contains the Streamlit
+rogate includes LoS/NLoS mask generation, frozen priors,                             interface, command line generator, frozen calibration files,
+final neural prediction, and default numeric export after the                        final model runtime code, and the published checkpoint path
+checkpoint is loaded once. It runs in 0.88 s per sample versus                       used by the demonstrator [37]; it is the inference/demo entry
+99.89 s for the local ray tracing path, a 113.7× speedup under                       point. The final training and evaluation implementation is
+this measurement setup. The ray tracing row uses the CPU                             collected separately in the final code repository [38]; it is the
+path; the surrogate row uses the laptop GPU with mixed                               source record for reproducing the paper metrics. The reported
+precision.                                                                           tables are tied to the selected best_model.pt checkpoint
+                                                                                     and its exported comparison summary and deep breakdown
+H. Interpretation and Limitations                                                    JSON files, rather than to a later interactive demo run. For
+   The final result is best interpreted as evidence for a hybrid                     traceability, the broader development history and the LaTeX
+CKM design rather than as a claim that one backbone solves                           thesis source are also archived in public repositories [39], [40].
+radio mapping in general. The strongest technical signal is                          Large data and model artifacts are treated as external artifacts
+that the residual model improves a high quality frozen prior                         or Git LFS objects rather than ordinary source files.
+across train, validation, test, and every morphology/height au-
+dit group. That makes the gain harder to dismiss as overfitting                                                   VI. C ONCLUSION
+to a single easy city mix. At the same time, the modest size of                        This paper presents a dense variable height UAV CKM sur-
+the delay spread gain is a useful warning: once the calibrated                       rogate that jointly predicts channel attenuation, delay spread,
+prior has absorbed the large geometry trend, the remaining                           and angular spread on unseen cities. Under the strict city hold-
+spread error is dominated by rare tails and target quantization,                     out contract, the final model reaches 1.6519 dB, 26.5570 ns,
+not by a smooth missing term. The residual errors that remain                        and 11.3854◦ , respectively, while using one centred UAV
+are most likely where low UAV elevation, dense local clutter,                        generator across the sampled height range. The result is not
+                                                                                                                                                   13
 
 
 
-     urban and rural scenarios,” in Proc. EuCAP, 2019. [Online]. Available:
-     https://ieeexplore.ieee.org/document/8739910
-[33] J. Walfisch and H. L. Bertoni, “A theoretical model of UHF propagation
-     in urban environments,” IEEE Transactions on Antennas and Propaga-
-     tion, vol. 36, no. 12, pp. 1788–1796, 1988.
-[34] F. Ikegami, S. Yoshida, T. Takeuchi, and M. Umehira, “Propagation fac-
-     tors controlling mean field strength on urban streets,” IEEE Transactions
-     on Antennas and Propagation, vol. 32, no. 8, pp. 822–829, 1984.
-[35] R.-T. Juang, “Explainable deep-learning-based path loss prediction from
-     path profiles in urban environments,” Applied Sciences, vol. 11, no. 15,
-     p. 6690, 2021.
-[36] E. Perez, F. Strub, H. de Vries, V. Dumoulin, and A. Courville, “FiLM:
-     Visual reasoning with a general conditioning layer,” in Proceedings
-     of the AAAI Conference on Artificial Intelligence, 2018. [Online].
-     Available: https://arxiv.org/abs/1709.07871
+
+Fig. 6. Representative final model inspection panel for a dense, mid antenna held out test sample in Vancouver. Columns are channel attenuation, delay
+spread, and angular spread. Rows show ground truth, frozen prior, final prediction, context/support, prior error, and model correction.
+
+only a neural architecture result. Its main contribution is a               and spike plus tail rather than single smooth residuals. GMM
+hybrid recipe: first build strong train only calibrated priors for          style residual heads and histogram checks therefore matter
+the structure that is predictable, then learn bounded residual              because they prevent visually plausible maps from hiding col-
+distributions around those anchors.                                         lapsed marginals. The remaining spread errors are consistent
+                                                                            with this interpretation: the large scale DS/AS structure is
+   The calibrated priors are themselves an important part of
+                                                                            usually recovered, but rare high spread pixel groups can still
+the method. They put together coherent two ray LoS path
+                                                                            be missed, and some false positive high spread patches remain.
+loss, height dependent calibration, morphology aware NLoS
+correction, visibility switching, and log domain DS/AS spread
+                                                                               The main practical conclusion is narrow and useful. For this
+statistics. These frozen anchors already explain most radial,
+                                                                            fixed ray traced CKM simulation contract, HARP-N ET CKM
+visibility, height, and spread scale structure; the final residual
+                                                                            is accurate, fast, and interpretable enough to replace repeated
+model then improves them by 0.2865 dB, 1.5453 ns, and
+                                                                            map generation for many planning experiments, achieving
+2.3562◦ RMSE on the held out test set. Continuous UAV
+                                                                            a measured 113.7× speedup over the local MATLAB ray
+height is handled through both the height aware priors and a
+                                                                            tracing path. The result is a reproducible surrogate for a
+sinusoidal FiLM conditioning path, so the same model covers
+                                                                            defined dataset, split, carrier, antenna setup, and receiver mask,
+the varying height regime without per altitude retraining.
+                                                                            and its clearest lesson is methodological: diagnose the target
+   The distribution first diagnosis remains the key modelling               distribution, freeze the stable structure in auditable priors, and
+lesson. NLoS channel attenuation residuals are mixture-like                 spend neural capacity on the residual structure that the priors
+and prone to mode collapse, while DS/AS targets are quantized               cannot explain.
+                                                                                                                                                            14
+
+
+
+                              R EFERENCES                                        [19] A. Al-Hourani, S. Kandeepan, and S. Lardner, “Optimal LAP altitude
+                                                                                      for maximum coverage,” IEEE Wireless Communications Letters, vol. 3,
+ [1] Y. Zeng and X. Xu, “Toward environment-aware 6G communications                   no. 6, pp. 569–572, 2014.
+     via channel knowledge map,” IEEE Wireless Communications, vol. 28,          [20] 3GPP, “Study on channel model for frequencies from 0.5 to 100
+     no. 3, pp. 84–91, 2021.                                                          GHz,” 3rd Generation Partnership Project, Tech. Rep. TR 38.901,
+ [2] Y. Zeng, J. Chen, J. Xu, D. Wu, X. Xu, S. Jin, X. Gao, D. Gesbert,               2026, specification archive, accessed 15 May 2026. [Online]. Available:
+     S. Cui, and R. Zhang, “A tutorial on environment-aware communications            https://www.3gpp.org/ftp/Specs/archive/38_series/38.901/
+     via channel knowledge map for 6G,” IEEE Communications Surveys &            [21] C.-C. Chiu, A.-H. Tsai, H.-P. Lin, C.-Y. Lee, and L.-C. Wang, “Channel
+     Tutorials, vol. 26, no. 3, pp. 1478–1519, 2024.                                  modeling of air-to-ground signal measurement with two-ray ground-
+ [3] W. Khawaja, I. Guvenc, D. W. Matolak, U.-C. Fiebig, and N. Schneck-              reflection model for UAV communication systems,” in 2021 30th Wire-
+     enberger, “A survey of air-to-ground propagation channel modeling for            less and Optical Communications Conference (WOCC), 2021, pp. 251–
+     unmanned aerial vehicles,” IEEE Communications Surveys & Tutorials,              256.
+     vol. 21, no. 3, pp. 2361–2391, 2019.                                        [22] G. Yang, Y. Zhang, Z. He, J. Wen, Z. Ji, and Y. Li, “Machine-
+ [4] A. Saboor and E. Vinogradov, “Millimeter-wave UAV channel model                  learning-based prediction methods for path loss and delay spread in
+     with height-dependent path loss and shadowing in urban scenarios,”               air-to-ground millimetre-wave channels,” IET Microwaves, Antennas &
+     arXiv:2511.10763, 2025. [Online]. Available: https://arxiv.org/abs/2511          Propagation, vol. 13, no. 8, pp. 1113–1121, 2019. [Online]. Available:
+     .10763                                                                           https://onlinelibrary.wiley.com/doi/10.1049/iet-map.2018.6187
+ [5] R. Levie, Çağkan Yapar, G. Kutyniok, and G. Caire, “RadioUNet:             [23] B. Huang, Z. Xin, F. Yang, Y. Zhang, Y. Liu, J. Huang,
+     Fast radio map estimation with convolutional neural networks,”                   and J. Bian, “Transformer-based air-to-ground mmwave channel
+     IEEE Transactions on Wireless Communications, vol. 20, no. 6, pp.                characteristics prediction for 6g uav communications,” Sensors,
+     4001–4015, 2021. [Online]. Available: https://arxiv.org/abs/1911.09002           vol. 25, no. 12, p. 3731, 2025. [Online]. Available: https:
+ [6] J.-H. Lee, O. G. Serbetci, D. P. Selvam, and A. F. Molisch, “PMNet:              //www.mdpi.com/1424-8220/25/12/3731
+     Robust pathloss map prediction via supervised learning,” in Proc. IEEE      [24] H. Mi, B. Ai, R. He, A. Bodi, R. Caromi, J. Wang, J. Senic, C. Gentile,
+     Global Communications Conference (GLOBECOM), 2023. [Online].                     and Y. Miao, “Measurement-based prediction of mmwave channel
+     Available: https://arxiv.org/abs/2211.10527                                      parameters using deep learning and point cloud,” IEEE Open Journal of
+ [7] J.-H. Lee, J. Lee, S.-H. Lee, and A. F. Molisch, “PMNet: Large-scale             Vehicular Technology, vol. 5, pp. 1059–1072, 2024. [Online]. Available:
+     channel prediction system for ICASSP 2023 first pathloss radio map               https://doi.org/10.1109/OJVT.2024.3436857
+     prediction challenge,” in Proc. IEEE International Conference on            [25] A. Kendall and Y. Gal, “What uncertainties do we need in
+     Acoustics, Speech and Signal Processing (ICASSP), 2023, pp. 1–2.                 Bayesian deep learning for computer vision?” in Advances in
+     [Online]. Available: https://doi.org/10.1109/ICASSP49357.2023.10095              Neural Information Processing Systems, 2017. [Online]. Available:
+     257                                                                              https://arxiv.org/abs/1703.04977
+ [8] Çağkan Yapar, F. Jaensch, R. Levie, G. Kutyniok, and G. Caire,             [26] T. Saleh, D. Petrov, O. Tirkkonen, and V. Räisänen, “Probabilistic path
+     “The first pathloss radio map prediction challenge,” in ICASSP 2023              loss predictors for mmwave networks,” in Proceedings of the IEEE 93rd
+     - 2023 IEEE International Conference on Acoustics, Speech and                    Vehicular Technology Conference, 2021, pp. 1–6. [Online]. Available:
+     Signal Processing (ICASSP), 2023, pp. 1–2. [Online]. Available:                  https://doi.org/10.1109/VTC2021-Spring51267.2021.9448967
+     https://doi.org/10.1109/ICASSP49357.2023.10433928                           [27] D. G. Marti, J. Palacios, J. O. Lacruz, and J. Widmer, “A
+ [9] Y. Li, C. Zhang, W. Wang, and Y. Huang, “RMTransformer: Accurate                 mixture density channel model for deep learning-based wireless
+     radio map construction and coverage prediction,” in 2025 IEEE 101st              physical layer design,” in Proceedings of the 23rd International
+     Vehicular Technology Conference (VTC2025-Spring), 2025, pp. 1–5.                 ACM Conference on Modeling, Analysis and Simulation of Wireless
+     [Online]. Available: https://doi.org/10.1109/VTC2025-Spring65109.202             and Mobile Systems. ACM, 2020, pp. 53–62. [Online]. Available:
+     5.11174709                                                                       https://dspace.networks.imdea.org/handle/20.500.12761/886
+[10] Z. Yang, F. Liu, Y. Jin, and K. Vandikas, “Group equivariant                [28] Y. Lee, X. Ma, and A. S. I. D. Lang, “Modeling of time-varying
+     convolutional networks for pathloss estimation,” arXiv:2511.17841,               wireless communication channel with fading and shadowing,” in 2024
+     2025. [Online]. Available: https://arxiv.org/abs/2511.17841                      IEEE 100th Vehicular Technology Conference (VTC2024-Fall), 2024,
+[11] Z. Zhong, Z. Yu, P. Li, J. Lv, C. L. P. Chen, and M. Chen, “PathFinder:          pp. 1–6. [Online]. Available: https://doi.org/10.1109/VTC2024-Fall631
+     Advancing path loss prediction for single-to-multi-transmitter scenario,”        53.2024.10757531
+     Pattern Recognition, vol. 179, p. 113725, 2026. [Online]. Available:        [29] X. Wang, K. Tao, N. Cheng, Z. Yin, Z. Li, Y. Zhang, and X. Shen,
+     https://doi.org/10.1016/j.patcog.2026.113725                                     “RadioDiff: An effective generative diffusion model for sampling-free
+[12] Y. Gao, T. Wen, W. Xie, J. Du, Y. Zeng, D. Niyato, and S. Xu, “Effective         dynamic radio map construction,” IEEE Transactions on Cognitive
+     outdoor pathloss prediction: A multi-layer segmentation approach with            Communications and Networking, vol. 11, no. 2, pp. 738–750, 2025.
+     weighting map,” IEEE Transactions on Vehicular Technology, pp. 1–6,              [Online]. Available: https://arxiv.org/abs/2408.08593
+     2026. [Online]. Available: https://doi.org/10.1109/TVT.2026.3658966         [30] P. Kyösti et al., “WINNER II channel models,” IST-4-027756
+[13] A. Saeizadeh, M. Tehrani-Moayyed, D. Villa, J. G. B. Jr., P. Johari,             WINNER II Deliverable, Tech. Rep., 2007. [Online]. Available:
+     S. Basagni, and T. Melodia, “AIRMap: AI-generated radio maps for                 https://www.cept.org/files/8339/winner2%20-%20final%20report.pdf
+     wireless digital twins,” arXiv:2511.05522, 2025. [Online]. Available:       [31] X. Cai, J. Rodríguez-Piñeiro, X. Yin, N. Wang, B. Ai, G. F. Pedersen,
+     https://arxiv.org/abs/2511.05522                                                 and A. P. Yuste, “An empirical air-to-ground channel model based
+[14] X. Xu and Y. Zeng, “How much data is needed for channel knowledge                on passive measurements in LTE,” IEEE Transactions on Vehicular
+     map construction?” IEEE Transactions on Wireless Communications,                 Technology, vol. 68, no. 2, pp. 1140–1154, 2019. [Online]. Available:
+     vol. 23, no. 10, pp. 13 011–13 021, 2024.                                        https://doi.org/10.1109/TVT.2018.2886961
+[15] M. Shahid, K. Das, H. Ushaq, H. Zhang, J. Song, D. Qiao,                    [32] T. Izydorczyk, F. M. L. Tavares, G. Berardinelli, M. Bucur, and
+     S. Babu, Y. Guan, Z. Zhu, and A. Ahmad, “ReVeal: A physics-                      P. Mogensen, “Angular distribution of cellular signals for UAVs in
+     informed neural network for high-fidelity radio environment mapping,”            urban and rural scenarios,” in Proc. EuCAP, 2019. [Online]. Available:
+     in 2025 IEEE International Symposium on Dynamic Spectrum                         https://ieeexplore.ieee.org/document/8739910
+     Access Networks (DySPAN), 2025, pp. 1–10. [Online]. Available:              [33] J. Walfisch and H. L. Bertoni, “A theoretical model of UHF propagation
+     https://doi.org/10.1109/DYSPAN64764.2025.11115911                                in urban environments,” IEEE Transactions on Antennas and Propaga-
+[16] T. S. Rappaport, Wireless Communications: Principles and Practice,               tion, vol. 36, no. 12, pp. 1788–1796, 1988.
+     2nd ed. Prentice Hall, 2002. [Online]. Available: https://www.pearso        [34] F. Ikegami, S. Yoshida, T. Takeuchi, and M. Umehira, “Propagation fac-
+     n.com/en-us/subject-catalog/p/wireless-communications-principles-and             tors controlling mean field strength on urban streets,” IEEE Transactions
+     -practice/P200000003199                                                          on Antennas and Propagation, vol. 32, no. 8, pp. 822–829, 1984.
+[17] A. Goldsmith, Wireless Communications. Cambridge University Press,          [35] R.-T. Juang, “Explainable deep-learning-based path loss prediction from
+     2005.                                                                            path profiles in urban environments,” Applied Sciences, vol. 11, no. 15,
+[18] COST Action 231, “Digital mobile radio towards future generation                 p. 6690, 2021.
+     systems: Final report,” Office for Official Publications of the European    [36] E. Perez, F. Strub, H. de Vries, V. Dumoulin, and A. Courville, “FiLM:
+     Communities, Luxembourg, Tech. Rep., 1999. [Online]. Available:                  Visual reasoning with a general conditioning layer,” in Proceedings
+     https://op.europa.eu/en/publication-detail/-/publication/f2f42003-402            of the AAAI Conference on Artificial Intelligence, 2018. [Online].
+     8-4496-af95-beaa38fd475f                                                         Available: https://arxiv.org/abs/1709.07871
+                                                                                15
+
+
+
 [37] G. Moreno Garcia, “CKMGenerator: Generator of path loss, delay
      spread and angular spread,” Public GitHub repository, 2026, snapshot
      commit 8b6c5fd26c30. [Online]. Available: https://github.com/unworth

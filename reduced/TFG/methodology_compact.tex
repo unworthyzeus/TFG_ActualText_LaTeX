@@ -3,17 +3,20 @@
 
 This compact methodology follows the paper structure while keeping the thesis
 evidence that matters: the experimental contract, the development lessons that
-justify the final route, the detailed frozen-prior formulas, and the final
-prior anchored residual GMM head. The longer derivation files remain in the
+justify the final route, the detailed frozen prior formulas, and
+\textsc{HARP-Net CKM}. The longer derivation files remain in the
 repository as source-level mathematical notes; the compiled text below keeps
 the same formulas in a shorter paper-style form.
 
 \section{Dataset and evaluation contract}
 
 Each sample is a complete \(513\times513\) CKM with
-\SI{1}{m}\(\times\)\SI{1}{m} pixels. The UAV transmitter is always
+\SI{1}{m}\(\times\)\SI{1}{m} pixels. The transmitter is always
 horizontally centred in the map, but its antenna height \(h_{\mathrm{tx}}\)
-varies by sample and is one of the main physical conditioning variables. Every
+varies by sample and is one of the main physical conditioning variables. The
+CKM files call this elevated node a UAV, but the same \SI{7.125}{GHz} contract
+also represents other elevated radio access nodes within the sampled height
+range. Every
 non-building pixel is an active receiver at
 \(h_{\mathrm{rx}}=\SI{1.5}{m}\). Building pixels are not receiver locations and
 are removed from the loss and metrics.
@@ -112,10 +115,10 @@ collapsed hard NLoS tails.
 \item Distribution first GMM models proved that the NLoS error was not
 inevitable: representing the target distribution fixed much of the collapse
 even without explicit physical priors.
-\item The final path-loss and spread priors showed that large parts of the
+\item The final channel attenuation and spread priors showed that large parts of the
 problem are better handled by train only calibrated estimators.
 \item The final model combines both lessons: frozen priors explain stable
-structure and a residual GMM head learns bounded local corrections.
+structure and \textsc{HARP-Net CKM} learns bounded local corrections.
 \end{enumerate}
 
 Thus the prior is useful but not magical. It is not external knowledge that
@@ -161,7 +164,7 @@ computed first and then used as input channels for the residual GMM model.}
 \end{figure}
 
 The model receives nine aligned channels: topology, LoS mask, NLoS mask,
-ground mask, combined path-loss prior, LoS path-loss prior, NLoS path-loss
+ground mask, combined path loss prior, LoS path loss prior, NLoS path loss
 prior, delay spread prior and angular spread prior. The scalar
 \(h_{\mathrm{tx}}\) is encoded with sinusoidal features and injected through
 FiLM modulation \cite{perez2018film}. The network therefore learns a residual
@@ -171,7 +174,7 @@ pixels alone.
 \section{Path-loss prior}
 \label{sec:try78_detail}
 
-The path-loss prior (Try 78 in the implementation records) has two branches.
+The path loss prior (Try 78 in the implementation records) has two branches.
 The LoS branch is a coherent two ray model plus calibrated height/radius
 corrections. For each receiver pixel, with \(d_{2D}\) measured from the centred
 transmitter,
@@ -263,7 +266,7 @@ different ranges and elevations. The coefficient vector
 \(\mathbf{w}_{78,r}\) is fitted on training cities only, with \(r\) selected
 from topology, LoS/NLoS and antenna-height regime fallbacks.
 
-The deployed path-loss prior is selected by the geometric visibility mask:
+The deployed path loss prior is selected by the geometric visibility mask:
 \begin{equation}
 \mathrm{PL}_{\mathrm{prior}}
 =m_{\mathrm{LoS}}\mathrm{PL}_{\mathrm{LoS}}

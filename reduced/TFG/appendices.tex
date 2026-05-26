@@ -170,7 +170,7 @@ Try & Public definition \\
 77 & Distribution first spread architecture: delay/angular spread GMM and spike-plus-tail modelling. \\
 78 & Final ML-calibrated path-loss prior: enhanced two ray LoS branch plus regime wise linear NLoS calibration with 18 final calibration regimes. \\
 79 & Final ML-calibrated spread priors: log-domain ridge calibration for delay and angular spread, with 36 exact regimes per metric and fallbacks. \\
-80 & Final joint prior anchored residual GMM head model: frozen path-loss and spread priors plus a shared neural residual model selected through the wide residual model, relaxed residual bounds, a large-capacity stage, and the final residual fine tuning stage. \\
+80 & \textsc{HARP-Net CKM}: frozen path loss and spread priors plus a shared neural residual model selected through the wide residual model, relaxed residual bounds, a large capacity stage, and the final residual fine tuning stage. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -303,10 +303,10 @@ per metric, 72 exact regimes total, and 114 keys when fallback entries are
 included. These priors moved the final system away from ``deep learning versus
 physics'' and toward ``frozen calibrated estimator plus learned residual.''
 
-\subsection{Final prior anchored residual GMM head model}
+\subsection{\textsc{HARP-Net CKM}}
 
-The final attempt is the joint prior anchored residual GMM head model. It starts from
-the frozen path-loss prior and spread priors, then learns
+The final attempt is \textsc{HARP-Net CKM}. It starts from
+the frozen path loss prior and spread priors, then learns
 bounded residual corrections for path loss, delay spread, and angular spread
 with one shared multi task network. The GMM head remains part of the residual
 output design even when the selected final model is chosen by deterministic
@@ -329,7 +329,7 @@ inference, and the frozen calibrated priors. The script initially selects one
 validation sample for each macro expert
 \((\mathrm{open},\mathrm{mixed},\mathrm{dense})\times
 (\mathrm{low},\mathrm{mid},\mathrm{high})\). It keeps candidates for which
-the final residual GMM head model beats the frozen prior on all three outputs, then chooses the
+\textsc{HARP-Net CKM} beats the frozen prior on all three outputs, then chooses the
 best-mean-RMSE candidate while drawing from different cities where the
 validation split provides visually distinct examples. The open/high panel
 selected by that automatic rule is not included here: its angular spread field
@@ -347,7 +347,7 @@ The six inspection stages, in order, are:
 \setlength\itemsep{0.15em}
   \item \textbf{Ground truth}: the ray-traced reference field.
   \item \textbf{Frozen calibrated prior}: the calibrated analytic prior
-        that the final residual GMM head model receives as an input channel and anchors to.
+        that \textsc{HARP-Net CKM} receives as an input channel and anchors to.
   \item \textbf{Final residual GMM head model prediction}: the residual-over-prior output
         of the joint model, in the same colour scale as columns 1 and 2.
   \item \textbf{Context}: topology height for the path-loss row, NLoS
@@ -365,7 +365,7 @@ The six inspection stages, in order, are:
 \end{enumerate}
 
 Rows 5 and 6 are therefore the main \emph{diagnostic} rows: the thesis
-claim is that the final residual GMM head model is a prior anchored residual corrector, and the visible
+claim is that \textsc{HARP-Net CKM} is a prior anchored residual corrector, and the visible
 agreement (in sign and location) between the prior-error map and the
 model-correction map is the direct qualitative evidence for that claim.
 
@@ -392,7 +392,7 @@ dense/high & Tunis & sample\_14694 & high \\
 \end{tabular}
 \end{table}
 
-The panel manifest stores the exact PNG filenames and per-sample RMSE values.
+The panel manifest stores the exact PNG filenames and per sample RMSE values.
 
 \clearpage
 \begin{figure}[p]
@@ -774,7 +774,7 @@ also used by the physical priors. The available policies are:
 \end{itemize}
 
 The original CKM HDF5 data normally stores the LoS mask. The NLoS mask is
-derived rather than read as an independent ground-truth label:
+derived rather than read as an independent ground truth label:
 \[
   m_{\mathrm{LoS}} = m_{\mathrm{LoS,raw}}\,m_{\mathrm{ground}},
   \qquad
@@ -958,11 +958,11 @@ The dashed lines mark the per-expert LoS and NLoS marginal means.}
 \includegraphics[width=\textwidth]{img/thesis_figures/results_addendum/try79_quantized_spread_example.png}
 \caption[Example of spread-target quantisation.]%
 {Example of spread-target quantisation on a calibrated-prior test sample
-(Jaipur, \texttt{sample\_07308}). The ground-truth delay spread map contains
+(Jaipur, \texttt{sample\_07308}). The ground truth delay spread map contains
 broad staircase-like bands and isolated quantised pixels, while the
 height aware calibrated prediction is smoother and more continuous. The
 resulting delay RMSE is only \SI{1.11}{ns}, but the residual panel shows how
-RMSE still penalises smooth transitions across quantised ground-truth
+RMSE still penalises smooth transitions across quantised ground truth
 boundaries. The same effect is visible on the angular spread map, whose target
 is dominated by sparse high-valued quantised pixels.}
 \label{fig:try79_quantized_spread_example}
@@ -984,7 +984,7 @@ readability.}
 \centering
 \includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{img/thesis_figures/results_addendum/try80_validation_45_55_target_prediction_histograms.png}
 \caption[Final validation histograms on the same 45--55 m subset.]%
-{Final prior anchored residual GMM head path-loss histograms on the same
+{\textsc{HARP-Net CKM} path loss histograms on the same
 validation subset and with the same plotting convention as
 Figure~\ref{fig:try74_75_diagnostic_histograms_results}. The path-loss panels
 show that the final model removes the severe NLoS mode collapse.}
@@ -1051,7 +1051,7 @@ show that the final model removes the severe NLoS mode collapse.}
 \end{minipage}
 \caption[Final model compared with prior and GMM references.]%
 {Test set comparison between the distribution first neural references
-and the final prior anchored residual GMM head model. The path-loss panel uses global
+and \textsc{HARP-Net CKM}. The path loss panel uses global
 pixel-weighted RMSE; the spread GMM reference is shown for the two spread targets.}
 \label{fig:try76_77_80_prior_comparison}
 \end{figure}

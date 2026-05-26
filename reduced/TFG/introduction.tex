@@ -12,18 +12,23 @@ information that can support environment-aware planning and reduce online
 channel-acquisition overhead \cite{zengx2021ckm,ckmtutorial2024}. This thesis
 studies whether \textsc{HARP-Net CKM}, a height aware residual prior surrogate,
 can predict dense CKM target maps directly from urban geometry while preserving
-enough physical structure to generalize to cities not seen during training.
+enough physical structure to generalize to cities not seen during training. The
+dataset defines this transmitter as a UAV, but the same fixed centre,
+height conditioned task can also be read as planning for elevated radio access
+nodes operating at the same \SI{7.125}{GHz} carrier and within the sampled
+height range.
 
 The project is formulated as dense image to image regression on
-$513\times513$ pixel city maps. The final model receives a building-height
-topology map, a LoS/NLoS visibility mask, the UAV antenna height, and the
-frozen prior maps described later in the thesis. In the CKM experiments the
-visibility mask is read from the dataset; for topology only deployment it can
-be generated geometrically from the building map and UAV height. The predicted
-outputs are channel attenuation, delay spread, and angular spread. The neural network
-therefore does not infer visibility from scratch; it uses visibility as one of
-the physical support inputs and learns the residual radio map structure around
-the calibrated priors.
+$513\times513$ pixel city maps. The complete inference pipeline starts from a
+building height topology map and transmitter antenna height, derives or reads the
+geometric support masks needed by the experiment, builds the frozen prior maps
+described later in the thesis, and then applies the neural residual model. In
+the CKM experiments the LoS/NLoS visibility mask is read from the dataset; for
+topology only deployment it can be generated geometrically from the building
+map and transmitter height. The predicted outputs are channel attenuation, delay
+spread, and angular spread. The neural network therefore does not infer
+visibility from scratch; it uses visibility as one of the physical support
+inputs and learns the residual radio map structure around the calibrated priors.
 
 \textbf{Terminology.} The CKM HDF5 file and the training code name the dB
 attenuation target \texttt{path\_loss}, and the implementation keeps the
@@ -36,7 +41,7 @@ explicitly use it.
 \textsc{HARP-Net CKM} is the final Height-Aware Residual Prior Network for
 Channel Knowledge Map prediction. The name reflects its central design choice:
 calibrated physical/statistical priors explain the stable propagation
-structure, while a height-conditioned neural network learns the remaining
+structure, while a height conditioned neural network learns the remaining
 residual corrections.
 
 \section{Work goals}
@@ -97,7 +102,7 @@ fixed CKM simulation setting used in this thesis. \textsc{HARP-Net CKM}
 predicts channel attenuation, delay spread, and angular spread on cities that were not
 used for training. The reason it works is not that the neural network learns
 all propagation physics from zero. Stable effects such as distance, visibility,
-UAV height, and city type are first captured by calibrated priors; the neural
+transmitter height, and city type are first captured by calibrated priors; the neural
 network then corrects the remaining local errors. The hardest cases are still
 low altitude and strongly blocked NLoS regions, so the results are always
 reported by regime instead of only as one global RMSE. Chapter~\ref{chap:results}
@@ -107,15 +112,17 @@ The main contributions corresponding to these questions are:
 
 \begin{itemize}
   \item A reproducible CKM prediction pipeline for ground users served by a
-        centred UAV transmitter. The evaluation uses \(513\times513\) maps,
+        centred UAV transmitter, with the same height variable also usable for
+        other elevated radio access nodes under the same simulation contract.
+        The evaluation uses \(513\times513\) maps,
         city holdout train/validation/test splits, valid ground receiver pixels
-        only, and continuous UAV altitude conditioning.
+        only, and continuous UAV transmitter height conditioning.
   \item A train calibrated channel attenuation prior based on enhanced two ray
-        LoS path loss propagation and ordinary least-squares (OLS) NLoS calibration over
+        LoS path loss propagation and ordinary least squares (OLS) NLoS calibration over
         environment features. On held out cities this prior already reaches
         \SI{1.75}{dB} LoS and \SI{3.40}{dB} NLoS RMSE.
   \item Train calibrated delay spread and angular spread priors based on
-        log-domain ridge regression over geometry, visibility, UAV height, and
+        log domain ridge regression over geometry, visibility, transmitter height, and
         environment features.
   \item \textsc{HARP-Net CKM}, a shared neural model that receives the frozen
         PL, DS, and AS priors and learns bounded residual corrections for the
@@ -163,12 +170,12 @@ Field & Shape & Type & Role \\
 \texttt{path\_loss} & $513^2$ & uint8 & Ray-traced channel attenuation in dB, named \texttt{path\_loss} in the dataset and quantized at approximately \SI{1}{dB}. \\
 \texttt{delay\_spread} & $513^2$ & uint16 & Delay spread target, stored as integers and evaluated in ns after decoding. \\
 \texttt{angular\_spread} & $513^2$ & uint8 & Angular spread target, stored as integers and evaluated in degrees after decoding. \\
-\texttt{uav\_height} & scalar & float32 & UAV transmitter height, used for conditioning and physical priors. \\
+\texttt{uav\_height} & scalar & float32 & UAV transmitter height in the dataset, used as transmitter height for conditioning and physical priors. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-The physical receiver scenario is a ground user served by the UAV. Therefore,
+The physical receiver scenario is a ground user served by the UAV transmitter. Therefore,
 losses and metrics are computed only on valid ground receiver pixels. Building
 pixels remain in the topology input because they affect propagation, but they
 are excluded from error accumulation because no receiver is placed inside a
@@ -197,5 +204,5 @@ all individual experiments.
 The main deviation from the original proposal was methodological rather than
 administrative. The project moved from a generic image to image model toward a
 hybrid CKM generator because the dataset showed strong radial, visibility, and
-distributional structure that should not be left entirely to a black-box neural
+distributional structure that should not be left entirely to a black box neural
 network.

@@ -1,6 +1,6 @@
 This section provides the compact entry point for the ML calibrated physical
-path loss and spread priors and the final joint residual GMM head model
-architecture. The propagation ingredients follow classical FSPL, two ray,
+path loss and spread priors and the \textsc{HARP-Net CKM} residual architecture.
+The propagation ingredients follow classical FSPL, two ray,
 empirical NLoS and large scale parameter models
 \cite{rappaport,wocc2021,cost231,tr38901,winner2,khawaja_survey}, while the
 residual network inherits dense prediction, FiLM conditioning and
@@ -23,7 +23,7 @@ loss, delay spread, and angular spread from scratch. Instead:
 \item the spread prior module provides frozen priors for delay spread
       (\texttt{delay\_spread}) and angular spread
       (\texttt{angular\_spread}),
-\item the final residual GMM head model learns bounded corrections around those priors.
+\item \textsc{HARP-Net CKM} learns bounded corrections around those priors.
 \end{itemize}
 
 The deterministic or interpretable structure is kept in the prior, and the deep

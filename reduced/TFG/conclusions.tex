@@ -2,18 +2,18 @@
 
 \section{Conclusions}
 
-This thesis demonstrates that dense Channel Knowledge Maps for UAV-enabled
-networks can be predicted with varying transmitter height, provided that the
+This thesis demonstrates that dense Channel Knowledge Maps for UAV enabled
+networks can be predicted with varying UAV transmitter height, provided that the
 problem is treated as a structured propagation task rather than as generic
 image to image translation. The final system predicts channel attenuation, delay spread,
 and angular spread on \(513\times513\) city maps under a strict city holdout
 protocol, with the UAV located at the map centre and its height changing from
 sample to sample. The work therefore answers the original practical question:
 a single surrogate can produce dense CKM targets for unseen cities while
-conditioning on continuous UAV height.
+conditioning on continuous UAV transmitter height.
 
-The central lesson is that the strongest model is not a pure black-box neural
-network. It is a hybrid system in which calibrated physical/statistical priors
+The central lesson is that the strongest model is not a pure black box neural
+network. It is a hybrid system in which calibrated physical and statistical priors
 explain the stable part of the channel, and a neural residual model corrects
 what remains. This division of labour is what made the final result reliable:
 the priors capture radial propagation, visibility, height effects, building layout,
@@ -38,12 +38,12 @@ maps. The final model receives geometry, masks, frozen priors, and a continuous
 height condition, and produces dense channel attenuation, delay spread, and
 angular spread maps jointly. The height dependence is physically important: the same
 city footprint changes its visibility structure, two ray interference pattern,
-and spread regimes as the UAV altitude changes. The final architecture handles
+and spread regimes as the transmitter altitude changes. The final architecture handles
 this by combining height aware priors with a sinusoidal height embedding
 injected through FiLM conditioning.
 
 The channel attenuation result is the strongest success case. Most LoS path loss
-structure is radial, height-dependent, and coherent enough that an enhanced
+structure is radial, height dependent, and coherent enough that an enhanced
 two ray prior can explain much of it before any neural correction is applied.
 The residual model still matters, but its role is narrower and more realistic:
 it improves local blocked streets, transition regions, and geometry to radio
@@ -93,7 +93,7 @@ analytic prior and which part should be left to the neural network, so that the
 hybrid model is both accurate and interpretable?} The calibrated priors should
 handle the most predictable propagation structure: two ray LoS path loss,
 height-binned LoS calibration, morphology aware NLoS corrections, and
-log-domain ridge models for DS and AS. These priors are strong enough to be
+log domain ridge models for DS and AS. These priors are strong enough to be
 useful on their own. The neural model is then valuable because it learns bounded
 residual corrections around them, reducing the frozen-prior test errors from
 \SI{1.9383}{dB}, \SI{28.1023}{ns}, and \(13.7416^\circ\) to
@@ -113,29 +113,29 @@ is physical, not only a sampling artifact.
 
 \subsection{Main contributions}
 
-The first contribution is the final variable height CKM predictor itself: a
-single prior anchored residual GMM head model that jointly predicts channel attenuation,
-delay spread, and angular spread for unseen city layouts while conditioning on
-continuous UAV height.
+The first contribution is the final variable height CKM predictor itself:
+\textsc{HARP-Net CKM}, a single prior anchored residual model that jointly
+predicts channel attenuation, delay spread, and angular spread for unseen city
+layouts while conditioning on continuous UAV transmitter height.
 
 The second contribution is the calibrated prior family. The path loss prior
 combines free space/radial structure, coherent two ray LoS behaviour,
-height-dependent calibration, NLoS morphology features, and fallback regimes.
-The spread priors extend the same philosophy to DS and AS through log-domain
+height dependent calibration, NLoS morphology features, and fallback regimes.
+The spread priors extend the same philosophy to DS and AS through log domain
 ridge calibration, topology/visibility grouping, height regimes, and robust
 fallbacks. Together, these priors put a large amount of physical and empirical
 knowledge into a reproducible estimator that is already competitive before the
 neural residual is trained.
 
 The third contribution is the distribution first modelling lesson. The thesis
-shows that target histograms, LoS/NLoS marginals, and spike-plus-tail spread
+shows that target histograms, LoS/NLoS marginals, and spike plus tail spread
 behaviour are not diagnostic extras; they determine which output head is
 appropriate. This is why GMM style residual prediction and histogram aware
 checks became part of the final design.
 
 The fourth contribution is the evaluation contract: city holdout splitting,
-ground-only masking, LoS/NLoS reporting, topology diagnostics, and
-UAV height stratified reporting. This contract is essential because random
+valid ground receiver masking, LoS/NLoS reporting, topology diagnostics, and
+transmitter height stratified reporting. This contract is essential because random
 splits or unmasked building pixels can make the same model appear stronger
 without improving the deployment-relevant task.
 
@@ -148,11 +148,11 @@ height conditioning, LoS/NLoS reporting, topology analysis, and prior baselines.
 Otherwise, a lower error may simply come from solving an easier problem.
 
 The result is strongest as a reproducible surrogate for the CKM simulation
-contract used here. It is not a universal replacement for ray tracing across all
-frequencies, antenna patterns, or cities. It does show, however, that once the
-dataset contract is fixed, the slow simulator can be compressed into a fast and
-interpretable predictor. In the Barcelona runtime benchmark, pixel level MATLAB
-ray tracing took \SI{99.89}{s} per-sample, while the complete final generator
+contract used here. It is not a universal substitute for ray tracing reference
+generation across all frequencies, antenna patterns, or cities. It does show,
+however, that once the dataset contract is fixed, repeated simulator calls can
+be compressed into a fast and interpretable predictor. In the Barcelona runtime benchmark, pixel level MATLAB
+ray tracing took \SI{99.89}{s} per sample, while the complete final generator
 path took \SI{0.88}{s}, a \(113.7\times\) reduction.
 
 \subsection{Negative results}
@@ -208,6 +208,6 @@ interpretable, which makes them suitable for simulator to reality correction
 using a limited number of real measurements. In the medium to long term, this could
 lead to a CKM predictor that starts from ray-traced or prior generated maps,
 adapts to a new city with sparse measurements, and still reports uncertainty by
-LoS/NLoS regime, UAV-height bin, and topology class. Those safeguards should
+LoS/NLoS regime, transmitter height bin, and topology class. Those safeguards should
 remain part of the method before considering operational use in emergency
 coverage, UAV network planning, or rapid deployment studies.

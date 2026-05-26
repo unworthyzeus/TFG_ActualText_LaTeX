@@ -27,7 +27,8 @@ Lower planning cost if the surrogate replaces repeated simulations. &
 Real deployment needs field validation and maintenance. \\
 Social &
 Skills gained in wireless modelling, ML, and scientific reporting. &
-Faster UAV coverage planning for temporary or emergency networks. &
+Faster elevated base station or UAV coverage planning for temporary or
+emergency networks. &
 Bias toward represented city morphologies and risk of overclaiming simulated results. \\
 \bottomrule
 \end{tabularx}
@@ -36,7 +37,7 @@ Bias toward represented city morphologies and risk of overclaiming simulated res
 \subsection{Environmental impact}
 
 \textbf{Development of BT.} The main environmental cost of the academic
-work was electricity for computation. The final residual GMM head model line used four RTX~2080
+work was electricity for computation. The \textsc{HARP-Net CKM} line used four RTX~2080
 Ti GPUs for approximately \SI{12}{h}, consuming about \SI{18}{kWh}.
 The 12-expert distribution first training also used the
 same four-GPU node, adding roughly \SI{18}{h} of GPU time and about
@@ -61,16 +62,17 @@ keeping final priors frozen rather than recomputing them blindly in every
 experiment.
 
 \textbf{Project execution.} In operation, a trained CKM surrogate can reduce
-the number of ray-tracing simulations required during planning. A ray tracer is
+the number of repeated ray-tracing simulations required during planning. A ray tracer is
 still needed to generate reliable training data and to validate new regimes,
 but that cost is concentrated in dataset creation and periodic recalibration
-rather than in every planning query. For the simulated FR3 UAV setting studied
-in this thesis, centred on \SI{7.125}{GHz}, the surrogate can generalise across
-the held out cities without launching a new ray-tracing run for each UAV height
-or urban map.
+rather than in every planning query. For the simulated FR3 elevated transmitter
+setting studied in this thesis, centred on \SI{7.125}{GHz}, the surrogate can
+generalise across the held out cities without launching a new ray-tracing run
+for each antenna height or urban map.
 The surrogate can also be used for fast what-if analyses during planning:
-it is not a replacement for ray tracing in every scenario, but it can evaluate
-many UAV heights or urban alternatives at much lower marginal energy cost.
+it should not be treated as new reference data, but it can evaluate
+many elevated transmitter heights or urban alternatives at much lower marginal
+energy cost.
 The runtime measurements in Chapter~\ref{chap:results} make this concrete for
 the present dataset scale. On the Barcelona benchmark, pixel level MATLAB ray
 tracing took \SI{99.89}{s} per full-resolution CKM sample, while the complete
@@ -115,7 +117,7 @@ Dataset and baseline implementation & 90\,h        & 12\,EUR/h        & 1\,080\,
 Experiment design and debugging    & 180\,h        & 12\,EUR/h        & 2\,160\,EUR & Priors, experts, evaluation \\
 Writing and figures                & 120\,h        & 12\,EUR/h        & 1\,440\,EUR & Thesis text and diagrams \\
 Supervision meetings and supervisors' time for dataset generation from simulation & 50\,h         & 40\,EUR/h        & 2\,000\,EUR & Advisor time \\
-GPU compute, final residual GMM head model    & 48\,GPU-h     & 0.25\,EUR/GPU-h  &    12\,EUR  & 4$\times$ RTX\,2080\,Ti, 12\,h \\
+GPU compute, \textsc{HARP-Net CKM}    & 48\,GPU-h     & 0.25\,EUR/GPU-h  &    12\,EUR  & 4$\times$ RTX\,2080\,Ti, 12\,h \\
 GPU compute, distribution/prior phase & 72\,GPU-h  & 0.25\,EUR/GPU-h  &    18\,EUR  & Distribution first GMM plus ML-prior calibration \\
 Exploratory compute                & $\approx$400\,GPU-h & 0.25\,EUR/GPU-h & $\approx$100\,EUR & Research iterations \\
 Electricity                        & N/A           & incl.\ in GPU-h  &     0\,EUR  & Covered by GPU rental rate \\
@@ -127,7 +129,8 @@ Storage and code hosting           & N/A           & free             &     0\,E
 \end{table}
 
 \textbf{Project execution.} The project is economically attractive if the
-trained surrogate reduces repeated ray-tracing runs during network planning.
+trained surrogate reduces repeated ray-tracing runs during network planning
+under the same \SI{7.125}{GHz} CKM contract.
 The main future costs would be dataset generation for new frequencies or
 regions, occasional recalibration with field data, model maintenance, and
 quality assurance before operational use.
@@ -163,14 +166,14 @@ quality indicator.
 \section{Ethical implications}
 
 The work addresses the need for faster and more transparent radio map
-prediction in UAV-enabled networks. That need was initially defined by the
+prediction in UAV enabled networks. That need was initially defined by the
 project proposal and refined through experiment results: pure deep learning was
 not enough, so the final method keeps interpretable priors and reports
 regime-level errors.
 
 The main ethical obligation is honesty about validity. The dataset is simulated
 through ray tracing, so the thesis must not claim real-world deployment
-performance without field measurements. The final residual GMM head model results are reported
+performance without field measurements. The \textsc{HARP-Net CKM} results are reported
 from a single selected model state on the city holdout protocol, so the relevant
 caveat is no longer incompleteness but scope: the results show simulator-level
 generalisation to unseen cities, not certified real-world deployment

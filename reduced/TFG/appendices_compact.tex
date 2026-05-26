@@ -3,11 +3,13 @@
 \begingroup
 \small
 
-The original appendix listed the internal attempt numbers in several long
-tables. For the reduced thesis, the compiled appendix keeps phases instead of
-eighty row level entries. The full attempt number map remains in
-\texttt{appendices.tex} and in the repository history, so the trace is not
-lost; it is simply no longer part of the main PDF.
+This appendix preserves the development evidence behind the final method while
+keeping the main chapters final method first. It records why older attempts are
+not presented as competing final systems, which design decisions survived into
+\textsc{HARP-Net CKM}, and which negative results are useful mainly as
+warnings. The full row level attempt map remains in \texttt{appendices.tex} and
+in the repository history; this compiled appendix keeps the evidence that is
+needed to understand the final design.
 
 \begin{table}[htbp]
 \centering
@@ -19,22 +21,22 @@ lost; it is simply no longer part of the main PDF.
 \toprule
 Attempt range & Phase & Why it matters in the final thesis \\
 \midrule
-1--22 & Direct image to image baselines & Established the CKM pipeline, cGAN/U-Net feasibility, bilinear decoder fixes and multiscale supervision. The phase ended because visual realism did not imply physical RMSE. \\
-23--40 & Spread branches and mask reset & Added delay/angular experiments and, most importantly, the ground-only receiver mask. This changed the evaluation contract. \\
-41--50 & Prior residual PMNet phase & Showed that raw formulas were weak, train only calibration helped, and residual learning was useful but still NLoS-limited. \\
-51--66 & PMHHNet and topology experts & Introduced six topology experts, height FiLM, high-frequency paths, obstruction channels and no-prior controls. LoS improved, NLoS remained the bottleneck. \\
-67--75 & Stabilisation and distribution diagnosis & Tested knife-edge channels, quad heads, uncertainty and histogram-focused diagnostics. The key result was the visible NLoS and spread-tail distribution mismatch. \\
-76--77 & Distribution first models & GMM/spike-plus-tail heads showed that modelling the target distribution before pixel assignment could remove much of the collapse. \\
-78--79 & Frozen calibrated priors & Produced the final train only attenuation and spread priors, including height aware LoS two ray calibration and log-domain spread ridge calibration. \\
-80 & Final prior anchored residual GMM model & Combined frozen priors with a shared residual GMM head model and selected the RMSE-dominant fine tuning stage reported in Chapter~\ref{chap:results}. \\
+1--22 & Direct image to image baselines & Established the CKM loading, normalization, aligned map output, cGAN/U-Net baselines, bilinear decoder fixes and multiscale supervision. The phase ended because plausible images did not guarantee physical RMSE. \\
+23--40 & Spread branches and mask reset & Added delay/angular experiments and, most importantly, the valid ground receiver mask. This changed the evaluation contract and made earlier scores historical only. \\
+41--50 & Prior residual PMNet phase & Showed that raw formulas were weak, train only calibration helped, and residual learning was useful only when the anchor already carried physical structure. \\
+51--66 & PMHHNet and topology experts & Introduced topology experts, height FiLM, high frequency paths, obstruction channels and no prior controls. LoS improved, but NLoS remained the dominant error source. \\
+67--75 & Stabilisation and distribution diagnosis & Tested knife edge channels, quad heads, uncertainty and histogram diagnostics. The key result was the visible NLoS and spread tail distribution mismatch. \\
+76--77 & Distribution first models & GMM and spike plus tail heads showed that modelling target distributions before pixel assignment could remove much of the collapse. \\
+78--79 & Frozen calibrated priors & Produced the final train only attenuation and spread priors, including height aware LoS two ray calibration and log domain spread ridge calibration. \\
+80 & \textsc{HARP-Net CKM} & Combined frozen priors with a bounded shared residual model and selected the RMSE oriented fine tuning stage reported in Chapter~\ref{chap:results}. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 The main methodological lesson is that the project did not progress by simply
-making a larger network. The decisive changes were the evaluation contract,
-regime separation, distribution diagnostics and the return to strong frozen
-priors once their role had become clear.
+making a larger network. The decisive changes were the receiver valid
+evaluation contract, regime separation, distribution diagnostics, and the return
+to strong frozen priors once their role had become clear.
 
 \section{Expanded phase notes}
 
@@ -55,28 +57,39 @@ Attempt & Public role & Lasting lesson \\
 \midrule
 22 & Clean early image to image baseline & Bilinear decoding and multiscale supervision reduced visual artifacts, but direct image realism was still a weak proxy for calibrated radio map error. \\
 33--40 & Ground mask reset & Building pixels had to be excluded from loss, metrics and visual error maps; scores before and after this contract are historical, not directly comparable. \\
-41--45 & First explicit prior-residual models & Raw formulas were weak, train only calibration helped strongly, and residual learning was useful only when the prior carried real physical structure. \\
-50 & NLoS prior sandbox & Scalar NLoS corrections, tabular deltas and simple hybrid formulas did not solve blocked-link tails. The remaining error was spatial and distributional. \\
-54--66 & PMHHNet/topology experts & Height FiLM, physical channels and six topology experts improved the easy LoS regime, but NLoS stayed dominant even after substantial backbone engineering. \\
-67--75 & Stabilisation and histogram diagnosis & Knife-edge channels, quad heads and uncertainty improved diagnosis more than final RMSE. Histogram plots made the NLoS and spread-tail mismatch explicit. \\
+41--45 & First explicit prior residual models & Raw formulas were weak, train only calibration helped strongly, and residual learning was useful only when the prior carried real physical structure. \\
+50 & NLoS prior sandbox & Scalar NLoS corrections, tabular deltas and simple hybrid formulas did not solve blocked link tails. The remaining error was spatial and distributional. \\
+54--66 & PMHHNet and topology experts & Height FiLM, physical channels and six topology experts improved the easy LoS regime, but NLoS stayed dominant even after substantial backbone engineering. \\
+67--75 & Stabilisation and histogram diagnosis & Knife edge channels, quad heads and uncertainty improved diagnosis more than final RMSE. Histogram plots made the NLoS and spread tail mismatch explicit. \\
 76 & Distribution first PL GMM & Predicting the target distribution before assigning pixels gave the first convincing route for hard attenuation tails. \\
-77 & Distribution first spread GMM & Delay and angular spread behaved like spike-plus-tail targets rather than smooth images, motivating distribution aware output heads. \\
-78--79 & Frozen calibrated priors & The strongest non-neural evidence came from height aware LoS calibration and log-domain spread ridge calibration, both fitted only on training cities. \\
-80 & Final prior anchored residual GMM model & The selected system is a calibrated prior-estimator plus bounded learned residual distribution head, not a black-box direct regressor. \\
+77 & Distribution first spread GMM & Delay and angular spread behaved like spike plus tail targets rather than smooth images, motivating distribution aware output heads. \\
+78--79 & Frozen calibrated priors & The strongest non neural evidence came from height aware LoS calibration and log domain spread ridge calibration, both fitted only on training cities. \\
+80 & \textsc{HARP-Net CKM} & The selected system is a calibrated prior estimator plus bounded learned residual distribution head, not a black box direct regressor. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
+\subsection{How to read old attempt numbers}
+
+The attempt numbers are chronological engineering labels, not a leaderboard.
+They mix changes in data loading, masking, target units, model capacity, loss
+design and reporting. A lower RMSE from an early attempt may be invalid under
+the final contract if it used building pixels as easy background, evaluated a
+different split, or targeted only one output. For that reason, this appendix
+separates \emph{evidence} from \emph{final claims}: old attempts explain why a
+choice was made, while Chapter~\ref{chap:results} reports only the frozen prior
+and \textsc{HARP-Net CKM} metrics on the final unseen city split.
+
 \paragraph{PMNet transfer check.}
 A separate diagnostic placed official PMNet checkpoints on CKM samples. This
 confirmed that PMNet family models are relevant as architectural references but
-cannot be imported as ready-made solutions for this thesis contract. The
+cannot be imported as ready made solutions for this thesis contract. The
 training and target distributions are structurally different: CKM uses
 continuous UAV height, full \(513\times513\) city maps, city holdout
 evaluation, and valid ground receiver metrics. For that reason the PMNet result
 is kept as a transfer check in the appendix, not as a main method result.
 
-\subsection{From image translation to receiver-valid evaluation}
+\subsection{From image translation to receiver valid evaluation}
 
 The first part of the project treated CKM prediction as aligned
 image to image regression. This was useful for building the dataset pipeline:
@@ -90,14 +103,42 @@ receiver mask was enforced, the task became prediction on ground receivers
 only: buildings and padded pixels are not valid receiver locations. This is why
 the final thesis does not mix early scores with the final leaderboard. They
 remain useful as a development trace, but the valid comparison contract starts
-once the ground-mask is fixed.
+once the ground mask is fixed.
+
+\subsection{Decision record behind the final pipeline}
+
+Table~\ref{tab:appendix_decision_record} summarizes the main decisions that
+survived into the final method. The point is not that every intermediate idea
+was successful, but that each retained constraint has a concrete failure mode
+behind it.
+
+\begin{table}[htbp]
+\centering
+\caption{Design decisions retained in the final pipeline.}
+\label{tab:appendix_decision_record}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{p{0.24\textwidth}p{0.30\textwidth}X}
+\toprule
+Final decision & Evidence from attempts & Effect in the thesis \\
+\midrule
+City holdout split & Random or visually similar splits risked testing on morphology already seen during training. & Generalization is reported on unseen cities rather than on shuffled pixels or tiles. \\
+Valid ground receiver mask & Including buildings inflated the apparent quality and mixed receiver and non receiver pixels. & Losses, RMSE and qualitative errors are computed over valid ground receivers. \\
+Channel attenuation terminology & The HDF5 field is \texttt{path\_loss}, but the dense CKM target is an attenuation map. & Prose uses channel attenuation, while formulas, code names and cited path loss models keep the established term. \\
+Frozen train only priors & Raw formulas were weak, but calibrated priors became strong anchors once fitted on training cities only. & Chapter~\ref{chap:methodology} separates path loss and spread prior fitting from residual learning. \\
+LoS/NLoS and morphology regimes & Single global residuals hid hard blocked link behaviour and spread tails. & The priors and residual model expose visibility, topology and height regimes explicitly. \\
+Distribution aware residual head & NLoS and spread histograms were not well represented by one symmetric Gaussian error. & The internal GMM head models residual structure, while final metrics use deterministic mixture means. \\
+Final RMSE oriented fine tuning & Probabilistic losses were useful for diagnosis but not the best endpoint for the reported scalar RMSE. & The selected \textsc{HARP-Net CKM} stage optimizes the final deterministic dense maps. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \subsection{Why the prior returned}
 
 The first physical prior attempts were not successful as formulas alone. A raw
 prior could be far worse than a neural model, especially in NLoS. However,
 train only calibration made the prior informative enough to act as an anchor.
-This distinction matters: the prior is not presented as a magic replacement for
+This distinction matters: the prior is not presented as a replacement for
 learning, but as a structured baseline that gives the network the correct
 coordinate system.
 
@@ -107,6 +148,19 @@ the hard tails survived. The project therefore moved away from simply enlarging
 the encoder and toward separating regimes, modelling distributions and freezing
 strong calibrated estimators.
 
+\subsection{Discarded routes that remain informative}
+
+Several routes are deliberately not treated as final baselines. Conditional GAN
+training produced sharper maps but put too much pressure on visual texture and
+not enough on receiver valid physical error. Generic U-Net and PMNet style
+backbones were useful architectural references, but they did not resolve the
+CKM contract by themselves. Topology experts improved some regimes while adding
+split and routing complexity. Knife edge and corridor channels were physically
+reasonable diagnostics, yet the tested versions did not displace the calibrated
+prior route. Distribution first models were essential because they exposed the
+target statistics, but the final system returned to frozen priors because the
+calibrated anchors were stronger and more auditable.
+
 \subsection{Why the final priors + \textsc{HARP-Net CKM} are the endpoint}
 
 The last attempts are the only ones that form the final methodology. The
@@ -114,7 +168,7 @@ path loss prior provides a height aware LoS branch and calibrated NLoS residual
 structure. The delay spread and angular spread priors provide separate
 LoS/NLoS, height and topology calibration. \textsc{HARP-Net CKM} then learns
 bounded residual corrections over these frozen priors with a shared multi task
-GMM head model.
+GMM head.
 
 In other words, the final route is evolutionary but not arbitrary: direct
 regression established feasibility, masked evaluation fixed the contract,
@@ -131,6 +185,17 @@ the lesson they provide: direct neural maps can look plausible while averaging
 away rare tails, and the final model should therefore keep calibrated priors
 and a distribution aware residual head. This keeps the thesis shorter while
 preserving the negative evidence that motivated the final design.
+
+\subsection{Reproducibility anchors}
+
+The concise appendix is tied to reproducible source artifacts rather than to
+memory of the development process. The frozen path loss prior is documented in
+the Try~78 formulas and scripts; the spread priors are documented in the Try~79
+ridge calibration files; the final residual model and evaluation scripts are
+kept in the final code repository cited in the bibliography; and the longer
+attempt log remains in the source archive. The compiled thesis therefore keeps
+the reasoning chain visible without turning the appendix into a full software
+manual.
 
 \endgroup
 
@@ -173,7 +238,7 @@ should correct the sign and location of the prior error.
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_open_low_ant_Segovia_sample_13213_6x3.png}
-\caption{Final residual GMM head inspection panel for an open, low-antenna
+\caption{\textsc{HARP-Net CKM} inspection panel for an open, low antenna
 validation sample in Segovia.}
 \label{fig:appendix_try80_open_low}
 \end{figure}
@@ -182,7 +247,7 @@ validation sample in Segovia.}
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_mixed_mid_ant_Nice_sample_10828_6x3.png}
-\caption{Final residual GMM head inspection panel for a mixed, mid-antenna
+\caption{\textsc{HARP-Net CKM} inspection panel for a mixed, mid antenna
 validation sample in Nice.}
 \label{fig:appendix_try80_mixed_mid}
 \end{figure}
@@ -191,235 +256,11 @@ validation sample in Nice.}
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth,height=0.88\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Vancouver_sample_15265_6x3.png}
-\caption{Final residual GMM head inspection panel for a dense, mid-antenna
+\caption{\textsc{HARP-Net CKM} inspection panel for a dense, mid antenna
 held out test sample in Vancouver.}
 \label{fig:try80_panel}
 \end{figure}
 
-\clearpage
-\chapter{CKMGenerator Interface and Reproducibility Tool}
-\label{chap:ckm_generator}
-\label{app:ckm_generator}
-\begingroup
-\small
-
-This appendix documents the standalone CKMGenerator delivered with the final
-\textsc{HARP-Net CKM} pipeline. The complete user manual belongs in
-the repository README, but the thesis keeps the scientific and reproducibility
-contract: which inputs are accepted, how they are converted to the model grid,
-how receivers and LoS/NLoS masks are defined, what the tool exports, and which
-performance switches do not change the mathematical model.
-
-\section{Purpose and source record}
-
-CKMGenerator is a deployment wrapper around the final thesis pipeline. It
-accepts topology inputs, prepares them with the same geometric conventions used
-for training and evaluation, computes or imports LoS/NLoS masks, evaluates the
-frozen calibrated attenuation, delay spread and angular spread priors, optionally
-runs the final neural residual model, and exports the numerical arrays used for
-reproducible analysis. The Streamlit interface is intended for inspection and
-demonstrations; the command-line interface uses the same backend and is intended
-for scripted runs.
-
-The reproducibility record is split across public repositories. The standalone
-generator source is in \texttt{CKMGenerator}; final training and evaluation code
-is in \texttt{Final\_Code\_TFG}; the broader experimental trace is preserved in
-\texttt{TFGAllProgress\_Tries\_and\_Attempts}; and the thesis source is kept in
-\texttt{TFG\_ActualText\_LaTeX}
-\cite{moreno2026ckmgenerator,moreno2026finalcode,moreno2026tfgprogress,moreno2026tfgtext}.
-The final checkpoint is loaded from \texttt{models/best\_model.pt} by default,
-or from an explicit \texttt{--checkpoint} path.
-
-\section{Interface and execution modes}
-
-Figures~\ref{fig:ckm_generator_controls_appendix}--\ref{fig:ckm_generator_outputs_appendix}
-show the retained CKMGenerator screenshot set. The control panel is shown as a
-single cropped sidebar capture so the PDF documents the actual interface without
-wasting a full page on the blank app workspace.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[height=0.76\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/1CKM.png}
-\caption[CKMGenerator Streamlit controls.]%
-{CKMGenerator Streamlit controls. The sidebar records the assumptions used by
-the generator: receiver height fixed at \SI{1.5}{m}, variable antenna height,
-mask selection, optional final priors + \textsc{HARP-Net CKM} inference,
-mixed-precision availability, pixel scale and export format.}
-\label{fig:ckm_generator_controls_appendix}
-\end{figure}
-
-\begin{figure}[!htbp]
-\centering
-\begin{subfigure}{\textwidth}
-\centering
-\includegraphics[width=\textwidth,height=0.30\textheight,keepaspectratio,trim=290 0 0 0,clip]{img/thesis_figures/ckm_generator/ckm_generator_app_result_top.png}
-\caption{Application run summary, resolved mask policy and exported sample
-metadata preview.}
-\label{fig:ckm_generator_result_top_appendix}
-\end{subfigure}
-
-\vspace{4pt}
-\begin{subfigure}{\textwidth}
-\centering
-\includegraphics[width=\textwidth,height=0.30\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/ckm_generator_prediction_joint.png}
-\caption{Joint channel attenuation, delay spread and angular spread prediction output.}
-\label{fig:ckm_generator_prediction_appendix}
-\end{subfigure}
-\caption{CKMGenerator application output after running one HDF5 sample.}
-\label{fig:ckm_generator_app_output_appendix}
-\end{figure}
-
-\begin{figure}[!htbp]
-\centering
-\begin{subfigure}{\textwidth}
-\centering
-\includegraphics[width=\textwidth,height=0.30\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/ckm_generator_output_visuals.png}
-\caption{Saved visual products: masks, final prediction maps and joint panel.}
-\label{fig:ckm_generator_output_visuals_appendix}
-\end{subfigure}
-
-\vspace{4pt}
-\begin{subfigure}{\textwidth}
-\centering
-\includegraphics[width=\textwidth,height=0.30\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/ckm_generator_output_tree.png}
-\caption{Generated output tree with masks, priors, predictions, arrays and
-metadata folders.}
-\label{fig:ckm_generator_output_tree_appendix}
-\end{subfigure}
-\caption{CKMGenerator exported visual files and directory structure.}
-\label{fig:ckm_generator_visuals_tree_appendix}
-\end{figure}
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=\textwidth,height=0.42\textheight,keepaspectratio]{img/thesis_figures/ckm_generator/ckm_generator_output_metadata.png}
-\caption[CKMGenerator metadata and numerical array archive.]%
-{CKMGenerator metadata and numerical array archive. The \texttt{.npz} file is
-the authoritative output for reproducible analysis; PNG files are inspection
-artifacts.}
-\label{fig:ckm_generator_outputs_appendix}
-\end{figure}
-
-The same backend can be run from the terminal. A typical HDF5 command is:
-
-{\scriptsize
-\begin{verbatim}
-python ckm_generate.py ^
-  --input inputs\samples\Abidjan_sample_00001.h5 ^
-  --run-name abidjan_check ^
-  --mixed-precision
-\end{verbatim}
-}
-
-For image-only topology inputs, the transmitter height must be supplied unless
-it is stored in a structured sidecar file:
-
-{\scriptsize
-\begin{verbatim}
-python ckm_generate.py ^
-  --input C:\path\topology_map.png ^
-  --height 56.65 ^
-  --topology-max-m 120 ^
-  --meters-per-pixel 1.0 ^
-  --mask-source auto ^
-  --mixed-precision
-\end{verbatim}
-}
-
-\section{Input contract and grid fitting}
-
-The generator accepts raster topology images (\texttt{.png}, \texttt{.jpg},
-\texttt{.tif}, \texttt{.bmp}), numeric arrays (\texttt{.npy}, \texttt{.npz},
-\texttt{.csv}, \texttt{.txt}, \texttt{.json}) and HDF5 files. HDF5 and NPZ
-inputs may provide topology, LoS/NLoS masks and antenna height directly. Raster
-inputs normally store intensities rather than metre-valued building-height values, so
-the selected maximum image height is used to convert pixel values to metres
-unless the option \texttt{image-values-are-metres} is enabled.
-
-All inputs are fitted to the \(513\times513\) grid used by the final model. The
-model grid represents \SI{1}{m} per pixel, with the transmitter antenna located
-at the centre of the map and with variable UAV height. If an input is supplied
-with another physical spacing, \texttt{--meters-per-pixel} is used before the
-centred crop or padding step. Topology arrays are resampled with bilinear
-interpolation; masks are resampled with nearest-neighbour interpolation and then
-binarised again.
-
-The receiver convention is the same one used throughout the thesis. Ground
-pixels are zero-height topology pixels, and every ground pixel is a receiver at
-\(h_{\mathrm{rx}}=\SI{1.5}{m}\). Building pixels and padded outside pixels are
-not receiver locations. The receiver-valid mask is therefore
-\[
-  m_{\mathrm{ground}}(x) =
-  \mathbf{1}\{h_{\mathrm{topology}}(x) \le 10^{-6}\}.
-\]
-This convention matters because the model predicts dense maps only over valid
-ground receivers, not over roofs or artificial padding.
-
-\section{Mask, prior and neural-model path}
-
-The model consumes one LoS mask and one NLoS mask as input channels, and the
-same masks are also used by the priors. CKMGenerator supports three policies:
-\texttt{provided} requires masks stored in the input or sidecar files;
-\texttt{generated} ray-casts masks from topology and antenna height; and
-\texttt{auto} uses provided masks when present and otherwise generates them.
-For CKM HDF5 samples, the NLoS support is derived from the raw LoS mask and the
-ground-mask,
-\[
-  m_{\mathrm{LoS}} = m_{\mathrm{LoS,raw}}\,m_{\mathrm{ground}},
-  \qquad
-  m_{\mathrm{NLoS}} = (1-m_{\mathrm{LoS,raw}})\,m_{\mathrm{ground}}.
-\]
-The multiplication by \(m_{\mathrm{ground}}\) is essential: otherwise building
-pixels would be counted as NLoS receiver pixels.
-
-Generated masks make topology-only inference possible, but they are not claimed
-to be bit-identical to the CKM ray-tracing masks. They are a deployment fallback
-that preserves the model interface when a user does not have the original HDF5
-mask fields.
-
-After preprocessing, the tool evaluates the frozen priors from the final
-pipeline. These are the same height aware, calibrated priors described in
-Chapter~\ref{chap:methodology}: a LoS/NLoS path loss prior with centre-antenna
-geometry and antenna-height calibration, and spread priors with separate
-calibrated structure for delay spread and angular spread. When neural inference
-is enabled, the prepared topology, masks, priors and height context are passed
-to the final residual GMM head model. The generator therefore changes neither
-the model definition nor the validation contract; it packages the final method
-for reproducible use.
-
-\section{Outputs and performance controls}
-
-Each run writes to a timestamped output folder, or to the explicit folder passed
-with \texttt{--out}. The authoritative output is the NumPy archive in
-\texttt{arrays/}. PNG files are optional visual inspection products.
-
-\begin{table}[H]
-\centering
-\caption{CKMGenerator artifacts and controls retained in the thesis appendix.}
-\label{tab:ckm_generator_summary}
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\begin{tabularx}{\textwidth}{p{0.24\textwidth}X}
-\toprule
-Area & Reproducibility detail \\
-\midrule
-Numerical archive & Stores topology, ground-mask, LoS/NLoS masks, generated or reference masks when available, PL/DS/AS priors, PL/DS/AS predictions and metadata on the final \(513\times513\) grid. \\
-Metadata & Records sample id, antenna height, source file, checkpoint path, requested and resolved mask policy, topology class, antenna bin, save options, timings and generated paths. \\
-Visual outputs & Optional PNG exports include binary masks, prior maps, prediction maps and the joint prediction panel used for inspection. \\
-Runtime & CUDA is preferred; CPU and DirectML are fallback paths. The \texttt{ckm\_doctor.py} check verifies PyTorch, CUDA/DirectML availability, checkpoint presence and memory before inference. \\
-Mixed precision & CUDA autocast can be enabled for speed. It was checked to change RMSE only at a negligible scale compared with validation error. \\
-Batch speed & Disabling visual map PNGs, mask PNGs and compressed arrays avoids Matplotlib rendering and compression overhead while preserving the numerical arrays. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-The benchmarked fast path reported in Chapter~\ref{chap:results} uses
-vectorized LoS/NLoS mask generation, torch prior evaluation, mixed-precision
-neural inference and default numerical \texttt{.npz} export after the checkpoint
-has already been loaded. These optimizations affect runtime and storage, not the
-scientific definition of the generator.
-
-\endgroup
 \chapter{Additional Results and Qualitative Diagnostics}
 \label{app:qualitative_diagnostics}
 
@@ -430,8 +271,8 @@ scientific definition of the generator.
 \setlength{\belowdisplayskip}{4pt}
 \captionsetup{font=scriptsize,skip=2pt}
 
-This one-page appendix keeps only the two diagnostics that are useful to audit
-the final interpretation. Full split bars, all-city subexpert tables, the full
+This one page appendix keeps only the two diagnostics that are useful to audit
+the final interpretation. Full split bars, all city subexpert tables, the full
 qualitative gallery and long derivations remain in the source archive and
 generated image folders.
 
@@ -440,7 +281,7 @@ generated image folders.
 \begin{subfigure}{\textwidth}
 \centering
 \includegraphics[width=\textwidth,height=0.25\textheight,keepaspectratio]{img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png}
-\caption{Full non residual DL GMM head model for PL. Thick curves show summed
+\caption{Distribution first GMM diagnostic for PL. Thick curves show summed
 LoS/NLoS GMM densities; faint dotted curves show the individual Gaussian
 components.}
 \label{fig:try76_los_vs_nlos_distribution}
@@ -450,44 +291,52 @@ components.}
 \begin{subfigure}{\textwidth}
 \centering
 \includegraphics[width=\textwidth,height=0.19\textheight,keepaspectratio]{img/thesis_figures/results_addendum/try79_quantized_spread_example.png}
-\caption{Spread-target quantisation: predictions are continuous while the
-released targets contain staircase-like and sparse integer-valued structures.}
+\caption{Spread target quantisation: predictions are continuous while the
+released targets contain staircase like and sparse integer valued structures.}
 \label{fig:try79_quantized_spread_example}
 \end{subfigure}
 \caption{Compact additional diagnostics. The GMM plot exposed different
 LoS/NLoS marginals and motivated distribution aware heads; the quantisation
-panel records the target-storage limitation discussed in Chapter~\ref{chap:results}.}
+panel records the target storage limitation discussed in Chapter~\ref{chap:results}.}
 \end{figure}
 
 \noindent\textbf{Additional source material.}
-The nine-panel gallery, row-level 80-attempt log, CKMGenerator screenshot
-manual, all-city subexpert tables and split bars are omitted from this compact
-appendix but remain in \texttt{appendices.tex} and the generated figure
-folders. The final prior + \textsc{HARP-Net CKM} mathematical derivations are
-not repository-only: they are included in Chapter~\ref{chap:methodology}
+The nine panel gallery, row level 80 attempt log, all city subexpert tables and
+split bars are omitted from this compact appendix but remain in
+\texttt{appendices.tex} and the generated figure folders. The final prior +
+\textsc{HARP-Net CKM} mathematical derivations are not repository only: they are
+included in Chapter~\ref{chap:methodology}
 through \texttt{prior\_detail\_try78.tex},
 \texttt{prior\_detail\_try79.tex} and \texttt{prior\_detail\_try80.tex}. The
 last filename keeps the original run identifier, but it is the
-\textsc{HARP-Net CKM} residual-model detail; all three files also remain as
+\textsc{HARP-Net CKM} residual model detail; all three files also remain as
 separate source files for traceability.
 \endgroup
 
 \chapter{Declaration on Generative AI Use}
 \label{app:generative_ai_declaration}
 
-Generative AI tools were used during the preparation of this thesis as writing
-and coding assistance tools. Their role was limited to support tasks such as
-summarising supervisor comments, proposing alternative wording, checking
-internal consistency, drafting edit plans, assisting with LaTeX and Python code,
-and helping identify possible terminology or structure problems.
+Generative AI tools were used during the preparation and software development
+of this thesis. The tools used were OpenAI Codex, GPT 5.5, and GPT 5.5 Pro.
+They were used as assistant tools for writing support, literature and
+terminology checks, LaTeX editing, consistency audits, Python code generation,
+debugging, and refactoring.
 
-The scientific content, experimental design, final reported numbers, plots,
-tables, conclusions and responsibility for the submitted document remain with
-the author. Numerical results were obtained from the project scripts, stored
-artifacts and compiled thesis sources, not from generative model outputs.
-References, equations, code changes and final text were reviewed by the author
-before inclusion.
+In the software work, these tools were useful for translating author defined
+ideas into executable code. For example, they helped convert prototype logic
+into scripts, port calibrated priors from NumPy prototypes to PyTorch
+implementations, wire evaluation utilities, inspect errors, and keep thesis and
+paper sources consistent. They also supported drafting and revising text, but
+all references and claims were checked by the author.
 
-No confidential data beyond the local thesis files and project artifacts was
-intentionally provided to generative AI tools. The CKM dataset itself was used
-through local scripts and stored experiment outputs.
+The generative AI tools did not originate the scientific direction, research
+questions, model ideas, experiment choices, final interpretation, reported
+numbers, plots, or conclusions of the project. The project design, validation
+protocol, final source selection and responsibility for the submitted document
+remain with the author. Numerical results were obtained from the project
+scripts, stored artifacts and compiled thesis sources, not from generative model
+outputs.
+
+The CKM dataset itself was processed through local scripts and stored experiment
+outputs rather than pasted into prompts. Code changes and final text were
+reviewed by the author before inclusion.

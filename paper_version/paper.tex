@@ -57,11 +57,11 @@ guillem.moreno.garcia@estudiantat.upc.edu.}%
 Channel knowledge maps (CKMs) promise fast environment aware radio planning, but
 dense UAV CKM generation remains difficult when channel attenuation, delay spread, and
 angular spread must all generalize to unseen cities. This paper presents
-\textsc{HARP-Net CKM}, a hybrid surrogate that freezes train only calibrated
-physical/statistical priors and learns bounded residual maps with a Gaussian
+\textsc{HARP-Net CKM}, a hybrid surrogate that freezes physical and statistical
+priors calibrated on the training split and learns bounded residual maps with a Gaussian
 mixture head. The model predicts \(513\times513\) dense channel attenuation,
 DS, and AS maps from
-topology, geometric masks, UAV height, and frozen priors through a
+topology, geometric masks, UAV transmitter height, and frozen priors through a
 probabilistic residual stage followed by deterministic RMSE oriented fine
 tuning. On held out cities it reaches \SI{1.6519}{dB} channel attenuation RMSE,
 \SI{26.5570}{ns} delay spread RMSE, and \(11.3854^\circ\) angular spread RMSE,
@@ -110,7 +110,7 @@ family showed that U-Net style models can be strong dense channel attenuation ba
 attention, equivariance, domain shift handling, corridor weighting, or digital
 twin generation \cite{rmtransformer2025,radiogunet2025,pathfinder2025,
 gao2026,airmap2025}. These papers give the closest dense channel attenuation context, but not
-the same contract: continuous UAV height, strict city holdout on CKM samples,
+the same contract: continuous UAV transmitter height, strict city holdout on CKM samples,
 and three dense targets (channel attenuation/PL, DS, AS).
 
 CKM work also emphasizes that a radio map is not merely an image but a
@@ -153,7 +153,10 @@ setting used in this work. The carrier is fixed at
 degree of freedom is height. There is one UAV transmitter at the map centre.
 The transmitter horizontal position is fixed, but its antenna height
 \(h_{\mathrm{tx}}\) varies by sample and is treated as a central conditioning
-variable rather than as metadata. The spatial resolution is
+variable rather than as metadata. The released CKM files call this node a UAV,
+but the model contract is an elevated \SI{7.125}{GHz} transmitter within the
+sampled height range, so the same setup can also represent other elevated radio
+access nodes under the same simulation assumptions. The spatial resolution is
 \SI{1}{m}\(\times\)\SI{1}{m} per pixel. Every non building pixel is treated as
 an active receiver location, with the receiver antenna placed at
 \(h_{\mathrm{rx}}=\SI{1.5}{m}\) above the ground. Building pixels are excluded
@@ -179,7 +182,7 @@ target specific pixel weighted RMSE is
   \label{eq:rmse}
 \end{equation}
 The same receiver-mask formula is used for all three targets. For DS and AS,
-each valid ground pixel is still a receiver with a ray-traced ground-truth
+each valid ground pixel is still a receiver with a ray-traced ground truth
 spread value, so the reported spread RMSE is the dense prediction compared with
 the dense CKM target over all valid ground receivers.
 
@@ -275,7 +278,7 @@ All database counts are 3972 samples below \SI{50}{m}, 8456 from
 \begin{axis}[
     width=0.97\linewidth,
     height=4.0cm,
-    xlabel={UAV height \(h_{\mathrm{tx}}\) (m)},
+    xlabel={Transmitter height \(h_{\mathrm{tx}}\) (m)},
     ylabel={Density (1/m)},
     xmin=0, xmax=500,
     ymin=0, ymax=0.014,
@@ -291,9 +294,9 @@ All database counts are 3972 samples below \SI{50}{m}, 8456 from
 table[x=mid_m,y=density,col sep=comma]{data/uav_height_histogram_3m.csv};
 \end{axis}
 \end{tikzpicture}
-\caption{Empirical UAV transmitter height density read directly from the CKM
+\caption{Empirical transmitter height density read directly from the CKM
 HDF5 database using the \SI{3}{m} histogram of
-Eq.~\ref{eq:height-empirical-hist}, linearly interpolated between bin centres
+\eqref{eq:height-empirical-hist}, linearly interpolated between bin centres
 for display. Most training support lies in the low and middle altitude bands.}
 \label{fig:height-density}
 \end{figure}
@@ -365,7 +368,7 @@ around the frozen priors and then fine tunes the deterministic point map. \\
 In this paper, a \emph{prior} means a frozen estimator fitted only on training
 cities, not a hand tuned curve evaluated on the test set. The prior sees the
 same support information available at deployment: centred transmitter geometry,
-UAV height, topology derived morphology, and the geometric LoS/NLoS mask. Once
+transmitter height, topology derived morphology, and the geometric LoS/NLoS mask. Once
 its coefficients and fallback tables are stored, no gradient update is applied
 to it inside the neural training loop. This separation is important because it
 lets the final residual model be judged against a demanding baseline: the model
@@ -422,14 +425,14 @@ height aware priors are produced first and then used as channels for the final
 Stage & Variables \\
 \midrule
 External framework inputs &
-Building height map and UAV transmitter height. \\
+Building height map and UAV transmitter height \(h_{\mathrm{tx}}\), stored as \texttt{uav\_height} in the CKM files. \\
 Computed support maps &
 LoS/NLoS visibility mask and valid ground receiver mask. \\
 Frozen prior maps &
 Combined path loss prior, LoS path loss prior, NLoS path loss prior,
 delay spread prior, and angular spread prior. \\
 Inputs to \textsc{HARP-Net CKM} &
-Topology map, UAV height conditioning, ground mask, LoS mask, NLoS mask,
+Topology map, transmitter height conditioning, ground mask, LoS mask, NLoS mask,
 and the five frozen prior maps. \\
 Final outputs &
 Channel attenuation, delay spread, and angular spread maps. \\
@@ -439,7 +442,7 @@ Channel attenuation, delay spread, and angular spread maps. \\
 
 Thus the full generator has two external inputs and three final outputs. The
 neural residual model has nine spatial map channels plus a separate scalar
-UAV height conditioning path because the framework has already computed the
+transmitter height conditioning path because the framework has already computed the
 visibility mask, receiver mask, and frozen prior maps.
 
 \subsection{Frozen Priors}
@@ -517,7 +520,7 @@ similarly \(b(h_{\mathrm{tx}})\) is a LoS bias, while \(b_q^{\mathrm{nat}}\),
 The LoS calibration is deliberately structured rather than fully flexible. It
 is fitted only on valid LoS ground pixels from training cities. First, the
 effective reflection amplitude \(\rho\) and phase \(\phi\) are fitted in
-\SI{5}{m} UAV height bins to reproduce the ring like constructive and
+\SI{5}{m} transmitter height bins to reproduce the ring like constructive and
 destructive interference visible in LoS channel attenuation maps. Second, the per height
 bias \(b\) removes a remaining vertical offset after the coherent two ray fit.
 Third, the radial residual table \(r(d_{2D},h_{\mathrm{tx}})\) averages the
@@ -535,7 +538,7 @@ network spends capacity on local visibility and morphology corrections.
 The NLoS prior starts from the maximum of COST231 like and A2G-NLoS raw
 terms. The first term below is the COST231/Hata urban macro formula adapted as
 a shape prior for the CKM geometry, not as an assertion that the original model
-is directly valid at every UAV height:
+is directly valid at every transmitter height:
 \begin{equation}
 \begin{aligned}
 \mathrm{PL}_{C}
@@ -881,7 +884,7 @@ n_{41}\log(1+d_{2D}),\\
 \end{aligned}
 \label{eq:x79-paper}
 \end{equation}
-Here \(h\) is normalized UAV height, \(b_{41}\) is a local blocker depth
+Here \(h\) is normalized transmitter height, \(b_{41}\) is a local blocker depth
 summary, \(c_{41}\) is transmitter clearance over nearby buildings, and
 \(t_{41}\) is the fraction of locally taller buildings. These height terms are
 not incidental: they tell the spread prior whether the centred UAV is above the
@@ -973,7 +976,7 @@ how the remaining residual distribution should be placed across the map.
 
 The height path mirrors the full implementation. The scalar
 \(h_{\mathrm{tx}}\) is expanded to a 32-dimensional sinusoidal code using
-16 log spaced frequencies over the UAV height range,
+16 log spaced frequencies over the transmitter height range,
 \begin{equation}
 \mathbf{e}(h_{\mathrm{tx}})
 =
@@ -1072,7 +1075,7 @@ training a separate network per altitude bin.
 \end{tikzpicture}}
 \caption{Final shared deep learning architecture used in the reported system
 diagram. The map stack carries topology, masks, and frozen priors; the scalar
-UAV height is encoded separately and injected through FiLM. Encoder FiLM uses
+Transmitter height is encoded separately and injected through FiLM. Encoder FiLM uses
 the height code; decoder FiLM and global heads use the fused height/bottleneck
 context. A shared U-Net produces local residual fields, pooled bottleneck
 features produce global GMM parameters, and the prior anchored GMM assembly
@@ -1496,7 +1499,7 @@ path loss table uses the held out validation+test split after fitting the
 split because the calibrated spread prior code and the final residual model use
 the same 10840/2750/2590 train/validation/test contract.
 Table~\ref{tab:pl-prior-height} shows the height dependence of the calibrated
-path loss prior. This is not post hoc stratification: UAV height is part of the
+path loss prior. This is not post hoc stratification: transmitter height is part of the
 prior estimator through the centred geometry, elevation angle, and
 height binned calibration, and it later conditions the residual neural model
 through FiLM. The trend is strongest in NLoS: the low altitude bin remains the
@@ -1513,7 +1516,7 @@ physically easier regime with fewer blocked links and weaker spread tails.
 
 \begin{table}[!t]
 \centering
-\caption{Calibrated path loss prior RMSE by UAV height on the held out
+\caption{Calibrated path loss prior RMSE by transmitter height on the held out
 validation+test split.}
 \label{tab:pl-prior-height}
 \scriptsize
@@ -1531,7 +1534,7 @@ Height bin & Overall & LoS & NLoS & Samples \\
 
 \begin{table}[!t]
 \centering
-\caption{Calibrated spread prior RMSE by UAV height on the final 14-city
+\caption{Calibrated spread prior RMSE by transmitter height on the final 14-city
 test split.}
 \label{tab:spread-prior-height}
 \scriptsize
@@ -1591,7 +1594,7 @@ calibration keys. These rows are not nine separately
 trained final neural networks. They are evaluation buckets that mirror the
 regime structure used by the frozen priors and fallback tables: morphology is
 derived from building density/height thresholds, and the height tag comes from
-the UAV altitude range. This is a stricter check than the global row because it
+the transmitter altitude range. This is a stricter check than the global row because it
 asks whether the same residual model helps across the deployed prior regimes
 rather than only in one easy subset. Table~\ref{tab:audit-delta} reports
 RMSE deltas for the nine groups. All entries are negative, so the residual
@@ -1623,8 +1626,8 @@ Group & Samples & Atten. & DS & AS \\
 
 \subsection{Why Distribution Diagnostics Matter}
 
-Fig.~\ref{fig:gmm-fit} shows the diagnostic that changed the modeling strategy:
-LoS and NLoS channel attenuation do not form a single easy Gaussian map target. The
+A retained distribution diagnostic changed the modeling strategy: LoS and NLoS
+channel attenuation do not form a single easy Gaussian map target. The
 distribution first predecessor modeled the marginal with GMM heads and showed
 that the NLoS collapse was not inevitable. The final model keeps this lesson
 but anchors the residual around explicit priors.
@@ -1640,18 +1643,6 @@ reached \SI{1.9246}{dB} RMSE on its held out validation+test split and
 \SI{1.9383}{dB} when frozen on the final test split, while the spread priors
 reached \SI{28.10}{ns} delay spread RMSE and \(13.74^\circ\)
 angular spread RMSE on that same final test split.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\linewidth]{img/thesis_figures/results_addendum/try76_los_vs_nlos_distribution.png}
-\caption{Full non residual DL GMM head model for channel attenuation (PL/\texttt{path\_loss}): target GMM-5
-fits by topology group. Thick curves show the summed LoS/NLoS mixture densities,
-faint dotted curves show the individual Gaussian components, and dashed vertical
-lines mark the marginal means. The diagnostic exposed different LoS/NLoS
-marginals and motivated distribution aware heads before returning to
-prior anchored residual learning.}
-\label{fig:gmm-fit}
-\end{figure}
 
 For spread targets, quantized labels make visual and RMSE interpretation harder.
 The released delay and angular maps are integer valued; smooth predictions can
@@ -1679,7 +1670,7 @@ Reference & Attenuation / PL side metric & Reading / caveat \\
 \midrule
 RadioUNet \cite{radiounet2020} &
 \SI{1.6}{dB}--\SI{3.1}{dB} equivalent PL RMSE &
-Final attenuation result is in this band; no UAV height or spread targets. \\
+Final attenuation result is in this band; no transmitter height or spread targets. \\
 RadioGUNet \cite{radiogunet2025} &
 \SI{1.304}{dB} DPM; \SI{1.936}{dB} IRT &
 Final attenuation result is between those values; outdoor RadioMapSeer setting. \\
@@ -1869,7 +1860,7 @@ morphology aware NLoS correction, visibility switching, and log domain DS/AS
 spread statistics. These frozen anchors already explain most radial,
 visibility, height, and spread scale structure; the final residual model then
 improves them by \SI{0.2865}{dB}, \SI{1.5453}{ns}, and \(2.3562^\circ\) RMSE on
-the held out test set. Continuous UAV height is handled through both the
+the held out test set. Continuous transmitter height is handled through both the
 height aware priors and a sinusoidal FiLM conditioning path, so the same model
 covers the varying height regime without per altitude retraining.
 
@@ -1884,9 +1875,9 @@ missed, and some false positive high spread patches remain.
 
 The main practical conclusion is narrow and useful. For this fixed ray traced
 CKM simulation contract, \textsc{HARP-Net CKM} is
-accurate, fast, and interpretable enough to replace repeated map generation for
-many planning experiments, achieving a measured \(113.7\times\) speedup over
-the local MATLAB ray tracing path. The result is a reproducible surrogate for a
+accurate, fast, and interpretable enough to reduce repeated ray traced map
+generation for many planning experiments, achieving a measured \(113.7\times\)
+speedup over the local MATLAB ray tracing path. The result is a reproducible surrogate for a
 defined dataset, split, carrier, antenna setup, and receiver mask, and its
 clearest lesson is methodological: diagnose the target distribution, freeze the
 stable structure in auditable priors, and spend neural capacity on the residual

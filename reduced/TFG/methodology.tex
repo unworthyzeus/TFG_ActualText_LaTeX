@@ -4,7 +4,7 @@
 This chapter describes the final reproducible method. It first fixes the CKM
 dataset contract, the ground receiver mask, the city holdout split and the
 pixel weighted metrics. It then introduces the complete prediction pipeline:
-building height map and UAV height are converted into support masks and frozen
+building height map and UAV transmitter height are converted into support masks and frozen
 prior maps; \textsc{HARP-Net CKM} receives those maps and predicts bounded
 residual corrections; the final outputs are channel attenuation, delay spread
 and angular spread maps. The development history that led to this choice is
@@ -18,6 +18,10 @@ Each sample is a complete $513\times513$ pixel CKM. The spatial resolution is
 \SI{513}{m}\(\times\)\SI{513}{m} square. The UAV transmitter is horizontally
 fixed at the centre of the map, while its antenna height \(h_{\mathrm{tx}}\)
 varies from sample to sample and is treated as a primary conditioning variable.
+The dataset labels this transmitter as a UAV, but the mathematical contract is
+an elevated \SI{7.125}{GHz} transmitter with sampled heights above roughly
+\SI{10}{m}, so the same surrogate can describe UAVs or other elevated radio
+access nodes under the same simulation assumptions.
 Every non-building pixel is an active receiver location, with the receiver antenna placed exactly at
 \SI{1.5}{m} above ground. Building pixels are not receiver positions and are
 excluded from the training loss and reported metrics rather than being counted
@@ -67,7 +71,7 @@ directly from the stored HDF5 samples.
   \begin{axis}[
     width=0.82\textwidth,
     height=4.0cm,
-    xlabel={UAV transmitter height \(h_{\mathrm{tx}}\) (m)},
+    xlabel={Transmitter height \(h_{\mathrm{tx}}\) (m)},
     ylabel={Density},
     xmin=0,
     xmax=500,
@@ -85,7 +89,7 @@ directly from the stored HDF5 samples.
     table[x=mid_m,y=density,col sep=comma]{data/uav_height_histogram_3m.csv};
   \end{axis}
   \end{tikzpicture}
-  \caption{Empirical UAV transmitter height density read directly from the CKM
+  \caption{Empirical transmitter height density read directly from the CKM
   HDF5 database using the \SI{3}{m} histogram of
   Eq.~\eqref{eq:height_empirical_histogram}, linearly interpolated between bin
   centres for display. Most training support lies in the low and mid-altitude
@@ -169,7 +173,7 @@ All RMSE values in this thesis are pixel-weighted over valid ground pixels:
   }.
   \label{eq:rmse}
 \end{equation}
-This is stricter than averaging per-sample RMSEs because large valid maps
+This is stricter than averaging per sample RMSEs because large valid maps
 contribute proportionally to the number of receiver pixels. The same evaluation
 contract is used for channel attenuation, delay spread and angular spread. For
 the two spread targets, every non-building pixel is also a receiver pixel in the
@@ -200,14 +204,14 @@ inputs and final outputs.}
 Stage & Maps / variables \\
 \midrule
 External inputs to the full framework &
-Building height map and UAV transmitter height \(h_{\mathrm{tx}}\). \\
+Building height map and UAV transmitter height \(h_{\mathrm{tx}}\), stored as \texttt{uav\_height} in the CKM files. \\
 Internally computed support maps &
 LoS/NLoS visibility mask and building/ground receiver mask. \\
 Frozen prior outputs &
 Combined path loss prior, path loss LoS prior, path loss NLoS prior,
 delay spread prior, angular spread prior. \\
 Inputs to \textsc{HARP-Net CKM} &
-Building height map, UAV height conditioning, ground-mask, LoS mask, NLoS mask,
+Building height map, transmitter height conditioning, ground-mask, LoS mask, NLoS mask,
 combined path loss prior, path loss LoS prior, path loss NLoS prior,
 delay spread prior, angular spread prior. \\
 Final outputs &
@@ -231,7 +235,7 @@ Channel attenuation map, delay spread map, angular spread map. \\
     output/.style={block, fill=red!8}
   ]
     \node[input] (topology) {Building height\\map};
-    \node[input, below=of topology] (height) {UAV transmitter\\height};
+    \node[input, below=of topology] (height) {Transmitter\\height};
 
     \node[support, right=of topology] (masks) {Ground mask\\LoS/NLoS mask};
     \node[prior, right=of masks] (priors) {Frozen priors\\PL, DS, AS};
@@ -251,7 +255,7 @@ Channel attenuation map, delay spread map, angular spread map. \\
     \draw[->] (outputs) |- (eval);
   \end{tikzpicture}}
   \caption{High level methodology flow. The user supplies the city height map
-  and UAV transmitter height. The pipeline constructs support masks and frozen
+  and transmitter height. The pipeline constructs support masks and frozen
   prior maps, then \textsc{HARP-Net CKM} predicts residual corrections for the
   three CKM outputs.}
   \label{fig:methodology_block_diagram}
@@ -264,10 +268,10 @@ residual model and evaluation protocol.
 
 Therefore, the full framework has two external inputs and three final outputs.
 The neural residual model receives nine spatial map channels plus a separate
-scalar UAV-height conditioning path because the framework has already computed
+scalar transmitter height conditioning path because the framework has already computed
 visibility masks, receiver masks and frozen prior maps. This is the main
 distinction between the deployable framework and the internal neural model: the
-user provides only a city height map and the UAV height, while the pipeline
+user provides only a city height map and the transmitter height, while the pipeline
 constructs the remaining maps before inference.
 
 The earlier U-Net, cGAN, PMNet, PMHHNet, and distribution first experiments are
@@ -275,7 +279,7 @@ not part of the main method. They are retained in Appendix~A as development
 evidence because they explain why the thesis stopped expanding generic
 backbones and instead moved toward prior anchored residual learning. Their
 practical lessons are folded into the final pipeline as constraints: no
-building pixel credit, no random city leakage, explicit UAV height
+building pixel credit, no random city leakage, explicit transmitter height
 conditioning, separate treatment of LoS/NLoS regimes, and distribution aware
 residual heads when the target is multi-modal or heavy-tailed.
 

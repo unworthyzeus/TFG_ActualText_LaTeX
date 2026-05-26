@@ -28,7 +28,8 @@ Lower marginal planning cost if the surrogate replaces repeated simulations. &
 Real deployment needs field validation and maintenance. \\
 Social &
 Skills gained in wireless modelling, ML, HPC workflows and scientific reporting. &
-Faster UAV coverage planning for temporary, rural or emergency networks. &
+Faster elevated base station or UAV coverage planning for temporary, rural or
+emergency networks. &
 Bias toward represented city morphologies and risk of overclaiming simulated results. \\
 \bottomrule
 \end{tabularx}
@@ -37,7 +38,7 @@ Bias toward represented city morphologies and risk of overclaiming simulated res
 \section{Environmental impact}
 
 The main environmental cost during development was computation. The final
-residual GMM head model line used a four GPU RTX~2080~Ti node for approximately
+\textsc{HARP-Net CKM} line used a four GPU RTX~2080~Ti node for approximately
 \SI{12}{h}; the distribution first and prior calibration phase used additional
 GPU/CPU time. Across the full exploratory project, the total exceeded roughly
 400 GPU hours. This is a one time research overhead and includes many failed
@@ -58,7 +59,7 @@ advantage weakens.
 The life cycle interpretation is therefore important. During the research phase,
 the footprint is dominated by exploration: many failed or partially successful
 attempts were necessary to discover that the final path should combine strong
-priors with a residual GMM head model. During the use phase, the footprint is
+priors with a bounded neural residual model. During the use phase, the footprint is
 dominated by inference and by occasional recalibration. The project is most
 sustainable when the trained model, frozen priors, cached masks and exported
 checkpoints are reused across many planning queries. It would be less
@@ -75,23 +76,25 @@ settings, hidden preprocessing changes or repeated debugging runs.
 \section{Economic and social impact}
 
 Economically, this work is not yet a product ready to take to market. Its value
-is as a technical prototype showing that a dense CKM can be approximated much
-faster than repeated ray tracing once the target city representation and
-calibration protocol are fixed. The main development cost was human time:
+is as a technical prototype showing that, under the fixed \SI{7.125}{GHz} CKM
+contract used here, dense ray traced targets can be approximated much faster
+than rerunning the simulator for every candidate deployment once the target city
+representation and calibration protocol are fixed. The main development cost was human time:
 literature review, dataset handling, training/debugging, analysis, supervision
 and writing. The compute cost is small compared with this time cost in an
 academic project, but it is still relevant because the full exploration
 required many GPU hours. In a planning workflow, a mature version of this
 surrogate could reduce repeated simulation runs and enable faster scenario
-studies over UAV heights or city layouts.
+studies over elevated transmitter heights or city layouts.
 
 The most realistic economic path is a planning tool rather than a standalone
 consumer product. A mature version could be licensed as software for network
 planning teams, integrated into a digital twin workflow, or offered as a
-service for rapid UAV coverage studies. Operators could use faster CKM
-generation to compare UAV heights, test temporary base station locations,
-identify weak streets or squares before deployment, and decide where expensive
-ray tracing or field measurements are really needed. Better radio maps would
+service for rapid elevated base station or UAV coverage studies. Operators
+could use faster CKM generation to compare transmitter heights above roughly
+\SI{10}{m}, test temporary base station locations, identify weak streets or
+squares before deployment, and prioritize the cases where full ray tracing or
+field validation should be run. Better radio maps would
 not create capacity by themselves, but they would make planning iterations
 cheaper and could reduce the risk of sending equipment or measurement teams to
 poor candidate sites. Patentability would require a novelty analysis beyond
@@ -106,13 +109,13 @@ restoration. The direct users would be network planners; the indirect
 beneficiaries would be users receiving more reliable wireless coverage. The
 main social risk is overconfidence: a simulated city holdout result should not
 be treated as certified field performance. Errors should continue to be reported
-by LoS/NLoS state, UAV height bin and morphology group rather than hidden behind
+by LoS/NLoS state, transmitter height bin and morphology group rather than hidden behind
 one global RMSE.
 
 The social value is strongest when the tool is used as decision support rather
 than as an automatic decision maker. A fast surrogate can help planners compare
-candidate UAV heights, identify weak coverage zones, and decide where detailed
-simulation or measurement should be spent. It should not replace domain review:
+candidate elevated transmitter heights, identify weak coverage zones, and
+prioritize detailed simulation or measurement budgets. It should not replace domain review:
 the model has been validated on simulated CKM cities and inherits the
 assumptions of the ray tracer, the topology representation, and the ground mask
 definition.
@@ -159,7 +162,7 @@ deployment by itself.
 
 Overall, the sustainability conclusion is conditional but positive. The research
 process was computation heavy, but it produced a reusable generator that can
-replace many repeated full resolution simulations once validated for a target
-domain. The strongest sustainable use case is therefore not ``train a larger
-model'', but ``reuse a documented, prior anchored surrogate to decide where
-slower simulation or real measurement is actually needed''.
+reduce many repeated full resolution simulation calls once validated for a
+target domain. The strongest sustainable use case is therefore not ``train a
+larger model'', but ``reuse a documented, prior anchored surrogate to screen
+planning options and prioritize slower simulation or real measurement''.

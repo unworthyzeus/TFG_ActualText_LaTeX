@@ -3,9 +3,9 @@
 
 This compact results chapter keeps the quantitative evidence needed for the
 final claim and moves the diagnostic gallery to Appendix~\ref{app:qualitative_diagnostics}.
-The main reported model is the final prior anchored residual GMM head model,
+The main reported model is \textsc{HARP-Net CKM},
 evaluated on 2590 samples from 14 unseen test cities. All model-versus-prior
-rows use the same held out split and the same ground-only receiver mask.
+rows use the same held out split and the same valid ground receiver mask.
 
 \section{Milestones and prior quality}
 
@@ -24,16 +24,16 @@ the mask contract and target formulation evolved during the project.
 Family & Lesson & Representative result \\
 \midrule
 Early U-Net/cGAN & Dense image to image prediction was feasible, but visual realism did not control physical RMSE. & Best clean pre-prior baseline around \SI{16.72}{dB}. \\
-Ground-mask reset & Building pixels are not receivers and must be excluded. & Later metrics use the ground-only mask. \\
+Ground mask reset & Building pixels are not receivers and must be excluded. & Later metrics use the valid ground receiver mask. \\
 PMNet/PMHHNet & Height FiLM, physical channels and experts helped LoS, but NLoS tails remained poorly modelled. & PMHHNet reference: \SI{9.41}{dB} overall, \SI{3.75}{dB} LoS, \SI{31.48}{dB} NLoS. \\
 Distribution first GMM & The hard NLoS problem was distributional, not just architectural. & NLoS PL pixel-weighted RMSE around \SI{3.34}{dB} without explicit priors. \\
 Frozen priors & Train only calibrated priors became strong baselines in their own right. & \SI{1.9246}{dB} standalone PL prior (\SI{1.9383}{dB} final-test frozen PL); \SI{28.10}{ns} DS; \(13.74^\circ\) AS. \\
-Final residual GMM head & A bounded neural residual improves already strong priors. & Test: \SI{1.6519}{dB} PL, \SI{26.5570}{ns} DS, \(11.3854^\circ\) AS. \\
+\textsc{HARP-Net CKM} & A bounded neural residual improves already strong priors. & Test: \SI{1.6519}{dB} PL, \SI{26.5570}{ns} DS, \(11.3854^\circ\) AS. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-The final path-loss prior is the most important baseline. Its LoS branch is not
+The final channel attenuation prior is the most important baseline. Its LoS branch is not
 FSPL alone: the enhanced two ray calibration reduces LoS RMSE from about
 \SI{3.95}{dB} to \SI{1.75}{dB}. The full hybrid prior reaches
 \SI{1.9246}{dB} overall on the held out validation+test split

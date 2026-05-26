@@ -234,11 +234,11 @@ The radio map prediction problem can be cast as an image to image regression:
 given an input topology map (and optionally a transmitter location channel), the
 model predicts a path loss map of the same spatial extent.  The pix2pix framework
 \cite{isola2017pix2pix} established a general recipe for such tasks using a
-conditional GAN with a U-Net generator and a PatchGAN discriminator.  Early
-iterations of this thesis used this formulation.  In practice the adversarial
-objective sharpens spatial texture but does not address the height dependent
-radial pattern or the heavy NLoS tails that dominate the error budget in the CKM
-dataset.
+conditional GAN with a U-Net generator and a PatchGAN discriminator.  For radio
+maps, however, visual sharpness is not the same as physical accuracy: the
+adversarial objective can sharpen spatial texture while still failing to
+represent the height dependent radial pattern and the heavy NLoS tails that
+dominate the error budget in the CKM dataset.
 
 RadioUNet \cite{radiounet2020} is the canonical convolutional path loss map
 baseline before the PMNet challenge family. In its accurate map settings it

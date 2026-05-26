@@ -53,7 +53,7 @@ Two lessons follow. First, adding a purely radial correction on top of FSPL
 only buys about \SI{0.25}{dB}. The residuals that a non coherent model can
 absorb are small compared to the structured deviation from FSPL. Second,
 switching to the \emph{enhanced} two ray model with a fitted effective reflection
-coefficient $(\rho, \phi)$ per \SI{5}{m} UAV height bin removes almost
+coefficient $(\rho, \phi)$ per \SI{5}{m} transmitter height bin removes almost
 \SI{2}{dB} of additional error. This is exactly the magnitude expected when the
 dataset contains a visible ground reflection interference pattern, because the
 radial-residual model cannot reproduce the oscillatory ring structure with a
@@ -116,7 +116,7 @@ density, building height, visibility, and antenna height instead of forcing one
 global estimator to explain all pixels.
 The calibrated spread prior module applies this idea separately to delay spread and angular spread. The
 raw spread estimate is only the first feature; the calibrated model then uses a
-23-term vector with raw prior curvature, range, elevation angle, UAV height,
+23-term vector with raw prior curvature, range, elevation angle, transmitter height,
 local building density at two scales, local height at two scales, LoS/NLoS
 support at two scales, blocker depth, transmitter clearance, taller building
 fraction, and interaction terms. Both spread targets are fitted in
@@ -139,27 +139,27 @@ Angular spread ($^\circ$) & 13.74 & 15.28 & 8.66 \\
 \end{table}
 
 
-\subsection{RMSE by UAV transmitter height}
+\subsection{RMSE by Transmitter Height}
 
-The CKM dataset covers stored UAV heights from about \SI{12}{m} to almost
+The CKM dataset covers stored transmitter heights from about \SI{12}{m} to almost
 \SI{478}{m}, while the closest nominal beta law has support up to
 \SI{500}{m}. The absence of samples above \SI{478}{m} is statistically normal
 for this finite draw, because the expected count above that height is only
 0.52. Therefore the conditional error at a single aggregate RMSE can hide
 strong altitude-dependent structure. Tables~\ref{tab:try78_by_height} and
 \ref{tab:try79_by_height} therefore break the path loss prior and the
-delay spread and angular spread priors into four UAV height bins, using the
+delay spread and angular spread priors into four transmitter height bins, using the
 same pixel weighted aggregation as the headline tables.
 
 \begin{table}[!htbp]
 \centering
-\caption{Path loss prior pixel weighted RMSE by UAV transmitter height, on
+\caption{Path loss prior pixel weighted RMSE by transmitter height, on
 the held out validation+test split.}
 \label{tab:try78_by_height}
 \small
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrrr}
 \toprule
-UAV height bin & Overall & LoS & NLoS & Samples \\
+Transmitter height bin & Overall & LoS & NLoS & Samples \\
 \midrule
 12 to 50   & 2.180 & 1.797 & 3.756 & 1211 \\
 50 to 150  & 1.936 & 1.785 & 3.228 & 2634 \\
@@ -172,12 +172,12 @@ UAV height bin & Overall & LoS & NLoS & Samples \\
 \begin{table}[!htbp]
 \centering
 \caption{Delay spread and angular spread calibrated pixel weighted RMSE
-by UAV transmitter height, on the city holdout test split.}
+by transmitter height, on the city holdout test split.}
 \label{tab:try79_by_height}
 \small
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xlrrr}
 \toprule
-UAV height bin & Metric & Overall & LoS & NLoS \\
+Transmitter height bin & Metric & Overall & LoS & NLoS \\
 \midrule
 12 to 50   & Delay spread (ns)       & 39.90 & 43.04 & 35.13 \\
 50 to 150  & Delay spread (ns)       & 27.17 & 26.72 & 28.29 \\
@@ -312,7 +312,7 @@ for channel attenuation, delay spread, or angular spread individually, not a sum
 three RMSE values. The three targets are kept separate because their units are
 incompatible. Delay spread and angular spread are evaluated exactly like channel
 attenuation: for each valid ground receiver pixel, the predicted value is
-compared with the ray-traced CKM ground-truth value, and the RMSE is accumulated
+compared with the ray-traced CKM ground truth value, and the RMSE is accumulated
 over all valid ground receivers.
 
 \begin{table}[!htbp]
@@ -373,7 +373,7 @@ also improves slightly, from \(8.6614^\circ\) to \(8.4424^\circ\).
 
 No reviewed external method reports the same dense CKM city holdout angular
 spread map task. One or two papers have similar link level channel statistics
-goals, but not the same dense map input, UAV height protocol, or held out city
+goals, but not the same dense map input, transmitter height protocol, or held out city
 evaluation. For that reason, the angular spread result is compared mainly
 against the frozen prior and the original thesis target.
 
@@ -482,20 +482,20 @@ RadioUNet \cite{radiounet2020} &
 \SI{1.6}{dB}--\SI{3.1}{dB} equivalent channel attenuation RMSE in accurate map settings &
 Our final PL RMSE lies inside the reported \SI{1.6}{dB}--\SI{3.1}{dB}
 dB scale band. &
-2D channel attenuation maps only; no UAV height conditioning or spread targets. \\
+2D channel attenuation maps only; no transmitter height conditioning or spread targets. \\
 RadioGUNet \cite{radiogunet2025} &
 \SI{1.304}{dB} DPM, \SI{1.936}{dB} IRT, and \SI{1.392}{dB} DPM with cars on
 RadioMapSeer &
 Our final PL RMSE is close to the reported RadioMapSeer dB scale range, while
 remaining above its best DPM number. &
-Outdoor simulated terrestrial maps; held out test layouts, but no UAV height or
+Outdoor simulated terrestrial maps; held out test layouts, but no transmitter height or
 spread targets. \\
 PMNet / ICASSP~2023 winner \cite{pmnet_icassp2023,icassp2023challenge} &
 approx.\ \SI{1.38}{dB} converted from the RadioMap3DSeer normalized score &
 Final PL is close but higher under a different benchmark contract; use only as
 scale context, not as a direct ranking. &
 Not directly comparable: ICASSP/RadioMap3DSeer testing differs from our unseen
-CKM-city split, continuous UAV height conditioning, and joint PL/DS/AS target
+CKM-city split, continuous transmitter height conditioning, and joint PL/DS/AS target
 contract. \\
 Gao et al.\ \cite{gao2026} &
 \SI{5.59}{dB} on ICASSP~2023; \SI{12.19}{dB} on ITU Challenge~2024, with
@@ -509,7 +509,7 @@ ReVeal PINN \cite{reveal2025} &
 measurements &
 Final PL is in the same dB scale range as ReVeal's sparse measurement result. &
 Real outdoor measurements, but sparse RSSI radio environment mapping rather than
-dense UAV height conditioned CKM generation. \\
+dense transmitter height conditioned CKM generation. \\
 AIRMap \cite{airmap2025} &
 path gain error reported below \SI{4}{dB} against ray tracing &
 Our final PL RMSE is below \SI{2}{dB}, but an exact ratio is not recoverable
@@ -522,7 +522,7 @@ channel prediction error, approximately \SI{2.06}{dB} &
 Our final PL RMSE is slightly below the converted dB scale values under that
 paper's normalisation window. &
 Recent dense path loss radio map reference, but on \SI{256}{px} USC/PMNet maps
-with a random 90/10 split, no CKM city holdout, no continuous UAV height, and no
+with a random 90/10 split, no CKM city holdout, no continuous transmitter height, and no
 spread targets. \\
 PathFinder \cite{pathfinder2025} &
 0.0331 normalized RMSE on RM3D DS-RPP, approximately \SI{1.19}{dB} with the
@@ -624,7 +624,7 @@ the final generator: an AMD Ryzen~5~5600H CPU and an RTX~3050~Ti Laptop GPU
 with 4\,GiB of VRAM. The ray tracing run was configured at
 \SI{1}{m} receiver spacing, so each non building pixel of the \(513\times513\)
 area is represented by a receiver at \SI{1.5}{m}. Two Barcelona layouts and five
-UAV heights per layout give ten full resolution CKM samples. The local MATLAB
+transmitter heights per layout give ten full resolution CKM samples. The local MATLAB
 installation does not include Parallel Computing Toolbox, so the ray tracer was
 run on CPU with the same propagation settings as the supplied script:
 one reflection, no diffraction, \SI{7.125}{GHz}, and extraction of channel attenuation,
@@ -684,20 +684,28 @@ GT ray-caster with zero LoS/NLoS differences on the Barcelona samples and on
 \section{Qualitative Analysis}
 \label{sec:qualitative_analysis}
 
-The qualitative evidence supports the quantitative story without needing the full diagnostic gallery in the main body. The early channel attenuation histograms showed NLoS mode collapse: visually plausible maps could follow the radial LoS trend while missing the blocked link tail. The selected final model removes the worst of that collapse, reduces RMSE relative to the frozen priors across the split and LoS/NLoS checks, and applies residual corrections whose sign follows the prior error maps. The complete histogram figures, split/regime bar plots, and representative inspection panel are kept in Appendix~\ref{app:qualitative_diagnostics}.
+The qualitative evidence supports the quantitative story without needing the
+full diagnostic gallery in the main body. The early channel attenuation
+histograms showed NLoS mode collapse: visually plausible maps could follow the
+radial LoS trend while missing the blocked link tail. The selected final model
+removes the worst of that collapse, reduces RMSE relative to the frozen priors
+across the split and LoS/NLoS checks, and applies residual corrections whose
+sign follows the prior error maps. The compact diagnostic appendix keeps the
+histogram and spread quantisation checks; the wider gallery and split bar plots
+remain in the generated figure archive.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Vancouver_sample_15265_6x3.png}
 \caption[Representative final model inspection panel.]%
 {Representative final model inspection panel for a dense, mid altitude,
-held out test sample in Vancouver. The full gallery remains in
+held out test sample in Vancouver. Related compact diagnostics are kept in
 Appendix~\ref{app:qualitative_diagnostics}; this panel is kept here because it
 shows the final prior, residual correction and prediction side by side.}
 \label{fig:try80_panel_results}
 \end{figure}
 
-The main lesson is that LoS path loss in this dataset has a strong radial ring structure, so a calibrated two ray prior is more efficient than asking a CNN to learn the same pattern from pixels. The remaining qualitative failures are concentrated in sparse NLoS and high spread cases, which is why future spread work should include an explicit high-tail or outlier diagnostic.
+The main lesson is that LoS path loss in this dataset has a strong radial ring structure, so a calibrated two ray prior is more efficient than asking a CNN to learn the same pattern from pixels. The remaining qualitative failures are concentrated in sparse NLoS and high spread cases, which is why future spread work should include an explicit high tail or outlier diagnostic.
 \section{Limitations}
 \label{sec:limitations}
 
@@ -709,8 +717,8 @@ integer maps: delay spread as uint16 in ns and angular spread as uint8 in
 degrees. A more suitable dataset for the final modelling stage would preserve
 the continuous ray traced targets, for example as float32 or as documented
 scaled integers, before any display-oriented quantisation.
-This should not be confused with a quantized model output: the final residual
-GMM head model emits continuous PL/DS/AS values. In that light, the final
+This should not be confused with a quantized model output: \textsc{HARP-Net CKM}
+emits continuous PL/DS/AS values. In that light, the final
 channel attenuation MAE of \SI{0.9298}{dB} on labels stored at approximately
 \SI{1}{dB} resolution is already close to the channel attenuation label step, even
 though the RMSE remains \SI{1.6519}{dB} because it is dominated by the harder
@@ -772,7 +780,7 @@ resolving sparse hard NLoS cases rather than on smoothing the whole map.
 The LoS/NLoS mask used in these experiments should be interpreted as a
 geometric binary visibility mask, not as an augmented electromagnetic
 propagation label. In the CKM setup the transmitter position is fixed at the
-map centre and the UAV height is known for each sample, so the same binary mask
+map centre and the transmitter height is known for each sample, so the same binary mask
 can be derived by line of sight tracing through the building topology. It is
 therefore a deterministic geometric feature and branch key, not extra measured
 radio information unavailable at deployment.
