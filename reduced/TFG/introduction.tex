@@ -133,13 +133,15 @@ the thesis: classical propagation models, radio map deep learning, hybrid
 physics/neural methods, distribution aware prediction, and fair comparison
 criteria. Chapter~3 describes the final methodology: the CKM dataset, the
 ground receiver evaluation contract, the city holdout split, the calibrated
-priors, and the \textsc{HARP-Net CKM} residual model. Chapter~4 reports the
-final quantitative results, the comparison with the frozen priors and the
-closest published benchmarks, qualitative examples, runtime, and limitations.
-Chapter~5 discusses sustainability, economic impact, social impact, and ethical
-scope. Chapter~6 answers the research questions and presents future-work. The
-appendices preserve the development trace, representative panels, and generator
-documentation.
+priors, and the \textsc{HARP-Net CKM} residual model. The method chapter is
+intentionally final pipeline first; the chronological attempt trace is kept in
+Appendix~A. Chapter~4 reports the final quantitative results, the comparison
+with the frozen priors and the closest published benchmarks, qualitative
+examples, runtime, and limitations. Chapter~5 discusses sustainability,
+economic impact, social impact, and ethical scope. Chapter~6 answers the
+research questions and presents future work. The appendices preserve the
+development trace, representative panels, generator documentation, and the
+declaration on generative AI use.
 
 \section{Requirements and specifications}
 
@@ -173,22 +175,6 @@ are excluded from error accumulation because no receiver is placed inside a
 building pixel. The fixed receiver height used in the analytic priors is
 \SI{1.5}{m}. The transmitter is the UAV antenna, whose height varies
 continuously across the dataset.
-
-\section{Methods and procedures}
-
-The final method follows a hybrid pipeline. First, the city map is represented
-as a building-height raster with a centred UAV transmitter and a fixed
-ground user receiver grid. Second, geometric LoS/NLoS masks and calibrated
-priors are prepared for channel attenuation, delay spread, and angular spread. Third,
-\textsc{HARP-Net CKM} receives the topology, masks, UAV height, and prior maps
-and predicts bounded residual corrections for the three outputs. The final maps
-are the prior predictions plus the learned residual corrections.
-
-Earlier neural models are still useful scientifically, but mainly as
-diagnostics. They showed that direct image to image prediction can produce
-plausible-looking maps while missing NLoS and spread tail behaviour. For this
-reason the main text presents the final method first; the chronological attempt
-trace is kept in the appendix.
 
 \section{Work plan}
 \label{sec:workplan}

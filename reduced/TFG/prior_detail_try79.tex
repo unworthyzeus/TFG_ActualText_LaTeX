@@ -492,7 +492,7 @@ dense\_block\_highrise  & 14.64 & 21.33 & 9.78 \\
 ]
 \node[input] (inputs) {Geometry, masks \& multiscale morphology \\
 $d_{2D}, \theta, h_{\mathrm{tx}}, \rho_{15/41}, h_{15/41}, n_{15/41}, b_{41}, c_{41}, t_{41}$};
-\node[block, below=1.5cm of inputs] (raw_prior) {Stage 1: Raw Log Prior \\ $z^{(0)}(x)$ (Eq.~\ref{eq:raw_spread})};
+\node[block, below=1.5cm of inputs] (raw_prior) {Stage 1: Raw Log Prior \\ $z^{(0)}(x)$};
 \node[block, below=1.5cm of raw_prior] (features) {Stage 2: Feature Vector \\ $\textbf{x}_{79}(x) \in \mathbb{R}^{23}$};
 \node[block, below=1.5cm of features] (ridge) {Stage 3: Regime wise Ridge Regression \\ $\hat z(x) = \textbf{x}_{79}(x)^\top \hat{\textbf{w}}^{79}_{r}$};
 \node[branch, below=1.5cm of ridge] (invert) {Stage 4: Inverse Transform \\ $\hat y(x) = \exp(\hat z(x)) - 1$};

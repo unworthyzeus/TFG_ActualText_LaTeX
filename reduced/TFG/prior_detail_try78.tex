@@ -246,7 +246,7 @@ and receiver antenna gains, and \(P_r(d)\) is the received power at distance
 \(d\).
 This approximation assumes a perfect reflection ($\Gamma = -1$) and small
 grazing angles. Our implementation uses the \emph{exact} field sum
-(Eq.~\ref{eq:field_sum}) without the $d^4$ approximation. This is still a
+(Eq.~\eqref{eq:field_sum}) without the $d^4$ approximation. This is still a
 standard literature form; it simply avoids a far field approximation that is
 not appropriate when UAV height is not negligible relative to horizontal
 distance.
@@ -1168,7 +1168,7 @@ n_k(x)=\mathrm{BoxMean}_k\!\left(n_{\mathrm{raw}}(\cdot)\right)(x)
 \label{eq:n_k}
 \end{equation}
 
-Since $n_{\mathrm{raw}}(x') \in \{0,1\}$ (Eq.~\ref{eq:nlos_mask_v2}),
+Since $n_{\mathrm{raw}}(x') \in \{0,1\}$ (Eq.~\eqref{eq:nlos_mask_v2}),
 $n_k(x)$ is the \emph{absolute fraction of the window area} that consists of
 ground pixels in NLoS. Just as $h_k(x)$ conflates building coverage and building
 height, $n_k(x)$ conflates ground coverage and NLoS probability. We can write:
@@ -1499,7 +1499,7 @@ pixel weighted RMSE on LoS pixels, the regime wise OLS NLoS head reaches
 \node[input, right=4cm of geom] (map) {CKM Map \\ $b(x), g(x), m_{\mathrm{LoS}}(x)$};
 
 % LoS Branch
-\node[block, below left=1.5cm and 0.5cm of geom] (fspl) {FSPL \\ (Eq.~\ref{eq:fspl})};
+\node[block, below left=1.5cm and 0.5cm of geom] (fspl) {FSPL \\ direct-ray baseline};
 \node[block, below=1.5cm of fspl] (tworay) {Coherent Two Ray \\ $C_{\mathrm{2ray}}(x)$};
 \node[block, below=1.5cm of tworay] (bias_rad) {Bias + Radial Residual \\ $b + r(d_{2D})$};
 \node[branch, below=1.5cm of bias_rad] (pl_los) {Calibrated LoS \\ $\mathrm{PL}_{\mathrm{LoS}}(x)$};

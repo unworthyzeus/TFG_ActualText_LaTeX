@@ -98,8 +98,8 @@ sequence: define the evaluation contract, diagnose target distributions,
 calibrate train only priors, and then train a bounded residual model around
 those frozen anchors. The contribution is \textsc{HARP-Net CKM}, a dense CKM
 recipe for one fixed UAV simulation contract: strict city holdout, valid
-receiver masking, explicit LoS/NLoS and height reporting, and a final prior
-anchored neural correction.
+receiver masking, explicit LoS/NLoS and height reporting, and a bounded
+\textsc{HARP-Net CKM} neural correction around frozen priors.
 
 \subsection{Radio Map and Channel Parameter Predictors}
 
@@ -178,6 +178,10 @@ target specific pixel weighted RMSE is
   {\sum_{i\in\mathcal{S}}\sum_p m_i(p)}}.
   \label{eq:rmse}
 \end{equation}
+The same receiver-mask formula is used for all three targets. For DS and AS,
+each valid ground pixel is still a receiver with a ray-traced ground-truth
+spread value, so the reported spread RMSE is the dense prediction compared with
+the dense CKM target over all valid ground receivers.
 
 The split is city based rather than random over pixels or tiles. This matters:
 random splits would allow the model to see nearly identical urban morphology
@@ -350,7 +354,7 @@ Frozen attenuation and spread priors &
 Structured anchor &
 Captured most radial, visibility, height, and spread scale structure using
 train only calibration. \\
-Final prior anchored residual GMM &
+\textsc{HARP-Net CKM} &
 Reported model &
 Keeps the distribution aware head, but moves it into bounded residual space
 around the frozen priors and then fine tunes the deterministic point map. \\
@@ -385,7 +389,7 @@ must improve an already calibrated predictor rather than merely beat FSPL.
 \node[prior] (spread) at (3.4,-1.45) {DS/AS branches\\\(\log(1+y)\), \(\mathbf{x}_{79}\)\\height + clearance};
 \node[cal] (switch) at (6.8,0.72) {Visibility switch\\\(\mathrm{PL}_{\mathrm{prior}}\)};
 \node[cal] (stack) at (6.8,-0.92) {Frozen prior maps\\attenuation, DS, AS};
-\node[model] (net) at (10.2,0) {Shared residual model\\FiLM height conditioning\\prior anchored GMM heads};
+\node[model] (net) at (10.2,0) {Shared residual model\\FiLM height conditioning\\distribution aware heads};
 \node[input, fill=orange!18] (out) at (13.6,0) {Continuous outputs\\attenuation, DS, AS};
 
 \coordinate (supportsplit) at (1.55,0);
@@ -400,10 +404,10 @@ must improve an already calibrated predictor rather than merely beat FSPL.
 \draw[arr] (stack.east) -- (net.west);
 \draw[arr] (net.east) -- (out.west);
 \end{tikzpicture}}
-\caption{Compact prior anchored pipeline used for the reported final system.
+\caption{Compact prior anchored pipeline used for \textsc{HARP-Net CKM}.
 The transmitter is always centred, but its height varies by sample. Frozen
 height aware priors are produced first and then used as channels for the final
-prior anchored residual GMM model.}
+\textsc{HARP-Net CKM} model.}
 \label{fig:pipeline}
 \end{figure*}
 
@@ -1229,7 +1233,7 @@ the prior.
 \draw[arr] (expv.east) -- (sel.west);
 \draw[arr] (sel.east) -- (out.west);
 \end{tikzpicture}}
-\caption{Final prior anchored GMM head. The global branch predicts the
+\caption{\textsc{HARP-Net CKM} residual head. The global branch predicts the
 sample level residual mixture; the local branch places that distribution
 pixel by pixel through component weights, residual refinements, gates and local
 uncertainty. Component means are anchored to the frozen prior and the
@@ -1238,7 +1242,7 @@ selection.}
 \label{fig:gmm-head}
 \end{figure*}
 
-The final prior anchored model should not be read as only the final fine tuning loss. It has two active
+\textsc{HARP-Net CKM} should not be read as only the final fine tuning loss. It has two active
 training phases: a large capacity residual/GMM stage with probabilistic losses
 enabled, followed by an RMSE/MAE dominant fine tuning stage. The composite
 objective implemented by the model is
@@ -1278,7 +1282,7 @@ selection uses the validation composite
 
 \begin{table*}[!t]
 \centering
-\caption{Loss terms available in the final prior anchored objective and their practical
+\caption{Loss terms available in the \textsc{HARP-Net CKM} objective and their practical
 purpose.}
 \label{tab:loss-roles}
 \scriptsize
@@ -1337,7 +1341,7 @@ fine tuning; see Table~\ref{tab:loss-schedule} \\
 
 \begin{table}[t]
 \centering
-\caption{Final prior anchored loss schedule. The pre fine tuning residual/GMM stage is part
+\caption{\textsc{HARP-Net CKM} loss schedule. The pre fine tuning residual/GMM stage is part
 of the final pipeline, even though the reported checkpoint is selected after
 the deterministic fine tuning stage.}
 \label{tab:loss-schedule}
@@ -1761,7 +1765,7 @@ Fig.~\ref{fig:panel} is the qualitative check. The model receives the frozen
 prior and predicts a correction. The useful visual evidence is not merely that
 the prediction resembles the target; it is that the correction row tends to
 correlate negatively with the prior error row, which is the expected behavior of a
-prior anchored residual corrector.
+\textsc{HARP-Net CKM} residual corrector.
 
 \begin{figure*}[t]
 \centering
@@ -1879,7 +1883,7 @@ structure is usually recovered, but rare high spread pixel groups can still be
 missed, and some false positive high spread patches remain.
 
 The main practical conclusion is narrow and useful. For this fixed ray traced
-CKM simulation contract, the prior anchored residual GMM head model is
+CKM simulation contract, \textsc{HARP-Net CKM} is
 accurate, fast, and interpretable enough to replace repeated map generation for
 many planning experiments, achieving a measured \(113.7\times\) speedup over
 the local MATLAB ray tracing path. The result is a reproducible surrogate for a

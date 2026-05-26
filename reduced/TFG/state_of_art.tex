@@ -1,13 +1,19 @@
 \chapter[State of the Art]{State of the Art and Technical Background}
 
-Radio map prediction sits at the intersection of classical wireless propagation
-modelling, statistical channel analysis, and dense computer vision regression.
-This chapter reviews the background needed to understand the final design:
-classical and empirical propagation models, deep learning for radio map
-estimation, physics informed and hybrid neural approaches, distribution aware
-prediction, and fair comparison rules. The goal is to identify the limitations
-of existing work and the tools that will be used later, not to report the
-results of this thesis.
+This chapter gives the background needed before the method is introduced. It
+has four roles. First, it defines the propagation and spread quantities used in
+the thesis. Second, it reviews dense radio map prediction methods and their
+limitations. Third, it introduces the training and distribution tools used
+later. Fourth, it explains why external results cannot be compared as a simple
+leaderboard. Final thesis results are reported only in
+Chapter~\ref{chap:results}.
+
+\noindent\textbf{Reader map.}
+Sections~\ref{sec:soa_ckm_context} to~\ref{sec:soa_classical} introduce CKMs,
+path loss models and A2G propagation. The angular and delay spread sections
+define the two non attenuation targets. Section~\ref{sec:soa_distribution}
+collects the training tools and fair comparison rules that are needed to read
+the methodology and results.
 
 % Section separator
 \section{General Framework: CKM Surrogates and Evaluation Contracts}
@@ -83,9 +89,11 @@ ground reflected fields before converting to dB \cite{rappaport,wocc2021}:
   \frac{e^{-j2\pi d_{\mathrm{ref}}/\lambda}}{d_{\mathrm{ref}}},
 \end{equation}
 where \(\Gamma\) is the effective ground reflection coefficient. The received
-field magnitude \(|E_{\mathrm{total}}|\) is then converted to a path loss like
-dB prediction with a fitted calibration constant. This is the physical origin
-of the radial rings later exploited by the path loss prior.
+field magnitude \(|E_{\mathrm{total}}|\) is then converted to a dB attenuation
+prediction with a fitted calibration constant. This is the physical origin of
+the radial rings later exploited by the path loss prior. The numerical gain of
+this prior is not reported here because this chapter is background. The fitted
+CKM result is evaluated later in Chapter~\ref{chap:results}.
 
 \begin{figure}[ht]
   \centering
@@ -302,11 +310,13 @@ continuous UAV height conditioning used in CKM.
 
 The RMTransformer \cite{rmtransformer2025} evaluates a hybrid MaxViT/CNN
 encoder--decoder on the USC/PMNet dataset rather than on the ICASSP challenge
-test set.  It reports a normalised RMSE of~0.007148 versus~0.01046 for PMNet
-under a random 90/10 split on \(256\times256\) maps.  The paper normalises
-received power/path loss from \(-254\) to \SI{0}{dBm}, so the reported pixel
-RMSE corresponds to roughly \SI{1.82}{dB} on its own scale, and the reported
-channel prediction error of 0.008099 corresponds to roughly \SI{2.06}{dB}.
+test set.  It reports a normalised RMSE of \(7.15\times10^{-3}\), compared
+with \(1.05\times10^{-2}\) for PMNet under a random 90/10 split on
+\(256\times256\) maps.  The paper normalises received power or path loss,
+depending on the paper convention, from \(-254\) to \SI{0}{dBm}, so the
+reported pixel RMSE corresponds to roughly \SI{1.82}{dB} on its own scale, and
+the reported channel prediction error of \(8.10\times10^{-3}\) corresponds to
+roughly \SI{2.06}{dB}.
 This supports the use of attention for long range urban context, but it is not
 inserted in Table~\ref{tab:icassp2023corrected} because it is not measured on
 RadioMap3DSeer or under the ICASSP challenge contract.
@@ -484,7 +494,7 @@ multimodality, leaving a compact mixture to represent under correction,
 near zero correction, and over correction modes.
 
 % Section separator
-\section{Training and Fair Comparison}
+\section{Distribution, Training Tools and Fair Comparison}
 \label{sec:soa_distribution}
 % Section separator
 

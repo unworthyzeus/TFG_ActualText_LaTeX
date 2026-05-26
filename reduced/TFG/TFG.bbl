@@ -237,17 +237,20 @@
       \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2212.11777}
+      \field{howpublished}{{IEEE} DataPort dataset}
       \field{title}{Dataset of Pathloss and {ToA} Radio Maps With Localization Application}
       \field{year}{2022}
+      \verb{doi}
+      \verb 10.21227/0GTX-6V30
+      \endverb
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2212.11777
+      \verb https://doi.org/10.21227/0GTX-6V30
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2212.11777
+      \verb https://doi.org/10.21227/0GTX-6V30
       \endverb
     \endentry
-    \entry{icassp2023challenge}{misc}{}{}
+    \entry{icassp2023challenge}{inproceedings}{}{}
       \name{author}{5}{}{%
         {{hash=14ebd377c35d0c3606f4b638f2a7a847}{%
            family={Yapar},
@@ -288,14 +291,19 @@
       \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2310.07658}
+      \field{booktitle}{{ICASSP} 2023 - 2023 {IEEE} International Conference on Acoustics, Speech and Signal Processing ({ICASSP})}
       \field{title}{The First Pathloss Radio Map Prediction Challenge}
       \field{year}{2023}
+      \field{pages}{1\bibrangedash 2}
+      \range{pages}{2}
+      \verb{doi}
+      \verb 10.1109/ICASSP49357.2023.10433928
+      \endverb
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2310.07658
+      \verb https://doi.org/10.1109/ICASSP49357.2023.10433928
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2310.07658
+      \verb https://doi.org/10.1109/ICASSP49357.2023.10433928
       \endverb
     \endentry
     \entry{jaensch2024directiverme}{misc}{}{}
@@ -338,7 +346,7 @@
       \verb https://arxiv.org/abs/2402.00878
       \endverb
     \endentry
-    \entry{ckmimagenet2025}{misc}{}{}
+    \entry{ckmimagenet2025}{article}{}{}
       \name{author}{5}{}{%
         {{hash=d42965d2d50a7c50ae1c339a455d666f}{%
            family={Wu},
@@ -378,14 +386,21 @@
       \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2504.09849}
-      \field{title}{{CKMImageNet}: A Dataset for {AI}-Based Channel Knowledge Map Towards Environment-Aware Communication and Sensing}
+      \field{journaltitle}{IEEE Transactions on Communications}
+      \field{number}{12}
+      \field{title}{{CKMImageNet}: A Dataset for {AI}-Based Channel Knowledge Map Toward Environment-Aware Communication and Sensing}
+      \field{volume}{73}
       \field{year}{2025}
+      \field{pages}{14430\bibrangedash 14443}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1109/TCOMM.2025.3615778
+      \endverb
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2504.09849
+      \verb https://doi.org/10.1109/TCOMM.2025.3615778
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2504.09849
+      \verb https://doi.org/10.1109/TCOMM.2025.3615778
       \endverb
     \endentry
     \entry{rappaport}{book}{}{}
@@ -946,7 +961,7 @@
       \verb https://doi.org/10.1109/ICASSP49357.2023.10095257
       \endverb
     \endentry
-    \entry{rmtransformer2025}{misc}{}{}
+    \entry{rmtransformer2025}{inproceedings}{}{}
       \name{author}{4}{}{%
         {{hash=699eafbf3b489eecbb9430667614cb63}{%
            family={Li},
@@ -982,14 +997,19 @@
       \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2501.05190}
+      \field{booktitle}{2025 {IEEE} 101st Vehicular Technology Conference ({VTC2025-Spring})}
       \field{title}{{RMTransformer}: Accurate Radio Map Construction and Coverage Prediction}
       \field{year}{2025}
+      \field{pages}{1\bibrangedash 5}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1109/VTC2025-Spring65109.2025.11174709
+      \endverb
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2501.05190
+      \verb https://doi.org/10.1109/VTC2025-Spring65109.2025.11174709
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2501.05190
+      \verb https://doi.org/10.1109/VTC2025-Spring65109.2025.11174709
       \endverb
     \endentry
     \entry{wicopg2025}{misc}{}{}
@@ -1104,7 +1124,7 @@
       \verb https://arxiv.org/abs/2602.22231
       \endverb
     \endentry
-    \entry{radiolam2025}{misc}{}{}
+    \entry{radiolam2025}{article}{}{}
       \name{author}{5}{}{%
         {{hash=5b9a54b9d83697231299711961622ab8}{%
            family={Liu},
@@ -1144,14 +1164,20 @@
       \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2509.11571}
-      \field{title}{A Fine-Grained {3D} Radio Map Construction Paradigm with Ultra-Low Sampling Rates by Large Generative Models}
-      \field{year}{2025}
+      \field{journaltitle}{IEEE Journal on Selected Areas in Communications}
+      \field{title}{A Fine-Grained {3D} Radio Map Construction Paradigm With Ultra-Low Sampling Rates by Large Generative Models}
+      \field{volume}{44}
+      \field{year}{2026}
+      \field{pages}{4397\bibrangedash 4413}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1109/JSAC.2026.3677149
+      \endverb
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2509.11571
+      \verb https://doi.org/10.1109/JSAC.2026.3677149
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2509.11571
+      \verb https://doi.org/10.1109/JSAC.2026.3677149
       \endverb
     \endentry
     \entry{geomDL2024}{article}{}{}
@@ -1196,7 +1222,7 @@
       \verb https://arxiv.org/abs/2403.00229
       \endverb
     \endentry
-    \entry{reveal2025}{misc}{}{}
+    \entry{reveal2025}{inproceedings}{}{}
       \name{author}{10}{}{%
         {{hash=210ab9b5099f5df35a68dc0668f9146c}{%
            family={Shahid},
@@ -1218,10 +1244,10 @@
            familyi={Z\bibinitperiod},
            given={Hongwei},
            giveni={H\bibinitperiod}}}%
-        {{hash=67d36dcf701fa8f9e6e15daa67d18ab5}{%
+        {{hash=ab3380563fbc6c90b84949989ecaa160}{%
            family={Song},
            familyi={S\bibinitperiod},
-           given={Jimming},
+           given={Jiming},
            giveni={J\bibinitperiod}}}%
         {{hash=62efe1472244874071b414cdc0006b58}{%
            family={Qiao},
@@ -1243,32 +1269,37 @@
            familyi={Z\bibinitperiod},
            given={Zhengyuan},
            giveni={Z\bibinitperiod}}}%
-        {{hash=7708c72d6f4747c2d95101378f19134e}{%
-           family={Ahmed},
+        {{hash=b0dcb71e4909e1789361f88914e3b6c1}{%
+           family={Ahmad},
            familyi={A\bibinitperiod},
            given={Arsalan},
            giveni={A\bibinitperiod}}}%
       }
       \strng{namehash}{655adcdfdb4839bef73d8fb0bc849505}
-      \strng{fullhash}{f42c998865e918cda149814a151170e3}
-      \strng{fullhashraw}{f42c998865e918cda149814a151170e3}
+      \strng{fullhash}{f47150c40f1db0752bc145f4d803251e}
+      \strng{fullhashraw}{f47150c40f1db0752bc145f4d803251e}
       \strng{bibnamehash}{655adcdfdb4839bef73d8fb0bc849505}
       \strng{authorbibnamehash}{655adcdfdb4839bef73d8fb0bc849505}
       \strng{authornamehash}{655adcdfdb4839bef73d8fb0bc849505}
-      \strng{authorfullhash}{f42c998865e918cda149814a151170e3}
-      \strng{authorfullhashraw}{f42c998865e918cda149814a151170e3}
+      \strng{authorfullhash}{f47150c40f1db0752bc145f4d803251e}
+      \strng{authorfullhashraw}{f47150c40f1db0752bc145f4d803251e}
       \field{sortinit}{3}
       \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2502.19646}
+      \field{booktitle}{2025 {IEEE} International Symposium on Dynamic Spectrum Access Networks ({DySPAN})}
       \field{title}{{ReVeal}: A Physics-Informed Neural Network for High-Fidelity Radio Environment Mapping}
       \field{year}{2025}
+      \field{pages}{1\bibrangedash 10}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1109/DYSPAN64764.2025.11115911
+      \endverb
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2502.19646
+      \verb https://doi.org/10.1109/DYSPAN64764.2025.11115911
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2502.19646
+      \verb https://doi.org/10.1109/DYSPAN64764.2025.11115911
       \endverb
     \endentry
     \entry{huang2025a2gtransformer}{article}{}{}
@@ -1476,7 +1507,7 @@
       \verb https://dspace.networks.imdea.org/handle/20.500.12761/886
       \endverb
     \endentry
-    \entry{lee2024timevarying}{misc}{}{}
+    \entry{lee2024timevarying}{inproceedings}{}{}
       \name{author}{3}{}{%
         {{hash=d21894888fa862d57bbf71634e3f83bb}{%
            family={Lee},
@@ -1506,17 +1537,19 @@
       \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2405.08199}
+      \field{booktitle}{2024 {IEEE} 100th Vehicular Technology Conference ({VTC2024-Fall})}
       \field{title}{Modeling of Time-varying Wireless Communication Channel with Fading and Shadowing}
       \field{year}{2024}
+      \field{pages}{1\bibrangedash 6}
+      \range{pages}{6}
       \verb{doi}
-      \verb 10.48550/arXiv.2405.08199
+      \verb 10.1109/VTC2024-Fall63153.2024.10757531
       \endverb
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2405.08199
+      \verb https://doi.org/10.1109/VTC2024-Fall63153.2024.10757531
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2405.08199
+      \verb https://doi.org/10.1109/VTC2024-Fall63153.2024.10757531
       \endverb
     \endentry
     \entry{radiodiff2025}{article}{}{}
@@ -1746,7 +1779,7 @@
       \verb https://arxiv.org/abs/2511.05522
       \endverb
     \endentry
-    \entry{gao2026}{misc}{}{}
+    \entry{gao2026}{article}{}{}
       \name{author}{7}{}{%
         {{hash=a85dcf731e772b177341998a236d587a}{%
            family={Gao},
@@ -1796,17 +1829,22 @@
       \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2601.08436}
-      \field{title}{Effective Outdoor Pathloss Prediction: A Multi-Layer Segmentation Approach with Weighting Map}
+      \field{journaltitle}{IEEE Transactions on Vehicular Technology}
+      \field{title}{Effective Outdoor Pathloss Prediction: A Multi-Layer Segmentation Approach With Weighting Map}
       \field{year}{2026}
+      \field{pages}{1\bibrangedash 6}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1109/TVT.2026.3658966
+      \endverb
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2601.08436
+      \verb https://doi.org/10.1109/TVT.2026.3658966
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2601.08436
+      \verb https://doi.org/10.1109/TVT.2026.3658966
       \endverb
     \endentry
-    \entry{tarhouni2025}{misc}{}{}
+    \entry{tarhouni2025}{article}{}{}
       \name{author}{3}{}{%
         {{hash=ba1b71cda94ae3b9531fc418d2ba87cb}{%
            family={Tarhouni},
@@ -1836,17 +1874,22 @@
       \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2510.00696}
+      \field{journaltitle}{IEEE Transactions on Vehicular Technology}
       \field{title}{Machine Learning-based Path Loss Prediction in Suburban Environment in the Sub-6 {GHz} Band}
       \field{year}{2025}
+      \field{pages}{1\bibrangedash 11}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1109/TVT.2025.3633604
+      \endverb
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2510.00696
+      \verb https://doi.org/10.1109/TVT.2025.3633604
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2510.00696
+      \verb https://doi.org/10.1109/TVT.2025.3633604
       \endverb
     \endentry
-    \entry{pathfinder2025}{misc}{}{}
+    \entry{pathfinder2025}{article}{}{}
       \name{author}{6}{}{%
         {{hash=c350020733bafeaf624830fa4c7a5e54}{%
            family={Zhong},
@@ -1891,17 +1934,23 @@
       \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2512.14150}
+      \field{journaltitle}{Pattern Recognition}
       \field{title}{{PathFinder}: Advancing Path Loss Prediction for Single-to-Multi-Transmitter Scenario}
-      \field{year}{2025}
+      \field{volume}{179}
+      \field{year}{2026}
+      \field{pages}{113725}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1016/j.patcog.2026.113725
+      \endverb
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2512.14150
+      \verb https://doi.org/10.1016/j.patcog.2026.113725
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2512.14150
+      \verb https://doi.org/10.1016/j.patcog.2026.113725
       \endverb
     \endentry
-    \entry{icassp2025indoor}{misc}{}{}
+    \entry{icassp2025indoor}{inproceedings}{}{}
       \name{author}{5}{}{%
         {{hash=36c655549b661912c23fffc5701674cd}{%
            family={Bakirtzis},
@@ -1941,14 +1990,19 @@
       \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2501.13698}
+      \field{booktitle}{{ICASSP} 2025 - 2025 {IEEE} International Conference on Acoustics, Speech and Signal Processing ({ICASSP})}
       \field{title}{The First Indoor Pathloss Radio Map Prediction Challenge}
       \field{year}{2025}
+      \field{pages}{1\bibrangedash 2}
+      \range{pages}{2}
+      \verb{doi}
+      \verb 10.1109/ICASSP49660.2025.10889381
+      \endverb
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2501.13698
+      \verb https://doi.org/10.1109/ICASSP49660.2025.10889381
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2501.13698
+      \verb https://doi.org/10.1109/ICASSP49660.2025.10889381
       \endverb
     \endentry
     \entry{indoor2025results}{online}{}{}
@@ -2128,7 +2182,7 @@
       \verb https://arxiv.org/abs/2501.16023
       \endverb
     \endentry
-    \entry{radiopit2025}{misc}{}{}
+    \entry{radiopit2025}{inproceedings}{}{}
       \name{author}{5}{}{%
         {{hash=23a6bd250d1e7fa3bfcfd32b802f9c6c}{%
            family={Sun},
@@ -2169,14 +2223,19 @@
       \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2512.01451}
+      \field{booktitle}{2025 30th Asia-Pacific Conference on Communications ({APCC})}
       \field{title}{{RadioPiT}: Radio Map Generation with Pixel Transformer Driven by Ultra-Sparse Real-World Data}
       \field{year}{2025}
+      \field{pages}{1\bibrangedash 6}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.23919/APCC64555.2025.11279807
+      \endverb
       \verb{urlraw}
-      \verb https://arxiv.org/abs/2512.01451
+      \verb https://doi.org/10.23919/APCC64555.2025.11279807
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/2512.01451
+      \verb https://doi.org/10.23919/APCC64555.2025.11279807
       \endverb
     \endentry
     \entry{pmnet2023}{inproceedings}{}{}
@@ -2433,59 +2492,71 @@
       \verb 10.3390/app11156690
       \endverb
     \endentry
-    \entry{cai2019}{misc}{}{}
-      \name{author}{6}{}{%
-        {{hash=89eb62d21c9a7b2dbf67b6cb00cd59a1}{%
+    \entry{cai2019}{article}{}{}
+      \name{author}{7}{}{%
+        {{hash=0b750ff9b4a68075c27f87258582c764}{%
            family={Cai},
            familyi={C\bibinitperiod},
-           given={X.},
+           given={Xuesong},
            giveni={X\bibinitperiod}}}%
-        {{hash=dc0160ea7739e57b539655b2e465fc77}{%
+        {{hash=6f236af2b4e3a0b82365025da91698fc}{%
            family={Rodríguez-Piñeiro},
            familyi={R\bibinithyphendelim P\bibinitperiod},
-           given={J.},
+           given={José},
            giveni={J\bibinitperiod}}}%
-        {{hash=40ea378bb90967f5c7e697d545f01107}{%
+        {{hash=d000d241ba968e5d04e1af15524091c0}{%
            family={Yin},
            familyi={Y\bibinitperiod},
-           given={X.},
+           given={Xuefeng},
            giveni={X\bibinitperiod}}}%
-        {{hash=d4fc5c46611eed5648557ad2b085bc3b}{%
+        {{hash=fc81f15d7183c7f69708282d46d8a776}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Nanxin},
+           giveni={N\bibinitperiod}}}%
+        {{hash=871a30cc70f411906df29414b5f6da03}{%
            family={Ai},
            familyi={A\bibinitperiod},
-           given={B.},
+           given={Bo},
            giveni={B\bibinitperiod}}}%
-        {{hash=b54f97ae92e35477392562e4958572ea}{%
+        {{hash=f87a82c91ef1c6e6c91c8b01c978dc35}{%
            family={Pedersen},
            familyi={P\bibinitperiod},
-           given={G.\bibnamedelimi F.},
+           given={Gert\bibnamedelima Fr{ø}lund},
            giveni={G\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
-        {{hash=62af1c83fc1606e9d8c2d447a46ff960}{%
+        {{hash=6e417f33923f876fe0ff5673a0c40d24}{%
            family={Yuste},
            familyi={Y\bibinitperiod},
-           given={A.\bibnamedelimi Perez},
+           given={Antonio\bibnamedelima Pérez},
            giveni={A\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
       }
-      \strng{namehash}{194ff237fd5af8600b8ad2d27fa32098}
-      \strng{fullhash}{9f51553970a4413e4f2e13c613e43304}
-      \strng{fullhashraw}{9f51553970a4413e4f2e13c613e43304}
-      \strng{bibnamehash}{194ff237fd5af8600b8ad2d27fa32098}
-      \strng{authorbibnamehash}{194ff237fd5af8600b8ad2d27fa32098}
-      \strng{authornamehash}{194ff237fd5af8600b8ad2d27fa32098}
-      \strng{authorfullhash}{9f51553970a4413e4f2e13c613e43304}
-      \strng{authorfullhashraw}{9f51553970a4413e4f2e13c613e43304}
+      \strng{namehash}{68298f4e8fd12a6b1f9a7864bd4c4134}
+      \strng{fullhash}{598d00d446381d2c7090bd360cd56208}
+      \strng{fullhashraw}{598d00d446381d2c7090bd360cd56208}
+      \strng{bibnamehash}{68298f4e8fd12a6b1f9a7864bd4c4134}
+      \strng{authorbibnamehash}{68298f4e8fd12a6b1f9a7864bd4c4134}
+      \strng{authornamehash}{68298f4e8fd12a6b1f9a7864bd4c4134}
+      \strng{authorfullhash}{598d00d446381d2c7090bd360cd56208}
+      \strng{authorfullhashraw}{598d00d446381d2c7090bd360cd56208}
       \field{sortinit}{1}
       \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:1901.07930}
+      \field{journaltitle}{IEEE Transactions on Vehicular Technology}
+      \field{number}{2}
       \field{title}{An Empirical Air-to-Ground Channel Model Based on Passive Measurements in {LTE}}
+      \field{volume}{68}
       \field{year}{2019}
+      \field{pages}{1140\bibrangedash 1154}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1109/TVT.2018.2886961
+      \endverb
       \verb{urlraw}
-      \verb https://arxiv.org/abs/1901.07930
+      \verb https://doi.org/10.1109/TVT.2018.2886961
       \endverb
       \verb{url}
-      \verb https://arxiv.org/abs/1901.07930
+      \verb https://doi.org/10.1109/TVT.2018.2886961
       \endverb
     \endentry
     \entry{izydorczyk2019}{inproceedings}{}{}

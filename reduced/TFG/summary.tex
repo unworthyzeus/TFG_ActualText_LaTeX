@@ -78,7 +78,7 @@ The final system is neither a pure prior nor a pure neural network: the final
 model adds deep learning as a multi task residual corrector conditioned on urban
 geometry, UAV height, LoS/NLoS masks, and prior maps. On the final 14-city
 unseen test split, the frozen priors achieve 1.94 dB, 28.10 ns, and 13.74-degree
-RMSE, while the final prior anchored residual GMM head model improves them to
+RMSE, while \textsc{HARP-Net CKM} improves them to
 1.65 dB, 26.56 ns, and 11.39-degree RMSE. This makes the priors a strong
 baseline in their own right, not just an intermediate step: they concentrate the
 calibration over urban-density, building-height, visibility, and antenna height
