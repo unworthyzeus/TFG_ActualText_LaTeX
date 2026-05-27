@@ -452,6 +452,16 @@ the local default checkpoint path or an explicit \texttt{--checkpoint} path,
 while the public source repository remains small enough to clone and inspect
 normally.
 
+In the public repository, this checkpoint is distributed through Git LFS. After
+cloning, users should run \texttt{git lfs pull} if
+\texttt{models/best\_model.pt} has not been materialized automatically. The
+published checkpoint is 322,553,518 bytes, with SHA256:
+{\scriptsize
+\begin{verbatim}
+0C245DE7D7D090D12563D17DC5C3D2E1DE9ED96C32DEBC8461E15CAC7A7C9E25
+\end{verbatim}
+}
+
 \section{Interface overview}
 
 Figure~\ref{fig:ckm_generator_controls} shows the main controls exposed by the

@@ -1474,15 +1474,12 @@ This is a single square root over all pooled valid pixels, not an average of
 per sample RMSEs. Units are dB (path loss), ns (delay spread), and
 degrees (angular spread), all in the native non-transformed domain.
 
-\subsection{Observed path loss prior results}
+\subsection{Hybrid path loss prior assembly}
 
-The headline path loss numbers for the calibrated prior are reported in the
-results chapter (LoS waterfall in Table~\ref{tab:try78_los_waterfall}): the
-enhanced LoS two ray prior $\mathrm{PL}_{\mathrm{LoS}}$ reaches
-\SI{1.7516}{dB}
-pixel weighted RMSE on LoS pixels, the regime wise OLS NLoS head reaches
-\SI{3.3967}{dB} on NLoS pixels, and the combined prior reaches
-\SI{1.9246}{dB} overall on the held out validation+test split.
+The calibrated LoS and NLoS branches are assembled into one frozen channel
+attenuation prior by switching on the LoS mask. The quantitative audit of this
+prior is reported in Chapter~\ref{chap:results}; this subsection only records
+the final assembly used as input to \textsc{HARP-Net CKM}.
 
 \begin{figure}[H]
 \centering

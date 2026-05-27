@@ -102,7 +102,7 @@
 \contentsline {paragraph}{How $\textbf {w}^{78}_{r}$ is fitted.}{59}{paragraph*.85}%
 \contentsline {subsubsection}{Stage 5: region replacement and clipping}{60}{subsubsection*.86}%
 \contentsline {subsection}{\numberline {3.4.4}Evaluation metric: pixel weighted RMSE}{60}{subsection.3.4.4}%
-\contentsline {subsection}{\numberline {3.4.5}Observed path loss prior results}{60}{subsection.3.4.5}%
+\contentsline {subsection}{\numberline {3.4.5}Hybrid path loss prior assembly}{60}{subsection.3.4.5}%
 \contentsline {section}{\numberline {3.5}Delay and Angular Spread Prior and Residual Prediction}{61}{section.3.5}%
 \contentsline {subsection}{\numberline {3.5.1}Physical motivation for log domain modeling}{62}{subsection.3.5.1}%
 \contentsline {subsection}{\numberline {3.5.2}Pixel wise notation for the spread prior fit}{62}{subsection.3.5.2}%
@@ -117,35 +117,40 @@
 \contentsline {subsubsection}{Stage 3: regime wise ridge regression}{66}{subsubsection*.98}%
 \contentsline {paragraph}{Fallback hierarchy.}{67}{paragraph*.99}%
 \contentsline {subsubsection}{Stage 4: inverse transform and clipping}{67}{subsubsection*.100}%
-\contentsline {subsection}{\numberline {3.5.5}Spread prior results}{68}{subsection.3.5.5}%
-\contentsline {section}{\numberline {3.6}Training and Evaluation Protocol}{69}{section.3.6}%
-\contentsline {subsection}{\numberline {3.6.1}Experimental protocol and reporting status}{70}{subsection.3.6.1}%
-\contentsline {subsection}{\numberline {3.6.2}\textsc {HARP-Net CKM} Residual Head}{71}{subsection.3.6.2}%
-\contentsline {subsection}{\numberline {3.6.3}Architecture: Shared UNet with FiLM}{72}{subsection.3.6.3}%
-\contentsline {paragraph}{Detailed sinusoidal height embedding and FiLM path.}{73}{paragraph*.105}%
-\contentsline {paragraph}{Detailed \textsc {HARP-Net CKM} residual head.}{73}{paragraph*.107}%
-\contentsline {subsection}{\numberline {3.6.4}Composite Optimization Objective}{75}{subsection.3.6.4}%
-\contentsline {paragraph}{Map negative log likelihood.}{76}{paragraph*.110}%
-\contentsline {paragraph}{Distributional KL term.}{76}{paragraph*.111}%
-\contentsline {paragraph}{Moment matching.}{76}{paragraph*.112}%
-\contentsline {paragraph}{Anchor and guard terms.}{76}{paragraph*.113}%
-\contentsline {paragraph}{Outlier budget and deterministic losses.}{76}{paragraph*.114}%
-\contentsline {chapter}{\numberline {4}Results}{78}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Final test contract and frozen priors}{78}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}LoS path loss prior component comparison}{78}{subsection.4.1.1}%
-\contentsline {section}{\numberline {4.2}Channel Attenuation Results}{79}{section.4.2}%
-\contentsline {paragraph}{Split comparability note.}{79}{paragraph*.117}%
-\contentsline {subsection}{\numberline {4.2.1}RMSE by Transmitter Height}{80}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Path loss prior by topology class}{81}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Channel attenuation: prior versus \textsc {HARP-Net CKM}}{81}{subsection.4.2.3}%
-\contentsline {section}{\numberline {4.3}Angular Spread Results}{82}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Delay Spread Results}{83}{section.4.4}%
-\contentsline {section}{\numberline {4.5}State of the Art Context and Runtime}{84}{section.4.5}%
-\contentsline {subsection}{\numberline {4.5.1}Target vs final result}{84}{subsection.4.5.1}%
-\contentsline {subsection}{\numberline {4.5.2}Comparison with closest state of the art metrics}{84}{subsection.4.5.2}%
-\contentsline {subsection}{\numberline {4.5.3}Inference time sanity check}{84}{subsection.4.5.3}%
-\contentsline {section}{\numberline {4.6}Qualitative Analysis}{87}{section.4.6}%
-\contentsline {section}{\numberline {4.7}Limitations}{87}{section.4.7}%
+\contentsline {subsection}{\numberline {3.5.5}Delay and angular spread prior pipeline}{68}{subsection.3.5.5}%
+\contentsline {section}{\numberline {3.6}Training and Evaluation Protocol}{68}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Experimental protocol and reporting status}{69}{subsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.6.2}\textsc {HARP-Net CKM} Residual Head}{70}{subsection.3.6.2}%
+\contentsline {subsection}{\numberline {3.6.3}Architecture: Shared UNet with FiLM}{71}{subsection.3.6.3}%
+\contentsline {paragraph}{Detailed sinusoidal height embedding and FiLM path.}{72}{paragraph*.103}%
+\contentsline {paragraph}{Detailed \textsc {HARP-Net CKM} residual head.}{72}{paragraph*.105}%
+\contentsline {subsection}{\numberline {3.6.4}Composite Optimization Objective}{74}{subsection.3.6.4}%
+\contentsline {paragraph}{Map negative log likelihood.}{75}{paragraph*.108}%
+\contentsline {paragraph}{Distributional KL term.}{75}{paragraph*.109}%
+\contentsline {paragraph}{Moment matching.}{75}{paragraph*.110}%
+\contentsline {paragraph}{Anchor and guard terms.}{75}{paragraph*.111}%
+\contentsline {paragraph}{Outlier budget and deterministic losses.}{75}{paragraph*.112}%
+\contentsline {chapter}{\numberline {4}Results}{77}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Standalone Frozen Prior Results}{77}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Channel attenuation prior component comparison}{77}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Channel attenuation prior summary}{78}{subsection.4.1.2}%
+\contentsline {paragraph}{Split comparability note.}{78}{paragraph*.115}%
+\contentsline {subsection}{\numberline {4.1.3}Delay and angular spread prior summary}{78}{subsection.4.1.3}%
+\contentsline {subsection}{\numberline {4.1.4}Prior RMSE by transmitter height}{79}{subsection.4.1.4}%
+\contentsline {subsection}{\numberline {4.1.5}Path loss prior by topology class}{80}{subsection.4.1.5}%
+\contentsline {subsection}{\numberline {4.1.6}Spread priors by topology class}{81}{subsection.4.1.6}%
+\contentsline {section}{\numberline {4.2}\textsc {HARP-Net CKM} Results Against Frozen Priors}{82}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Final test contract and headline results}{82}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Channel attenuation result}{82}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Angular spread result}{83}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}Delay spread result}{83}{subsection.4.2.4}%
+\contentsline {subsection}{\numberline {4.2.5}Validation to test check}{83}{subsection.4.2.5}%
+\contentsline {section}{\numberline {4.3}State of the Art Context and Runtime}{84}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Target vs final result}{84}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Comparison with closest state of the art metrics}{84}{subsection.4.3.2}%
+\contentsline {paragraph}{Inference time sanity check.}{86}{paragraph*.128}%
+\contentsline {section}{\numberline {4.4}Qualitative Analysis}{87}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Limitations}{87}{section.4.5}%
 \contentsline {chapter}{\numberline {5}Sustainability Analysis and Ethical Implications}{90}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Sustainability matrix}{90}{section.5.1}%
 \contentsline {section}{\numberline {5.2}Environmental impact}{90}{section.5.2}%
@@ -159,9 +164,9 @@
 \contentsline {subsection}{\numberline {6.1.4}Practical implications and scope}{98}{subsection.6.1.4}%
 \contentsline {subsection}{\numberline {6.1.5}Negative results}{98}{subsection.6.1.5}%
 \contentsline {section}{\numberline {6.2}Future Directions}{99}{section.6.2}%
-\contentsline {paragraph}{Short-medium term.}{99}{paragraph*.133}%
-\contentsline {paragraph}{Medium to long term.}{99}{paragraph*.134}%
-\contentsline {chapter}{Bibliography}{100}{chapter*.135}%
+\contentsline {paragraph}{Short-medium term.}{99}{paragraph*.134}%
+\contentsline {paragraph}{Medium to long term.}{99}{paragraph*.135}%
+\contentsline {chapter}{Bibliography}{100}{chapter*.136}%
 \contentsline {chapter}{\numberline {A}Detailed Attempt Log}{105}{appendix.A}%
 \contentsline {section}{\numberline {A.1}How to read the attempt numbers}{105}{section.A.1}%
 \contentsline {section}{\numberline {A.2}Try-number map}{106}{section.A.2}%
@@ -179,7 +184,7 @@
 \contentsline {chapter}{\numberline {C}CKM Generator Interface and Reproducibility Tool}{115}{appendix.C}%
 \contentsline {section}{\numberline {C.1}Public source record and checkpoint artifact}{115}{section.C.1}%
 \contentsline {section}{\numberline {C.2}Interface overview}{115}{section.C.2}%
-\contentsline {section}{\numberline {C.3}How the tool is run}{115}{section.C.3}%
+\contentsline {section}{\numberline {C.3}How the tool is run}{117}{section.C.3}%
 \contentsline {section}{\numberline {C.4}Accepted inputs}{117}{section.C.4}%
 \contentsline {section}{\numberline {C.5}Configurable controls}{118}{section.C.5}%
 \contentsline {section}{\numberline {C.6}Image scaling and raw numeric data}{118}{section.C.6}%

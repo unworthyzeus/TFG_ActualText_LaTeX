@@ -1,15 +1,18 @@
 \chapter{Results}
 \label{chap:results}
 
-This chapter reports the final test results of \textsc{HARP-Net CKM}, the
-final residual CKM model used in the reduced thesis. The standalone
-path loss prior audit uses the city holdout validation+test pool: 5340 samples
-from 29 unseen cities. The selected final model is then evaluated on the final
-2590-sample, 14-city test split. Two path loss prior numbers therefore appear
-in this chapter: \SI{1.9246}{dB} is the standalone calibrated hybrid prior on
-the held out validation+test pool, whereas \SI{1.9383}{dB} is the frozen
-path loss prior baseline used by \textsc{HARP-Net CKM} on the final 14-city
-test split. All final model-versus-prior comparisons use the latter.
+This chapter is organized in two blocks. First, it reports the frozen prior
+results on their own: the channel attenuation prior, the delay spread prior,
+and the angular spread prior. Second, it reports the final
+\textsc{HARP-Net CKM} residual model against those frozen priors on the unseen
+test cities. The standalone path loss prior audit uses the city holdout
+validation+test pool: 5340 samples from 29 unseen cities. The selected final
+model is then evaluated on the final 2590-sample, 14-city test split. Two path
+loss prior numbers therefore appear in this chapter: \SI{1.9246}{dB} is the
+standalone calibrated hybrid prior on the held out validation+test pool,
+whereas \SI{1.9383}{dB} is the frozen path loss prior baseline used by
+\textsc{HARP-Net CKM} on the final 14-city test split. All final
+model versus prior comparisons use the latter.
 
 The prior is not a weak reference included only for comparison. It is one of
 the central results of the thesis: a strong, train calibrated baseline that
@@ -17,7 +20,7 @@ absorbs the stable part of the map before the residual model is asked to solve
 the harder local errors. Appendix~\ref{app:detailed_attempt_log} keeps the development history and negative
 attempts; this chapter focuses on the frozen priors and final test evaluation.
 
-\section{Final test contract and frozen priors}
+\section{Standalone Frozen Prior Results}
 
 The final path loss prior is the clearest evidence that the prior is a strong
 path loss baseline in its own right. The enhanced two ray LoS model
@@ -25,7 +28,7 @@ reduced LoS RMSE from roughly \SI{3.95}{dB} with FSPL to
 \SI{1.75}{dB}. The final hybrid prior reached \SI{1.9246}{dB} overall under the
 pixel weighted metric on the held out validation+test pool.
 
-\subsection{LoS path loss prior component comparison}
+\subsection{Channel attenuation prior component comparison}
 
 The LoS branch of the final path loss prior is compared through three
 increasingly physical component variants fitted on the same city holdout split,
@@ -62,7 +65,7 @@ a better fit numerically; it is a physically motivated explanation of the
 dominant LoS residual shape in CKM, and it is why the final model uses the two ray
 output directly as a frozen anchor rather than re-learning it from pixels.
 
-\section{Channel Attenuation Results}
+\subsection{Channel attenuation prior summary}
 
 \paragraph{Split comparability note.}
 The final priors and \textsc{HARP-Net CKM} use the same \texttt{city\_holdout}
@@ -98,6 +101,8 @@ Overall & 1.9246 & dB \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsection{Delay and angular spread prior summary}
 
 The final spread priors showed that a large part of the spread targets can also be explained by
 geometry, building layout, and calibration without a neural network. The fitted
@@ -139,10 +144,10 @@ Angular spread ($^\circ$) & 13.74 & 15.28 & 8.66 \\
 \end{table}
 
 
-\subsection{RMSE by Transmitter Height}
+\subsection{Prior RMSE by transmitter height}
 
 The CKM dataset covers stored transmitter heights from about \SI{12}{m} to almost
-\SI{478}{m}, while the closest nominal beta law has support up to
+\SI{478}{m}, while the generator distribution has support up to
 \SI{500}{m}. The absence of samples above \SI{478}{m} is statistically normal
 for this finite draw, because the expected count above that height is only
 0.52. Therefore the conditional error at a single aggregate RMSE can hide
@@ -263,7 +268,65 @@ thesis quantitative. The train calibrated prior is not only strong on average,
 but also auditable by city type and LoS/NLoS case. The longer comparison with
 the appendix diagnostic models is kept in Appendix~\ref{app:detailed_attempt_log}.
 
-\subsection{Channel attenuation: prior versus \textsc{HARP-Net CKM}}
+\subsection{Spread priors by topology class}
+
+The delay spread and angular spread priors are also topology dependent. These
+tables use the same city holdout test contract as Table~\ref{tab:try79_results}
+and keep the dense pixel weighted metric separated by visibility regime.
+
+\begin{table}[!htbp]
+\centering
+\caption{Delay spread prior RMSE by topology class on the city holdout test split.}
+\label{tab:ds_topo}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrr}
+\toprule
+Topology class & Overall & LoS & NLoS \\
+\midrule
+open sparse lowrise   & 16.88 & 17.01 & 15.43 \\
+open sparse vertical  & 40.84 & 40.44 & 44.08 \\
+mixed compact lowrise & 17.27 & 16.65 & 18.91 \\
+mixed compact midrise & 37.88 & 38.26 & 37.25 \\
+dense block midrise   & 26.90 & 29.00 & 25.02 \\
+dense block highrise  & 43.52 & 40.16 & 45.08 \\
+\midrule
+\textbf{Overall}      & \textbf{28.10} & \textbf{27.49} & \textbf{29.62} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\caption{Angular spread prior RMSE by topology class on the city holdout test split.}
+\label{tab:as_topo}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrr}
+\toprule
+Topology class & Overall & LoS & NLoS \\
+\midrule
+open sparse lowrise   & 10.01 & 10.30 & 6.33 \\
+open sparse vertical  & 12.70 & 12.98 & 9.97 \\
+mixed compact lowrise & 14.37 & 15.99 & 8.17 \\
+mixed compact midrise & 15.26 & 17.85 & 9.57 \\
+dense block midrise   & 15.53 & 21.20 & 8.17 \\
+dense block highrise  & 14.64 & 21.33 & 9.78 \\
+\midrule
+\textbf{Overall}      & \textbf{13.74} & \textbf{15.28} & \textbf{8.66} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The spread priors show a different topology pattern from channel attenuation.
+Delay spread is hardest in open sparse vertical and dense block highrise
+settings, while angular spread is dominated by the LoS rows of denser classes.
+This supports the final design choice to keep separate residual outputs for the
+three targets instead of treating all CKM maps as one generic image regression
+problem.
+
+\clearpage
+\section{\textsc{HARP-Net CKM} Results Against Frozen Priors}
+
+\subsection{Final test contract and headline results}
 
 \textsc{HARP-Net CKM} freezes the attenuation and spread priors and learns a bounded residual correction
 for the three radio maps. It is tested on the city holdout test split with
@@ -335,6 +398,8 @@ Angular spread & NLoS & 8.4424 & 8.6614 & -0.2191 \\
 \end{tabular}
 \end{table}
 
+\subsection{Channel attenuation result}
+
 Channel attenuation is the cleanest final result because both RMSE and MAE improve over
 the frozen prior on unseen test cities. Overall RMSE drops from
 \SI{1.9383}{dB} to \SI{1.6519}{dB}, while MAE drops from \SI{1.2319}{dB} to
@@ -343,7 +408,7 @@ Table~\ref{tab:try80_final_test_los_nlos} show that the improvement is not
 coming from only one visibility case: LoS improves by \SI{0.2844}{dB} RMSE and
 NLoS by \SI{0.3661}{dB}.
 
-\section{Angular Spread Results}
+\subsection{Angular spread result}
 
 For angular spread, the frozen prior already meets the original project target,
 but \textsc{HARP-Net CKM} further reduces RMSE on unseen test cities. Overall
@@ -359,7 +424,7 @@ goals, but not the same dense map input, transmitter height protocol, or held ou
 evaluation. For that reason, the angular spread result is compared mainly
 against the frozen prior and the original thesis target.
 
-\section{Delay Spread Results}
+\subsection{Delay spread result}
 
 Delay spread also improves in RMSE, although it is the only output where RMSE
 and MAE move in opposite directions. Overall RMSE drops from \SI{28.1023}{ns}
@@ -374,6 +439,8 @@ city holdout delay spread map task. The nearest references predict scalar
 channel characteristics or use different simulation contracts, so the main
 comparison is the frozen delay spread prior plus the original
 \SI{50}{ns} project target.
+
+\subsection{Validation to test check}
 
 The validation metrics are not the final test claim. They evaluate the same
 selected checkpoint on the validation cities. The same selected model is then
@@ -599,7 +666,7 @@ delay spread and angular spread RMSE on unseen CKM cities, improves the closest
 same protocol spread baselines, and keeps the stricter ground mask, LoS/NLoS,
 and continuous-height protocol visible.
 
-\subsection{Inference time sanity check}
+\paragraph{Inference time sanity check.}
 
 The secondary runtime objective was checked on the Barcelona geometry supplied
 with the MATLAB ray tracing script. The benchmark uses the same local laptop as

@@ -440,47 +440,11 @@ limit is deliberate: LoS angular spread is dominated by the direct path and is
 physically closer to a near zero spike plus small reflections, whereas NLoS
 angular spread can occupy a much wider support.
 
-\subsection{Spread prior results}
+\subsection{Delay and angular spread prior pipeline}
 
-\begin{table}[H]
-\centering
-\caption{Delay spread: calibrated test RMSE (ns) by topology class.}
-\label{tab:ds_topo}
-\begin{tabular}{lccc}
-\toprule
-Topology class & Overall & LoS & NLoS \\
-\midrule
-open\_sparse\_lowrise   & 16.88 & 17.01 & 15.43 \\
-open\_sparse\_vertical  & 40.84 & 40.44 & 44.08 \\
-mixed\_compact\_lowrise & 17.27 & 16.65 & 18.91 \\
-mixed\_compact\_midrise & 37.88 & 38.26 & 37.25 \\
-dense\_block\_midrise   & 26.90 & 29.00 & 25.02 \\
-dense\_block\_highrise  & 43.52 & 40.16 & 45.08 \\
-\midrule
-\textbf{Overall}        & \textbf{28.10} & \textbf{27.49} & \textbf{29.62} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Angular spread: calibrated test RMSE ($^\circ$) by topology class.}
-\label{tab:as_topo}
-\begin{tabular}{lccc}
-\toprule
-Topology class & Overall & LoS & NLoS \\
-\midrule
-open\_sparse\_lowrise   & 10.01 & 10.30 & 6.33 \\
-open\_sparse\_vertical  & 12.70 & 12.98 & 9.97 \\
-mixed\_compact\_lowrise & 14.37 & 15.99 & 8.17 \\
-mixed\_compact\_midrise & 15.26 & 17.85 & 9.57 \\
-dense\_block\_midrise   & 15.53 & 21.20 & 8.17 \\
-dense\_block\_highrise  & 14.64 & 21.33 & 9.78 \\
-\midrule
-\textbf{Overall}        & \textbf{13.74} & \textbf{15.28} & \textbf{8.66} \\
-\bottomrule
-\end{tabular}
-\end{table}
+The topology class RMSE tables for the calibrated spread priors are reported in
+Chapter~\ref{chap:results}. This subsection keeps the final pipeline diagram
+and the method level data flow used by both spread modalities.
 
 \begin{figure}[H]
 \centering
