@@ -448,28 +448,35 @@ and the method level data flow used by both spread modalities.
 
 \begin{figure}[H]
 \centering
+\resizebox{0.98\textwidth}{!}{%
 \begin{tikzpicture}[
     >=stealth,
-    node distance=1.5cm and 2cm,
-    block/.style={draw, thick, fill=blue!10, rectangle, rounded corners, minimum width=4cm, minimum height=1cm, align=center},
-    input/.style={draw, thick, fill=gray!20, rectangle, minimum width=2.5cm, minimum height=0.8cm, align=center},
-    branch/.style={draw, thick, fill=orange!10, rectangle, rounded corners, minimum width=3cm, minimum height=1cm, align=center}
+    font=\scriptsize,
+    block/.style={draw, thick, fill=blue!10, rectangle, rounded corners,
+      text width=2.55cm, minimum height=1.0cm, align=center},
+    input/.style={block, fill=gray!20},
+    branch/.style={block, fill=orange!10},
+    note/.style={draw, dashed, fill=yellow!10, rounded corners,
+      text width=3.0cm, align=left, font=\scriptsize},
+    arr/.style={->, thick}
 ]
-\node[input] (inputs) {Geometry, masks \& multiscale morphology \\
-$d_{2D}, \theta, h_{\mathrm{tx}}, \rho_{15/41}, h_{15/41}, n_{15/41}, b_{41}, c_{41}, t_{41}$};
-\node[block, below=1.5cm of inputs] (raw_prior) {Stage 1: Raw Log Prior \\ $z^{(0)}(x)$};
-\node[block, below=1.5cm of raw_prior] (features) {Stage 2: Feature Vector \\ $\textbf{x}_{79}(x) \in \mathbb{R}^{23}$};
-\node[block, below=1.5cm of features] (ridge) {Stage 3: Regime wise Ridge Regression \\ $\hat z(x) = \textbf{x}_{79}(x)^\top \hat{\textbf{w}}^{79}_{r}$};
-\node[branch, below=1.5cm of ridge] (invert) {Stage 4: Inverse Transform \\ $\hat y(x) = \exp(\hat z(x)) - 1$};
-\node[input, below=1.5cm of invert] (clip) {Calibrated Spread Prior \\ $\hat y(x)$ (Clipped)};
-\draw[->, thick] (inputs) -- node[right, font=\scriptsize] {shared spatial maps} (raw_prior);
-\draw[->, thick] (raw_prior) -- node[right, font=\scriptsize] {$\mathbb{R}^{H \times W}$} (features);
-\draw[->, thick] (features) -- node[right, font=\scriptsize] {$\mathbb{R}^{23 \times H \times W}$} (ridge);
-\draw[->, thick] (ridge) -- node[right, font=\scriptsize] {$\mathbb{R}^{H \times W}$} (invert);
-\draw[->, thick] (invert) -- node[right, font=\scriptsize] {$\mathbb{R}^{H \times W}$} (clip);
-\draw[->, thick, dashed] (inputs.east) -| ++(1.5,-1.5) |- (features.east);
-\node[draw, dashed, fill=yellow!10, right=1.5cm of ridge, align=left, font=\footnotesize] {Regime $r$ keys:\\1. Metric (DS/AS)\\2. Topology Class\\3. LoS / NLoS\\4. Antenna Bin};
-\end{tikzpicture}
+\node[input] (inputs) at (0,0) {Geometry, masks and morphology\\
+$d_{2D}, \theta, h_{\mathrm{tx}}, \rho, h, n$\\$b_{41}, c_{41}, t_{41}$};
+\node[block] (raw_prior) at (3.2,0) {Stage 1\\Raw log prior\\$z^{(0)}(x)$};
+\node[block] (features) at (6.4,0) {Stage 2\\Feature vector\\$\textbf{x}_{79}(x)\in\mathbb{R}^{23}$};
+\node[block] (ridge) at (9.6,0) {Stage 3\\Regime ridge\\$\hat z=\textbf{x}_{79}^{\top}\hat{\textbf{w}}^{79}_{r}$};
+\node[branch] (invert) at (12.8,0) {Stage 4\\Inverse transform\\$\hat y=\exp(\hat z)-1$};
+\node[input] (clip) at (16.0,0) {Calibrated spread prior\\$\hat y(x)$ after clipping};
+\node[note] (keys) at (9.6,-1.75) {Regime \(r\) keys:\\metric (DS/AS), topology, LoS/NLoS, antenna bin};
+\draw[arr] (inputs) -- node[above, font=\tiny] {maps} (raw_prior);
+\draw[arr] (raw_prior) -- node[above, font=\tiny] {$\mathbb{R}^{H\times W}$} (features);
+\draw[arr] (features) -- node[above, font=\tiny] {$\mathbb{R}^{23\times H\times W}$} (ridge);
+\draw[arr] (ridge) -- node[above, font=\tiny] {$\mathbb{R}^{H\times W}$} (invert);
+\draw[arr] (invert) -- node[above, font=\tiny] {$\mathbb{R}^{H\times W}$} (clip);
+\draw[arr, dashed] (keys) -- (ridge);
+\draw[arr, dashed] (inputs.south) .. controls +(1.4,-1.2) and +(-1.4,-1.2) .. (features.south);
+\end{tikzpicture}%
+}
 \caption[Pipeline for the delay and angular spread priors.]%
 {Pipeline for the delay and angular spread priors. Both spread modalities share this identical linear architecture, predicting expected spread in the log domain via regime wise ridge regression over 23 spatial and geometric features.}
 \label{fig:try79_pipeline}

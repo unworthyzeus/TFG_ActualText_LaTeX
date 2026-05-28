@@ -48,7 +48,7 @@ uses these frozen path loss and spread priors as anchors. This
 section therefore documents both the frozen prior inputs and the residual
 architecture used by the final evaluation.
 
-\subsection{\textsc{HARP-Net CKM} Residual Head}
+\subsection[HARP-Net CKM Residual Head]{\textsc{HARP-Net CKM} Residual Head}
 
 The final model introduces a joint multitask residual mixture head architecture that
 emits a \emph{Gaussian Mixture Model (GMM)}-parameterized residual head at each
@@ -444,7 +444,7 @@ f_i
 \label{fig:try80_film_detail}
 \end{figure}
 
-\paragraph{Detailed \textsc{HARP-Net CKM} residual head.}
+\paragraph{Detailed HARP-Net CKM residual head.}
 For each task
 $k$ and for each region
 $r \in \{\mathrm{LoS},\mathrm{NLoS}\}$, the model predicts a 3-component
@@ -511,7 +511,8 @@ uses the local probabilities for the deterministic output map.
 
 \end{tikzpicture}%
 }
-\caption{Detailed \textsc{HARP-Net CKM} residual head used by the final model.}
+\caption[Detailed HARP-Net CKM residual head used by the final model.]
+{Detailed \textsc{HARP-Net CKM} residual head used by the final model.}
 \label{fig:try80_gmm_detail}
 \end{figure}
 
@@ -561,7 +562,8 @@ w_k
 
 \begin{table}[!htbp]
 \centering
-\caption{Active loss settings in the \textsc{HARP-Net CKM} stages.}
+\caption[Active loss settings in the HARP-Net CKM stages.]
+{Active loss settings in the \textsc{HARP-Net CKM} stages.}
 \label{tab:try80_loss_settings}
 \scriptsize
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.22\textwidth}

@@ -1,19 +1,145 @@
 \chapter{Methodology}
 \label{chap:methodology}
 
-This chapter describes the final reproducible method. It first fixes the CKM
-dataset contract, the ground receiver mask, the city holdout split and the
-pixel weighted metrics. It then introduces the complete prediction pipeline:
-building height map and UAV transmitter height are converted into support masks and frozen
-prior maps; \textsc{HARP-Net CKM} receives those maps and predicts bounded
-residual corrections; the final outputs are channel attenuation, delay spread
-and angular spread maps. The development history that led to this choice is
-kept in Appendix~\ref{app:detailed_attempt_log}, while this chapter contains
-both the high level pipeline
-and the formula level details needed to reproduce the reported results.
+This chapter defines the reproducible prediction pipeline: the CKM dataset contract, receiver mask, city-holdout split, pixel-weighted metrics, calibrated priors, and \textsc{HARP-Net CKM} residual prediction for channel attenuation, delay spread, and angular spread. Appendix~\ref{app:detailed_attempt_log} keeps the development history; this chapter keeps the final pipeline and reproduction details.
+
+\begin{figure}[H]
+  \centering
+  \resizebox{0.88\textwidth}{!}{%
+  \begin{tikzpicture}[
+    >=Latex,
+    font=\sffamily\scriptsize\linespread{0.9}\selectfont,
+    stage/.style={
+      draw=black!55,
+      rounded corners=3pt,
+      align=left,
+      text width=14.7cm,
+      inner xsep=7pt,
+      inner ysep=4.5pt
+    },
+    branch/.style={
+      draw=black!55,
+      rounded corners=3pt,
+      align=left,
+      text width=6.45cm,
+      inner xsep=6pt,
+      inner ysep=4pt,
+      fill=orange!10
+    },
+    input/.style={stage, fill=blue!7},
+    derived/.style={stage, fill=green!7},
+    stack/.style={stage, fill=yellow!16},
+    model/.style={stage, fill=purple!9},
+    output/.style={stage, fill=red!7},
+    priornote/.style={
+      stage,
+      text width=14.2cm,
+      fill=orange!6,
+      align=center,
+      inner ysep=4.5pt
+    },
+    priorframe/.style={
+      draw=orange!65!black,
+      rounded corners=4pt,
+      fill=orange!2,
+      inner xsep=7pt,
+      inner ysep=7pt
+    },
+    arrow/.style={-{Latex[length=1.5mm]}, semithick, draw=black!60, shorten >=3pt, shorten <=3pt}
+  ]
+    \node[input] (framework) {
+      \textbf{1. External Framework Inputs}\\[-1pt]
+      \textit{Inputs:} City building/topology map \(T(x)\) and UAV transmitter height \(h_{\mathrm{tx}}\).\\
+      \textit{Fixed dataset constants:} Carrier frequency \(f_c=\SI{7.125}{GHz}\), receiver antenna height \(h_{\mathrm{rx}}=\SI{1.5}{m}\), centred UAV.\\
+      \textit{Output:} One dense \(513\times513\) CKM sample frame.
+    };
+
+    \node[derived, below=0.3cm of framework] (features) {
+      \textbf{2. Support, Geometry and Morphology Derivation (per pixel)}\\[-1pt]
+      \textit{Inputs:} Topology map \(T(x)\in\mathbb{R}^{513\times513}\), scalar \(h_{\mathrm{tx}}\), and the fixed constants from Step~1.\\
+      \textit{Outputs (all \(513\times513\) maps):} Binary masks \(g\) ground receiver, \(b\) building, \(m_{\mathrm{LoS}}\) visible and \(m_{\mathrm{NLoS}}\) blocked; distances \(d_{2D},d_{\mathrm{LoS}},d_{\mathrm{ref}},d_{\mathrm{3D}}\); elevation \(\theta\); morphology features and topology/height regime keys.
+    };
+
+    \node[priornote, below=0.4cm of features] (priornote) {
+      \textbf{3. Multilinear Regression and Calculations Prior}\\[-1pt]
+      Fitted once with train-city labels. At inference it is a deterministic calculator:
+      support, geometry and morphology maps enter; four calibrated prior maps leave.
+    };
+
+    \node[branch, anchor=north west] (losprior)
+      at ($(priornote.south west)+(0.2,-0.4)$) {
+      \textbf{Try 78 LoS Path-Loss Calculation}\\[-1pt]
+      \textit{Inputs:} \(m_{\mathrm{LoS}}\), \(d_{\mathrm{LoS}}\), \(d_{\mathrm{ref}}\), \(d_{2D}\), \(h_{\mathrm{tx}}\); fixed \(f_c,h_{\mathrm{rx}}\).\\
+      \textit{Operation:} FSPL \(+\) two-ray term \(+\) height bias \(+\) radial residual.\\
+      \textit{Output:} LoS prior map \(\widehat{\mathrm{PL}}_{\mathrm{LoS}}(x)\) in dB.
+    };
+
+    \node[branch, anchor=north east] (nlosprior)
+      at ($(priornote.south east)+(-0.2,-0.4)$) {
+      \textbf{Try 78 NLoS Path-Loss Regression}\\[-1pt]
+      \textit{Inputs:} \(m_{\mathrm{NLoS}}\), raw blocked-link PL, \(d_{2D}\), \(h_{\mathrm{tx}}\), elevation and morphology vector \(\mathbf{x}_{78}(x)\in\mathbb{R}^{15}\), regime key.\\
+      \textit{Fit:} Train-city regime-wise multilinear OLS coefficients.\\
+      \textit{Output:} NLoS prior map \(\widehat{\mathrm{PL}}_{\mathrm{NLoS}}(x)\) in dB.
+    };
+
+    \node[branch, below=0.3cm of losprior] (dsprior) {
+      \textbf{Try 79 Delay-Spread Regression}\\[-1pt]
+      \textit{Inputs (per pixel):} Raw log-spread estimate \(z^{(0)}\), \(d_{2D}\), \(\theta\), \(h_{\mathrm{tx}}\), LoS/NLoS state, topology class, antenna bin and morphology vector \(\mathbf{x}_{79}(x)\in\mathbb{R}^{23}\).\\
+      \textit{Fit:} Regime-wise ridge coefficients, inverse \(\exp(\cdot)-1\), clipping.\\
+      \textit{Output:} \(513\times513\) delay-spread prior map \(\widehat{\mathrm{DS}}_{\mathrm{prior}}(x)\) in ns.
+    };
+
+    \node[branch, below=0.3cm of nlosprior] (asprior) {
+      \textbf{Try 79 Angular-Spread Regression}\\[-1pt]
+      \textit{Inputs (per pixel):} Raw log-spread estimate \(z^{(0)}\), \(d_{2D}\), \(\theta\), \(h_{\mathrm{tx}}\), LoS/NLoS state, topology class, antenna bin and morphology vector \(\mathbf{x}_{79}(x)\in\mathbb{R}^{23}\).\\
+      \textit{Fit:} Regime-wise ridge coefficients, inverse \(\exp(\cdot)-1\), clipping.\\
+      \textit{Output:} \(513\times513\) angular-spread prior map \(\widehat{\mathrm{AS}}_{\mathrm{prior}}(x)\) in degrees.
+    };
+
+    \begin{scope}[on background layer]
+      \node[priorframe, fit=(priornote)(losprior)(nlosprior)(dsprior)(asprior)] (priorbank) {};
+    \end{scope}
+
+    \node[stack, below=0.4cm of priorbank] (priorstack) {
+      \textbf{4. Deep-Learning Input Stack Assembly}\\[-1pt]
+      \textit{Inputs:} \(513\times513\) support maps from Step~2 and prior maps from Step~3. The path-loss branch also forms per-pixel
+      \(\widehat{\mathrm{PL}}_{\mathrm{prior}}(x)=m_{\mathrm{LoS}}(x)\widehat{\mathrm{PL}}_{\mathrm{LoS}}(x)+m_{\mathrm{NLoS}}(x)\widehat{\mathrm{PL}}_{\mathrm{NLoS}}(x)\).\\
+      \textit{Output:} Input tensor \(X\in\mathbb{R}^{9\times513\times513}\) with channels
+      \([T_{\mathrm{in}}=Tg/90\) (ground-masked normalized topology), \(m_{\mathrm{LoS}}, m_{\mathrm{NLoS}}, g, \widehat{\mathrm{PL}}_{\mathrm{prior}},
+      \widehat{\mathrm{PL}}_{\mathrm{LoS}}, \widehat{\mathrm{PL}}_{\mathrm{NLoS}},
+      \widehat{\mathrm{DS}}_{\mathrm{prior}}, \widehat{\mathrm{AS}}_{\mathrm{prior}}]\),
+      plus scalar condition \(h_{\mathrm{tx}}\).
+    };
+
+    \node[model, below=0.35cm of priorstack] (harp) {
+      \textbf{5. \textsc{HARP-Net CKM} Residual Model}\\[-1pt]
+      \textit{Inputs:} Tensor \(X\in\mathbb{R}^{9\times513\times513}\) and scalar \(h_{\mathrm{tx}}\) injected via sinusoidal FiLM conditioning.\\
+      \textit{Architecture:} Shared GroupNorm U-Net encoder--decoder with task-specific LoS/NLoS residual heads; height conditioning through FiLM layers.\\
+      \textit{Train-only supervision:} Per-pixel valid-ground CKM labels for channel attenuation, delay spread and angular spread.\\
+      \textit{Outputs:} Per-pixel GMM parameters \((p,\mu,\sigma)\), regional gates \(\alpha_{k,r}\), and bounded residual maps \(\Delta_{\mathrm{PL}},\Delta_{\mathrm{DS}},\Delta_{\mathrm{AS}}\in\mathbb{R}^{513\times513}\).
+    };
+
+    \node[output, below=0.35cm of harp] (assembly) {
+      \textbf{6. Final Map Assembly and Evaluation}\\[-1pt]
+      \textit{Inputs:} Prior maps, bounded residual maps \(\Delta_{\mathrm{PL}},\Delta_{\mathrm{DS}},\Delta_{\mathrm{AS}}\in\mathbb{R}^{513\times513}\), LoS/NLoS masks and valid-ground mask \(m_{\mathrm{ground}}\).\\
+      \textit{Assembly (per pixel):} \(\widehat{\mathrm{PL}}=\mathrm{prior}+\Delta_{\mathrm{PL}}\); spread residuals \(\Delta_{\mathrm{DS}},\Delta_{\mathrm{AS}}\) are added to native priors, represented in \(\log(1+y)\), then inverse-transformed.\\
+      \textit{Outputs:} Three final dense \(513\times513\) CKM maps: \(\widehat{\mathrm{PL}}\) (dB), \(\widehat{\mathrm{DS}}\) (ns), \(\widehat{\mathrm{AS}}\) (deg).\\
+      \textit{Evaluation:} Pixel-weighted RMSE and MAE over unseen-city valid ground pixels.
+    };
+
+    \draw[arrow] (framework.south) -- (features.north);
+    \draw[arrow] (features.south) -- (priorbank.north);
+    \draw[arrow] (priorbank.south) -- (priorstack.north);
+    \draw[arrow] (priorstack.south) -- (harp.north);
+    \draw[arrow] (harp.south) -- (assembly.north);
+  \end{tikzpicture}%
+  }
+  \caption[Complete methodology data flow.]{Complete methodology data flow from external inputs to final assembled CKM maps, showing inputs, operations and outputs of each stage.}
+  \label{fig:methodology_full_framework}
+\end{figure}
+\clearpage
 
 \section{Dataset and split}
-
 The data source is \texttt{CKM\_Dataset\_270326.h5}, a project HDF5 version of
 the CKM radio map data associated with the public path loss and ToA radio map
 dataset of Yapar et al.~\cite{dataset2212}. At dataset level, it contains
@@ -210,85 +336,50 @@ so that all reported results use unseen cities and valid ground receivers only.
 Second, the target distributions are inspected before selecting the output
 model: channel attenuation is separated into LoS and NLoS regimes, while delay spread and
 angular spread are treated as right-skewed, tail-sensitive quantities. Third,
-train only priors are calibrated for the three targets. Finally,
-\textsc{HARP-Net CKM} learns only bounded residual corrections around those
-frozen priors.
+the multilinear regression and calculation priors are calibrated on training
+cities only. Finally, \textsc{HARP-Net CKM} learns only bounded residual
+corrections around those fixed prior baselines.
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \caption{External framework inputs, internally computed maps, neural model
 inputs and final outputs.}
 \label{tab:framework_io_contract}
 \small
-\begin{tabularx}{\textwidth}{lX}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.23\textwidth}
+>{\raggedright\arraybackslash}X}
 \toprule
 Stage & Maps / variables \\
 \midrule
 External inputs to the full framework &
-Building height map and UAV transmitter height \(h_{\mathrm{tx}}\), stored as \texttt{uav\_height} in the CKM files. \\
-Internally computed support maps &
-LoS/NLoS visibility mask and building/ground receiver mask. \\
-Frozen prior outputs &
+Building/topology map \(T(x)\) and UAV transmitter height \(h_{\mathrm{tx}}\), stored as \texttt{uav\_height}. The carrier frequency \(f_c=\SI{7.125}{GHz}\) and receiver height \(h_{\mathrm{rx}}=\SI{1.5}{m}\) are fixed dataset constants, not external inputs. \\
+Internally computed support, geometry and morphology maps &
+Ground/building masks, LoS/NLoS masks, 2-D and 3-D distances, reference distance, elevation angle, local morphology features and topology/height regime keys. \\
+Multilinear regression and calculation prior outputs &
 Combined path loss prior, path loss LoS prior, path loss NLoS prior,
 delay spread prior, angular spread prior. \\
 Inputs to \textsc{HARP-Net CKM} &
-Building height map, transmitter height conditioning, ground-mask, LoS mask, NLoS mask,
+Nine map channels in Try~80 order: topology, LoS mask, NLoS mask, ground mask,
 combined path loss prior, path loss LoS prior, path loss NLoS prior,
-delay spread prior, angular spread prior. \\
+delay spread prior and angular spread prior; plus scalar transmitter-height
+FiLM conditioning. \\
 Final outputs &
 Channel attenuation map, delay spread map, angular spread map. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\begin{figure}[htbp]
-  \centering
-  \begin{tikzpicture}[
-    >=Latex,
-    node distance=0.75cm and 0.55cm,
-    block/.style={draw, rounded corners=2pt, align=center, text width=0.20\textwidth,
-      minimum height=1.25cm, inner sep=4pt, font=\footnotesize},
-    input/.style={block, fill=blue!8},
-    derived/.style={block, fill=green!8},
-    model/.style={block, fill=purple!8},
-    output/.style={block, fill=red!8},
-    metric/.style={draw, rounded corners=2pt, align=center, text width=0.30\textwidth,
-      minimum height=0.85cm, inner sep=4pt, font=\footnotesize, fill=orange!10}
-  ]
-    \node[input] (inputs) {\textbf{External inputs}\\[2pt]
-      Building height map\\UAV Tx height};
-    \node[derived, right=of inputs] (maps) {\textbf{Computed maps}\\[2pt]
-      Ground mask\\LoS/NLoS masks\\Frozen PL, DS, AS priors};
-    \node[model, right=of maps] (harp) {\textbf{\textsc{HARP-Net CKM}}\\[2pt]
-      Residual model\\height FiLM};
-    \node[output, right=of harp] (outputs) {\textbf{Dense outputs}\\[2pt]
-      Channel attenuation\\delay spread\\angular spread};
-    \node[metric, below=0.70cm of harp] (eval) {\textbf{Reported evaluation}\\
-      city holdout, valid ground pixels};
-
-    \draw[->, thick] (inputs) -- (maps);
-    \draw[->, thick] (maps) -- (harp);
-    \draw[->, thick] (harp) -- (outputs);
-    \draw[->, thick] (outputs.south) |- (eval.east);
-  \end{tikzpicture}
-  \caption{High level methodology flow. The user supplies the city height map
-  and transmitter height. The pipeline constructs support masks and frozen
-  prior maps, then \textsc{HARP-Net CKM} predicts residual corrections for the
-  three CKM outputs.}
-  \label{fig:methodology_block_diagram}
-\end{figure}
-
-Figure~\ref{fig:methodology_block_diagram} is the reader map for the rest of
-the chapter. Sections~\ref{sec:priors_overview} to~\ref{sec:try80_detail}
-define the final method at the level needed to reproduce the reported pipeline:
-which maps are fitted, which maps are frozen, which channels enter
-\textsc{HARP-Net CKM}, how the deterministic outputs are assembled, and how
-the final maps are evaluated.
+The full reader map has already been introduced in
+Figure~\ref{fig:methodology_full_framework}. Sections~\ref{sec:priors_overview}
+to~\ref{sec:try80_detail} define the final method at the level needed to
+reproduce the reported pipeline: which maps are fitted, which maps are kept fixed,
+which channels enter \textsc{HARP-Net CKM}, how the deterministic outputs are
+assembled, and how the final maps are evaluated.
 
 Therefore, the full framework has two external inputs and three final outputs.
 The neural residual model receives nine spatial map channels plus a separate
 scalar transmitter height conditioning path because the framework has already computed
-visibility masks, receiver masks and frozen prior maps. This is the main
+visibility masks, receiver masks and fixed prior maps. This is the main
 distinction between the deployable framework and the internal neural model: the
 user provides only a city height map and the transmitter height, while the pipeline
 constructs the remaining maps before inference.
@@ -299,7 +390,8 @@ Appendix~\ref{app:detailed_attempt_log} keeps the development evidence and
 discarded routes; this chapter keeps only the final
 constraints that survive into the reported system: no building pixel credit, no
 random city leakage, explicit transmitter height conditioning, separate
-LoS/NLoS support, frozen train only priors, and bounded residual correction.
+LoS/NLoS support, train-city regression/calculation priors, and bounded
+residual correction.
 
 \section{Final priors: overview and literature basis}
 \label{sec:priors_overview}
@@ -312,8 +404,8 @@ LoS/NLoS support, frozen train only priors, and bounded residual correction.
 The CKM dataset stores the attenuation target under the code name
 \texttt{path\_loss}. The final attenuation prior is therefore built from
 physical path loss formulas, but its dense output is reported in the thesis as
-channel attenuation. The prior is frozen before neural training and has two
-branches.
+channel attenuation. The prior coefficients and calibration tables are fixed
+before neural training and have two branches.
 
 The LoS branch starts from free space path loss, adds a coherent two ray
 ground reflection correction, and then applies height dependent bias and radial
@@ -322,7 +414,7 @@ centred transmitter. The NLoS branch starts from a blocked link propagation
 estimate and calibrates it with local morphology, obstruction and elevation
 features. Both branches are fitted only on training cities. At inference, the
 explicit LoS/NLoS support mask selects the branch at each ground receiver pixel,
-producing the frozen attenuation prior used by \textsc{HARP-Net CKM}.
+producing the fixed attenuation prior map used by \textsc{HARP-Net CKM}.
 
 Chapter~\ref{chap:results} reports the quantitative prior audit. The full
 equations, feature inventory and fitting details are included below.
@@ -333,7 +425,7 @@ equations, feature inventory and fitting details are included below.
 \label{sec:try79_detail}
 
 Angular spread uses the shared spread prior described below. Its final
-prediction is the frozen angular spread prior plus the bounded residual
+prediction is the fixed angular spread prior plus the bounded residual
 correction predicted by \textsc{HARP-Net CKM}. The target is reported in
 degrees and is evaluated only on valid ground receiver pixels.
 
@@ -368,7 +460,7 @@ injected through FiLM layers rather than copied as a constant image.
 
 The network is a shared GroupNorm U-Net with task specific residual heads. For
 each target and visibility region, the head predicts bounded residual
-components around the frozen prior. The probabilistic parameterization is kept
+components around the fixed prior baseline. The probabilistic parameterization is kept
 because it represents residual tails during training, but the reported maps are
 deterministic: channel attenuation is read in native dB space, while delay
 spread and angular spread are predicted in \(\log(1+y)\) model space and then
@@ -378,7 +470,7 @@ regional branch at each valid ground receiver pixel.
 Training uses the same city holdout split, receiver mask and pixel weighted
 RMSE contract defined at the start of this chapter. The selected final stage is
 RMSE/MAE oriented, with small anchor and prior guard terms so that the residual
-model improves the frozen priors without freely overwriting them. The full
+model improves the prior baselines without freely overwriting them. The full
 architecture diagram, residual assembly equations and loss family are included
 below.
 

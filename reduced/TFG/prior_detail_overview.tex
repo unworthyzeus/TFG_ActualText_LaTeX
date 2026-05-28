@@ -28,7 +28,7 @@ loss, delay spread, and angular spread from scratch. Instead:
 
 The deterministic or interpretable structure is kept in the prior, and the deep
 model is used only for the residual part that the prior cannot explain.
-Figure~\ref{fig:pipeline} illustrates the overall pipeline.
+Figure~\ref{fig:methodology_full_framework} illustrates the overall pipeline.
 
 This prior phase is not presented as a new universal closed form propagation
 law. Its value is more practical: it turns physics, morphology, visibility, and
@@ -95,7 +95,7 @@ a spread prior log domain offset, and \(b_{41}\) is the blocker depth feature.
 These symbols are local to their definitions and should not be read as one
 shared physical variable.
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \caption{Term by term interpretation of the main frozen prior quantities.}
 \label{tab:prior_term_meanings}
@@ -151,36 +151,6 @@ separate open overhead links from obstructed street canyon like links. \\
 \bottomrule
 \end{tabularx}
 \end{table}
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-  box/.style={rectangle, draw, rounded corners=3pt, minimum width=2.2cm,
-              minimum height=0.75cm, align=center, font=\footnotesize},
-  arr/.style={-{Stealth[length=5pt]}, thick},
-  node distance=0.5cm and 1.1cm
-]
-\node[box, fill=blue!15]  (t78) {Path loss\\prior};
-\node[box, fill=green!15, below=of t78] (t79) {Spread\\priors};
-\node[box, fill=orange!15, right=1.2cm of t78, yshift=-0.62cm] (inject)
-      {Prior injection\\(input channels)};
-\node[box, fill=red!15, right=1.2cm of inject] (dnn)
-      {DNN residual\\multitask};
-\node[box, fill=gray!20, right=1.2cm of dnn] (out)
-      {PL, DS, AS\\outputs};
-
-\draw[arr] (t78) -- (inject);
-\draw[arr] (t79) -- (inject);
-\draw[arr] (inject) -- (dnn);
-\draw[arr] (dnn) -- (out);
-
-\node[below=0.25cm of dnn, font=\scriptsize, text width=2.4cm, align=center]
-      {$\delta \in [-\delta_{\max}, +\delta_{\max}]$};
-\end{tikzpicture}
-\caption[\textsc{HARP-Net CKM} pipeline with bounded DNN corrections.]
-{\textsc{HARP-Net CKM} pipeline. The frozen priors are injected into the DNN, which learns a bounded correction $\delta$ around them.}
-\label{fig:pipeline}
-\end{figure}
 
 \subsection{Prior design rules}
 \label{sec:good_prior_design}
