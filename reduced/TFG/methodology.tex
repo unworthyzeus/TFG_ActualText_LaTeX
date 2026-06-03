@@ -1,11 +1,36 @@
+\titleformat
+{\chapter}%
+[display]
+{\sffamily\normalsize\Huge\color{black}}%
+{\flushright\sffamily\normalsize\color{DegreeColor}\hrulefill\hspace{1ex}%
+   \MakeUppercase{\chaptertitlename}\hspace{1ex}%
+   {\sffamily\fontsize{42}{42}\selectfont\thechapter}%
+}%
+{2 pt}%
+{\flushright\bfseries\Large}%
+[]%
+\titlespacing*{\chapter}{0pt}{-24pt}{8pt}
 \chapter{Methodology}
 \label{chap:methodology}
 
 This chapter defines the reproducible prediction pipeline: the CKM dataset contract, receiver mask, city-holdout split, pixel-weighted metrics, calibrated priors, and \textsc{HARP-Net CKM} residual prediction for channel attenuation, delay spread, and angular spread. Appendix~\ref{app:detailed_attempt_log} keeps the development history; this chapter keeps the final pipeline and reproduction details.
 
+\titleformat
+{\chapter}%
+[display]
+{\sffamily\normalsize\Huge\color{black}}%
+{\flushright\sffamily\normalsize\color{DegreeColor}\hrulefill\hspace{1ex}%
+   \MakeUppercase{\chaptertitlename}\hspace{1ex}%
+   {\sffamily\fontsize{60}{60}\selectfont\thechapter}%
+}%
+{5 pt}%
+{\flushright\bfseries\LARGE}%
+[]%
+\titlespacing*{\chapter}{0pt}{-8pt}{20pt}
+
 \begin{figure}[H]
   \centering
-  \resizebox{0.88\textwidth}{!}{%
+  \resizebox{0.86\textwidth}{!}{%
   \begin{tikzpicture}[
     >=Latex,
     font=\sffamily\scriptsize\linespread{0.9}\selectfont,
@@ -69,7 +94,7 @@ This chapter defines the reproducible prediction pipeline: the CKM dataset contr
     \node[branch, anchor=north west] (losprior)
       at ($(priornote.south west)+(0.2,-0.4)$) {
       \textbf{Try 78 LoS Path-Loss Calculation}\\[-1pt]
-      \textit{Inputs:} \(m_{\mathrm{LoS}}\), \(d_{\mathrm{LoS}}\), \(d_{\mathrm{ref}}\), \(d_{2D}\), \(h_{\mathrm{tx}}\); fixed \(f_c,h_{\mathrm{rx}}\).\\
+      \textit{Inputs:} \(d_{\mathrm{LoS}},d_{\mathrm{ref}},d_{2D},h_{\mathrm{tx}}\); fixed \(f_c,h_{\mathrm{rx}}\); selected by \(m_{\mathrm{LoS}}\).\\
       \textit{Operation:} FSPL \(+\) two-ray term \(+\) height bias \(+\) radial residual.\\
       \textit{Output:} LoS prior map \(\widehat{\mathrm{PL}}_{\mathrm{LoS}}(x)\) in dB.
     };
@@ -105,9 +130,9 @@ This chapter defines the reproducible prediction pipeline: the CKM dataset contr
       \textit{Inputs:} \(513\times513\) support maps from Step~2 and prior maps from Step~3. The path-loss branch also forms per-pixel
       \(\widehat{\mathrm{PL}}_{\mathrm{prior}}(x)=m_{\mathrm{LoS}}(x)\widehat{\mathrm{PL}}_{\mathrm{LoS}}(x)+m_{\mathrm{NLoS}}(x)\widehat{\mathrm{PL}}_{\mathrm{NLoS}}(x)\).\\
       \textit{Output:} Input tensor \(X\in\mathbb{R}^{9\times513\times513}\) with channels
-      \([T_{\mathrm{in}}=Tg/90\) (ground-masked normalized topology), \(m_{\mathrm{LoS}}, m_{\mathrm{NLoS}}, g, \widehat{\mathrm{PL}}_{\mathrm{prior}},
-      \widehat{\mathrm{PL}}_{\mathrm{LoS}}, \widehat{\mathrm{PL}}_{\mathrm{NLoS}},
-      \widehat{\mathrm{DS}}_{\mathrm{prior}}, \widehat{\mathrm{AS}}_{\mathrm{prior}}]\),
+      \([T_{\mathrm{in}}=Tg/90\) (geometry via masks/morphology/priors), \(m_{\mathrm{LoS}},m_{\mathrm{NLoS}},g,\widehat{\mathrm{PL}}_{\mathrm{prior}}/180,
+      \widehat{\mathrm{PL}}_{\mathrm{LoS}}/180,\widehat{\mathrm{PL}}_{\mathrm{NLoS}}/180,\ell_{\mathrm{DS}},\ell_{\mathrm{AS}}]\),
+      with \(\ell_{\mathrm{DS}}=\log(1+\widehat{\mathrm{DS}}_{\mathrm{prior}})/\log(401)\), \(\ell_{\mathrm{AS}}=\log(1+\widehat{\mathrm{AS}}_{\mathrm{prior}})/\log(91)\),
       plus scalar condition \(h_{\mathrm{tx}}\).
     };
 
@@ -122,7 +147,7 @@ This chapter defines the reproducible prediction pipeline: the CKM dataset contr
     \node[output, below=0.35cm of harp] (assembly) {
       \textbf{6. Final Map Assembly and Evaluation}\\[-1pt]
       \textit{Inputs:} Prior maps, bounded residual maps \(\Delta_{\mathrm{PL}},\Delta_{\mathrm{DS}},\Delta_{\mathrm{AS}}\in\mathbb{R}^{513\times513}\), LoS/NLoS masks and valid-ground mask \(m_{\mathrm{ground}}\).\\
-      \textit{Assembly (per pixel):} \(\widehat{\mathrm{PL}}=\mathrm{prior}+\Delta_{\mathrm{PL}}\); spread residuals \(\Delta_{\mathrm{DS}},\Delta_{\mathrm{AS}}\) are added to native priors, represented in \(\log(1+y)\), then inverse-transformed.\\
+      \textit{Assembly (per pixel):} Masks select LoS/NLoS point maps. PL is prior plus bounded dB residual; DS/AS mix capped native component means in \(\log(1+y)\), then invert.\\
       \textit{Outputs:} Three final dense \(513\times513\) CKM maps: \(\widehat{\mathrm{PL}}\) (dB), \(\widehat{\mathrm{DS}}\) (ns), \(\widehat{\mathrm{AS}}\) (deg).\\
       \textit{Evaluation:} Pixel-weighted RMSE and MAE over unseen-city valid ground pixels.
     };
