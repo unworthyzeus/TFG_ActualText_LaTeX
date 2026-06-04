@@ -1631,51 +1631,6 @@
       \verb https://arxiv.org/abs/2408.08593
       \endverb
     \endentry
-    \entry{izmailov2018swa}{inproceedings}{}{}
-      \name{author}{4}{}{%
-        {{hash=510d675b8d71e867463f4025e0f66971}{%
-           family={Izmailov},
-           familyi={I\bibinitperiod},
-           given={Pavel},
-           giveni={P\bibinitperiod}}}%
-        {{hash=5ee4a652a0fe093122681236d4d4cd29}{%
-           family={Podoprikhin},
-           familyi={P\bibinitperiod},
-           given={Dmitrii},
-           giveni={D\bibinitperiod}}}%
-        {{hash=4b99e011f8a557619a28adf82fc51ddd}{%
-           family={Garipov},
-           familyi={G\bibinitperiod},
-           given={Timur},
-           giveni={T\bibinitperiod}}}%
-        {{hash=f58290185dfd014024f7abaf3fc0d0f2}{%
-           family={Wilson},
-           familyi={W\bibinitperiod},
-           given={Andrew\bibnamedelima Gordon},
-           giveni={A\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
-      }
-      \strng{namehash}{1e32dac02a9d45257816a00000c4f5e6}
-      \strng{fullhash}{fe7e6d4305141332d4e6f29e488f1cc3}
-      \strng{fullhashraw}{fe7e6d4305141332d4e6f29e488f1cc3}
-      \strng{bibnamehash}{1e32dac02a9d45257816a00000c4f5e6}
-      \strng{authorbibnamehash}{1e32dac02a9d45257816a00000c4f5e6}
-      \strng{authornamehash}{1e32dac02a9d45257816a00000c4f5e6}
-      \strng{authorfullhash}{fe7e6d4305141332d4e6f29e488f1cc3}
-      \strng{authorfullhashraw}{fe7e6d4305141332d4e6f29e488f1cc3}
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{booktitle}{Proceedings of the 34th Conference on Uncertainty in Artificial Intelligence}
-      \field{title}{Averaging Weights Leads to Wider Optima and Better Generalization}
-      \field{year}{2018}
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/1803.05407
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/1803.05407
-      \endverb
-    \endentry
     \entry{perez2018film}{inproceedings}{}{}
       \name{author}{5}{}{%
         {{hash=79978685fd7b37606022b06c0f6419a1}{%
@@ -1729,6 +1684,51 @@
       \endverb
       \verb{url}
       \verb https://arxiv.org/abs/1709.07871
+      \endverb
+    \endentry
+    \entry{izmailov2018swa}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=510d675b8d71e867463f4025e0f66971}{%
+           family={Izmailov},
+           familyi={I\bibinitperiod},
+           given={Pavel},
+           giveni={P\bibinitperiod}}}%
+        {{hash=5ee4a652a0fe093122681236d4d4cd29}{%
+           family={Podoprikhin},
+           familyi={P\bibinitperiod},
+           given={Dmitrii},
+           giveni={D\bibinitperiod}}}%
+        {{hash=4b99e011f8a557619a28adf82fc51ddd}{%
+           family={Garipov},
+           familyi={G\bibinitperiod},
+           given={Timur},
+           giveni={T\bibinitperiod}}}%
+        {{hash=f58290185dfd014024f7abaf3fc0d0f2}{%
+           family={Wilson},
+           familyi={W\bibinitperiod},
+           given={Andrew\bibnamedelima Gordon},
+           giveni={A\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+      }
+      \strng{namehash}{1e32dac02a9d45257816a00000c4f5e6}
+      \strng{fullhash}{fe7e6d4305141332d4e6f29e488f1cc3}
+      \strng{fullhashraw}{fe7e6d4305141332d4e6f29e488f1cc3}
+      \strng{bibnamehash}{1e32dac02a9d45257816a00000c4f5e6}
+      \strng{authorbibnamehash}{1e32dac02a9d45257816a00000c4f5e6}
+      \strng{authornamehash}{1e32dac02a9d45257816a00000c4f5e6}
+      \strng{authorfullhash}{fe7e6d4305141332d4e6f29e488f1cc3}
+      \strng{authorfullhashraw}{fe7e6d4305141332d4e6f29e488f1cc3}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 34th Conference on Uncertainty in Artificial Intelligence}
+      \field{title}{Averaging Weights Leads to Wider Optima and Better Generalization}
+      \field{year}{2018}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/1803.05407
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/1803.05407
       \endverb
     \endentry
     \entry{airmap2025}{misc}{}{}

@@ -6,7 +6,7 @@ modeled in the logarithmic domain in standard channel models
 \cite{tr38901,winner2}. For a spread variable $y$, define:
 \begin{equation}
 z(x) = \log(1 + y(x)),\qquad \hat y(x) = \exp(\hat z(x)) - 1
-\label{eq:log_transform_79}
+\label{eq:log_transform_spread}
 \end{equation}
 
 For two pixels with native spread values \(y_a\) and \(y_b\), their difference
@@ -15,7 +15,7 @@ in transformed space is
 z_a-z_b
 =
 \log\!\left(\frac{1+y_a}{1+y_b}\right).
-\label{eq:log_ratio_79}
+\label{eq:log_ratio_spread}
 \end{equation}
 Thus, a fixed error in \(z\) corresponds approximately to a fixed
 multiplicative error in \(1+y\). This is more appropriate than native space
@@ -39,7 +39,7 @@ raw log prior value \(z^{(0)}_{m,n}\). The calibrated prior is linear in a
 \textbf{x}_{m,n}\in\mathbb{R}^{23},
 \qquad
 \textbf{w}_{m,r}\in\mathbb{R}^{23}.
-\label{eq:try79_pixel_linear}
+\label{eq:spread_pixel_linear}
 \end{equation}
 The regime \(r(n)\) is a discrete key containing the metric, topology class,
 LoS/NLoS state and UAV height bin. In other words, the spread prior does not fit one
@@ -66,7 +66,7 @@ a_3\rho_{41}
 \label{eq:raw_spread}
 \end{equation}
 
-where $\theta_{\mathrm{inv}}(x) = 1 - \theta_{\mathrm{norm}}(x)$ (high value at low elevation). Example coefficients for delay spread: the native anchors are $b^{\mathrm{native}}_{\mathrm{LoS}} = 4.0$ ns and $b^{\mathrm{native}}_{\mathrm{NLoS}} = 11.0$ ns, which the implementation converts to $\log(1+4.0)$ and $\log(1+11.0)$ before adding the remaining log domain terms. The delay coefficients are $a_1 = 0.11$, $a_2 = 0.62$, $a_3 = 0.48$, $a_4 = 0.32$, $a_5 = 0.86$, $a_6 = 0.60$. After \eqref{eq:raw_spread}, the raw log prior is clipped to $[0,8]$, inverse transformed with $\exp(\cdot)-1$, and clipped to the metric upper bound. For reproducibility, the \(z^{(0)}(x)\) entries used later in \(\textbf{x}_{79}\) denote the log value recovered from this clipped native raw prior, i.e.,
+where $\theta_{\mathrm{inv}}(x) = 1 - \theta_{\mathrm{norm}}(x)$ (high value at low elevation). Example coefficients for delay spread: the native anchors are $b^{\mathrm{native}}_{\mathrm{LoS}} = 4.0$ ns and $b^{\mathrm{native}}_{\mathrm{NLoS}} = 11.0$ ns, which the implementation converts to $\log(1+4.0)$ and $\log(1+11.0)$ before adding the remaining log domain terms. The delay coefficients are $a_1 = 0.11$, $a_2 = 0.62$, $a_3 = 0.48$, $a_4 = 0.32$, $a_5 = 0.86$, $a_6 = 0.60$. After \eqref{eq:raw_spread}, the raw log prior is clipped to $[0,8]$, inverse transformed with $\exp(\cdot)-1$, and clipped to the metric upper bound. For reproducibility, the \(z^{(0)}(x)\) entries used later in \(\textbf{x}_{\mathrm{SP}}\) denote the log value recovered from this clipped native raw prior, i.e.,
 \(\log(1+\mathrm{raw\_prior}_{\mathrm{clipped}}(x))\), not an unconstrained
 copy of \eqref{eq:raw_spread}.
 
@@ -76,13 +76,16 @@ propagation state and represented in log space \cite{tr38901,winner2}, then
 adds CKM specific map morphology terms. UAV measurement studies also motivate
 the elevation angle dependence: low elevation links usually interact with more
 rooftops and street canyons than near overhead links \cite{cai2019,izydorczyk2019}.
-For reproducibility, Table~\ref{tab:try79_raw_constants} lists the fixed
-raw prior constants used before the regime wise ridge calibration.
+For reproducibility, Table~\ref{tab:spread_raw_constants} lists the fixed
+raw prior constants used before the regime wise ridge calibration. These
+values are fixed hyperparameters of \(z^{(0)}\). They are not the fitted ridge
+weights \(\textbf{w}_{m,r}\), which are learned from training city pixels and
+stored in the calibration file.
 
 \begin{table}[H]
 \centering
-\caption{Fixed constants used in the raw spread prior of \eqref{eq:raw_spread}.}
-\label{tab:try79_raw_constants}
+\caption{Raw prior constants fixed before the ridge calibration in \eqref{eq:raw_spread}.}
+\label{tab:spread_raw_constants}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \begin{tabularx}{\textwidth}{lccX}
@@ -96,7 +99,7 @@ Native NLoS anchor converted to \(\log(1+b)\). \\
 \(a_1,\ldots,a_6\) &
 \(0.11,0.62,0.48,0.32,0.86,0.60\) &
 \(0.05,0.52,0.60,0.38,0.58,0.35\) &
-Coefficients of \(\log(1+d_{2D})\), \(\theta_{\mathrm{inv}}\),
+Fixed weights multiplying \(\log(1+d_{2D})\), \(\theta_{\mathrm{inv}}\),
 \(\rho_{41}\), \(h_{41}\), \(n_{41}\), and
 \(n_{41}\theta_{\mathrm{inv}}\), respectively. \\
 \bottomrule
@@ -137,21 +140,54 @@ Every term in \eqref{eq:raw_spread} has a physical interpretation:
 \begingroup
 \small
 \begin{equation}
-\textbf{x}_{79}(x) = \begin{bmatrix}
+\textbf{x}_{\mathrm{SP}}(x) = \begin{bmatrix}
 z^{(0)}(x)^2,\ z^{(0)}(x),\ \log(1+d_{2D}),\ \theta_{\mathrm{norm}},\ \theta_{\mathrm{inv}}\\
 h_{\mathrm{norm}},\ h_{\mathrm{norm}}^2,\ \rho_{15},\ \rho_{41},\ h_{15},\ h_{41}\\
 n_{15},\ n_{41},\ n_{41}\log(1+d_{2D}),\ \rho_{41}\theta_{\mathrm{inv}},\ b_{41},\ 1\\
 c_{41},\ t_{41},\ \theta_{\mathrm{norm}}\rho_{41},\ c_{41}\theta_{\mathrm{inv}},\ t_{41}\rho_{41},\ t_{41}n_{41}
 \end{bmatrix}^\top
-\label{eq:x79}
+\label{eq:spread_calibration_vector}
 \end{equation}
 \endgroup
 
-For reading, the vector in \eqref{eq:x79} can be grouped into five blocks:
+For reading, the vector in \eqref{eq:spread_calibration_vector} can be grouped into five conceptual blocks:
 the raw prior block \(\textbf{x}_{\mathrm{prior}}\), the
 range/elevation/height block \(\textbf{x}_{\mathrm{geom}}\), the local building
 block \(\textbf{x}_{\mathrm{morph}}\), one bias term, and the interaction block
-\(\textbf{x}_{\mathrm{int}}\).
+\(\textbf{x}_{\mathrm{int}}\). The displayed order follows the implementation,
+so these blocks are not all contiguous in the column vector. Table~\ref{tab:spread_vector_blocks}
+states the membership explicitly.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\textwidth}{p{2.75cm} X p{2.55cm}}
+\toprule
+\textbf{Block} & \textbf{Entries from \(\textbf{x}_{\mathrm{SP}}(x)\)} & \textbf{Purpose} \\
+\midrule
+\(\textbf{x}_{\mathrm{prior}}\) &
+\(z^{(0)}(x)^2,\ z^{(0)}(x)\) &
+Raw prior anchor and curvature. \\
+\(\textbf{x}_{\mathrm{geom}}\) &
+\(\log(1+d_{2D}),\ \theta_{\mathrm{norm}},\ \theta_{\mathrm{inv}},\ h_{\mathrm{norm}},\ h_{\mathrm{norm}}^2\) &
+Range, elevation and UAV height. \\
+\(\textbf{x}_{\mathrm{morph}}\) &
+\(\rho_{15},\rho_{41},h_{15},h_{41},n_{15},n_{41},b_{41},c_{41},t_{41}\) &
+Local urban morphology and blockage. \\
+Bias &
+\(1\) &
+Regime offset. \\
+\(\textbf{x}_{\mathrm{int}}\) &
+\(n_{41}\log(1+d_{2D}),\ \rho_{41}\theta_{\mathrm{inv}},\ \theta_{\mathrm{norm}}\rho_{41},\ c_{41}\theta_{\mathrm{inv}},\ t_{41}\rho_{41},\ t_{41}n_{41}\) &
+Joint geometry and morphology effects. \\
+\bottomrule
+\end{tabularx}
+\caption{Block membership of the 23 entries in the spread calibration vector.}
+\label{tab:spread_vector_blocks}
+\end{table}
+
 \begin{table}[!htbp]
 \centering
 \scriptsize
@@ -177,7 +213,7 @@ block \(\textbf{x}_{\mathrm{morph}}\), one bias term, and the interaction block
 \bottomrule
 \end{tabularx}
 \caption{Term by term inventory of the direct terms in the spread calibration vector.}
-\label{tab:x79_term_inventory}
+\label{tab:spread_direct_term_inventory}
 \end{table}
 
 The first block lets the model bend the raw prior quadratically. The geometry
@@ -208,7 +244,7 @@ improved with them.
 \bottomrule
 \end{tabularx}
 \caption{Interaction terms in the spread calibration vector.}
-\label{tab:x79_interaction_inventory}
+\label{tab:spread_interaction_inventory}
 \end{table}
 
 \begin{figure}[H]
@@ -225,8 +261,8 @@ improved with them.
 \node[group] (geom) at (3.4,0) {Range, elevation\\and height};
 \node[group] (morph) at (6.8,0) {Density, height\\and blockage};
 \node[group] (inter) at (10.2,0) {Interaction\\terms};
-\node[fitbox] (vec) at (5.1,-1.8) {Feature vector\\$\textbf{x}_{79}(x)\in\mathbb{R}^{23}$};
-\node[fitbox] (ridge) at (5.1,-3.6) {Regime ridge fit\\$\hat z=\textbf{x}_{79}^{\top}\textbf{w}_{r}$};
+\node[fitbox] (vec) at (5.1,-1.8) {Feature vector\\$\textbf{x}_{\mathrm{SP}}(x)\in\mathbb{R}^{23}$};
+\node[fitbox] (ridge) at (5.1,-3.6) {Regime ridge fit\\$\hat z=\textbf{x}_{\mathrm{SP}}^{\top}\textbf{w}^{\mathrm{SP}}_{r}$};
 \node[fitbox, fill=orange!15] (native) at (5.1,-5.4) {Native prior\\$\hat y=\exp(\hat z)-1$};
 \draw[arr] (prior) -- (vec);
 \draw[arr] (geom) -- (vec);
@@ -237,12 +273,12 @@ improved with them.
 \end{tikzpicture}
 \caption[Feature grouping for the calibrated spread prior.]%
 {Feature grouping used by the calibrated spread prior.
-The calibrated model is linear in \(\textbf{x}_{79}\), but the features include
+The calibrated model is linear in \(\textbf{x}_{\mathrm{SP}}\), but the features include
 nonlinear transforms and interactions selected from propagation intuition.}
-\label{fig:try79_feature_groups}
+\label{fig:spread_feature_groups}
 \end{figure}
 
-The new features beyond those in \(\textbf{x}_{78}\) are listed below. The
+The new features beyond the attenuation calibration vector are listed below. The
 shared morphology notation follows the path loss prior construction in
 Sec.~\ref{sec:nlos_branch}. In particular, \(b(\cdot)\) is the building mask,
 \(\rho_k\) is the building density box mean, \(h_k\) is the density weighted
@@ -308,37 +344,17 @@ when the link is likely to be embedded in a high rise canyon. It is especially
 useful for distinguishing dense but low rise zones from dense high rise zones.
 
 \paragraph{Six class topology definition.}
-The spread prior uses the six topology labels produced by the final
-prior-generation code. For a map, let \(\bar\rho_{\mathrm{map}}\) be the fraction of
-non ground pixels and let \(\bar h_{\mathrm{map}}\) be the mean height over
-non ground pixels only. The class assignment is:
-\begin{equation}
-\mathrm{class}_{79}
-=
-\begin{cases}
-\texttt{open\_sparse\_lowrise},
-& \bar\rho_{\mathrm{map}}\le0.12,\ \bar h_{\mathrm{map}}\le\SI{12}{m},\\
-\texttt{open\_sparse\_vertical},
-& \bar\rho_{\mathrm{map}}\le0.12,\ \bar h_{\mathrm{map}}>\SI{12}{m},\\
-\texttt{dense\_block\_midrise},
-& \bar\rho_{\mathrm{map}}\ge0.28,\ \bar h_{\mathrm{map}}\le\SI{28}{m},\\
-\texttt{dense\_block\_highrise},
-& \bar\rho_{\mathrm{map}}\ge0.28,\ \bar h_{\mathrm{map}}>\SI{28}{m},\\
-\texttt{mixed\_compact\_lowrise},
-& 0.12<\bar\rho_{\mathrm{map}}<0.28,\ \bar h_{\mathrm{map}}\le\SI{12}{m},\\
-\texttt{mixed\_compact\_midrise},
-& 0.12<\bar\rho_{\mathrm{map}}<0.28,\ \bar h_{\mathrm{map}}>\SI{12}{m}.
-\end{cases}
-\label{eq:topo79}
-\end{equation}
-These labels are map level routing keys for the spread prior ridge models;
-they are not additional per pixel morphology features.
+The spread prior uses the six topology labels produced by the final prior
+code. Their thresholds and class names are defined in
+\eqref{eq:topology_class_sp_support}. These labels are map level routing keys
+for the spread prior ridge models; they are not additional per pixel
+morphology features.
 
 \subsubsection{Stage 3: regime wise ridge regression}
 
 The regime $r$ for the spread prior is keyed by: metric (DS or AS), topology class (6 classes), propagation state (LoS or NLoS), antenna height bin, giving up to $2 \times 6 \times 2 \times 3 = 72$ regimes.
 The antenna height bins use the same tertile style thresholds as
-\eqref{eq:ant_bin_v2}: \texttt{low\_ant} for
+\eqref{eq:ant_bin_support}: \texttt{low\_ant} for
 \(h_{\mathrm{tx}}\le\SI{58.12}{m}\), \texttt{mid\_ant} for
 \(\SI{58.12}{m}<h_{\mathrm{tx}}\le\SI{103.85}{m}\), and
 \texttt{high\_ant} above \SI{103.85}{m}. These calibration bins are
@@ -347,17 +363,17 @@ tables.
 
 Valid pixels are subsampled at rate $p = 0.02$ (2\%). The ridge regression:
 \begin{equation}
-\hat{\textbf{w}}^{79}_{r} = \left(\textbf{X}_r^\top \textbf{X}_r + \lambda \textbf{D}^\top\textbf{D}\right)^{-1}\textbf{X}_r^\top \textbf{z}_r,\quad \lambda = 10^{-3}
+\hat{\textbf{w}}^{\mathrm{SP}}_{r} = \left(\textbf{X}_r^\top \textbf{X}_r + \lambda \textbf{D}^\top\textbf{D}\right)^{-1}\textbf{X}_r^\top \textbf{z}_r,\quad \lambda = 10^{-3}
 \label{eq:ridge}
 \end{equation}
 
 Here \(\textbf{X}_r\in\mathbb{R}^{N_r\times23}\) stacks one row
-\(\textbf{x}_{79,n}^{\top}\) per sampled pixel in regime \(r\), and
+\(\textbf{x}_{\mathrm{SP},n}^{\top}\) per sampled pixel in regime \(r\), and
 \(\textbf{z}_r\in\mathbb{R}^{N_r}\) stacks the corresponding transformed
 targets. The coefficient vector
-\(\hat{\textbf{w}}^{79}_{r}\) minimizes the regularized least squares problem
+\(\hat{\textbf{w}}^{\mathrm{SP}}_{r}\) minimizes the regularized least squares problem
 \begin{equation}
-\hat{\textbf{w}}^{79}_{r}
+\hat{\textbf{w}}^{\mathrm{SP}}_{r}
 =
 \arg\min_{\textbf{w}\in\mathbb{R}^{23}}
 \left\|
@@ -368,11 +384,11 @@ targets. The coefficient vector
 \left\|
 \textbf{D}\textbf{w}
 \right\|_2^2 ,
-\label{eq:try79_ridge_objective}
+\label{eq:spread_ridge_objective}
 \end{equation}
 where \(\textbf{D}=\mathrm{diag}(d_1,\ldots,d_{23})\), with \(d_{23}=0\)
 and \(d_i=1\) for \(i\ne23\). Thus, the final interaction term
-\(t_{41}n_{41}\), which is the last entry of \eqref{eq:x79}, is left
+\(t_{41}n_{41}\), which is the last entry of \eqref{eq:spread_calibration_vector}, is left
 unpenalized by the ridge term in the frozen calibration used by the final
 model. This is an implementation detail of the stored artifact, not a separate
 physical assumption. The regularizer is small, but it prevents unstable
@@ -420,7 +436,9 @@ the same keys in this order and uses the first one present:
 \subsubsection{Stage 4: inverse transform and clipping}
 
 \begin{equation}
-\hat y(x) = \exp\!\left(\hat z(x)\right) - 1,\qquad \hat z(x) = \textbf{x}_{79}(x)^\top \hat{\textbf{w}}^{79}_{r}
+\hat y(x) = \exp\!\left(\hat z(x)\right) - 1,\qquad
+\hat z(x) = \textbf{x}_{\mathrm{SP}}(x)^\top
+\hat{\textbf{w}}^{\mathrm{SP}}_{r}
 \label{eq:inv_log}
 \end{equation}
 
@@ -432,7 +450,7 @@ Regime dependent clipping is applied after the inverse transform:
 y_{\max,r},
 \max\!\left(0,\exp(\hat z(x))-1\right)
 \right),
-\label{eq:try79_clip}
+\label{eq:spread_clip}
 \end{equation}
 with delay spread clipped to $[0, 400]$~ns and angular spread clipped to
 $[0, 15^\circ]$ in LoS or $[0, 90^\circ]$ in NLoS. The asymmetric angular
@@ -450,34 +468,35 @@ and the method level data flow used by both spread modalities.
 \centering
 \resizebox{0.98\textwidth}{!}{%
 \begin{tikzpicture}[
-    >=stealth,
-    font=\scriptsize,
+    >=Latex,
+    font=\footnotesize,
     block/.style={draw, thick, fill=blue!10, rectangle, rounded corners,
-      text width=2.55cm, minimum height=1.0cm, align=center},
+      text width=2.75cm, minimum height=1.18cm, align=center},
     input/.style={block, fill=gray!20},
     branch/.style={block, fill=orange!10},
     note/.style={draw, dashed, fill=yellow!10, rounded corners,
-      text width=3.0cm, align=left, font=\scriptsize},
-    arr/.style={->, thick}
+      text width=3.25cm, align=left, font=\scriptsize},
+    arr/.style={->, thick},
+    alabel/.style={font=\scriptsize, fill=white, inner sep=1.2pt}
 ]
-\node[input] (inputs) at (0,0) {Geometry, masks and morphology\\
+\node[input] (inputs) at (0,1.9) {Geometry, masks and morphology\\
 $d_{2D}, \theta, h_{\mathrm{tx}}, \rho, h, n$\\$b_{41}, c_{41}, t_{41}$};
-\node[block] (raw_prior) at (3.2,0) {Stage 1\\Raw log prior\\$z^{(0)}(x)$};
-\node[block] (features) at (6.4,0) {Stage 2\\Feature vector\\$\textbf{x}_{79}(x)\in\mathbb{R}^{23}$};
-\node[block] (ridge) at (9.6,0) {Stage 3\\Regime ridge\\$\hat z=\textbf{x}_{79}^{\top}\hat{\textbf{w}}^{79}_{r}$};
-\node[branch] (invert) at (12.8,0) {Stage 4\\Inverse transform\\$\hat y=\exp(\hat z)-1$};
-\node[input] (clip) at (16.0,0) {Calibrated spread prior\\$\hat y(x)$ after clipping};
-\node[note] (keys) at (9.6,-1.75) {Regime \(r\) keys:\\metric (DS/AS), topology, LoS/NLoS, antenna bin};
-\draw[arr] (inputs) -- node[above, font=\tiny] {maps} (raw_prior);
-\draw[arr] (raw_prior) -- node[above, font=\tiny] {$\mathbb{R}^{H\times W}$} (features);
-\draw[arr] (features) -- node[above, font=\tiny] {$\mathbb{R}^{23\times H\times W}$} (ridge);
-\draw[arr] (ridge) -- node[above, font=\tiny] {$\mathbb{R}^{H\times W}$} (invert);
-\draw[arr] (invert) -- node[above, font=\tiny] {$\mathbb{R}^{H\times W}$} (clip);
+\node[block] (raw_prior) at (4.0,1.9) {Stage 1\\Raw log prior\\$z^{(0)}(x)$};
+\node[block] (features) at (8.0,1.9) {Stage 2\\Feature vector\\$\textbf{x}_{\mathrm{SP}}(x)\in\mathbb{R}^{23}$};
+\node[note] (keys) at (4.0,-2.1) {Regime \(r\) keys:\\metric (DS/AS), topology, LoS/NLoS, antenna bin};
+\node[block] (ridge) at (8.0,-2.1) {Stage 3\\Regime ridge\\$\hat z=\textbf{x}_{\mathrm{SP}}^{\top}\hat{\textbf{w}}^{\mathrm{SP}}_{r}$};
+\node[branch] (invert) at (12.0,-2.1) {Stage 4\\Inverse transform\\$\hat y=\exp(\hat z)-1$};
+\node[input] (clip) at (16.0,-2.1) {Calibrated spread prior\\$\hat y(x)$ after clipping};
+\draw[arr] (inputs) -- node[alabel, above=5pt, pos=0.55] {maps} (raw_prior);
+\draw[arr] (raw_prior) -- node[alabel, above=5pt, pos=0.55] {$\mathbb{R}^{H\times W}$} (features);
+\draw[arr] (features.south) -- node[alabel, right=7pt, pos=0.45] {$\mathbb{R}^{23\times H\times W}$} (ridge.north);
+\draw[arr] (ridge) -- node[alabel, above=5pt, pos=0.55] {$\mathbb{R}^{H\times W}$} (invert);
+\draw[arr] (invert) -- node[alabel, above=5pt, pos=0.55] {$\mathbb{R}^{H\times W}$} (clip);
 \draw[arr, dashed] (keys) -- (ridge);
-\draw[arr, dashed] (inputs.south) .. controls +(1.4,-1.2) and +(-1.4,-1.2) .. (features.south);
+\draw[arr, dashed] (inputs.south) .. controls +(0,-1.35) and +(-2.3,-1.35) .. (features.south west);
 \end{tikzpicture}%
 }
 \caption[Pipeline for the delay and angular spread priors.]%
 {Pipeline for the delay and angular spread priors. Both spread modalities share this identical linear architecture, predicting expected spread in the log domain via regime wise ridge regression over 23 spatial and geometric features.}
-\label{fig:try79_pipeline}
+\label{fig:spread_prior_pipeline}
 \end{figure}

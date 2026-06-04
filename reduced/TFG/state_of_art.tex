@@ -52,7 +52,7 @@ continuous UAV height conditioning, real city holdout split, and simultaneous
 channel attenuation, delay spread, and angular spread targets.
 
 % Section separator
-\section{Path Loss Prediction}
+\section{Channel Attenuation Prediction}
 \label{sec:soa_classical}
 % Section separator
 
@@ -185,6 +185,9 @@ The \emph{root mean square delay spread} $\tau_{\mathrm{rms}}$ measures the
 time domain dispersion of multipath arrivals and drives inter symbol interference
 in wideband systems.  The \emph{azimuth angular spread} $\sigma_{\mathrm{AS}}$
 at the receiver quantifies the spatial diversity of arriving paths.
+Angular spread is especially relevant for antenna and array design: it affects
+beam width selection, beamforming robustness, and how concentrated or diffuse
+the useful received directions are.
 
 For multipath components with powers \(P_\ell\), delays \(\tau_\ell\), and
 azimuth angles \(\phi_\ell\), the RMS delay spread is
@@ -429,12 +432,12 @@ this convention by working in $\log(1+y)$ space throughout, consistent with the
 
 \subsection{Deep learning for wideband channel statistics}
 
-Work on deep learning for delay and angular spread is sparser than for path
-loss. Most published methods either predict spread globally per sample (a single scalar)
-rather than per pixel, or treat it as an ancillary output of a multitask
-path loss model.  Per pixel dense prediction of delay spread and angular spread
-over $513 \times 513$ maps is, to the best of the author's knowledge, not
-addressed by published methods at the time of writing.
+Work on deep learning for delay and angular spread is sparser than for channel
+attenuation. Most published methods either predict spread globally per sample
+(a single scalar) rather than per pixel, or treat it as an ancillary output of a
+multitask attenuation model. Per pixel dense prediction of delay spread and
+angular spread over $513 \times 513$ maps is, to the best of the author's
+knowledge, not addressed by the reviewed methods.
 
 The closest external quantitative references for spreads are therefore scalar
 channel characteristic predictors rather than dense CKM-map benchmarks. Huang et al.\
@@ -444,11 +447,10 @@ characteristics from coordinates and link features, not dense CKM maps from
 city topologies.
 
 \textbf{Limitation for this thesis.}
-Most reviewed angular spread work reports scalar link level channel parameters
-or simulation specific statistics rather than dense CKM maps under city
-holdout. Chapter~4 therefore compares angular spread mainly against the frozen
-prior, the thesis target, and one or two papers with similar but not equal
-goals.
+Most reviewed angular spread work reports scalar link level angle of arrival or
+angle of departure statistics rather than dense CKM maps under city holdout.
+Chapter~4 therefore compares angular spread mainly against the frozen prior, the
+thesis target, and nearby papers whose tasks are related but not equivalent.
 
 The main challenge is the spike plus exponential distribution shape of spread
 targets.  A model trained only with mean squared error (MSE) collapses to the
@@ -471,8 +473,8 @@ matters for wideband links.
 Most reviewed delay spread work reports scalar link level channel parameters
 or simulation specific statistics rather than dense \(513\times513\) CKM maps
 under city holdout. Chapter~4 therefore compares delay spread mainly against
-the frozen prior, the thesis target, and one or two papers with similar but not
-equal goals.
+the frozen prior, the thesis target, and nearby papers whose tasks are related
+but not equivalent.
 
 \subsection{Distributional mismatch and the spike plus exponential problem}
 
@@ -570,38 +572,11 @@ target specific priors and losses; otherwise the easiest target can dominate
 the common backbone.
 
 % Section separator
-\subsection{Training stabilisation and regularisation techniques}
+\subsection{Height conditioning for the residual model}
 \label{sec:soa_training}
 % Section separator
 
 \noindent
-The methods in this section are included because dense radio map prediction is
-easy to overfit. The model sees complete city maps with strong spatial
-correlations, while validation and test cities are completely held out. Small
-training subsets, heavy tailed NLoS errors, and quantized targets can make the
-training loss improve even when the deployment-relevant city holdout error does
-not. Stabilisation and regularisation techniques are therefore practical
-safeguards against selecting a model that only fits
-the training cities.
-
-\subsubsection{Stochastic weight averaging}
-
-Stochastic weight averaging (SWA) \cite{izmailov2018swa} averages model weights
-along the training trajectory at a low, approximately constant learning rate.
-This finds wider optima in the loss landscape that generalise better to
-unseen data. In city holdout radio map prediction, this idea is relevant because
-the validation and test cities are never seen during training.
-
-\subsubsection{Exponential moving average weights}
-
-Separate from SWA, exponential moving average (EMA) tracking of the model
-weights can produce smoother validation checkpoints by reducing short term
-training noise. EMA is therefore often discussed together with plateau based
-learning rate schedules and checkpoint selection, although it is a training
-stabilisation tool rather than a propagation model.
-
-\subsubsection{Feature wise linear modulation}
-
 Feature wise linear modulation (FiLM) \cite{perez2018film} conditions
 the activations of a neural network on a scalar or vector input by applying
 learned affine transforms $\gamma(c) \cdot \textbf{h} + \beta(c)$ to
@@ -611,6 +586,25 @@ FiLM layers at multiple encoder depths.  This ensures that the UAV altitude
 continuously modulates the activation statistics rather than being handled as a
 discrete bin, which is critical when the effective propagation regime changes
 substantially with height.
+
+Two other tools used during development, stochastic weight averaging (SWA)
+\cite{izmailov2018swa} and exponential moving average (EMA) tracking, are kept
+in this review because they explain some of the training choices in
+Appendix~\ref{app:detailed_attempt_log}. SWA averages model weights from later
+training checkpoints in order to select a flatter region of the loss landscape.
+EMA keeps a smoothed copy of the weights during optimization, so the validation
+checkpoint is less sensitive to short term gradient noise. Both are especially
+useful when validation cities are never seen during training, where a single
+epoch can look better or worse because the held out topology set is small.
+
+They should nevertheless be read as training settings for optimization and
+checkpoint selection, not as propagation features. FiLM changes the network
+input conditioning because the UAV height controls intermediate activations.
+SWA and EMA do not add map channels, do not encode LoS/NLoS geometry, and do not
+change the physical variables described in Chapter~\ref{chap:methodology}.
+They only affect which trained weights are evaluated. This distinction is why
+the final methodology presents FiLM as part of the residual model, while SWA and
+EMA remain part of the training protocol.
 
 % Section separator
 \subsection{Key benchmarks and fair comparison}
@@ -636,8 +630,9 @@ valid comparison:
   \item \textbf{Dynamic range and clipping:} determines the RMSE floor and
         ceiling independently of model quality.
   \item \textbf{Inference extras and calibration source:} test time
-        augmentation (TTA), SWA, EMA weights, and whether calibration is
-        train only, validation based, or fitted from test/field measurements.
+        augmentation (TTA), checkpoint averaging parameters such as SWA or EMA,
+        and whether calibration is train only, validation based, or fitted from
+        test/field measurements.
 \end{enumerate}
 
 This thesis uses a strict city holdout split, continuous UAV height, valid

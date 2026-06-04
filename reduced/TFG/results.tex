@@ -33,14 +33,14 @@ pixel weighted metric on the held out validation+test pool.
 The LoS branch of the final path loss prior is compared through three
 increasingly physical component variants fitted on the same city holdout split,
 so the gain from each modelling choice can be isolated
-(Table~\ref{tab:try78_los_waterfall}).
+(Table~\ref{tab:pl_los_waterfall}).
 
 \begin{table}[!htbp]
 \centering
 \caption[LoS path loss prior component comparison.]%
 {LoS path loss prior component comparison: three priors evaluated on the same
 held out validation+test pool (pixel weighted RMSE).}
-\label{tab:try78_los_waterfall}
+\label{tab:pl_los_waterfall}
 \begin{tabular}{lcc}
 \toprule
 Prior & LoS RMSE (dB) & Gain over previous \\
@@ -90,7 +90,7 @@ direct visibility pixels, blocked pixels, or only the easier majority regime.
 \centering
 \caption{Final hybrid path loss prior, pixel weighted RMSE on the
 held out validation+test split.}
-\label{tab:try78_results}
+\label{tab:pl_prior_results}
 \begin{tabular}{lcc}
 \toprule
 Region & RMSE & Unit \\
@@ -132,7 +132,7 @@ native ns and degrees.
 \begin{table}[!htbp]
 \centering
 \caption{Calibrated spread prior test results, pixel weighted RMSE.}
-\label{tab:try79_results}
+\label{tab:spread_prior_results}
 \begin{tabular}{lccc}
 \toprule
 Metric & Overall & LoS & NLoS \\
@@ -151,8 +151,8 @@ The CKM dataset covers stored transmitter heights from about \SI{12}{m} to almos
 \SI{500}{m}. The absence of samples above \SI{478}{m} is statistically normal
 for this finite draw, because the expected count above that height is only
 0.52. Therefore the conditional error at a single aggregate RMSE can hide
-strong altitude-dependent structure. Tables~\ref{tab:try78_by_height} and
-\ref{tab:try79_by_height} therefore break the path loss prior and the
+strong altitude-dependent structure. Tables~\ref{tab:pl_prior_by_height} and
+\ref{tab:spread_prior_by_height} therefore break the path loss prior and the
 delay spread and angular spread priors into four transmitter height bins, using the
 same pixel weighted aggregation as the headline tables.
 
@@ -160,7 +160,7 @@ same pixel weighted aggregation as the headline tables.
 \centering
 \caption{Path loss prior pixel weighted RMSE by transmitter height, on
 the held out validation+test split.}
-\label{tab:try78_by_height}
+\label{tab:pl_prior_by_height}
 \small
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrrr}
 \toprule
@@ -178,7 +178,7 @@ Transmitter height bin & Overall & LoS & NLoS & Samples \\
 \centering
 \caption{Delay spread and angular spread calibrated pixel weighted RMSE
 by transmitter height, on the city holdout test split.}
-\label{tab:try79_by_height}
+\label{tab:spread_prior_by_height}
 \small
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xlrrr}
 \toprule
@@ -218,21 +218,21 @@ where a distribution aware residual can matter.
 \subsection{Path loss prior by topology class}
 
 The headline path loss prior number (\SI{1.92}{dB} overall RMSE on the
-held out validation+test split, see Table~\ref{tab:try78_results}) hides the
+held out validation+test split, see Table~\ref{tab:pl_prior_results}) hides the
 same building layout structure captured by the topology aware breakdown. The per sample evaluation
 records were aggregated again by classifying each evaluated sample into the six
 topology classes with the same final routing rule. The pixel weighted RMSE per topology class is
-reported in Table~\ref{tab:try78_by_topology}.
+reported in Table~\ref{tab:pl_prior_by_topology}.
 
 \begin{table}[!htbp]
 \centering
 \caption[Hybrid path loss prior RMSE by topology class.]%
 {Hybrid path loss prior, pixel weighted RMSE on the
 held out validation+test split, broken down by topology class. The
-overall row reproduces the RMSE values in Table~\ref{tab:try78_results}; the
+overall row reproduces the RMSE values in Table~\ref{tab:pl_prior_results}; the
 sample count is the sum of samples assigned to the six topology classes. The
 aggregate prior evaluator contains 4994 topology assigned samples.}
-\label{tab:try78_by_topology}
+\label{tab:pl_prior_by_topology}
 \footnotesize
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrrr}
 \toprule
@@ -271,7 +271,7 @@ the appendix diagnostic models is kept in Appendix~\ref{app:detailed_attempt_log
 \subsection{Spread priors by topology class}
 
 The delay spread and angular spread priors are also topology dependent. These
-tables use the same city holdout test contract as Table~\ref{tab:try79_results}
+tables use the same city holdout test contract as Table~\ref{tab:spread_prior_results}
 and keep the dense pixel weighted metric separated by visibility regime.
 
 \begin{table}[!htbp]
@@ -339,20 +339,9 @@ selected on validation after the deterministic RMSE/MAE dominant
 fine tuning stage. The exact weights of both stages are listed in
 Table~\ref{tab:try80_loss_settings}. The final claim is therefore an RMSE
 improvement over the frozen priors rather than a calibrated probabilistic
-prediction claim. For a target \(t\), group \(G\), and valid pixel set
-\(\Omega_{G,t}\), the reported model RMSE is
-
-\begin{equation}
-  \mathrm{RMSE}_{\mathrm{model}}(G,t) =
-  \sqrt{\frac{1}{|\Omega_{G,t}|}
-  \sum_{(i,p)\in\Omega_{G,t}}
-  \left(\hat{y}_{i,p,t} - y_{i,p,t}\right)^2}.
-  \label{eq:try80_model_rmse}
-\end{equation}
-
-The prior RMSE uses the same formula with the frozen prior prediction
-\(y^{\mathrm{prior}}_{i,p,t}\) in place of \(\hat{y}_{i,p,t}\). Therefore
-\texttt{model\_rmse} in the evaluation JSON is target specific: it is the RMSE
+prediction claim. The same pixel weighted RMSE contract defined in
+Chapter~\ref{chap:methodology} is used for the model and for the frozen priors.
+Therefore \texttt{model\_rmse} in the evaluation JSON is target specific: it is the RMSE
 for channel attenuation, delay spread, or angular spread individually, not a sum of the
 three RMSE values. The three targets are kept separate because their units are
 incompatible. Delay spread and angular spread are evaluated exactly like channel
@@ -411,12 +400,12 @@ NLoS by \SI{0.3661}{dB}.
 \subsection{Angular spread result}
 
 For angular spread, the frozen prior already meets the original project target,
-but \textsc{HARP-Net CKM} further reduces RMSE on unseen test cities. Overall
+but \textsc{HARP-Net CKM} still reduces RMSE on unseen test cities. Overall
 RMSE drops from \(13.7416^\circ\) to \(11.3854^\circ\). The MAE is almost
-unchanged (\(+0.0198^\circ\)), which means the neural residual mainly
-suppresses larger errors rather than shifting every pixel uniformly. The LoS
-row improves strongly, from \(15.2818^\circ\) to \(12.3510^\circ\), while NLoS
-also improves slightly, from \(8.6614^\circ\) to \(8.4424^\circ\).
+unchanged (\(+0.0198^\circ\)), so this is a modest residual correction rather
+than a uniform improvement at every pixel. The clearest gain appears in LoS
+pixels, from \(15.2818^\circ\) to \(12.3510^\circ\), while NLoS improves only
+slightly, from \(8.6614^\circ\) to \(8.4424^\circ\).
 
 No reviewed external method reports the same dense CKM city holdout angular
 spread map task. One or two papers have similar link level channel statistics
@@ -429,10 +418,10 @@ against the frozen prior and the original thesis target.
 Delay spread also improves in RMSE, although it is the only output where RMSE
 and MAE move in opposite directions. Overall RMSE drops from \SI{28.1023}{ns}
 to \SI{26.5570}{ns}, while MAE increases from \SI{7.3033}{ns} to
-\SI{7.9897}{ns}. This is not a contradiction: RMSE weights rare high delay
-errors quadratically, so suppressing the largest artefacts can improve RMSE
-while many tiny local shifts slightly increase MAE. The LoS RMSE improves by
-\SI{2.0432}{ns}; the NLoS RMSE improves by \SI{0.4112}{ns}.
+\SI{7.9897}{ns}. This should be read as a tail focused gain: suppressing the
+largest delay errors can improve RMSE while many small local shifts slightly
+increase MAE. The LoS RMSE improves by \SI{2.0432}{ns}; the NLoS RMSE improves
+only by \SI{0.4112}{ns}.
 
 As with angular spread, no reviewed paper is directly equal to the dense CKM
 city holdout delay spread map task. The nearest references predict scalar
@@ -593,11 +582,12 @@ city holdout protocol. \\
 \end{table}
 
 Table~\ref{tab:spread_soa_context} adds the missing spread side comparison.
-It is intentionally not a leaderboard: the closest external papers predict
-scalar or link level channel characteristics, while this thesis predicts dense
-\(513\times513\) delay spread and angular spread maps under city holdout.
-The table is still useful because it shows the scale and type of the nearest
-published spread predictors.
+It is intentionally not a leaderboard: the closest external papers mostly
+predict scalar or link level channel characteristics, and the angular quantities
+are often angle of arrival or angle of departure spreads rather than the dense
+angular spread map target used here. This thesis predicts dense
+\(513\times513\) delay spread and angular spread maps under city holdout, so the
+table is useful as scope context rather than as a ranking.
 
 \begin{table}[!htbp]
 \centering
@@ -626,8 +616,9 @@ city holdout evaluation. \\
 Huang et al.\ \cite{huang2025a2gtransformer} &
 Transformer UAV channel predictor; merged data RMSE of \SI{4.577}{ns} for RMS
 DS and \(1.549^\circ\), \(0.375^\circ\), \(0.864^\circ\), \(0.074^\circ\) for
-RMS AAOA, EAOA, AAOD and EAOD. &
-Recent UAV mmWave model predicting both delay and angular spread quantities. &
+RMS azimuth/elevation angle of arrival and departure quantities. &
+Recent UAV mmWave model predicting delay spread and AoA/AoD angular
+statistics. &
 Predicts per link channel characteristics from coordinates/frequency/location
 tags, not dense \(513\times513\) AS/DS maps from building height images. \\
 Mi et al.\ \cite{mi2024pointcloud} &
@@ -664,7 +655,7 @@ explicit instead of omitting the comparison. The thesis claim is not that the
 spread maps beat external scalar predictors; it is that the model reports dense
 delay spread and angular spread RMSE on unseen CKM cities, improves the closest
 same protocol spread baselines, and keeps the stricter ground mask, LoS/NLoS,
-and continuous-height protocol visible.
+and continuous height protocol visible.
 
 \paragraph{Inference time sanity check.}
 
@@ -743,6 +734,12 @@ across the split and LoS/NLoS checks, and applies residual corrections whose
 sign follows the prior error maps. The diagnostic appendix keeps the
 histogram and spread quantisation checks; the wider gallery and split bar plots
 remain in the generated figure archive.
+The multilinear priors are already strong in RMSE because much of the CKM
+structure is explained by range, height, LoS state and coarse morphology. The
+main role of the residual model is therefore local: it sharpens corrections
+around building borders and other spatial transitions that a linear prior cannot
+represent. Structural metrics such as SSIM were not computed, but they may be
+more sensitive than RMSE to this type of spatial improvement.
 
 \begin{figure}[!htbp]
 \centering
@@ -754,7 +751,11 @@ final prior, residual correction and prediction side by side.}
 \label{fig:try80_panel_results}
 \end{figure}
 
-The main lesson is that LoS path loss in this dataset has a strong radial ring structure, so a calibrated two ray prior is more efficient than asking a CNN to learn the same pattern from pixels. The remaining qualitative failures are concentrated in sparse NLoS and high spread cases, which is why future spread work should include an explicit high tail or outlier diagnostic.
+The main lesson is that LoS path loss in this dataset has a strong radial ring
+structure, so a calibrated two ray prior is more efficient than asking a CNN to
+learn the same pattern from pixels. The remaining qualitative failures are
+concentrated in sparse NLoS and high spread cases, which is why future spread
+work should include an explicit high tail or outlier diagnostic.
 \section{Limitations}
 \label{sec:limitations}
 

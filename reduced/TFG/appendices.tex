@@ -139,10 +139,10 @@ Try & Public definition \\
 52 & Paper-routed city-type-aware PMNet branch: 112 channels, three city-type NLoS experts, automatic city-type routing, and a Try 52 teacher refiner. \\
 53 & Literature/cyclic PMNet branch with stage-2 teacher refinement and an added stage-3 NLoS global-context cyclic refiner. \\
 54 & First full partitioned-expert PMHHNet branch: six topology experts, topology classifier, continuous height conditioning, and no-data head. \\
-55 & Same partitioned PMHHNet layout as Try 54, but with the objective changed toward final-map RMSE plus auxiliary no-data loss and EMA. \\
+55 & Same partitioned PMHHNet layout as Try 54, but with the objective changed toward final map RMSE plus auxiliary no-data loss and EMA checkpoint smoothing as a training parameter. \\
 56 & Try 26 U-Net family converted into six topology experts, with topology-mask input, no-data output, and stronger configurable dropout. \\
 57 & Partitioned PMHHNet final-map-RMSE branch deployed across the six topology experts after the Try 54 and Try 55 objective change. \\
-58 & Try 26 topology-expert generator-only profile: topology mask, no-data BCE head, stronger dropout, AdamW/EMA defaults, and rewind-to-best. \\
+58 & Try 26 topology expert generator profile: topology mask, no-data BCE head, stronger dropout, AdamW and EMA training defaults, and rewind to best. \\
 59 & Second Try 26 topology-expert generator-only pass under the Try 59 branch, later kept as a separate spread/prior source rather than merged with Try 58. \\
 60 & No-prior ablation of the Try 57 family: direct path-loss prediction from topology, LoS, distance, and height without formula/confidence prior channels. \\
 61 & No-prior NLoS-focused objective: strong LoS/NLoS reweighting, explicit NLoS term, composite checkpoint, and open-sparse-vertical split into LoS/NLoS experts. \\
@@ -267,11 +267,11 @@ still dominated the physical error.
 \subsection{Regularization and distribution diagnosis}
 
 Tries 67 to 75 tested whether late training refinements could rescue the
-PMHHNet family. Geometry-assisted channels, high-frequency-path fixes,
-multi-scale quad heads, uncertainty heads, EMA/SWA-like discipline, and
-histogram-focused experts all helped diagnosis. They made the failure mode
-clearer, but they did not change the central fact that point regression could
-collapse hard tails.
+PMHHNet family. Geometry assisted channels, high frequency path fixes,
+multi scale quad heads, uncertainty heads, checkpoint smoothing parameters such
+as EMA or SWA, and histogram focused experts all helped diagnosis. They made
+the failure mode clearer, but they did not change the central fact that point
+regression could collapse hard tails.
 
 Try 74 and Try 75 were the turning point because histogram analysis made the
 distribution mismatch visible. The target was not simply a smooth surface with
