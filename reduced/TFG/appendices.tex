@@ -177,7 +177,7 @@ Try & Public definition \\
 \midrule
 76 & Distribution first GMM path-loss architecture: sample level mixture estimation plus pixel assignment. \\
 77 & Distribution first spread architecture: delay/angular spread GMM and spike-plus-tail modelling. \\
-78 & Final ML-calibrated path-loss prior: enhanced two ray LoS branch plus regime wise linear NLoS calibration with 18 final calibration regimes. \\
+78 & Final ML-calibrated path loss prior: enhanced two ray LoS branch plus a legacy mixed branch linear calibration table with 18 visibility/morphology/height regimes, from which the final assembly uses the NLoS pixels. \\
 79 & Final ML-calibrated spread priors: log-domain ridge calibration for delay and angular spread, with 36 exact regimes per metric and fallbacks. \\
 80 & \textsc{HARP-Net CKM}: frozen path loss and spread priors plus a shared neural residual model selected through the wide residual model, relaxed residual bounds, a large capacity stage, and the final residual fine tuning stage. \\
 \bottomrule
@@ -302,8 +302,10 @@ distribution first lines are the conceptual bridge to the mixture based
 The calibrated path-loss prior showed that LoS path loss was more deterministic than the neural
 history suggested. The dominant residual over FSPL was a radial ring field,
 well explained by the enhanced two ray model with fitted effective reflection
-parameters. Its final path-loss calibration uses 18 regimes for the NLoS
-linear model, while the LoS branch remains the enhanced two ray prior.
+parameters. Its stored mixed-branch linear calibration table contains 18
+visibility, morphology, and height regimes. In the final frozen path loss
+assembly, the LoS pixels come from the enhanced two ray branch, while the
+NLoS pixels come from that calibrated branch.
 
 The calibrated spread-prior module applied the same estimator discipline to delay spread and angular
 spread: use log-domain ridge calibration over geometry, LoS/NLoS state,
@@ -366,7 +368,9 @@ rows and the three targets are columns. The rows are:
 Rows 5 and 6 are therefore the main \emph{diagnostic} rows: the thesis
 claim is that \textsc{HARP-Net CKM} is a bounded residual corrector, and the visible
 agreement (in sign and location) between the prior-error map and the
-model-correction map is the direct qualitative evidence for that claim.
+model-correction map is the direct qualitative evidence for that claim; in the
+PNGs, colourbars use 1st to 99th percentile clipping, while RMSE is computed on
+all valid pixels.
 
 \begin{table}[H]
 \centering
