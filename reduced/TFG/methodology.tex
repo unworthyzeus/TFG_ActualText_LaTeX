@@ -1,15 +1,3 @@
-\titleformat
-{\chapter}%
-[display]
-{\sffamily\normalsize\Huge\color{black}}%
-{\flushright\sffamily\normalsize\color{DegreeColor}\hrulefill\hspace{1ex}%
-   \MakeUppercase{\chaptertitlename}\hspace{1ex}%
-   {\sffamily\fontsize{42}{42}\selectfont\thechapter}%
-}%
-{2 pt}%
-{\flushright\bfseries\Large}%
-[]%
-\titlespacing*{\chapter}{0pt}{-76pt}{10pt}
 \chapter{Methodology}
 \label{chap:methodology}
 
@@ -18,21 +6,20 @@ contract, receiver mask, city holdout split, pixel weighted metrics, calibrated
 priors, and \textsc{HARP-Net CKM} residual prediction for channel attenuation,
 delay spread, and angular spread. For readability, the implementation is
 grouped into map support quantities, calibrated prior maps and the residual
-neural model. This grouping is a guide to the data flow, not a strict
-preprocessing checklist: some quantities are computed once from geometry, some
-are fitted on the training cities, and some are learned by the neural residual
+neural model. This grouping guides the data flow without implying a strict
+preprocessing checklist: some quantities are computed from geometry, some are
+fitted on the training cities, and some are learned by the neural residual
 model. Appendix~\ref{app:detailed_attempt_log} keeps the development history;
 this chapter keeps the final pipeline and reproduction details.
 
-The ordering is important. The masks, distances and morphology maps are
-deterministic quantities derived from the topology and transmitter height. The
-prior coefficients are fitted once on the training cities and then frozen. The
-neural model therefore does not have to rediscover the full propagation law from
-pixels; it receives a structured set of computed maps and learns only bounded
-local corrections. In this chapter, the word \emph{feature} refers to an input
-map supplied to the model. Fitted constants, regression weights and checkpoint
-selection settings are parameters of the prior or training protocol, not extra
-neural network features.
+The ordering matters: masks, distances and morphology maps are deterministic
+quantities derived from topology and transmitter height. Prior coefficients are
+fitted once on the training cities and then frozen, so the neural model receives
+structured computed maps and learns only bounded local corrections instead of
+rediscovering the full propagation law from pixels. In this chapter, the word
+\emph{feature} refers to an input map supplied to the model. Fitted constants,
+regression weights and checkpoint selection settings are parameters of the prior
+or training protocol, not extra neural network features.
 
 \begin{center}
 \small
@@ -51,19 +38,6 @@ Calibrated priors & LoS attenuation, NLoS attenuation, delay spread and angular 
 \bottomrule
 \end{tabularx}
 \end{center}
-
-\titleformat
-{\chapter}%
-[display]
-{\sffamily\normalsize\Huge\color{black}}%
-{\flushright\sffamily\normalsize\color{DegreeColor}\hrulefill\hspace{1ex}%
-   \MakeUppercase{\chaptertitlename}\hspace{1ex}%
-   {\sffamily\fontsize{60}{60}\selectfont\thechapter}%
-}%
-{5 pt}%
-{\flushright\bfseries\LARGE}%
-[]%
-\titlespacing*{\chapter}{0pt}{-8pt}{20pt}
 
 \begin{figure}[H]
   \centering
