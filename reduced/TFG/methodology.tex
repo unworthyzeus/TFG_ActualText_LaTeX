@@ -64,9 +64,9 @@ Dataset and split & The HDF5 fields, city holdout split, receiver mask and heigh
 General Framework and Data Flow & The complete path from raw CKM sample to frozen priors, residual model inputs and final maps. \\
 Shared support maps, visibility masks and morphology & The support masks, distances, morphology windows and regime keys reused by every prior. \\
 Final priors: overview and literature basis & Why the frozen priors are deterministic estimators rather than generic physical formulas. \\
-Channel Attenuation Prior and Residual Prediction & The Try~78 LoS/NLoS attenuation prior and the residual channel attenuation branch. \\
-Delay and Angular Spread Prior and Residual Prediction & The Try~79 spread prior and the residual DS/AS branches. \\
-Training and Evaluation Protocol & The final neural input channels, bounded residual heads, losses and reporting protocol. \\
+Channel Attenuation Prior and Residual Prediction & The calibrated LoS/NLoS attenuation prior and the residual channel attenuation branch. \\
+Delay and Angular Spread Prior and Residual Prediction & The calibrated spread prior and the residual DS/AS branches. \\
+\textsc{HARP-Net CKM} Neural Residual Model & The neural network used in the final system: input channels, height conditioning, bounded residual heads and training losses. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -378,7 +378,7 @@ Multilinear regression and calculation prior outputs &
 Combined path loss prior, path loss LoS prior, path loss NLoS prior,
 delay spread prior, angular spread prior. \\
 Inputs to \textsc{HARP-Net CKM} &
-Nine map channels in Try~80 order: topology, LoS mask, NLoS mask, ground mask,
+Nine map channels in the final model order: topology, LoS mask, NLoS mask, ground mask,
 combined path loss prior, path loss LoS prior, path loss NLoS prior,
 delay spread prior and angular spread prior; plus scalar transmitter-height
 FiLM conditioning. \\
@@ -821,7 +821,7 @@ given below.
 
 \input{prior_detail_try79}
 
-\section{Training and Evaluation Protocol}
+\section{\textsc{HARP-Net CKM} Neural Residual Model}
 \label{sec:try80_detail}
 
 \textsc{HARP-Net CKM} receives nine spatial channels plus a separate scalar

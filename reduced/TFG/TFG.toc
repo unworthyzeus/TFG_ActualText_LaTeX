@@ -100,7 +100,7 @@
 \contentsline {paragraph}{Fallback hierarchy.}{64}{paragraph*.82}%
 \contentsline {subsubsection}{Inverse transform and clipping}{64}{subsubsection*.83}%
 \contentsline {subsection}{\numberline {3.6.5}Delay and angular spread prior pipeline}{64}{subsection.3.6.5}%
-\contentsline {section}{\numberline {3.7}Training and Evaluation Protocol}{65}{section.3.7}%
+\contentsline {section}{\numberline {3.7}\textsc {HARP-Net CKM} Neural Residual Model}{65}{section.3.7}%
 \contentsline {subsection}{\numberline {3.7.1}Experimental protocol and reporting status}{65}{subsection.3.7.1}%
 \contentsline {subsection}{\numberline {3.7.2}HARP-Net CKM Residual Head}{66}{subsection.3.7.2}%
 \contentsline {subsection}{\numberline {3.7.3}Architecture: Shared UNet with FiLM}{68}{subsection.3.7.3}%

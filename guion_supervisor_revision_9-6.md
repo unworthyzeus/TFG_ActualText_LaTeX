@@ -58,7 +58,7 @@ The point here is that DS and AS share the same prior machinery, rather than hav
 
 ## Pages 65 to 72
 
-In Training and Evaluation Protocol, I made the final model description more ordered: nine input channels, scalar height with FiLM, LoS/NLoS branches, bounded residuals and the loss function.
+In the HARP-Net CKM Neural Residual Model section, I made the network description more ordered: nine input channels, scalar height with FiLM, LoS/NLoS branches, bounded residuals and the loss function.
 
 I also clarified an important code detail: `path_loss_nlos_prior` does not mean the map is zeroed outside NLoS. It is the calibrated NLoS branch, and the final selection is done by the explicit LoS/NLoS masks.
 
