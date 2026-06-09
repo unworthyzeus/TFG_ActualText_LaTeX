@@ -4,6 +4,91 @@
 
 I reviewed the methodology comments and cleaned up the structure, repeated material and notation. The main goal was to make Chapter 3 read as the final reproducible method, not as the development history. The development history stays in the appendix; this chapter now keeps only the pieces used by the final system.
 
+## Exact Comment Fix List
+
+Use this list while scrolling through the revised PDF. The short version is: every comment was treated either as a structure fix, a notation fix, a redundancy fix, or a code consistency fix.
+
+1. **"Show the flow in Fig. 3.1 and describe it here."**
+   I rewrote the Chapter 3 opening so it now points directly to the high level flow figure. The first paragraph explains the same sequence as the figure: raw CKM map and transmitter height, support maps, frozen priors, HARP-Net CKM residuals, and final PL, DS and AS maps.
+
+2. **"The methodology start was too empty and repetitive."**
+   I filled the first methodology page with useful structure instead of filler text. I added Table 3.1 as a chapter guide, so the page now gives the reader both the pipeline summary and the section map.
+
+3. **"Remove the repeated pipeline text."**
+   I deleted the old crossed out paragraphs that repeated the dataset, metric, priors and model ordering. That information now appears once in the opening and once in the framework table, not several times.
+
+4. **"Move the framework section earlier. The old 3.3 should really be 3.2."**
+   I moved General Framework and Data Flow before the support map details. The reader now sees the whole method first, then the geometry and morphology definitions used by the priors.
+
+5. **"The table should have the same rows as the sections."**
+   I rewrote Table 3.1 so its rows match the actual Chapter 3 sections. I also renamed the last row to HARP-Net CKM Neural Residual Model, because that section explains the network rather than a generic training protocol.
+
+6. **"Stop using the word contract so much."**
+   I removed that word from Table 3.1 and from the visible methodology section titles where it sounded bureaucratic. The text now uses more precise names such as receiver mask, evaluation rule, framework, prior, or neural residual model.
+
+7. **"Define H, W, i, j and the transmitter center."**
+   I made the index convention explicit: the map is 513 by 513, pixel indices follow the implementation convention, and the centered transmitter is at the corresponding center coordinate. This avoids the old ambiguity between one based and zero based notation.
+
+8. **"Do not use b(x) if it is just 1 minus g(x)."**
+   I removed the redundant building mask as a main thesis level quantity. The valid receiver set is defined through the ground mask, and building occupancy only appears where a morphology computation needs that complement.
+
+9. **"Buildings being removed from losses and metrics belongs with evaluation, not support maps."**
+   I stopped emphasizing metrics inside the support map section. The support map section now defines the valid receiver set, while the pixel weighted RMSE rule is defined in Results where the numerical tables are interpreted.
+
+10. **"Do not use d3D."**
+    I replaced the old direct 3D path notation with \(d_{\mathrm{LoS}}\). The direct path length and reflected path length are now named consistently as \(d_{\mathrm{LoS}}\) and \(d_{\mathrm{ref}}\).
+
+11. **"Explain the angle normalization, especially the 90 pi expression."**
+    I simplified the notation to the radian form and explained the intuition: the normalized elevation angle is the elevation angle divided by a 90 degree overhead reference, clipped to the unit interval.
+
+12. **"Clarify whether LoS/NLoS masks come from the dataset or are calculated."**
+    I clarified that the thesis experiments use the stored HDF5 LoS mask restricted to valid ground receivers. The CKMGenerator ray casting path is described as a deployment fallback for topology only inputs, not as the evaluation mask used for final reported numbers.
+
+13. **"If ray casting remains, explain intuition before math."**
+    I rewrote that paragraph so the logic comes first: sample the line between transmitter and receiver, compare the line height with buildings, then formalize it. This follows the comment that intuition should precede equations.
+
+14. **"If you use calculated LoS masks, show the error."**
+    I avoided turning the fallback ray casting routine into an evaluated result. Since the final experiments use the HDF5 masks, I did not add an unsupported mask error table. The fallback is now presented only as generator behavior outside the HDF5 setting.
+
+15. **"Explain BoxMean 15 and 41 before equations."**
+    I added the purpose of the two window sizes before the formulas. The 15 pixel window is local receiver texture; the 41 pixel window is a wider urban block context. I also avoided claiming they are optimal without an ablation.
+
+16. **"The height reporting intervals do not belong in the map section."**
+    I removed the result reporting height interval discussion from the support map section. The methodology keeps only calibration keys and normalized features; result bins are discussed in the results chapter.
+
+17. **"rho is confusing because it is also reflection amplitude."**
+    I renamed local density notation away from \(\rho\). The LoS reflection amplitude keeps \(\rho\), while local building density uses a different symbol, so reflection and morphology are no longer mixed.
+
+18. **"Define phi clearly."**
+    I added the explicit meaning of \(\phi\): it is the fitted effective phase offset of the reflected path relative to the direct path. It is a calibrated CKM parameter, not a material constant.
+
+19. **"Explain why log(401) appears despite the dataset maximum being near 500 m."**
+    I added the explanation that the scale saturates a 400 m Tx to Rx height difference because high altitude samples are sparse after splitting by city and regime. The HDF5 maximum is higher, but the normalization is deliberately robust to the thin high altitude tail.
+
+20. **"The prior overview overexplains Bayesian prior terminology."**
+    I shortened the explanation. It now says once that prior means frozen deterministic estimator in this thesis, then immediately explains the LoS attenuation prior, NLoS attenuation prior, spread priors and residual model.
+
+21. **"Remove duplicated geometry and textbook explanations from the LoS prior."**
+    I removed the repeated geometry subsection from the prior detail and made the LoS section start from what is new in this thesis: fitted effective two ray correction, height dependent bias and radial residual.
+
+22. **"Do not make the NLoS part sound like formal stages if the code is not staged."**
+    I changed the language from stages to calculation blocks and branch components. COST231, A2G, morphology and OLS calibration are now described as parts of one calibrated NLoS prior branch.
+
+23. **"Reduce redundancy in the spread prior."**
+    I made the DS and AS section share one explanation of the log domain ridge prior. Reused support maps and topology classes are referenced instead of redefined.
+
+24. **"Move the RMSE equation to Results."**
+    I moved the pixel weighted RMSE formula into Chapter 4. This makes it easier to find when reading the numerical tables and avoids putting a results metric inside support map definitions.
+
+25. **"Page 33 should explain the neural network section, not training and evaluation protocol."**
+    I renamed the section and the page 33 table row to HARP-Net CKM Neural Residual Model. The description now says it explains the network used in the final system: input channels, height conditioning, bounded residual heads and training losses.
+
+26. **"Do not mention internal late attempt labels in the visible text."**
+    I replaced those visible labels in the page 33 guide and in the appendix final table with named components: calibrated path loss prior, calibrated spread priors and HARP-Net CKM. The text now talks about priors and the network, not internal attempt numbers.
+
+27. **"Check the fixes against code and other repos."**
+    I checked the thesis claims against the implementation facts: nine spatial channels plus scalar height, stored HDF5 LoS mask in the final dataset path, ground pixel masking, receiver height 1.5 m, 513 by 513 maps, centered transmitter, 15 and 41 morphology windows, and the final prior plus residual model flow.
+
 ## Page 33
 
 I rewrote the chapter opening. Before, the page looked too empty and the first paragraph was longer and more repetitive. It now starts with a direct summary of the final pipeline, and Table 3.1 acts as a guide to the chapter.

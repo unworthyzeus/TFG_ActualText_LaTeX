@@ -60,11 +60,13 @@ angular spread must all generalize to unseen cities. This paper presents
 \textsc{HARP-Net CKM} (Height-Aware Residual Prior Network for Channel
 Knowledge Map prediction), a hybrid surrogate that freezes physical and
 statistical priors calibrated on the training split and learns bounded residual
-maps with a probabilistic residual head. The model predicts \(513\times513\) dense channel attenuation,
-DS, and AS maps from
-topology, geometric masks, UAV transmitter height, and frozen priors through a
-probabilistic residual stage followed by deterministic RMSE oriented fine
-tuning. On held out cities it reaches \SI{1.6519}{dB} channel attenuation RMSE,
+maps with a probabilistic residual head. The model predicts \(513\times513\)
+dense channel attenuation, DS, and AS maps from topology, geometric masks, five
+frozen prior maps, and a separately encoded UAV transmitter height. A
+probabilistic residual training phase teaches the head the residual
+distribution, and a final deterministic fine tuning phase optimizes the point
+maps used for RMSE reporting. On held out cities it reaches \SI{1.6519}{dB}
+channel attenuation RMSE,
 \SI{26.5570}{ns} delay spread RMSE, and \(11.3854^\circ\) angular spread RMSE,
 reducing RMSE relative to the frozen priors for all three targets. The result
 supports a hybrid design principle: freeze stable radial, visibility, height,
@@ -95,7 +97,7 @@ structure, NLoS attenuation depends on blocked link regimes, and delay and
 angular spread contain near zero LoS values with heavier NLoS tails. The
 contribution is \textsc{HARP-Net CKM}, the Height-Aware Residual Prior Network
 for Channel Knowledge Map prediction. It is a dense CKM recipe for one fixed
-UAV simulation contract: strict city holdout, valid receiver masking, explicit
+UAV evaluation setting: strict city holdout, valid receiver masking, explicit
 LoS/NLoS and height reporting, priors calibrated only on the training split,
 and a bounded neural correction around those priors.
 
@@ -108,7 +110,7 @@ family showed that U-Net style models can be strong dense channel attenuation ba
 attention, equivariance, domain shift handling, corridor weighting, or digital
 twin generation \cite{rmtransformer2025,radiogunet2025,pathfinder2025,
 gao2026,airmap2025}. These papers give the closest dense channel attenuation context, but not
-the same contract: continuous UAV transmitter height, strict city holdout on CKM samples,
+the same setting: continuous UAV transmitter height, strict city holdout on CKM samples,
 and three dense targets (channel attenuation/PL, DS, AS).
 
 CKM work also emphasizes that a radio map is not merely an image but a
@@ -143,7 +145,7 @@ all point to the same issue: NLoS and spread targets are not well represented
 by a single symmetric residual. For DS/AS, the closest external references are
 therefore context rather than direct CKM benchmarks.
 
-\section{Dataset and Task Contract}
+\section{Dataset and Evaluation Setting}
 
 Each sample is a \(513\times513\) urban topology map from the ray traced CKM
 setting used in this work. The carrier is fixed at
@@ -152,7 +154,7 @@ degree of freedom is height. There is one UAV transmitter at the map centre.
 The transmitter horizontal position is fixed, but its antenna height
 \(h_{\mathrm{tx}}\) varies by sample and is treated as a central conditioning
 variable rather than as metadata. The released CKM files call this node a UAV,
-but the model contract is an elevated \SI{7.125}{GHz} transmitter within the
+but the model setting is an elevated \SI{7.125}{GHz} transmitter within the
 sampled height range, so the same setup can also represent other elevated radio
 access nodes under the same simulation assumptions. The spatial resolution is
 \SI{1}{m}\(\times\)\SI{1}{m} per pixel. Every non building pixel is treated as
@@ -195,8 +197,8 @@ refers to the separate 2590-sample, 14-city test split.
 
 \begin{table}[!t]
 \centering
-\caption{Experimental contract used for all reported final numbers.}
-\label{tab:experimental-contract}
+\caption{Experimental setting used for all reported final numbers.}
+\label{tab:experimental-setting}
 \scriptsize
 \setlength{\tabcolsep}{4pt}
 \begin{tabularx}{\linewidth}{p{0.31\linewidth}X}
@@ -269,6 +271,12 @@ interpolates between the bin centre values \((c_k,d_k)\), with
 All database counts are 3972 samples below \SI{50}{m}, 8456 from
 \SIrange{50}{150}{m}, 2490 from \SIrange{150}{300}{m}, and 1262 above
 \SI{300}{m}; the corresponding training counts are 2676, 5654, 1644, and 866.
+This skew also motivates the clipped logarithmic height feature used inside the
+frozen priors: its denominator \(\log(401)\) corresponds to a practical
+\SI{400}{m} transmitter to receiver height difference. The HDF5 maximum is
+higher, but the higher altitude tail is thin after city and regime splitting,
+so the normalization is chosen as a robust saturation scale rather than as the
+absolute sample maximum.
 
 \begin{figure}[!t]
 \centering
@@ -347,9 +355,9 @@ must improve an already calibrated predictor rather than merely beat FSPL.
   arr/.style={-{Stealth[length=2.1mm]}, thick, rounded corners=3pt}
 ]
 \node[input] (support) at (0,0) {Centred UAV\\variable \(h_{\mathrm{tx}}\)\\topology + masks};
-\node[prior] (los) at (3.4,1.45) {LoS PL branch\\FSPL + coherent two ray\\\(\rho,\phi,b,r\) by height};
-\node[prior] (nlos) at (3.4,0) {NLoS PL branch\\raw blocked prior\\\(\mathbf{x}_{78}\), regime OLS};
-\node[prior] (spread) at (3.4,-1.45) {DS/AS branches\\\(\log(1+y)\), \(\mathbf{x}_{79}\)\\height + clearance};
+\node[prior] (los) at (3.4,1.45) {LoS PL branch\\FSPL + coherent two ray\\\(\rho,\phi,\beta_{\mathrm{LoS}},r\) by height};
+\node[prior] (nlos) at (3.4,0) {NLoS PL branch\\raw blocked prior\\\(\mathbf{x}_{\mathrm{NLoS}}\), regime OLS};
+\node[prior] (spread) at (3.4,-1.45) {DS/AS branches\\\(\log(1+y)\), \(\mathbf{x}_{\mathrm{sp}}\)\\height + clearance};
 \node[cal] (switch) at (6.8,0.72) {Visibility switch\\\(\mathrm{PL}_{\mathrm{prior}}\)};
 \node[cal] (stack) at (6.8,-0.92) {Frozen prior maps\\attenuation, DS, AS};
 \node[model] (net) at (10.2,0) {Shared residual model\\FiLM height conditioning\\distribution aware heads};
@@ -376,13 +384,13 @@ height aware priors are produced first and then used as channels for the final
 
 \begin{table}[!t]
 \centering
-\caption{Input/output contract of the full framework and final neural model.}
-\label{tab:io-contract-paper}
+\caption{Input/output definition of the full framework and final neural model.}
+\label{tab:io-definition-paper}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \begin{tabularx}{\linewidth}{p{0.34\linewidth}X}
 \toprule
-Stage & Variables \\
+Block & Variables \\
 \midrule
 External framework inputs &
 Building height map and UAV transmitter height \(h_{\mathrm{tx}}\), stored as \texttt{uav\_height} in the CKM files. \\
@@ -412,7 +420,7 @@ NLoS branch. More precisely, \eqref{eq:fspl-paper} is the Friis/free space
 dB term and \eqref{eq:tworay-paper} is the standard coherent direct plus
 ground reflected image source construction \cite{rappaport,goldsmith}, also
 used in low altitude A2G two ray modeling \cite{wocc2021}. The fitted
-\(\rho,\phi,b\), and \(r\) curves are not taken from those references; they are
+\(\rho,\phi,\beta_{\mathrm{LoS}}\), and \(r\) curves are not taken from those references; they are
 CKM train split calibration terms wrapped around that two ray structure. The
 NLoS branch uses the COST231/Hata urban macro expression as a coarse blocked
 link trend \cite{cost231}, combines it with an Al-Hourani style
@@ -461,20 +469,20 @@ e^{-j(k(d_{\mathrm{ref}}-d_{\mathrm{LoS}})+\phi(h_{\mathrm{tx}}))}
 The final LoS prior is
 \begin{equation}
 \mathrm{PL}_{\mathrm{LoS}}
-=\mathrm{FSPL}+C_{\mathrm{2ray}}+b(h_{\mathrm{tx}})
+=\mathrm{FSPL}+C_{\mathrm{2ray}}+\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})
 +r(d_{2D},h_{\mathrm{tx}}),
 \label{eq:los-prior-paper}
 \end{equation}
-where \(b\) is a height dependent bias and \(r\) is a smoothed radial residual
+where \(\beta_{\mathrm{LoS}}\) is a height dependent bias and \(r\) is a smoothed radial residual
 fit. The direct distance \(d_{\mathrm{LoS}}\) sets the free space baseline,
 \(d_{\mathrm{ref}}\) supplies the image source ground reflected path, and
 \(k(d_{\mathrm{ref}}-d_{\mathrm{LoS}})\) is the reflected wave phase lag.
 The calibrated \(\rho(h_{\mathrm{tx}})\), \(\phi(h_{\mathrm{tx}})\),
-\(b(h_{\mathrm{tx}})\), and \(r(d_{2D},h_{\mathrm{tx}})\) curves are fitted in
+\(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\), and \(r(d_{2D},h_{\mathrm{tx}})\) curves are fitted in
 \SI{5}{m} height bins, smoothed, interpolated at inference, and guarded to the
 \([20,180]\) dB range. The notation is local: \(\rho(h_{\mathrm{tx}})\) is the
-LoS reflection amplitude, whereas \(\rho_k\) denotes local building density;
-similarly \(b(h_{\mathrm{tx}})\) is a LoS bias, while \(b_q^{\mathrm{nat}}\),
+LoS reflection amplitude, whereas \(\delta_k\) denotes local building density;
+similarly \(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) is a LoS bias, while \(b_q^{\mathrm{nat}}\),
 \(b_{\mathrm{top}}\), and \(b_{41}\) belong to the spread prior.
 
 The LoS calibration is deliberately structured rather than fully flexible. It
@@ -550,7 +558,7 @@ attenuation is kept. It is then corrected by train only regime wise linear
 calibration:
 \begin{equation}
 \mathrm{PL}_{\mathrm{NLoS}}
-=\operatorname{clip}(\mathbf{x}_{78}^{\top}\mathbf{w}_{78,r},20,180).
+=\operatorname{clip}(\mathbf{x}_{\mathrm{NLoS}}^{\top}\mathbf{w}_{\mathrm{NLoS},r},20,180).
 \label{eq:nlos-prior-paper}
 \end{equation}
 The path loss prior is therefore not one formula with a small correction. It
@@ -571,22 +579,22 @@ urban path loss predictions \cite{juang2021pathprofile}. The raw blocked link
 prior is therefore only one feature in a 15 term morphology vector:
 \begin{equation}
 \begin{aligned}
-\mathbf{x}_{78}=[&
-P_0^2,P_0,\log(1+d_{2D}),\rho_{15},\rho_{41},\\
-&h_{15},h_{41},\rho_{41}\log(1+d_{2D}),n_{15},\\
+\mathbf{x}_{\mathrm{NLoS}}=[&
+P_0^2,P_0,\log(1+d_{2D}),\delta_{15},\delta_{41},\\
+&h_{15},h_{41},\delta_{41}\log(1+d_{2D}),n_{15},\\
 &n_{41},n_{41}\log(1+d_{2D}),\sigma_{\mathrm{shadow}},
 \theta_{\mathrm{norm}},\\
 &n_{41}\theta_{\mathrm{norm}},1]^{\top},
 \end{aligned}
-\label{eq:x78-paper}
+\label{eq:nlos-feature-vector-paper}
 \end{equation}
-where \(P_0\) is the raw NLoS prior, \(\rho_{15}\) and \(\rho_{41}\) are the
+where \(P_0\) is the raw NLoS prior, \(\delta_{15}\) and \(\delta_{41}\) are the
 fractions of building pixels in \(15\times15\) and \(41\times41\) windows,
 \(h_{15}\) and \(h_{41}\) are local building height summaries, \(n_{15}\) and
 \(n_{41}\) summarize local NLoS support, \(\sigma_{\mathrm{shadow}}\) is an
 elevation dependent shadowing proxy, and \(\theta_{\mathrm{norm}}\) is the
 normalized elevation angle feature. The interaction
-\(\rho_{41}\log(1+d_{2D})\) lets density matter differently with range,
+\(\delta_{41}\log(1+d_{2D})\) lets density matter differently with range,
 \(n_{41}\log(1+d_{2D})\) lets local blockage support vary with range, and
 \(n_{41}\theta_{\mathrm{norm}}\) activates when obstruction and elevation
 jointly matter.
@@ -641,7 +649,7 @@ Term & Prior block & Source & Role in this paper \\
 \cite{alhourani2014,khawaja_survey} & Raw blocked link scale before morphology OLS calibration. \\
 \addlinespace[1pt]
 \multicolumn{4}{l}{\emph{CKM deterministic geometry and morphology features}} \\
-\(\rho_k,h_k,n_k\) & NLoS PL and spreads & Topology and LoS/NLoS masks & Local density, building height, and NLoS support in a \(k\times k\) window. \\
+\(\delta_k,h_k,n_k\) & NLoS PL and spreads & Topology and LoS/NLoS masks & Local density, building height, and NLoS support in a \(k\times k\) window. \\
 \(b_{41},c_{41},t_{41}\) & Spreads & Obstruction features motivated by A2G clutter behavior
 \cite{khawaja_survey,cai2019,izydorczyk2019} & Blocker depth, transmitter clearance, and taller building fraction. \\
 \(\theta_{\mathrm{norm}},\theta_{\mathrm{inv}}\) & Spreads & Geometry + A2G elevation dependence
@@ -649,7 +657,7 @@ Term & Prior block & Source & Role in this paper \\
 \addlinespace[1pt]
 \multicolumn{4}{l}{\emph{CKM train split fitted calibration}} \\
 \(\rho(h_{\mathrm{tx}}),\phi(h_{\mathrm{tx}})\) & LoS PL & Train split fit + smoothing & Smoothed deployed effective reflection amplitude and phase; not material constants. \\
-\(b(h_{\mathrm{tx}})\) & LoS PL & Train split fit + smoothing & Smoothed deployed height dependent offset left after coherent two ray fitting. \\
+\(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) & LoS PL & Train split fit + smoothing & Smoothed deployed height dependent offset left after coherent two ray fitting. \\
 \(r(d_{2D},h_{\mathrm{tx}})\) & LoS PL & Train split fit + smoothing & Smoothed deployed radial residual left by two ray plus bias. \\
 \(b_q^{\mathrm{nat}}, b_{\mathrm{top}}, a_j\) & Spreads & Fixed CKM raw prior constants & Initial log domain DS/AS scale before ridge calibration. \\
 \bottomrule
@@ -671,7 +679,7 @@ Target/regime & Starting structure & Train only calibration & Deployed prior map
 PL LoS &
 FSPL plus coherent direct/reflected two ray correction
 \cite{rappaport,goldsmith,wocc2021} &
-\(\rho(h_{\mathrm{tx}})\), \(\phi(h_{\mathrm{tx}})\), \(b(h_{\mathrm{tx}})\),
+\(\rho(h_{\mathrm{tx}})\), \(\phi(h_{\mathrm{tx}})\), \(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\),
 and radial residual \(r(d_{2D},h_{\mathrm{tx}})\) in smoothed
 \SI{5}{m} height bins &
 LoS channel attenuation map carrying the dominant height/radius rings before any neural
@@ -679,14 +687,14 @@ residual is added. \\
 PL NLoS &
 Conservative envelope of COST231-shaped urban loss and an elevation aware
 A2G-NLoS term \cite{cost231,alhourani2014,khawaja_survey,tr38901} &
-Regime wise OLS over \(\mathbf{x}_{78}\), selected by morphology,
+Regime wise OLS over \(\mathbf{x}_{\mathrm{NLoS}}\), selected by morphology,
 visibility, and antenna height group with fallback keys and output clipping &
 NLoS channel attenuation map that stores blocked link scale, local density, blocker, and
 elevation effects. \\
 DS / AS &
 Log domain raw spike plus tail scale from visibility, range, elevation, and
 local morphology \cite{tr38901,winner2,cai2019,izydorczyk2019} &
-Ridge calibration over \(\mathbf{x}_{79}\) per metric/regime, with
+Ridge calibration over \(\mathbf{x}_{\mathrm{sp}}\) per metric/regime, with
 height collapsed, topology wide, visibility wide, and global fallbacks &
 Delay- and angular spread maps in native units after \(\exp(\hat z)-1\),
 used as frozen statistical anchors. \\
@@ -707,9 +715,9 @@ used as frozen statistical anchors. \\
   arr/.style={-{Stealth[length=2.0mm]}, thick, rounded corners=3pt}
 ]
 \node[data] (train) at (0,1.25) {Training cities only\\ground pixels + masks};
-\node[fit] (losfit) at (3.8,2.25) {LoS PL fit\\\(\rho,\phi,b\) grid\\radial residual};
-\node[fit] (nlosfit) at (3.8,1.25) {NLoS PL fit\\\(\mathbf{x}_{78}\) OLS\\regime fallbacks};
-\node[fit] (spreadfit) at (3.8,0.25) {DS/AS fit\\\(\mathbf{x}_{79}\) ridge\\log domain};
+\node[fit] (losfit) at (3.8,2.25) {LoS PL fit\\\(\rho,\phi,\beta_{\mathrm{LoS}}\) grid\\radial residual};
+\node[fit] (nlosfit) at (3.8,1.25) {NLoS PL fit\\\(\mathbf{x}_{\mathrm{NLoS}}\) OLS\\regime fallbacks};
+\node[fit] (spreadfit) at (3.8,0.25) {DS/AS fit\\\(\mathbf{x}_{\mathrm{sp}}\) ridge\\log domain};
 \node[store] (frozen) at (7.5,1.25) {Frozen calibration files\\two ray curves\\OLS/ridge tables};
 \node[data] (sample) at (0,-1.15) {Held out or new city\\topology + \(h_{\mathrm{tx}}\)\\LoS/NLoS mask};
 \node[deploy] (features) at (3.8,-1.15) {Deterministic features\\distance, elevation\\morphology windows};
@@ -743,23 +751,23 @@ effective CKM fitted coefficient, not a claim that a passive Fresnel reflection
 coefficient exceeds unity; the smoothed deployed reflection amplitude curve
 stored by the final prior remains below unity. For each candidate pair, the dB bias has the closed form value
 \begin{equation}
-\hat b(\hat\rho,\hat\phi)
+\hat\beta_{\mathrm{LoS}}(\hat\rho,\hat\phi)
 =\frac{1}{|B_h|}\sum_{i\in B_h}
 \left[y_i-\mathrm{FSPL}_i-C_{\mathrm{2ray},i}(\hat\rho,\hat\phi)\right],
 \label{eq:los-bias-fit}
 \end{equation}
 and the selected pair minimizes the corresponding RMSE. The fitted
-\(\rho\), \(\phi\), and \(b\) curves are then smoothed across neighbouring
+\(\rho\), \(\phi\), and \(\beta_{\mathrm{LoS}}\) curves are then smoothed across neighbouring
 height bins, weighted by bin support, and linearly interpolated at inference.
 
 The NLoS branch uses the same train only principle but with a linear morphology
 calibrator. For every supported regime \(r\), the calibration weights solve
 \begin{equation}
-\hat{\mathbf{w}}_{78,r}
+\hat{\mathbf{w}}_{\mathrm{NLoS},r}
 =
 \operatorname*{arg\,min}_{\mathbf{w}}
 \sum_{i\in r}
-\left(\mathbf{x}_{78,i}^{\top}\mathbf{w}-y_i\right)^2,
+\left(\mathbf{x}_{\mathrm{NLoS},i}^{\top}\mathbf{w}-y_i\right)^2,
 \label{eq:nlos-ols-fit}
 \end{equation}
 with fallback to stored antenna height keys within the same morphology and
@@ -793,7 +801,7 @@ z^{(0)}
 ={}&\log(1+b^{\mathrm{nat}}_q)
 +b_{\mathrm{top}}
 +a_1\log(1+d_{2D})+a_2\theta_{\mathrm{inv}} \\
-&+a_3\rho_{41}+a_4h_{41}+a_5n_{41}
+&+a_3\delta_{41}+a_4h_{41}+a_5n_{41}
 +a_6n_{41}\theta_{\mathrm{inv}},
 \end{aligned}
 \label{eq:spread-raw-paper}
@@ -811,11 +819,11 @@ mixed compact low rise, mixed compact mid rise, dense block mid rise, and
 dense block high rise, the delay spread offsets are
 \((0.00,0.18,0.06,0.22,0.24,0.34)\), and the angular spread offsets are
 \((0.00,0.09,0.05,0.16,0.18,0.24)\). The six topology classes are assigned
-from map level building coverage \(\bar\rho_{\mathrm{map}}\) and mean
+from map level building coverage \(\bar\delta_{\mathrm{map}}\) and mean
 above ground building height \(\bar h_{\mathrm{map}}\): coverage
-\(\bar\rho_{\mathrm{map}}\le 0.12\) is open sparse, with low rise if
+\(\bar\delta_{\mathrm{map}}\le 0.12\) is open sparse, with low rise if
 \(\bar h_{\mathrm{map}}\le\SI{12}{m}\) and vertical otherwise; coverage
-\(\bar\rho_{\mathrm{map}}\ge 0.28\) is dense block, with mid rise if
+\(\bar\delta_{\mathrm{map}}\ge 0.28\) is dense block, with mid rise if
 \(\bar h_{\mathrm{map}}\le\SI{28}{m}\) and high rise otherwise; intermediate
 coverage is mixed compact, with low rise if
 \(\bar h_{\mathrm{map}}\le\SI{12}{m}\) and mid rise otherwise. These labels are
@@ -825,7 +833,7 @@ Here \(q\) is the LoS/NLoS state. The native anchor
 \(b^{\mathrm{nat}}_q\) gives a different starting scale to LoS and NLoS
 pixels, \(b_{\mathrm{top}}\) shifts the baseline by topology class,
 \(\log(1+d_{2D})\) captures range growth, \(\theta_{\mathrm{inv}}\) increases
-the prior for low elevation links, and \(\rho_{41}\), \(h_{41}\), and
+the prior for low elevation links, and \(\delta_{41}\), \(h_{41}\), and
 \(n_{41}\) summarize local building density, height, and NLoS support. This
 raw log prior is intentionally simple; it encodes the expected spike plus tail
 shape before CKM specific calibration. A 23-term feature vector then augments
@@ -833,16 +841,16 @@ shape before CKM specific calibration. A 23-term feature vector then augments
 blocker depth, clearance, and interaction terms:
 \begin{equation}
 \begin{aligned}
-\mathbf{x}_{79}=[&
+\mathbf{x}_{\mathrm{sp}}=[&
 (z^{(0)})^2,z^{(0)},\log(1+d_{2D}),\theta_{\mathrm{norm}},
 \theta_{\mathrm{inv}},h,h^2,\\
-&\rho_{15},\rho_{41},h_{15},h_{41},n_{15},n_{41},
+&\delta_{15},\delta_{41},h_{15},h_{41},n_{15},n_{41},
 n_{41}\log(1+d_{2D}),\\
-&\rho_{41}\theta_{\mathrm{inv}},b_{41},1,c_{41},t_{41},
-\theta_{\mathrm{norm}}\rho_{41},\\
-&c_{41}\theta_{\mathrm{inv}},t_{41}\rho_{41},t_{41}n_{41}]^{\top}.
+&\delta_{41}\theta_{\mathrm{inv}},b_{41},1,c_{41},t_{41},
+\theta_{\mathrm{norm}}\delta_{41},\\
+&c_{41}\theta_{\mathrm{inv}},t_{41}\delta_{41},t_{41}n_{41}]^{\top}.
 \end{aligned}
-\label{eq:x79-paper}
+\label{eq:spread-feature-vector-paper}
 \end{equation}
 Here \(h\) is normalized transmitter height, \(b_{41}\) is a local blocker depth
 summary, \(c_{41}\) is transmitter clearance over nearby buildings, and
@@ -857,7 +865,7 @@ allowed to matter differently at low elevation, not that clearance is only
 important when NLoS support is already high. The
 calibrated log prior is ridge regularized per metric and regime:
 \begin{equation}
-\hat{\mathbf{w}}_{79,r}
+\hat{\mathbf{w}}_{\mathrm{sp},r}
 =
 \left(\mathbf{X}^{\top}\mathbf{X}
 +\lambda\mathbf{D}^{\top}\mathbf{D}\right)^{-1}
@@ -865,7 +873,7 @@ calibrated log prior is ridge regularized per metric and regime:
 \label{eq:ridge-paper}
 \end{equation}
 The calibrated log prior is then
-\(\hat z=\mathbf{x}_{79}^{\top}\hat{\mathbf{w}}_{79,r}\).
+\(\hat z=\mathbf{x}_{\mathrm{sp}}^{\top}\hat{\mathbf{w}}_{\mathrm{sp},r}\).
 The diagonal regularizer \(\mathbf{D}\) keeps the calibrated curve close to the
 raw prior unless the training residuals consistently justify a correction. In
 practice this matters for the spread targets: a flexible unregularized fit can
@@ -887,7 +895,7 @@ differently across priors: the LoS PL branch interpolates \SI{5}{m} curves,
 whereas NLoS PL and spread branches use antenna height regimes
 (\texttt{low\_ant}, \texttt{mid\_ant}, \texttt{high\_ant}) while still keeping
 continuous height, clearance, and taller building features inside
-\(\mathbf{x}_{79}\). The point of this heavy calibration is to store many small
+\(\mathbf{x}_{\mathrm{sp}}\). The point of this heavy calibration is to store many small
 decisions about morphology, visibility, and height before the neural residual
 is trained. On the final held out test split, the deployed prior anchors are
 summarized in Table~\ref{tab:prior-only-anchor}.
@@ -1045,9 +1053,9 @@ the implementation.}
 \label{fig:dl-architecture}
 \end{figure*}
 
-The head uses a two stage residual logic around the frozen prior. The global stage asks:
+The head uses a two branch residual logic around the frozen prior. The global branch asks:
 ``what residual distribution does this whole map, height, and topology imply?''
-The local stage asks: ``where should each residual component be placed in the
+The local branch asks: ``where should each residual component be placed in the
 \(513\times513\) map?'' This is the key distinction from a direct U-Net
 regressor. The network does not directly overwrite the prior with a free form
 map; it predicts a small residual distribution and then assigns that residual
@@ -1122,16 +1130,16 @@ The mixture variances combine map level and local uncertainty,
 },
 \label{eq:sigma-paper}
 \end{equation}
-with both terms constrained to \([0.05,3.0]\). During the probabilistic residual stage
+with both terms constrained to \([0.05,3.0]\). During the probabilistic residual phase
 these variances and mixture weights define a pixel wise likelihood; during the
-final fine tuning stage the same head remains in place but the reported output
+final fine tuning phase the same head remains in place but the reported output
 is the deterministic point map above.
 
 The two mixture weight objects have different jobs. The global weights
 \(\pi^{(g)}_{k,r,j}\) describe the sample level residual histogram and are
 used by the distributional regularizer. The local weights \(p_{k,r,j}(p)\)
 are the pixel wise assignment probabilities used in the final dense map. During
-the probabilistic residual stage the per pixel density is
+the probabilistic residual phase the per pixel density is
 \begin{equation}
 q_{k,r}(z_k(p)\mid p)
 =
@@ -1153,7 +1161,7 @@ global branch is pressured to put mixture mass where the map residuals actually
 live.
 
 This head is useful even when the final reported number is a deterministic
-RMSE. The probabilistic stage teaches the network that a hard NLoS region can
+RMSE. The probabilistic phase teaches the network that a hard NLoS region can
 contain several plausible residual levels, while the anchor gate decides how
 far the prediction may move from the frozen estimate. The final point map is
 therefore not an unconstrained average of arbitrary map values; it is the
@@ -1205,8 +1213,8 @@ selection.}
 \end{figure*}
 
 \textsc{HARP-Net CKM} should not be read as only the final fine tuning loss. It has two active
-training phases: a large capacity probabilistic residual stage with probabilistic losses
-enabled, followed by an RMSE/MAE dominant fine tuning stage. The composite
+training phases: a large capacity probabilistic residual phase with probabilistic losses
+enabled, followed by an RMSE/MAE dominant fine tuning phase. The composite
 objective implemented by the model is
 \begin{equation}
 \begin{aligned}
@@ -1226,17 +1234,17 @@ objective implemented by the model is
 \label{eq:loss}
 \end{equation}
 
-The probabilistic terms matter during the probabilistic residual stage. The NLL term
+The probabilistic terms matter during the probabilistic residual phase. The NLL term
 teaches the head to place mixture mass around the transformed target, the KL
 and moment terms keep the mixture distribution from becoming a numerically
 convenient but physically uninformative density, and the outlier budget term
 discourages a solution that spends most of its capacity on the easy bulk while
-leaving large tails unconstrained. The final fine tuning stage then disables
+leaving large tails unconstrained. The final fine tuning phase then disables
 those terms and optimizes the deterministic mixture mean point map for RMSE/MAE,
 with a small anchor and guard that keep the correction close to the prior.
 Table~\ref{tab:loss-roles} summarizes the roles. The selected checkpoint is
 therefore reported as a deterministic RMSE improvement over the frozen priors,
-not as a calibrated probabilistic predictor. In this final stage, checkpoint
+not as a calibrated probabilistic predictor. In this final phase, checkpoint
 selection uses the validation composite
 \(\mathrm{PL}_{\mathrm{RMSE}}+0.30\,\mathrm{DS}_{\mathrm{RMSE}}
 +0.25\,\mathrm{AS}_{\mathrm{RMSE}}\), matching the reported
@@ -1250,27 +1258,27 @@ purpose.}
 \scriptsize
 \begin{tabularx}{\textwidth}{p{0.15\textwidth}p{0.18\textwidth}X}
 \toprule
-Term & Active stage & Role \\
+Term & Active phase & Role \\
 \midrule
-GMM NLL & probabilistic residual stage &
+GMM NLL & probabilistic residual phase &
 Fits the per pixel mixture density in native attenuation (PL) space and log transformed
 spread space. \\
-Distribution KL & probabilistic residual stage &
+Distribution KL & probabilistic residual phase &
 Regularizes the learned mixture so it remains close to the intended
 distributional structure instead of using degenerate weights or variances. \\
-Moment matching & probabilistic residual stage &
+Moment matching & probabilistic residual phase &
 Encourages the model space mean and spread of the mixture to agree with target
 moments, stabilizing deterministic extraction from the GMM. \\
-Outlier budget & probabilistic residual stage &
+Outlier budget & probabilistic residual phase &
 Keeps rare large residuals visible in the objective instead of letting the
 global average hide them. \\
-Anchor & both stages &
+Anchor & both phases &
 Penalizes unnecessary deviation from the frozen prior; this is especially
 important because the prior is already a strong calibrated predictor. \\
-Prior guard & both stages &
+Prior guard & both phases &
 Adds a penalty when the model becomes worse than the prior at valid pixels,
 discouraging destructive corrections. \\
-RMSE / MAE & both stages, dominant in final fine tuning &
+RMSE / MAE & both phases, dominant in final fine tuning &
 Optimizes the deterministic map reported in the final evaluation; RMSE handles
 tails and MAE tracks typical absolute error. \\
 \bottomrule
@@ -1295,7 +1303,7 @@ Batching & batch size 1, gradient accumulation 8 \\
 Scheduler & 1 warmup epoch plus cosine \texttt{LambdaLR}; early stopping patience 10 \\
 Augmentation & Training D4 rotations/reflections only; evaluation uses no augmentation \\
 Checkpoint selection & Validation composite PL RMSE \(+0.30\) DS RMSE \(+0.25\) AS RMSE \\
-Loss schedule & Large capacity probabilistic residual stage plus final residual
+Loss schedule & Large capacity probabilistic residual phase plus final residual
 fine tuning; see Table~\ref{tab:loss-schedule} \\
 \bottomrule
 \end{tabularx}
@@ -1303,14 +1311,14 @@ fine tuning; see Table~\ref{tab:loss-schedule} \\
 
 \begin{table}[t]
 \centering
-\caption{\textsc{HARP-Net CKM} loss schedule. The pre fine tuning probabilistic residual stage is part
+\caption{\textsc{HARP-Net CKM} loss schedule. The pre fine tuning probabilistic residual phase is part
 of the final pipeline, even though the reported checkpoint is selected after
-the deterministic fine tuning stage.}
+the deterministic fine tuning phase.}
 \label{tab:loss-schedule}
 \scriptsize
 \begin{tabularx}{\linewidth}{lXX}
 \toprule
-Setting & Probabilistic residual stage & Final fine tuning \\
+Setting & Probabilistic residual phase & Final fine tuning \\
 \midrule
 NLL / KL / moment / outlier & 1.00 / 0.25 / 0.10 / 0.02 & 0 / 0 / 0 / 0 \\
 RMSE / MAE & 1.50 / 0.10 & 1.00 / 0.05 \\
@@ -1321,9 +1329,9 @@ Learning rate & \(2\times10^{-4}\) & \(5\times10^{-5}\) \\
 \end{tabularx}
 \end{table}
 
-The practical role of the two stages is simple. The first stage makes the head
+The practical role of the two training phases is simple. The first phase makes the head
 behave like a residual density model: it learns where residual mass lies and
-discourages the old single mode collapse. The final fine tuning stage keeps the
+discourages the old single mode collapse. The final fine tuning phase keeps the
 same architecture but shifts the optimization weight toward the deterministic
 metrics used for the paper tables. The anchor and guard terms remain active at
 small weight so the fine tuned model cannot gain average RMSE by damaging large
@@ -1372,7 +1380,7 @@ uniform gain: the residual model improves both squared error and typical
 absolute error, and it improves both LoS and NLoS pixels in
 Table~\ref{tab:los-nlos}. The closest external references are dense path loss
 radio map papers, but they still differ in split, height protocol, frequency,
-and target contract.
+and target definition.
 
 \paragraph{Angular spread}
 The angular spread prior reaches \(13.7416^\circ\) RMSE and \(4.9890^\circ\)
@@ -1456,7 +1464,7 @@ path loss table uses the held out validation+test split after fitting the
 10840 training references and evaluating 5340 held out references
 (4994 topology assigned rows). The spread table uses the final 14-city test
 split because the calibrated spread prior code and the final residual model use
-the same 10840/2750/2590 train/validation/test contract.
+the same 10840/2750/2590 train/validation/test split.
 Table~\ref{tab:pl-prior-height} shows the height dependence of the calibrated
 path loss prior. This is not post hoc stratification: transmitter height is part of the
 prior estimator through the centred geometry, elevation angle, and
@@ -1624,7 +1632,7 @@ RadioGUNet \cite{radiogunet2025} &
 Final attenuation result is between those values; outdoor RadioMapSeer setting. \\
 PMNet / ICASSP \cite{pmnet_icassp2023,icassp2023challenge} &
 approx.\ \SI{1.38}{dB} converted score &
-Final attenuation result is close but higher under a different benchmark contract; scale context only, no joint spread prediction. \\
+Final attenuation result is close but higher under a different benchmark setting; scale context only, no joint spread prediction. \\
 Gao et al.\ \cite{gao2026} &
 \SI{5.59}{dB} ICASSP~2023; \SI{12.19}{dB} ITU~2024 &
 Final attenuation result is numerically lower, but this is scale context rather than a
@@ -1682,7 +1690,7 @@ Measurement based DL reference including DS and AS. &
 Indoor point cloud task with link level samples, not outdoor UAV CKM generation. \\
 \textbf{Final model} &
 \textbf{\SI{26.5570}{ns} DS RMSE and \(11.3854^\circ\) AS RMSE.} &
-\textbf{Dense channel attenuation/DS/AS maps under the final city holdout contract.} &
+\textbf{Dense channel attenuation/DS/AS maps under the final city holdout setting.} &
 \textbf{Should be judged mainly against the frozen spread priors and thesis
 targets under the same protocol.} \\
 \bottomrule
@@ -1795,7 +1803,7 @@ source files.
 
 This paper presents a dense variable height UAV CKM surrogate that jointly
 predicts channel attenuation, delay spread, and angular spread on unseen cities. Under the
-strict city holdout contract, the final model reaches \SI{1.6519}{dB},
+strict city holdout setting, the final model reaches \SI{1.6519}{dB},
 \SI{26.5570}{ns}, and \(11.3854^\circ\), respectively, while using one centred
 UAV generator across the sampled height range. The result is not only a neural
 architecture result. Its main contribution is a hybrid recipe: first build
@@ -1822,7 +1830,7 @@ structure is usually recovered, but rare high spread pixel groups can still be
 missed, and some false positive high spread patches remain.
 
 The main practical conclusion is narrow and useful. For this fixed ray traced
-CKM simulation contract, \textsc{HARP-Net CKM} is
+CKM simulation setting, \textsc{HARP-Net CKM} is
 accurate, fast, and interpretable enough to reduce repeated ray traced map
 generation for many planning experiments, achieving a measured \(113.7\times\)
 speedup over the local MATLAB ray tracing path. The result is a reproducible surrogate for a
