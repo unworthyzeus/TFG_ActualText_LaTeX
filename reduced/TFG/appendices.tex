@@ -167,19 +167,19 @@ Try & Public definition \\
 
 \begin{table}[H]
 \centering
-\caption{Try-number map, final distribution, prior, and joint model phase.}
+\caption{Attempt map, final distribution, prior, and joint model phase.}
 \label{tab:try_map_final}
 \scriptsize
 \renewcommand{\arraystretch}{0.96}
-\begin{tabularx}{\textwidth}{p{0.11\textwidth}>{\raggedright\arraybackslash}X}
+\begin{tabularx}{\textwidth}{p{0.24\textwidth}>{\raggedright\arraybackslash}X}
 \toprule
-Try & Public definition \\
+Internal line & Public definition \\
 \midrule
 76 & Distribution first GMM path-loss architecture: sample level mixture estimation plus pixel assignment. \\
 77 & Distribution first spread architecture: delay/angular spread GMM and spike-plus-tail modelling. \\
-78 & Final ML-calibrated path loss prior: enhanced two ray LoS branch plus a legacy mixed branch linear calibration table with 18 visibility/morphology/height regimes, from which the final assembly uses the NLoS pixels. \\
-79 & Final ML-calibrated spread priors: log-domain ridge calibration for delay and angular spread, with 36 exact regimes per metric and fallbacks. \\
-80 & \textsc{HARP-Net CKM}: frozen path loss and spread priors plus a shared neural residual model selected through the wide residual model, relaxed residual bounds, a large capacity stage, and the final residual fine tuning stage. \\
+Calibrated path loss prior & Enhanced two ray LoS branch plus a legacy mixed branch linear calibration table with 18 visibility/morphology/height regimes, from which the final assembly uses the NLoS pixels. \\
+Calibrated spread priors & Log-domain ridge calibration for delay and angular spread, with 36 exact regimes per metric and fallbacks. \\
+\textsc{HARP-Net CKM} & Frozen path loss and spread priors plus a shared neural residual model selected through the wide residual model, relaxed residual bounds, a large capacity stage, and the final residual fine tuning stage. \\
 \bottomrule
 \end{tabularx}
 \end{table}

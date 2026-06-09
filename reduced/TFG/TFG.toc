@@ -156,7 +156,7 @@
 \contentsline {subsection}{\numberline {A.3.1}Early image to image baselines}{105}{subsection.A.3.1}%
 \contentsline {subsection}{\numberline {A.3.2}Geometry conditioning and artifact control}{105}{subsection.A.3.2}%
 \contentsline {subsection}{\numberline {A.3.3}Masking and evaluation contract}{105}{subsection.A.3.3}%
-\contentsline {subsection}{\numberline {A.3.4}Prior-guided residual learning}{105}{subsection.A.3.4}%
+\contentsline {subsection}{\numberline {A.3.4}Prior-guided residual learning}{106}{subsection.A.3.4}%
 \contentsline {subsection}{\numberline {A.3.5}PMHHNet and expert-routing phase}{106}{subsection.A.3.5}%
 \contentsline {subsection}{\numberline {A.3.6}Regularization and distribution diagnosis}{106}{subsection.A.3.6}%
 \contentsline {subsection}{\numberline {A.3.7}Distribution first modelling}{106}{subsection.A.3.7}%
