@@ -8,79 +8,11 @@ a height dependent bias, and a smoothed radial residual profile. This differs
 from the NLoS branch, which uses a longer pixel feature vector and a
 regime wise linear calibration.
 
-\subsubsection{Geometry and distances}
+\subsubsection{FSPL baseline used by the LoS prior}
 
-Consider a UAV transmitter at height $h_{\mathrm{tx}}$ (metres above the
-ground-plane reference) and a receiver at height $h_{\mathrm{rx}}$. For each
-map pixel $x$ at 2D horizontal distance $d_{2D}(x)$ from the transmitter, two
-propagation distances are defined.
-
-The \emph{direct path} (LoS) distance is:
-
-\begin{equation}
-d_{\mathrm{LoS}}(x)
-=
-\sqrt{d_{2D}(x)^2 + (h_{\mathrm{tx}} - h_{\mathrm{rx}})^2}
-\label{eq:d_los}
-\end{equation}
-
-This is simply the Euclidean distance between the two antennas in 3D space.
-Because \(d_{2D}(x)\ge0\) and the squared height difference
-\((h_{\mathrm{tx}}-h_{\mathrm{rx}})^2\) is nonnegative,
-\(d_{\mathrm{LoS}}(x) \ge d_{2D}(x)\), with equality only when both antennas
-are at the same height.
-
-The \emph{reflected path} (image) distance is:
-
-\begin{equation}
-d_{\mathrm{ref}}(x)
-=
-\sqrt{d_{2D}(x)^2 + (h_{\mathrm{tx}} + h_{\mathrm{rx}})^2}
-\label{eq:d_ref}
-\end{equation}
-
-This is the distance from the image source (the UAV mirrored below the
-ground plane at $-h_{\mathrm{tx}}$) to the receiver. Since $(h_{\mathrm{tx}}
-+ h_{\mathrm{rx}}) \ge |h_{\mathrm{tx}} - h_{\mathrm{rx}}|$ for any
-nonnegative heights, we always have $d_{\mathrm{ref}}(x) \ge
-d_{\mathrm{LoS}}(x)$. In the present UAV to ground setting with
-\(h_{\mathrm{tx}}>0\) and \(h_{\mathrm{rx}}>0\), the reflected path is
-strictly longer; in the limiting geometric case where one antenna is exactly
-on the ground plane, it would be equal rather than longer.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[scale=1.0]
-\draw[thick] (-0.5,0) -- (6.0,0) node[right] {ground};
-\draw[dashed] (-0.5,-3.5) -- (6.0,-3.5) node[right, font=\small] {image source height};
-
-\filldraw[blue] (1.0,3.5) circle(3pt) node[above] {UAV ($h_{\mathrm{tx}}$)};
-\filldraw[red]  (5.0,0.5) circle(3pt) node[above right] {Rx ($h_{\mathrm{rx}}$)};
-\filldraw[blue!40] (1.0,-3.5) circle(3pt) node[below] {image ($-h_{\mathrm{tx}}$)};
-
-\draw[-{Stealth},thick,blue]  (1.0,3.5) -- (5.0,0.5)
-      node[midway, above, sloped, font=\small] {$d_{\mathrm{LoS}}$};
-
-\draw[thick,green!60!black] (1.0,3.5) -- (3.0,0.0);
-\draw[thick,green!60!black] (3.0,0.0) -- (5.0,0.5);
-\node[above, font=\small, green!60!black] at (2.5,1.6) {reflected};
-
-\draw[dashed,gray] (1.0,-3.5) -- (5.0,0.5)
-      node[midway, below, sloped, font=\small, gray] {$d_{\mathrm{ref}}$};
-
-\draw[|<->|] (1.0,-0.1) -- (5.0,-0.1) node[midway, below, font=\small] {$d_{2D}$};
-\end{tikzpicture}
-\caption[Two ray geometry.]%
-{Two ray geometry. Direct path (blue) has length $d_{\mathrm{LoS}}$;
-reflected path (green) has the same total length as the image source path
-(gray dashed), which is $d_{\mathrm{ref}}$.}
-\label{fig:tworay}
-\end{figure}
-
-\subsubsection{Free-space path loss baseline}
-
-The free space path loss in dB is defined using the standard formula at
-frequency $f_{\mathrm{MHz}}$ (in MHz):
+The shared distances \(d_{\mathrm{LoS}}\) and \(d_{\mathrm{ref}}\) are defined
+once in Sec.~\ref{sec:support_geometry_morphology}. The LoS branch uses the
+standard free space path loss expression as the direct ray baseline:
 
 \begin{equation}
 \mathrm{FSPL}(x)
@@ -90,11 +22,6 @@ frequency $f_{\mathrm{MHz}}$ (in MHz):
 + 20 \log_{10}(f_{\mathrm{MHz}})
 \label{eq:fspl}
 \end{equation}
-
-\paragraph{Physical meaning.} FSPL grows quadratically with distance ($\propto
-d^2$) and quadratically with frequency. It captures only the geometric
-spreading of the wavefront, with no ground interaction, scattering, or
-diffraction.
 
 \subsubsection{Enhanced two ray correction}
 
@@ -123,7 +50,8 @@ parameter:
 \end{equation}
 
 where $\rho \in [0, 1.5]$ is the effective amplitude used during the
-calibration search and $\phi \in [-\pi,\pi]$ is the effective phase offset.
+calibration search and $\phi \in [-\pi,\pi]$ is the fitted phase offset, in
+radians, applied to the reflected field relative to the direct field.
 The search range is only a robustness allowance for a fitted CKM parameter, not
 a claim that a passive ground reflection coefficient exceeds unity; the
 deployed smoothed values reported later remain below one.
@@ -208,7 +136,7 @@ therefore the fitted height binned effective coefficient, not an additional
 propagation term.
 
 \paragraph{Extra calibrated terms outside the two ray model.}
-The quantities $b(h_{\mathrm{tx}})$ and $r(d_{2D}, h_{\mathrm{tx}})$ in
+The quantities \(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) and \(r(d_{2D}, h_{\mathrm{tx}})\) in
 \eqref{eq:pl_los} are not part of the literature two ray formula itself.
 They are post fit calibration terms added on top of the standard two ray
 prediction to absorb residual systematic errors.
@@ -222,14 +150,14 @@ The full calibrated LoS prior is:
 =
 \mathrm{FSPL}(x)
 + C_{\mathrm{2ray}}(x)
-+ b(h_{\mathrm{tx}})
++ \beta_{\mathrm{LoS}}(h_{\mathrm{tx}})
 + r(d_{2D}(x), h_{\mathrm{tx}})
 \label{eq:pl_los}
 \end{equation}
 
 where:
 \begin{itemize}
-\item $b(h_{\mathrm{tx}})$ is a height dependent bias (dB): a constant
+\item \(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) is a height dependent bias (dB): a constant
       correction that shifts the overall two ray prediction for a given UAV
       height.
 \item $r(d_{2D}(x), h_{\mathrm{tx}})$ is a radial residual correction: a
@@ -249,87 +177,9 @@ LoS values are not expected to fall outside this interval, so this clipping is
 a defensive range consistency guard rather than a correction that should
 materially change the prior.
 
-For compact notation, the LoS branch can be summarized by the following
-deterministic diagnostic vector:
-
-{\small
-\begin{equation}
-\mathbf{q}_{\mathrm{LoS}}(x)
-=
-\begin{bmatrix}
-\mathrm{FSPL}(x)\\
-d_{\mathrm{LoS}}(x)/d_{\mathrm{ref}}(x)\\
-2\pi(d_{\mathrm{ref}}(x)-d_{\mathrm{LoS}}(x))/\lambda\\
-\rho(h_{\mathrm{tx}})\\
-\phi(h_{\mathrm{tx}})\\
-C_{\mathrm{2ray}}(x)\\
-b(h_{\mathrm{tx}})\\
-r(d_{2D}(x),h_{\mathrm{tx}})
-\end{bmatrix}.
-\label{eq:pl_los_diagnostic_vector}
-\end{equation}
-}
-
-This diagnostic vector is not multiplied by a learned coefficient vector at inference
-time. Instead, it exposes the calibrated quantities used by the nonlinear
-two ray expression
-\(\mathrm{PL}_{\mathrm{LoS}}(x)
-=g_{\mathrm{LoS}}(\mathbf{q}_{\mathrm{LoS}}(x))
-=\mathrm{FSPL}(x)+C_{\mathrm{2ray}}(x)+b(h_{\mathrm{tx}})
-+r(d_{2D}(x),h_{\mathrm{tx}})\).
-The entries are computed as follows:
-
-\begin{itemize}
-\item \(\mathrm{FSPL}(x)\) is computed from the 3D direct distance
-      \(d_{\mathrm{LoS}}(x)\) and the carrier frequency. It is the
-      direct ray path loss, so it sets the absolute distance and frequency
-      scale before any reflected path correction is added.
-\item \(d_{\mathrm{LoS}}(x)/d_{\mathrm{ref}}(x)\) is computed from the
-      direct path length and the image source reflected path length. Since the
-      reflected path is longer, this ratio is normally below one and gives the
-      relative amplitude of the reflected field after \(1/d\) propagation loss.
-\item \(2\pi(d_{\mathrm{ref}}(x)-d_{\mathrm{LoS}}(x))/\lambda\) is the
-      geometric phase advance of the reflected ray. This is the term that makes
-      the correction oscillatory in space: small changes in extra path length
-      can move the direct and reflected fields from constructive to destructive
-      interference.
-\item \(\rho(h_{\mathrm{tx}})\) is the effective reflection amplitude used in
-      the coherent field sum. During calibration, each 5 m UAV height bin is
-      fitted by grid search over \(\rho\in[0,1.5]\) and the phase grid; for
-      each candidate pair, the best constant bias is removed and the pair with
-      lowest LoS RMSE is selected. The stored \(\rho\) curve is then smoothed
-      across neighboring height bins and, at inference time, linearly
-      interpolated to the actual \(h_{\mathrm{tx}}\). Thus \(\rho\) is not a
-      Fresnel coefficient assumed from a ground material, but a CKM-calibrated
-      effective reflected field amplitude.
-\item \(\phi(h_{\mathrm{tx}})\) is fitted in the same height binned grid
-      search, using a uniform grid over \([-\pi,\pi)\). It absorbs the
-      effective phase shift of the reflection and any systematic phase offset
-      caused by the simplified one reflection geometry. As with \(\rho\), the
-      stored phase curve is smoothed across height bins and linearly
-      interpolated during prediction.
-\item \(C_{\mathrm{2ray}}(x)\) is then computed by substituting
-      \(d_{\mathrm{LoS}}/d_{\mathrm{ref}}\), the geometric phase,
-      \(\rho(h_{\mathrm{tx}})\), and \(\phi(h_{\mathrm{tx}})\) into
-      \eqref{eq:c2ray}. This is the actual coherent direct plus reflected
-      correction in dB. A negative value means constructive gain relative to
-      FSPL; a positive value means a fading loss.
-\item \(b(h_{\mathrm{tx}})\) is the constant dB offset fitted together with
-      \(\rho\) and \(\phi\) for each height bin. For a fixed candidate
-      \((\rho,\phi)\), the calibration computes the mean residual
-      \(y-(\mathrm{FSPL}+C_{\mathrm{2ray}})\) over the sampled LoS pixels in
-      that height bin and uses it as the optimal bias for that candidate. The
-      final stored \(b\) is smoothed over height and linearly interpolated at
-      inference time. Its role is to remove the remaining height dependent
-      offset after the interference pattern has been fitted.
-\item \(r(d_{2D}(x),h_{\mathrm{tx}})\) is fitted after the smoothed two ray
-      model is fixed. The residual target-minus-prediction is accumulated in
-      integer radial bins around the transmitter, separately for each
-      5 m height bin; empty bins fall back to a global radial profile, the
-      profile is smoothed, and the applied correction is clipped to
-      \(\pm2.5\) dB. This term removes range dependent structure that remains
-      after the coherent two ray model and the height bias.
-\end{itemize}
+Table~\ref{tab:pl_los_term_inventory} gives the compact inventory of the
+calibrated LoS terms. The individual distance and angle definitions are not
+repeated here because they are shared support maps.
 
 \begin{table}[H]
 \centering
@@ -344,7 +194,7 @@ The entries are computed as follows:
 \(\rho(h_{\mathrm{tx}})\) & Height interpolated reflected ray amplitude. & Controls how strongly the ground reflected wave contributes relative to the direct wave. \\
 \(\phi(h_{\mathrm{tx}})\) & Height interpolated phase offset. & Captures the effective reflection phase after fitting to CKM instead of assuming a fixed Fresnel coefficient. \\
 \(C_{\mathrm{2ray}}(x)\) & Coherent interference correction. & Converts the complex direct plus reflected field sum into an oscillatory dB correction around FSPL. \\
-\(b(h_{\mathrm{tx}})\) & Height interpolated bias. & Removes a remaining per height offset after the coherent two ray fit. \\
+\(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) & Height interpolated bias. & Removes a remaining per height offset after the coherent two ray fit. \\
 \(r(d_{2D},h_{\mathrm{tx}})\) & Smoothed radial residual profile, clipped to \(\pm2.5\) dB. & Corrects systematic distance dependent residuals not captured by the two ray equation. \\
 \(\mathrm{clip}_{[20,180]}\) & Output guard. & Keeps the frozen prior inside the physical path loss range used by the final model. \\
 \bottomrule
@@ -404,25 +254,27 @@ e^{-j\left(2\pi\frac{d_{\mathrm{ref}}(x_i)-d_{\mathrm{LoS}}(x_i)}{\lambda}+\hat\
 \right|
 \end{equation}
 
-The optimal bias for each $(\hat\rho, \hat\phi)$ pair is solved analytically
+The optimal LoS bias for each $(\hat\rho, \hat\phi)$ pair is solved analytically
 as the empirical mean of residuals:
 
 \begin{equation}
-\hat b(\hat\rho, \hat\phi)
+\widehat{\beta}_{\mathrm{LoS}}(\hat\rho, \hat\phi)
 =
 \frac{1}{N}\sum_{i=1}^{N}
 \left(y_i - \hat p_i(\hat\rho, \hat\phi)\right)
 \end{equation}
 
 where $y_i$ is the measured path loss at pixel $x_i$ and $N$ is the number
-of pixels in the bin. The biased prediction is $\hat p_i + \hat b$, and the
+of pixels in the bin. The biased prediction is
+\(\hat p_i + \widehat{\beta}_{\mathrm{LoS}}\), and the
 RMSE for the pair is:
 
 \begin{equation}
 \mathrm{RMSE}(\hat\rho, \hat\phi)
 =
 \sqrt{\frac{1}{N}\sum_{i=1}^{N}
-\left(y_i - \hat p_i(\hat\rho,\hat\phi) - \hat b(\hat\rho,\hat\phi)\right)^2}
+\left(y_i - \hat p_i(\hat\rho,\hat\phi) -
+\widehat{\beta}_{\mathrm{LoS}}(\hat\rho,\hat\phi)\right)^2}
 \label{eq:rmse_grid}
 \end{equation}
 
@@ -438,7 +290,7 @@ The best pair is:
 
 After fitting all bins independently, a Gaussian-weighted smooth is applied
 to stabilize sparse high altitude bins. Let $\{h_k\}$ be the fitted height
-bin centers, $\{(\rho_k^*, \phi_k^*, b_k^*)\}$ the per bin fitted values,
+bin centers, \(\{(\rho_k^*, \phi_k^*, \beta_{\mathrm{LoS},k}^*)\}\) the per bin fitted values,
 and $\{N_k\}$ the pixel counts used in fitting. The implementation weights
 each bin by $\sqrt{N_k}$ rather than by $N_k$ itself, so very populated bins
 stabilize the curve without completely dominating neighboring sparse bins.
@@ -454,16 +306,18 @@ w_k(h) = \exp\!\left(-\frac{(h - h_k)^2}{2\sigma_h^2}\right),
 \label{eq:gauss_smooth}
 \end{equation}
 
-and similarly for $\phi$ and $b$. The implementation also stores a
-suspicious-bin mask for bins where both $\rho_k^*$ and $b_k^*$ differ
+and similarly for \(\phi\) and \(\beta_{\mathrm{LoS}}\). The implementation also stores a
+suspicious-bin mask for bins where both \(\rho_k^*\) and
+\(\beta_{\mathrm{LoS},k}^*\) differ
 noticeably from the smoothed global trend, typically high altitude bins with
 few samples. That mask is diagnostic metadata: the runtime calibration arrays
-used by the final residual model are the smoothed $\rho$, $\phi$, and $b$ curves themselves, not
+used by the final residual model are the smoothed \(\rho\), \(\phi\), and
+\(\beta_{\mathrm{LoS}}\) curves themselves, not
 a mixture of raw values for ordinary bins and smoothed values only for flagged
 ones.
 At inference time the UAV height is not forced to be exactly one of the fitted
 5 m bin centers. The implementation linearly interpolates $\rho(h_{\mathrm{tx}})$,
-$\phi(h_{\mathrm{tx}})$, $b(h_{\mathrm{tx}})$, and the radial residual profile
+\(\phi(h_{\mathrm{tx}})\), \(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\), and the radial residual profile
 between the two nearest height bins, and clamps to the nearest endpoint outside
 the fitted range. This keeps the prior continuous with respect to UAV height
 instead of introducing discrete jumps every 5 m.
@@ -510,7 +364,7 @@ per bin grid-search optima.
 \small
 \begin{tabular}{rrrr}
 \toprule
-$h_{\mathrm{tx}}$ (m) & $\tilde{\rho}$ & $\tilde{\phi}$ (rad) & $\tilde{b}$ (dB)\\
+$h_{\mathrm{tx}}$ (m) & $\tilde{\rho}$ & $\tilde{\phi}$ (rad) & \(\widetilde{\beta}_{\mathrm{LoS}}\) (dB)\\
 \midrule
 10  & 0.5605 & 0.000 & $-$0.037 \\
 20  & 0.5242 & 0.000 & $-$0.042 \\
@@ -528,7 +382,7 @@ The dominant deployed pattern is $\tilde{\rho} \approx 0.46$ to $0.56$ with
 $\tilde{\phi} \approx 0$ for heights 10 to 100 m, meaning a moderate-amplitude
 ground reflection with a near zero fitted extra phase offset. Biases are
 near zero ($< 0.05$ dB) for these bins. At very high altitudes, the smoothed
-deployed $\tilde{\rho}$ and bias increase because training data is sparser;
+deployed $\tilde{\rho}$ and \(\widetilde{\beta}_{\mathrm{LoS}}\) increase because training data is sparser;
 those bins are stabilized by Gaussian smoothing before deployment.
 
 \begin{figure}[H]
@@ -600,9 +454,9 @@ interference term rather than the full final LoS prior.}
 \label{sec:nlos_branch}
 
 The NLoS path loss branch used in the final model is not a pure literature
-formula. It is a hybrid engineering model built in five stages.
+formula. It is a hybrid engineering model built from five calculation blocks.
 
-\subsubsection{Stage 1: raw NLoS propagation prior}
+\subsubsection{Raw NLoS propagation prior}
 
 Two coarse physical estimates are combined.
 
@@ -758,7 +612,7 @@ stronger attenuation, the model keeps the A2G value. This prevents the raw
 prior from becoming unrealistically optimistic in NLoS streets where neither
 source model is fully valid on its own.
 
-\subsubsection{Stage 2: raw formula map for NLoS calibration}
+\subsubsection{Raw formula map for NLoS calibration}
 
 The NLoS construction above defines only the obstructed branch. The
 calibration feature \(\mathrm{PL}^{(0)}(x)\) is the raw formula map used as an
@@ -787,7 +641,7 @@ need to obtain an equivalent visibility mask from deterministic geometry or
 another inexpensive pre-processing step; replacing the supplied mask is not
 evaluated in this thesis.
 
-\subsubsection{Stage 3: map derived morphology features}
+\subsubsection{Map derived morphology features}
 
 The raw hybrid prior $\mathrm{PL}^{(0)}(x)$ defined in \eqref{eq:pl0} is
 the scalar formula input to the calibrated NLoS path loss branch. It combines the
@@ -833,11 +687,11 @@ prior rather than as a universal propagation law.
 \mathrm{PL}^{(0)}(x)^2 \\
 \mathrm{PL}^{(0)}(x) \\
 \log(1+d_{2D}(x)) \\
-\rho_{15}(x) \\
-\rho_{41}(x) \\
+\delta_{15}(x) \\
+\delta_{41}(x) \\
 h_{15}(x) \\
 h_{41}(x) \\
-\rho_{41}(x)\log(1+d_{2D}(x)) \\
+\delta_{41}(x)\log(1+d_{2D}(x)) \\
 n_{15}(x) \\
 n_{41}(x) \\
 n_{41}(x)\log(1+d_{2D}(x)) \\
@@ -867,9 +721,9 @@ entry before the detailed definitions below. For compact table notation, let
 \(\mathrm{PL}^{(0)}(x)^2\) & Quadratic basis term. & Lets the linear calibration bend the raw path loss curve when the raw model is systematically curved. \\
 \(\mathrm{PL}^{(0)}(x)\) & Linear raw prior term. & Keeps the calibrated model anchored to the physical prior instead of relearning path loss from scratch. \\
 \(\log(1+d_{2D}(x))\) & Smooth distance basis. & Mirrors log distance propagation laws used in classical models \cite{rappaport,cost231}. \\
-\(\rho_{15}(x),\rho_{41}(x)\) & Local building density averages. & Count how much nearby urban structure can block, reflect or diffract the signal. \\
+\(\delta_{15}(x),\delta_{41}(x)\) & Local building density averages. & Count how much nearby urban structure can block, reflect or diffract the signal. \\
 \(h_{15}(x),h_{41}(x)\) & Density weighted local height averages. & Distinguish low dense blocks from taller blocks with stronger obstruction. \\
-\(\rho_{41}(x)\ell_d(x)\) & Density-distance interaction. & Allows distance slope to increase in dense areas. \\
+\(\delta_{41}(x)\ell_d(x)\) & Density-distance interaction. & Allows distance slope to increase in dense areas. \\
 \(n_{15}(x),n_{41}(x)\) & Local NLoS support fractions. & Measure how much nearby ground is geometrically shielded from the UAV. \\
 \(n_{41}(x)\ell_d(x)\) & NLoS distance interaction. & Allows blocked streets to accumulate loss differently with range. \\
 \(\sigma_{\mathrm{shadow}}(x)\) & Elevation dependent shadowing proxy. & Encodes the stronger low elevation variability reported in A2G channel models \cite{khawaja_survey,tr38901}. \\
@@ -883,12 +737,12 @@ vector.}
 \label{tab:pl_nlos_term_inventory}
 \end{table}
 
-Each term is now described in detail. The ground mask \(g\), building mask
-\(b\), LoS/NLoS masks, \(d_{2D}\), \(\theta_{\mathrm{norm}}\),
-\(\rho_k\), \(h_k\), and \(n_k\) are the shared support maps defined in
+Each term is now described in detail. The ground mask \(g\), building occupancy
+mask \(m_{\mathrm{B}}\), LoS/NLoS masks, \(d_{2D}\), \(\theta_{\mathrm{norm}}\),
+\(\delta_k\), \(h_k\), and \(n_k\) are the shared support maps defined in
 Sec.~\ref{sec:support_geometry_morphology}. The NLoS prior therefore does not
 define a separate geometry; it reuses the same receiver grid and visibility
-contract as the rest of the chapter.
+definitions as the rest of the chapter.
 
 \paragraph{Quadratic raw prior feature.}
 The pair $(\mathrm{PL}^{(0)}(x)^2, \mathrm{PL}^{(0)}(x))$ allows the linear
@@ -909,13 +763,13 @@ path loss laws: a multiplicative increase in distance produces an additive
 increase in predicted dB loss \cite{rappaport,cost231}.
 
 \paragraph{Shared morphology and elevation terms.}
-The density terms \(\rho_{15},\rho_{41}\) measure local building coverage.
+The density terms \(\delta_{15},\delta_{41}\) measure local building coverage.
 The height terms \(h_{15},h_{41}\) measure local density weighted building
 height. The NLoS support terms \(n_{15},n_{41}\) measure how much nearby ground
 is geometrically shielded from the UAV. The angle term
 \(\theta_{\mathrm{norm}}\) separates grazing links from near overhead links.
 Their definitions are not repeated here; the mathematical construction is
-given in \eqref{eq:rho_support} to \eqref{eq:n_support} and
+given in \eqref{eq:density_support} to \eqref{eq:n_support} and
 \eqref{eq:elevation_support} to \eqref{eq:theta_inv_support}.
 
 \paragraph{Shadowing proxy.}
@@ -945,7 +799,7 @@ same feature have a different scale in the two visibility regimes.
 
 \paragraph{Interaction terms.}
 The three pairwise products
-$\rho_{41}(x)\log(1+d_{2D}(x))$,
+\(\delta_{41}(x)\log(1+d_{2D}(x))\),
 $n_{41}(x)\log(1+d_{2D}(x))$, and
 $n_{41}(x)\theta_{\mathrm{norm}}(x)$
 allow the linear model to capture effects where building density or NLoS
@@ -971,7 +825,7 @@ For this reason the prior should be read as a calibrated baseline with substanti
 stored structure, not as a single hand written formula, and the final vector
 keeps some correlated terms when they improved validation behavior.
 
-\subsubsection{Stage 4: regime wise linear calibration}
+\subsubsection{Regime wise linear calibration}
 
 The regime \(r\) is identified by three keys:
 \begin{itemize}
@@ -989,7 +843,7 @@ path loss assembly only the NLoS pixels from this calibrated map are used,
 because LoS pixels are replaced by the separate enhanced two ray
 prior.
 The regime labels are map level labels, not extra per pixel features. Their
-derivation from \(\bar\rho_{\mathrm{map}}\), \(\bar h_{\mathrm{map}}\) and
+derivation from \(\bar\delta_{\mathrm{map}}\), \(\bar h_{\mathrm{map}}\) and
 \(h_{\mathrm{tx}}\) is given once in Sec.~\ref{sec:support_geometry_morphology}
 so that the path loss and spread priors use the same height bin convention.
 
@@ -1073,7 +927,7 @@ first-principles propagation formula: the two ray and A2G terms set the
 shape, while regime wise fitting adapts the coefficients to the CKM simulator
 and to the dataset's stored masks.
 
-\subsubsection{Stage 5: NLoS clipping}
+\subsubsection{NLoS clipping}
 
 \begin{equation}
 \mathrm{PL}_{\mathrm{NLoS}}(x)

@@ -1,43 +1,15 @@
 \chapter{Methodology}
 \label{chap:methodology}
 
-This chapter defines the reproducible prediction pipeline: the CKM dataset
-contract, receiver mask, city holdout split, pixel weighted metrics, calibrated
-priors, and \textsc{HARP-Net CKM} residual prediction for channel attenuation,
-delay spread, and angular spread. For readability, the implementation is
-grouped into map support quantities, calibrated prior maps and the residual
-neural model. This grouping guides the data flow without implying a strict
-preprocessing checklist: some quantities are computed from geometry, some are
-fitted on the training cities, and some are learned by the neural residual
-model. Appendix~\ref{app:detailed_attempt_log} keeps the development history;
-this chapter keeps the final pipeline and reproduction details.
-
-The ordering matters: masks, distances and morphology maps are deterministic
-quantities derived from topology and transmitter height. Prior coefficients are
-fitted once on the training cities and then frozen, so the neural model receives
-structured computed maps and learns only bounded local corrections instead of
-rediscovering the full propagation law from pixels. In this chapter, the word
-\emph{feature} refers to an input map supplied to the model. Fitted constants,
-regression weights and checkpoint selection settings are parameters of the prior
-or training protocol, not extra neural network features.
-
-\begin{center}
-\small
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.08}
-\begin{tabularx}{0.96\textwidth}{
->{\raggedright\arraybackslash}p{0.21\textwidth}
->{\raggedright\arraybackslash}p{0.35\textwidth}
->{\raggedright\arraybackslash}X}
-\toprule
-\textbf{Group} & \textbf{Main components} & \textbf{Role in the final model} \\
-\midrule
-Map support & Ground/building masks, LoS/NLoS masks, 2D/3D distances, elevation, height regimes and local density/height summaries. & Turns the raw topology map into geometric support maps. \\
-Calibrated priors & LoS attenuation, NLoS attenuation, delay spread and angular spread prior maps. & Provides train city calibrated anchors before neural residual learning. \\
-\textsc{HARP-Net CKM} & Shared residual U-Net with FiLM height conditioning and task specific heads. & Learns bounded corrections around the frozen priors on unseen cities. \\
-\bottomrule
-\end{tabularx}
-\end{center}
+This chapter defines the final reproducible pipeline used in the thesis.
+Figure~\ref{fig:methodology_high_level} gives the high level flow: the raw CKM
+topology map and transmitter height are converted into shared support maps and
+frozen calibrated priors, and \textsc{HARP-Net CKM} then learns bounded residual
+corrections for channel attenuation, delay spread and angular spread.
+Figure~\ref{fig:methodology_full_framework} expands the same flow into the
+concrete maps, priors, neural inputs and final outputs used in the experiments.
+Appendix~\ref{app:detailed_attempt_log} keeps the development history; this
+chapter keeps only the final method and reproduction details.
 
 \begin{figure}[H]
   \centering
@@ -78,6 +50,26 @@ Calibrated priors & LoS attenuation, NLoS attenuation, delay spread and angular 
   {High level methodology structure. The raw building map and transmitter height are first converted into morphology maps and calibrated priors; those maps then feed \textsc{HARP-Net CKM}, which learns bounded residual corrections instead of predicting the radio maps from scratch.}
   \label{fig:methodology_high_level}
 \end{figure}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Chapter~\ref{chap:methodology} guide.}
+\label{tab:methodology_chapter_guide}
+\begin{tabularx}{0.94\textwidth}{>{\raggedright\arraybackslash}p{0.34\textwidth}X}
+\toprule
+Section & What it defines \\
+\midrule
+Dataset and split & The HDF5 fields, city holdout split, receiver mask and height range. \\
+General Framework and Data Flow & The complete path from raw CKM sample to frozen priors, residual model inputs and final maps. \\
+Shared support maps, visibility masks and morphology & The support masks, distances, morphology windows and regime keys reused by every prior. \\
+Final priors: overview and literature basis & Why the frozen priors are deterministic estimators rather than generic physical formulas. \\
+Channel Attenuation Prior and Residual Prediction & The Try~78 LoS/NLoS attenuation prior and the residual channel attenuation branch. \\
+Delay and Angular Spread Prior and Residual Prediction & The Try~79 spread prior and the residual DS/AS branches. \\
+Training and Evaluation Protocol & The final neural input channels, bounded residual heads, losses and reporting protocol. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \begin{figure}[H]
   \centering
@@ -133,7 +125,7 @@ Calibrated priors & LoS attenuation, NLoS attenuation, delay spread and angular 
     \node[derived, below=0.3cm of framework] (features) {
       \textbf{2. Support, Geometry and Morphology Derivation (per pixel)}\\[-1pt]
       \textit{Inputs:} Topology map \(T(x)\in\mathbb{R}^{513\times513}\), scalar \(h_{\mathrm{tx}}\), and the fixed constants from Step~1.\\
-      \textit{Outputs (all \(513\times513\) maps):} Binary masks \(g\) ground receiver, \(b\) building, \(m_{\mathrm{LoS}}\) visible and \(m_{\mathrm{NLoS}}\) blocked; distances \(d_{2D}\), direct distance \(d_{\mathrm{LoS}}=d_{3D}\), reflected distance \(d_{\mathrm{ref}}\); elevation \(\theta\); morphology features and topology/height regime keys.
+      \textit{Outputs (all \(513\times513\) maps):} Binary masks \(g\) ground receiver, \(m_{\mathrm{B}}\) building, \(m_{\mathrm{LoS}}\) visible and \(m_{\mathrm{NLoS}}\) blocked; distances \(d_{2D}\), direct distance \(d_{\mathrm{LoS}}\), reflected distance \(d_{\mathrm{ref}}\); elevation \(\theta\); morphology features and topology/height regime keys.
     };
 
     \node[priornote, below=0.4cm of features] (priornote) {
@@ -200,7 +192,7 @@ Calibrated priors & LoS attenuation, NLoS attenuation, delay spread and angular 
       \textit{Inputs:} Prior maps, bounded residual maps \(\Delta_{\mathrm{PL}},\Delta_{\mathrm{DS}},\Delta_{\mathrm{AS}}\in\mathbb{R}^{513\times513}\), LoS/NLoS masks and valid-ground mask \(m_{\mathrm{ground}}\).\\
       \textit{Assembly (per pixel):} Masks select LoS/NLoS point maps. PL is prior plus bounded dB residual; DS/AS mix capped native component means in \(\log(1+y)\), then invert.\\
       \textit{Outputs:} Three final dense \(513\times513\) CKM maps: \(\widehat{\mathrm{PL}}\) (dB), \(\widehat{\mathrm{DS}}\) (ns), \(\widehat{\mathrm{AS}}\) (deg).\\
-      \textit{Evaluation:} Pixel-weighted RMSE and MAE over unseen-city valid ground pixels.
+      \textit{Evaluation:} Pixel weighted RMSE and MAE over unseen city valid ground pixels.
     };
 
     \draw[arrow] (framework.south) -- (features.north);
@@ -210,7 +202,7 @@ Calibrated priors & LoS attenuation, NLoS attenuation, delay spread and angular 
     \draw[arrow] (harp.south) -- (assembly.north);
   \end{tikzpicture}%
   }
-  \caption[Detailed methodology data flow.]{Detailed methodology data flow from external inputs to final assembled CKM maps, showing inputs, operations and outputs of each stage.}
+  \caption[Detailed methodology data flow.]{Detailed methodology data flow from external inputs to final assembled CKM maps, showing inputs, operations and outputs of each block.}
   \label{fig:methodology_full_framework}
 \end{figure}
 \clearpage
@@ -224,14 +216,14 @@ the final pipeline are the building topology map, the CKM target stored as
 \texttt{path\_loss}, the LoS/NLoS support mask, the UAV transmitter height
 \texttt{uav\_height}, \texttt{delay\_spread}, and
 \texttt{angular\_spread}. The rest of this section moves from that dataset
-level view to the per sample and per pixel evaluation contract.
+level view to the per sample receiver grid and city split.
 
 Each sample is a complete $513\times513$ pixel CKM. The spatial resolution is
 \SI{1}{m}\(\times\)\SI{1}{m} per pixel, so each map covers a
 \SI{513}{m}\(\times\)\SI{513}{m} square. The UAV transmitter is horizontally
 fixed at the centre of the map, while its antenna height \(h_{\mathrm{tx}}\)
 varies from sample to sample and is treated as a primary conditioning variable.
-The dataset labels this transmitter as a UAV, but the mathematical contract is
+The dataset labels this transmitter as a UAV, but the mathematical setting is
 an elevated \SI{7.125}{GHz} transmitter with sampled heights above roughly
 \SI{10}{m}, so the same surrogate can describe UAVs or other elevated radio
 access nodes under the same simulation assumptions.
@@ -329,7 +321,7 @@ examples, so their lower RMSE later in the thesis is evidence that those cases
 are physically easier, not that they are better represented in the training
 set.
 
-The prior artifacts use the same city holdout contract as the final model:
+The prior artifacts use the same city holdout split as the final model:
 \texttt{val\_ratio = 0.15}, \texttt{test\_ratio = 0.15}, and
 \texttt{split\_seed = 42}. The path loss prior and the spread priors are
 fitted on the 10840 training samples. Standalone prior audits can then use
@@ -364,17 +356,74 @@ Vancouver. \\
 \normalsize
 \end{table}
 
+\section{General Framework and Data Flow}
+\label{sec:framework_data_flow}
+
+\begin{table}[H]
+\centering
+\caption{External framework inputs, internally computed maps, neural model
+inputs and final outputs.}
+\label{tab:framework_io_summary}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.23\textwidth}
+>{\raggedright\arraybackslash}X}
+\toprule
+Pipeline block & Maps / variables \\
+\midrule
+External inputs to the full framework &
+Building/topology map \(T(x)\) and UAV transmitter height \(h_{\mathrm{tx}}\), stored as \texttt{uav\_height}. The carrier frequency \(f_c=\SI{7.125}{GHz}\) and receiver height \(h_{\mathrm{rx}}=\SI{1.5}{m}\) are fixed dataset constants, not external inputs. \\
+Internally computed support, geometry and morphology maps &
+Ground/building masks, LoS/NLoS masks, horizontal distance, direct LoS distance, reflected distance, elevation angle, local morphology features and topology/height regime keys. \\
+Multilinear regression and calculation prior outputs &
+Combined path loss prior, path loss LoS prior, path loss NLoS prior,
+delay spread prior, angular spread prior. \\
+Inputs to \textsc{HARP-Net CKM} &
+Nine map channels in Try~80 order: topology, LoS mask, NLoS mask, ground mask,
+combined path loss prior, path loss LoS prior, path loss NLoS prior,
+delay spread prior and angular spread prior; plus scalar transmitter-height
+FiLM conditioning. \\
+Final outputs &
+Channel attenuation map, delay spread map, angular spread map. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The full reader map has already been introduced in
+Figure~\ref{fig:methodology_full_framework}. Sections~\ref{sec:support_geometry_morphology}
+to~\ref{sec:try80_detail} define the final method at the level needed to
+reproduce the reported pipeline: which maps are fitted, which maps are kept fixed,
+which channels enter \textsc{HARP-Net CKM}, how the deterministic outputs are
+assembled, and how the final maps are evaluated.
+
+Therefore, the full framework has two external inputs and three final outputs.
+The neural residual model receives nine spatial map channels plus a separate
+scalar transmitter height conditioning path because the framework has already computed
+visibility masks, receiver masks and fixed prior maps. This is the main
+distinction between the deployable framework and the internal neural model: the
+user provides only a city height map and the transmitter height, while the pipeline
+constructs the remaining maps before inference.
+
+The rest of this chapter therefore describes the selected final method rather
+than the chronological path used to discover it.
+Appendix~\ref{app:detailed_attempt_log} keeps the development evidence and
+discarded routes; this chapter keeps only the final
+constraints that survive into the reported system: no building pixel credit, no
+random city leakage, explicit transmitter height conditioning, separate
+LoS/NLoS support, training city regression/calculation priors, and bounded
+residual correction.
+
 \section{Shared support maps, visibility masks and morphology}
 \label{sec:support_geometry_morphology}
 
 Before any prior is evaluated, the raw map is converted into a common set of
 deterministic support maps. This section defines those maps once, because
 the LoS attenuation prior, the NLoS attenuation prior, the two spread priors and
-the final neural residual model all use the same geometric contract.
+the final neural residual model all use the same shared geometry.
 
-Let \(H=W=513\), let \(x=(i,j)\) denote a pixel, and let the transmitter be at
-\(x_{\mathrm{tx}}=(i_{\mathrm{tx}},j_{\mathrm{tx}})=(256,256)\). The topology
-matrix is:
+Let \(H=W=513\), let \(x=(i,j)\) denote a pixel with
+\(i,j\in\{0,\ldots,512\}\), and let the transmitter be at
+\(x_{\mathrm{tx}}=(i_{\mathrm{tx}},j_{\mathrm{tx}})=(256,256)\). This is the
+zero based convention used by the implementation. The topology matrix is:
 \begin{equation}
   \mathbf{T}\in\mathbb{R}_{\ge 0}^{H\times W},
   \qquad
@@ -390,20 +439,20 @@ whole thesis:
 The transmitter height \(h_{\mathrm{tx}}\) changes with the sample and is the
 only scalar radio geometry input besides the topology map.
 
-The ground receiver mask and building mask are:
+The ground receiver mask and building occupancy mask are:
 \begin{align}
   g_{ij}
   &=
   \mathbf{1}\!\left[T_{ij}\le \epsilon_g\right],
   \qquad \epsilon_g=10^{-6}\ \mathrm{m},
   \label{eq:ground_mask}\\
-  b_{ij}
+  m_{\mathrm{B},ij}
   &=1-g_{ij}.
   \label{eq:building_mask}
 \end{align}
 Equivalently, \(T(x)\) denotes the building height stored at pixel \(x\),
-\(g(x)=1\) means that \(x\) is a ground receiver pixel, and \(b(x)=1\) means
-that \(x\) is occupied by a building.
+\(g(x)=1\) means that \(x\) is a ground receiver pixel, and
+\(m_{\mathrm{B}}(x)=1\) means that \(x\) is occupied by a building.
 The HDF5 maps use exact zero for ground, while CKMGenerator uses the small
 tolerance \(\epsilon_g\) so that image or array inputs with numerical noise are
 handled safely. The valid receiver set is:
@@ -411,9 +460,7 @@ handled safely. The valid receiver set is:
   \Omega_{\mathrm{g}}=\{(i,j):g_{ij}=1\}.
   \label{eq:ground_receiver_set}
 \end{equation}
-Every pixel in \(\Omega_{\mathrm{g}}\) is a ground receiver. Building pixels are
-not receivers, so they are removed from loss functions, metrics and LoS/NLoS
-region masks.
+Every pixel in \(\Omega_{\mathrm{g}}\) is a ground receiver.
 
 For every pixel \(x=(i,j)\), the horizontal distance from the centered
 transmitter is:
@@ -424,12 +471,12 @@ transmitter is:
   \sqrt{(i-i_{\mathrm{tx}})^2+(j-j_{\mathrm{tx}})^2}.
   \label{eq:d2d_support}
 \end{equation}
-The direct 3D distance and the LoS path length are the same quantity:
+The direct LoS path length is:
 \begin{equation}
-  d_{\mathrm{LoS}}(x)=d_{3D}(x)
+  d_{\mathrm{LoS}}(x)
   =
   \sqrt{d_{2D}(x)^2+\left(h_{\mathrm{tx}}-h_{\mathrm{rx}}\right)^2}.
-  \label{eq:dlos_equals_d3d}
+  \label{eq:dlos_support}
 \end{equation}
 The only other 3D path length used by the final LoS prior is the image source
 ground reflection distance:
@@ -439,8 +486,7 @@ ground reflection distance:
   \sqrt{d_{2D}(x)^2+\left(h_{\mathrm{tx}}+h_{\mathrm{rx}}\right)^2}.
   \label{eq:dref_support}
 \end{equation}
-Thus \(d_{3D}\) is not a separate feature from \(d_{\mathrm{LoS}}\). The notation
-\(d_{\mathrm{ref}}\) is reserved for the reflected two ray path.
+The notation \(d_{\mathrm{ref}}\) is reserved for the reflected two ray path.
 
 The elevation angle is:
 \begin{equation}
@@ -454,12 +500,13 @@ normalized angle maps are:
 \begin{align}
   \theta_{\mathrm{norm}}(x)
   &=
-  \mathrm{clip}\!\left(\frac{180\,\theta(x)}{90\pi},0,1\right),
+  \mathrm{clip}\!\left(\frac{2\theta(x)}{\pi},0,1\right),
   \label{eq:theta_norm_support}\\
   \theta_{\mathrm{inv}}(x)
   &=1-\theta_{\mathrm{norm}}(x).
   \label{eq:theta_inv_support}
 \end{align}
+This is the angle divided by \(\SI{90}{\degree}\), written directly in radians.
 Therefore \(\theta_{\mathrm{norm}}\) is high for near overhead links, while
 \(\theta_{\mathrm{inv}}\) is high for grazing links that pass through more urban
 structure.
@@ -480,7 +527,15 @@ ground receivers:
 This ground multiplication is essential: \(1-m_{\mathrm{LoS,HDF5}}\) alone would
 incorrectly mark building pixels as NLoS receivers. When CKMGenerator receives
 an input that has no provided LoS mask, it generates one from the topology and
-transmitter height by ray casting. For a candidate ground receiver \(x=(i,j)\),
+transmitter height by ray casting. In words, for each candidate ground receiver
+CKMGenerator walks along the horizontal segment from the centered UAV to that
+receiver, skips the transmitter and receiver cells themselves, and checks
+whether any sampled building reaches or crosses the height of the straight
+aerial link. If that happens the receiver is generated as NLoS; otherwise it is
+generated as LoS. Building pixels remain outside both masks because both
+generated masks are multiplied by \(g(x)\).
+
+For a candidate ground receiver \(x=(i,j)\),
 define:
 \begin{equation}
   L_x
@@ -536,21 +591,15 @@ The generated masks are then:
   m_{\mathrm{NLoS,gen}}(x)&=g(x)\,o(x).
   \label{eq:nlos_mask_generated}
 \end{align}
-In words, for each candidate ground receiver CKMGenerator walks along the
-horizontal segment from the centered UAV to that receiver, skips the transmitter
-and receiver cells themselves, and checks whether any sampled building reaches
-or crosses the height of the straight aerial link. If that happens the receiver
-is generated as NLoS; otherwise it is generated as LoS. Building pixels remain
-outside both masks because both generated masks are multiplied by \(g(x)\).
 CKMGenerator uses the provided mask in automatic mode when it exists; otherwise
-it uses \eqref{eq:los_mask_generated}. The generated ray casting mask is useful
-for topology only deployment, but it is not expected to be bit identical to the
-stored CKM mask because the original simulator and the lightweight generator do
-not share the full ray tracing engine.
+it uses \eqref{eq:los_mask_generated}. The final experiments in this thesis use
+the stored HDF5 mask; the generated mask is only fallback deployment logic.
 
 The local morphology features are also computed before any prior is evaluated.
-For \(k\in\{15,41\}\), let \(\mathrm{BoxMean}_k\) be a reflected padding
-\(k\times k\) average:
+The \(15\times15\) windows capture near receiver texture, while the
+\(41\times41\) windows capture a wider urban block context. In the code these
+two window sizes are fixed constants. For \(k\in\{15,41\}\), let
+\(\mathrm{BoxMean}_k\) be a reflected padding \(k\times k\) average:
 \begin{equation}
   \mathrm{BoxMean}_k(f)(i,j)
   =
@@ -564,13 +613,13 @@ For \(k\in\{15,41\}\), let \(\mathrm{BoxMean}_k\) be a reflected padding
 where \(f_{\mathrm{ref}}\) is \(f\) reflected at the map boundary. The final
 prior bundle uses:
 \begin{align}
-  \rho_k(x)
+  \delta_k(x)
   &=
-  \mathrm{BoxMean}_k(b)(x),
-  \label{eq:rho_support}\\
+  \mathrm{BoxMean}_k(m_{\mathrm{B}})(x),
+  \label{eq:density_support}\\
   h_k(x)
   &=
-  \frac{\mathrm{BoxMean}_k(T\odot b)(x)}{H_{\mathrm{norm}}},
+  \frac{\mathrm{BoxMean}_k(T\odot m_{\mathrm{B}})(x)}{H_{\mathrm{norm}}},
   \qquad H_{\mathrm{norm}}=\SI{90}{m},
   \label{eq:h_support}\\
   n_k(x)
@@ -578,24 +627,24 @@ prior bundle uses:
   \mathrm{BoxMean}_k(m_{\mathrm{NLoS}})(x).
   \label{eq:n_support}
 \end{align}
-\(\rho_k\) is local building coverage, \(h_k\) is density weighted local
+\(\delta_k\) is local building coverage, \(h_k\) is density weighted local
 building height, and \(n_k\) is the local fraction of the window that is both
 ground and NLoS. For the spread prior, three additional \(41\times41\)
 morphology terms are used:
 \begin{align}
   b_{41}(x)
   &=
-  \frac{\mathrm{BoxMean}_{41}\!\left(\max(T-h_{\mathrm{rx}},0)\odot b\right)(x)}
+  \frac{\mathrm{BoxMean}_{41}\!\left(\max(T-h_{\mathrm{rx}},0)\odot m_{\mathrm{B}}\right)(x)}
        {H_{\mathrm{norm}}},
   \label{eq:blocker_41_support}\\
   c_{41}(x)
   &=
-  \frac{\mathrm{BoxMean}_{41}\!\left(\max(h_{\mathrm{tx}}-T,0)\odot b\right)(x)}
+  \frac{\mathrm{BoxMean}_{41}\!\left(\max(h_{\mathrm{tx}}-T,0)\odot m_{\mathrm{B}}\right)(x)}
        {H_{\mathrm{norm}}},
   \label{eq:clearance_41_support}\\
   t_{41}(x)
   &=
-  \mathrm{BoxMean}_{41}\!\left(\mathbf{1}[T>h_{\mathrm{tx}}]\odot b\right)(x).
+  \mathrm{BoxMean}_{41}\!\left(\mathbf{1}[T>h_{\mathrm{tx}}]\odot m_{\mathrm{B}}\right)(x).
   \label{eq:taller_41_support}
 \end{align}
 Here \(b_{41}\) measures local blocker depth above the receiver, \(c_{41}\)
@@ -606,22 +655,22 @@ Two topology regime systems are used because the calibrated attenuation prior
 and the spread prior were fitted with different levels of granularity. Both are
 computed once per map from:
 \begin{align}
-  \bar\rho_{\mathrm{map}}
+  \bar\delta_{\mathrm{map}}
   &=
-  \frac{1}{HW}\sum_x b(x),
+  \frac{1}{HW}\sum_x m_{\mathrm{B}}(x),
   \label{eq:map_density_support}\\
   \bar h_{\mathrm{map}}
   &=
-  \frac{\sum_x T(x)b(x)}
-       {\max(\sum_x b(x),1)}.
+  \frac{\sum_x T(x)m_{\mathrm{B}}(x)}
+       {\max(\sum_x m_{\mathrm{B}}(x),1)}.
   \label{eq:map_height_support}
 \end{align}
 The three class path loss regime is:
 \begin{equation}
 \mathrm{class}_{\mathrm{PL}} =
 \begin{cases}
-\texttt{dense\_highrise}, & \bar\rho_{\mathrm{map}}\ge0.2549\ \text{or}\ \bar h_{\mathrm{map}}\ge\SI{15.95}{m},\\
-\texttt{open\_lowrise}, & \bar\rho_{\mathrm{map}}\le0.1957\ \text{and}\ \bar h_{\mathrm{map}}\le\SI{10.91}{m},\\
+\texttt{dense\_highrise}, & \bar\delta_{\mathrm{map}}\ge0.2549\ \text{or}\ \bar h_{\mathrm{map}}\ge\SI{15.95}{m},\\
+\texttt{open\_lowrise}, & \bar\delta_{\mathrm{map}}\le0.1957\ \text{and}\ \bar h_{\mathrm{map}}\le\SI{10.91}{m},\\
 \texttt{mixed\_midrise}, & \text{otherwise}.
 \end{cases}
 \label{eq:topology_class_pl_support}
@@ -630,12 +679,12 @@ The six class spread and reporting regime is:
 \begin{equation}
 \mathrm{class}_{\mathrm{SP}} =
 \begin{cases}
-\texttt{open\_sparse\_lowrise}, & \bar\rho_{\mathrm{map}}\le0.12,\ \bar h_{\mathrm{map}}\le\SI{12}{m},\\
-\texttt{open\_sparse\_vertical}, & \bar\rho_{\mathrm{map}}\le0.12,\ \bar h_{\mathrm{map}}>\SI{12}{m},\\
-\texttt{dense\_block\_midrise}, & \bar\rho_{\mathrm{map}}\ge0.28,\ \bar h_{\mathrm{map}}\le\SI{28}{m},\\
-\texttt{dense\_block\_highrise}, & \bar\rho_{\mathrm{map}}\ge0.28,\ \bar h_{\mathrm{map}}>\SI{28}{m},\\
-\texttt{mixed\_compact\_lowrise}, & 0.12<\bar\rho_{\mathrm{map}}<0.28,\ \bar h_{\mathrm{map}}\le\SI{12}{m},\\
-\texttt{mixed\_compact\_midrise}, & 0.12<\bar\rho_{\mathrm{map}}<0.28,\ \bar h_{\mathrm{map}}>\SI{12}{m}.
+\texttt{open\_sparse\_lowrise}, & \bar\delta_{\mathrm{map}}\le0.12,\ \bar h_{\mathrm{map}}\le\SI{12}{m},\\
+\texttt{open\_sparse\_vertical}, & \bar\delta_{\mathrm{map}}\le0.12,\ \bar h_{\mathrm{map}}>\SI{12}{m},\\
+\texttt{dense\_block\_midrise}, & \bar\delta_{\mathrm{map}}\ge0.28,\ \bar h_{\mathrm{map}}\le\SI{28}{m},\\
+\texttt{dense\_block\_highrise}, & \bar\delta_{\mathrm{map}}\ge0.28,\ \bar h_{\mathrm{map}}>\SI{28}{m},\\
+\texttt{mixed\_compact\_lowrise}, & 0.12<\bar\delta_{\mathrm{map}}<0.28,\ \bar h_{\mathrm{map}}\le\SI{12}{m},\\
+\texttt{mixed\_compact\_midrise}, & 0.12<\bar\delta_{\mathrm{map}}<0.28,\ \bar h_{\mathrm{map}}>\SI{12}{m}.
 \end{cases}
 \label{eq:topology_class_sp_support}
 \end{equation}
@@ -662,79 +711,12 @@ height feature used in the spread vector is:
   \right).
   \label{eq:h_norm_support}
 \end{equation}
-
-All RMSE values in this thesis are pixel-weighted over valid ground pixels:
-\begin{equation}
-  \mathrm{RMSE}
-  =
-  \sqrt{
-  \frac{\sum_{s,i,j} m_s(i,j)\left(\hat y_s(i,j)-y_s(i,j)\right)^2}
-       {\sum_{s,i,j} m_s(i,j)}
-  }.
-  \label{eq:rmse}
-\end{equation}
-This is stricter than averaging per sample RMSEs because large valid maps
-contribute proportionally to the number of receiver pixels. The same evaluation
-contract is used for channel attenuation, delay spread and angular spread. For
-the two spread targets, every non building pixel is also a receiver pixel in the
-CKM ground truth, so the reported spread RMSE is simply the dense prediction
-compared with the dense ray-traced ground truth over all valid ground receivers.
-
-\section{General Framework and Data Flow}
-\label{sec:framework_data_flow}
-
-\begin{table}[H]
-\centering
-\caption{External framework inputs, internally computed maps, neural model
-inputs and final outputs.}
-\label{tab:framework_io_contract}
-\small
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.23\textwidth}
->{\raggedright\arraybackslash}X}
-\toprule
-Stage & Maps / variables \\
-\midrule
-External inputs to the full framework &
-Building/topology map \(T(x)\) and UAV transmitter height \(h_{\mathrm{tx}}\), stored as \texttt{uav\_height}. The carrier frequency \(f_c=\SI{7.125}{GHz}\) and receiver height \(h_{\mathrm{rx}}=\SI{1.5}{m}\) are fixed dataset constants, not external inputs. \\
-Internally computed support, geometry and morphology maps &
-Ground/building masks, LoS/NLoS masks, horizontal distance, direct 3D LoS distance, reflected distance, elevation angle, local morphology features and topology/height regime keys. \\
-Multilinear regression and calculation prior outputs &
-Combined path loss prior, path loss LoS prior, path loss NLoS prior,
-delay spread prior, angular spread prior. \\
-Inputs to \textsc{HARP-Net CKM} &
-Nine map channels in Try~80 order: topology, LoS mask, NLoS mask, ground mask,
-combined path loss prior, path loss LoS prior, path loss NLoS prior,
-delay spread prior and angular spread prior; plus scalar transmitter-height
-FiLM conditioning. \\
-Final outputs &
-Channel attenuation map, delay spread map, angular spread map. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-The full reader map has already been introduced in
-Figure~\ref{fig:methodology_full_framework}. Sections~\ref{sec:priors_overview}
-to~\ref{sec:try80_detail} define the final method at the level needed to
-reproduce the reported pipeline: which maps are fitted, which maps are kept fixed,
-which channels enter \textsc{HARP-Net CKM}, how the deterministic outputs are
-assembled, and how the final maps are evaluated.
-
-Therefore, the full framework has two external inputs and three final outputs.
-The neural residual model receives nine spatial map channels plus a separate
-scalar transmitter height conditioning path because the framework has already computed
-visibility masks, receiver masks and fixed prior maps. This is the main
-distinction between the deployable framework and the internal neural model: the
-user provides only a city height map and the transmitter height, while the pipeline
-constructs the remaining maps before inference.
-
-The rest of this chapter therefore describes the selected final method rather
-than the chronological path used to discover it.
-Appendix~\ref{app:detailed_attempt_log} keeps the development evidence and
-discarded routes; this chapter keeps only the final
-constraints that survive into the reported system: no building pixel credit, no
-random city leakage, explicit transmitter height conditioning, separate
-LoS/NLoS support, training city regression/calculation priors, and bounded
-residual correction.
+The denominator \(\log(401)\) corresponds to a \SI{400}{m} transmitter minus
+receiver height difference after the \(1+\cdot\) transform. This is a modelling
+cap, not the maximum HDF5 height: the database reaches about \SI{478}{m}, but
+the high altitude tail contains too few training samples after city and regime
+splits to estimate a separate response reliably. Heights above this scale are
+therefore saturated at \(h_{\mathrm{norm}}=1\).
 
 \section{Final priors: overview and literature basis}
 \label{sec:priors_overview}
@@ -774,11 +756,11 @@ equations, feature inventory and fitting details are included below.
 ]
 
 \node[input] (geom) {Geometry \\ $d_{2D}, \theta, h_{\mathrm{tx}}, h_{\mathrm{rx}}$};
-\node[input, right=4cm of geom] (map) {CKM Map \\ $b(x), g(x), m_{\mathrm{LoS}}(x)$};
+\node[input, right=4cm of geom] (map) {CKM Map \\ $m_{\mathrm{B}}(x), g(x), m_{\mathrm{LoS}}(x)$};
 
 \node[block, below left=1.5cm and 0.5cm of geom] (fspl) {FSPL \\ direct ray baseline};
 \node[block, below=1.5cm of fspl] (tworay) {Coherent Two Ray \\ $C_{\mathrm{2ray}}(x)$};
-\node[block, below=1.5cm of tworay] (bias_rad) {Bias + Radial Residual \\ $b + r(d_{2D})$};
+\node[block, below=1.5cm of tworay] (bias_rad) {Bias + Radial Residual \\ $\beta_{\mathrm{LoS}} + r(d_{2D})$};
 \node[branch, below=1.5cm of bias_rad] (pl_los) {Calibrated LoS \\ $\mathrm{PL}_{\mathrm{LoS}}(x)$};
 
 \draw[->, thick] (geom.south) ++(-1,0) |- node[pos=0.75, above, font=\scriptsize] {$\mathbb{R}^{H \times W}$} (fspl.east);
@@ -859,7 +841,7 @@ mapped back to ns or degrees. The explicit LoS/NLoS masks select the final
 regional branch at each valid ground receiver pixel.
 
 Training uses the same city holdout split, receiver mask and pixel weighted
-RMSE contract defined at the start of this chapter. The selected final stage is
+RMSE rule defined in Chapter~\ref{chap:results}. The selected final stage is
 RMSE/MAE oriented, with small anchor and prior guard terms so that the residual
 model improves the prior baselines without freely overwriting them. The full
 architecture diagram, residual assembly equations and loss family are included

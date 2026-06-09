@@ -9,7 +9,7 @@ z(x) = \log(1 + y(x)),\qquad \hat y(x) = \exp(\hat z(x)) - 1
 \label{eq:log_transform_spread}
 \end{equation}
 
-For two pixels with native spread values \(y_a\) and \(y_b\), their difference
+For two pixels with spread values in original units \(y_a\) and \(y_b\), their difference
 in transformed space is
 \begin{equation}
 z_a-z_b
@@ -58,7 +58,7 @@ z^{(0)}(x)
 + a_2\theta_{\mathrm{inv}}
 \\
 &+
-a_3\rho_{41}
+a_3\delta_{41}
 + a_4 h_{41}
 + a_5 n_{41}
 + a_6 n_{41}\theta_{\mathrm{inv}} .
@@ -100,7 +100,7 @@ Native NLoS anchor converted to \(\log(1+b)\). \\
 \(0.11,0.62,0.48,0.32,0.86,0.60\) &
 \(0.05,0.52,0.60,0.38,0.58,0.35\) &
 Fixed weights multiplying \(\log(1+d_{2D})\), \(\theta_{\mathrm{inv}}\),
-\(\rho_{41}\), \(h_{41}\), \(n_{41}\), and
+\(\delta_{41}\), \(h_{41}\), \(n_{41}\), and
 \(n_{41}\theta_{\mathrm{inv}}\), respectively. \\
 \bottomrule
 \end{tabularx}
@@ -126,7 +126,7 @@ Every term in \eqref{eq:raw_spread} has a physical interpretation:
 \item \(\theta_{\mathrm{inv}}\) increases at low elevation angle, where the
       UAV to ground ray intersects more urban structure before reaching the
       receiver.
-\item \(\rho_{41}\), \(h_{41}\), and \(n_{41}\) describe local building
+\item \(\delta_{41}\), \(h_{41}\), and \(n_{41}\) describe local building
       density, mean building height, and NLoS support in a \(41\times41\)
       window. These are direct map derived proxies for multipath richness.
 \item \(n_{41}\theta_{\mathrm{inv}}\) is an interaction term. It activates
@@ -135,16 +135,16 @@ Every term in \eqref{eq:raw_spread} has a physical interpretation:
 
 \subsection{Calibrated spread prior}
 
-\subsubsection{Stage 2: 23-feature vector and design matrix}
+\subsubsection{Spread feature vector and design matrix}
 
 \begingroup
 \small
 \begin{equation}
 \textbf{x}_{\mathrm{SP}}(x) = \begin{bmatrix}
 z^{(0)}(x)^2,\ z^{(0)}(x),\ \log(1+d_{2D}),\ \theta_{\mathrm{norm}},\ \theta_{\mathrm{inv}}\\
-h_{\mathrm{norm}},\ h_{\mathrm{norm}}^2,\ \rho_{15},\ \rho_{41},\ h_{15},\ h_{41}\\
-n_{15},\ n_{41},\ n_{41}\log(1+d_{2D}),\ \rho_{41}\theta_{\mathrm{inv}},\ b_{41},\ 1\\
-c_{41},\ t_{41},\ \theta_{\mathrm{norm}}\rho_{41},\ c_{41}\theta_{\mathrm{inv}},\ t_{41}\rho_{41},\ t_{41}n_{41}
+h_{\mathrm{norm}},\ h_{\mathrm{norm}}^2,\ \delta_{15},\ \delta_{41},\ h_{15},\ h_{41}\\
+n_{15},\ n_{41},\ n_{41}\log(1+d_{2D}),\ \delta_{41}\theta_{\mathrm{inv}},\ b_{41},\ 1\\
+c_{41},\ t_{41},\ \theta_{\mathrm{norm}}\delta_{41},\ c_{41}\theta_{\mathrm{inv}},\ t_{41}\delta_{41},\ t_{41}n_{41}
 \end{bmatrix}^\top
 \label{eq:spread_calibration_vector}
 \end{equation}
@@ -174,13 +174,13 @@ Raw prior anchor and curvature. \\
 \(\log(1+d_{2D}),\ \theta_{\mathrm{norm}},\ \theta_{\mathrm{inv}},\ h_{\mathrm{norm}},\ h_{\mathrm{norm}}^2\) &
 Range, elevation and UAV height. \\
 \(\textbf{x}_{\mathrm{morph}}\) &
-\(\rho_{15},\rho_{41},h_{15},h_{41},n_{15},n_{41},b_{41},c_{41},t_{41}\) &
+\(\delta_{15},\delta_{41},h_{15},h_{41},n_{15},n_{41},b_{41},c_{41},t_{41}\) &
 Local urban morphology and blockage. \\
 Bias &
 \(1\) &
 Regime offset. \\
 \(\textbf{x}_{\mathrm{int}}\) &
-\(n_{41}\log(1+d_{2D}),\ \rho_{41}\theta_{\mathrm{inv}},\ \theta_{\mathrm{norm}}\rho_{41},\ c_{41}\theta_{\mathrm{inv}},\ t_{41}\rho_{41},\ t_{41}n_{41}\) &
+\(n_{41}\log(1+d_{2D}),\ \delta_{41}\theta_{\mathrm{inv}},\ \theta_{\mathrm{norm}}\delta_{41},\ c_{41}\theta_{\mathrm{inv}},\ t_{41}\delta_{41},\ t_{41}n_{41}\) &
 Joint geometry and morphology effects. \\
 \bottomrule
 \end{tabularx}
@@ -203,7 +203,7 @@ Joint geometry and morphology effects. \\
 \(\theta_{\mathrm{norm}}\) & Normalized elevation angle. & Separates overhead from grazing links. \\
 \(\theta_{\mathrm{inv}}\) & Inverse elevation angle. & Highlights low elevation links with stronger obstruction sensitivity \cite{khawaja_survey,tr38901}. \\
 \(h_{\mathrm{norm}},h_{\mathrm{norm}}^2\) & Linear and quadratic UAV height basis. & Learns nonlinear height effects. \\
-\(\rho_{15},\rho_{41}\) & Fine/coarse local building density. & Counts nearby reflectors and blockers. \\
+\(\delta_{15},\delta_{41}\) & Fine/coarse local building density. & Counts nearby reflectors and blockers. \\
 \(h_{15},h_{41}\) & Fine/coarse density weighted height. & Distinguishes low rise from high rise clutter. \\
 \(n_{15},n_{41}\) & Fine/coarse local NLoS support. & Measures nearby geometric shielding. \\
 \(b_{41}\) & Blocker depth term. & Measures building protrusion above receiver height. \\
@@ -236,10 +236,10 @@ improved with them.
 \textbf{Term} & \textbf{Mathematical role} & \textbf{Physical interpretation} \\
 \midrule
 \(n_{41}\log(1+d_{2D})\) & NLoS distance interaction. & Lets range act differently in blocked streets. \\
-\(\rho_{41}\theta_{\mathrm{inv}}\) & Density elevation interaction. & Activates dense, low elevation morphology. \\
-\(\theta_{\mathrm{norm}}\rho_{41}\) & Overhead density interaction. & Allows dense areas to change under high elevation. \\
+\(\delta_{41}\theta_{\mathrm{inv}}\) & Density elevation interaction. & Activates dense, low elevation morphology. \\
+\(\theta_{\mathrm{norm}}\delta_{41}\) & Overhead density interaction. & Allows dense areas to change under high elevation. \\
 \(c_{41}\theta_{\mathrm{inv}}\) & Clearance elevation interaction. & Couples rooftop clearance with grazing geometry. \\
-\(t_{41}\rho_{41}\) & Tall building density interaction. & Highlights dense blocks with buildings above the UAV. \\
+\(t_{41}\delta_{41}\) & Tall building density interaction. & Highlights dense blocks with buildings above the UAV. \\
 \(t_{41}n_{41}\) & Tall building NLoS interaction. & Activates where tall buildings and shielding coincide. \\
 \bottomrule
 \end{tabularx}
@@ -278,79 +278,15 @@ nonlinear transforms and interactions selected from propagation intuition.}
 \label{fig:spread_feature_groups}
 \end{figure}
 
-The new features beyond the attenuation calibration vector are listed below. The
-shared morphology notation follows the path loss prior construction in
-Sec.~\ref{sec:nlos_branch}. In particular, \(b(\cdot)\) is the building mask,
-\(\rho_k\) is the building density box mean, \(h_k\) is the density weighted
-building height box mean, \(n_k\) is the ground NLoS support box mean, and
-\(\theta_{\mathrm{norm}}\) is the normalized elevation angle. The same
-reflected padding \(\mathrm{BoxMean}_k\) operator is used here, and
-\(H_{\mathrm{norm}}=\SI{90}{m}\) is the building height normalizer. This keeps
-the spread prior vector self contained while preserving the common feature
-definitions used by the path loss prior.
+The spread vector reuses the shared support features defined in
+Sec.~\ref{sec:support_geometry_morphology}: \(h_{\mathrm{norm}}\),
+\(\delta_k\), \(h_k\), \(n_k\), \(b_{41}\), \(c_{41}\), \(t_{41}\),
+\(\theta_{\mathrm{norm}}\), and \(\theta_{\mathrm{inv}}\). Their definitions
+are not repeated here. The spread prior also uses the six topology labels
+defined in \eqref{eq:topology_class_sp_support}; these labels are map level
+routing keys for the ridge models, not extra per pixel morphology features.
 
-\paragraph{Normalised transmitter height.}
-\begin{equation}
-h_{\mathrm{norm}} =
-\min\!\left\{1,\,
-\frac{\log\!\left(1+\max(h_{\mathrm{tx}}-h_{\mathrm{rx}},0)\right)}{\log(401)}
-\right\}
-\label{eq:hnorm}
-\end{equation}
-This compresses UAV height on a log scale and saturates it in \([0,1]\), using
-\(\log(401)\) as the scale associated with a 400 m height difference. Samples
-above that relative height are assigned \(h_{\mathrm{norm}}=1\), matching the
-implementation. This cap is intentional: the transmitter height distribution has
-only a small high altitude tail, so after splitting samples into
-topology specific experts there is not enough support above 400 m to estimate a
-separate high altitude response reliably. The vector also includes
-\(h_{\mathrm{norm}}^2\), which is an
-intentionally correlated basis expansion that lets the linear model learn a
-curved height effect.
-
-\paragraph{Blocker depth.}
-\begin{equation}
-b_{41}(x) = \frac{\mathrm{BoxMean}_{41}\!\left(\max(\mathrm{topology}(\cdot)-h_{\mathrm{rx}},0)\,b(\cdot)\right)(x)}{H_{\mathrm{norm}}}
-\label{eq:b41}
-\end{equation}
-Measures how much buildings in the $41\times41$ window protrude above the receiver height.
-Only building pixels contribute because of the multiplier \(b(\cdot)\). A tall
-building directly next to the receiver therefore increases \(b_{41}\), while
-flat open ground leaves it at zero.
-
-\paragraph{Transmitter clearance.}
-\begin{equation}
-c_{41}(x) = \frac{\mathrm{BoxMean}_{41}\!\left(\max(h_{\mathrm{tx}}-\mathrm{topology}(\cdot),0)\,b(\cdot)\right)(x)}{H_{\mathrm{norm}}}
-\label{eq:c41}
-\end{equation}
-This is a density weighted clearance feature: the clearance above each building
-pixel is averaged by \(\mathrm{BoxMean}_{41}\) over the full \(41\times41\)
-window and then normalized by \(H_{\mathrm{norm}}\). Ground pixels contribute
-zero through the multiplier \(b(\cdot)\). A large \(c_{41}\) therefore means
-both that nearby buildings are present and that the transmitter is well above
-them. A small value can mean either little local building coverage, or buildings
-that reach close to or above the UAV height.
-
-\paragraph{Taller building fraction.}
-\begin{equation}
-t_{41}(x) = \mathrm{BoxMean}_{41}\!\left(\mathbf{1}[\mathrm{topology}(\cdot)>h_{\mathrm{tx}}]\cdot b(\cdot)\right)(x)
-\label{eq:t41}
-\end{equation}
-This is the fraction of the full \(41\times41\) window area occupied by
-building pixels taller than the UAV, not the fraction of buildings after
-conditioning on there being a building pixel. It is zero if the UAV is above
-all local buildings or if the local window contains no buildings, and grows
-when the link is likely to be embedded in a high rise canyon. It is especially
-useful for distinguishing dense but low rise zones from dense high rise zones.
-
-\paragraph{Six class topology definition.}
-The spread prior uses the six topology labels produced by the final prior
-code. Their thresholds and class names are defined in
-\eqref{eq:topology_class_sp_support}. These labels are map level routing keys
-for the spread prior ridge models; they are not additional per pixel
-morphology features.
-
-\subsubsection{Stage 3: regime wise ridge regression}
+\subsubsection{Regime wise ridge regression}
 
 The regime $r$ for the spread prior is keyed by: metric (DS or AS), topology class (6 classes), propagation state (LoS or NLoS), antenna height bin, giving up to $2 \times 6 \times 2 \times 3 = 72$ regimes.
 The antenna height bins use the same tertile style thresholds as
@@ -403,7 +339,7 @@ diagonal stabilizer to every coefficient except the final
 correlation vector in log spread space. This is ridge regression: it is the
 ordinary least squares fit plus a penalty that discourages very large
 coefficients. The penalty is important here because many morphology features
-are related; for example, \(\rho_{41}\), \(h_{41}\), \(b_{41}\) and \(t_{41}\)
+are related; for example, \(\delta_{41}\), \(h_{41}\), \(b_{41}\) and \(t_{41}\)
 all increase in dense high rise areas.
 
 Sufficient statistics are accumulated incrementally:
@@ -433,7 +369,7 @@ the same keys in this order and uses the first one present:
       implementation key for all visibility states, not LoS only pixels.
 \end{enumerate}
 
-\subsubsection{Stage 4: inverse transform and clipping}
+\subsubsection{Inverse transform and clipping}
 
 \begin{equation}
 \hat y(x) = \exp\!\left(\hat z(x)\right) - 1,\qquad
@@ -480,12 +416,12 @@ and the method level data flow used by both spread modalities.
     alabel/.style={font=\scriptsize, fill=white, inner sep=1.2pt}
 ]
 \node[input] (inputs) at (0,1.9) {Geometry, masks and morphology\\
-$d_{2D}, \theta, h_{\mathrm{tx}}, \rho, h, n$\\$b_{41}, c_{41}, t_{41}$};
-\node[block] (raw_prior) at (4.0,1.9) {Stage 1\\Raw log prior\\$z^{(0)}(x)$};
-\node[block] (features) at (8.0,1.9) {Stage 2\\Feature vector\\$\textbf{x}_{\mathrm{SP}}(x)\in\mathbb{R}^{23}$};
+$d_{2D}, \theta, h_{\mathrm{tx}}, \delta, h, n$\\$b_{41}, c_{41}, t_{41}$};
+\node[block] (raw_prior) at (4.0,1.9) {Raw log prior\\$z^{(0)}(x)$};
+\node[block] (features) at (8.0,1.9) {Feature vector\\$\textbf{x}_{\mathrm{SP}}(x)\in\mathbb{R}^{23}$};
 \node[note] (keys) at (4.0,-2.1) {Regime \(r\) keys:\\metric (DS/AS), topology, LoS/NLoS, antenna bin};
-\node[block] (ridge) at (8.0,-2.1) {Stage 3\\Regime ridge\\$\hat z=\textbf{x}_{\mathrm{SP}}^{\top}\hat{\textbf{w}}^{\mathrm{SP}}_{r}$};
-\node[branch] (invert) at (12.0,-2.1) {Stage 4\\Inverse transform\\$\hat y=\exp(\hat z)-1$};
+\node[block] (ridge) at (8.0,-2.1) {Regime ridge\\$\hat z=\textbf{x}_{\mathrm{SP}}^{\top}\hat{\textbf{w}}^{\mathrm{SP}}_{r}$};
+\node[branch] (invert) at (12.0,-2.1) {Inverse transform\\$\hat y=\exp(\hat z)-1$};
 \node[input] (clip) at (16.0,-2.1) {Calibrated spread prior\\$\hat y(x)$ after clipping};
 \draw[arr] (inputs) -- node[alabel, above=5pt, pos=0.55] {maps} (raw_prior);
 \draw[arr] (raw_prior) -- node[alabel, above=5pt, pos=0.55] {$\mathbb{R}^{H\times W}$} (features);

@@ -37,24 +37,22 @@ then follows a split of responsibility: calibrated priors
 remove the stable component of the targets, and the neural residual model
 focuses on the local errors that remain.
 
-The term \emph{prior} is not used here in the Bayesian sense of a probability
-distribution over model parameters or targets, and no posterior inference is
-performed in the prior stage. It denotes deterministic, frozen estimator maps
-computed before the neural residual correction. The word \emph{prior} is
-therefore used for three concrete estimators, not for a vague physical hint:
+In this chapter, a prior is a deterministic frozen estimator map computed before
+the neural residual correction. Three such estimators are used:
 \begin{itemize}
 \setlength{\itemsep}{0.16em}
 \setlength{\parsep}{0pt}
 \setlength{\topsep}{0.15em}
 \item \textbf{LoS path loss prior.} This is the clearest physical branch:
-      \(\mathrm{PL}_{\mathrm{LoS}}=\mathrm{FSPL}+C_{\mathrm{2ray}}+b+r\).
+      \(\mathrm{PL}_{\mathrm{LoS}}=\mathrm{FSPL}+C_{\mathrm{2ray}}+\beta_{\mathrm{LoS}}+r\).
       FSPL uses the 3D direct Tx--Rx distance; \(C_{\mathrm{2ray}}\) comes
       from a coherent direct plus ground reflected field sum
-      \cite{rappaport,wocc2021}; \(b\) is a fitted height dependent dB offset;
-      and \(r\) is a smoothed radial
+      \cite{rappaport,wocc2021}; \(\beta_{\mathrm{LoS}}\) is a fitted height
+      dependent dB offset; and \(r\) is a smoothed radial
       residual table. The UAV is always centred horizontally, so the radial
       coordinate is unambiguous, but \(h_{\mathrm{tx}}\) varies by sample:
-      \(\rho(h_{\mathrm{tx}})\), \(\phi(h_{\mathrm{tx}})\), \(b(h_{\mathrm{tx}})\)
+      \(\rho(h_{\mathrm{tx}})\), \(\phi(h_{\mathrm{tx}})\),
+      \(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\)
       and \(r(d_{2D},h_{\mathrm{tx}})\) are fitted in \SI{5}{m} height bins,
       smoothed, and linearly interpolated at inference. It is not a generic
       free space formula and it is not a learned linear regressor.
@@ -84,16 +82,13 @@ therefore used for three concrete estimators, not for a vague physical hint:
       whole calibration, unlike a native space global average.
 \end{itemize}
 
-The notation intentionally reuses \(\rho\) in two different blocks:
-\(\rho(h_{\mathrm{tx}})\) is the fitted LoS reflection amplitude, whereas
-\(\rho_k\) is a local building density fraction in a \(k\times k\) window.
-They are unrelated quantities; the argument or subscript identifies which one
-is meant.
-The same convention is used for \(b\): \(b(h_{\mathrm{tx}})\) is a LoS
-dB bias, \(b(x)\) is the binary building mask, \(b_{\mathrm{topology}}\) is
-a spread prior log domain offset, and \(b_{41}\) is the blocker depth feature.
-These symbols are local to their definitions and should not be read as one
-shared physical variable.
+The notation is kept distinct across blocks. The symbol
+\(\rho(h_{\mathrm{tx}})\) is reserved for the LoS reflection amplitude.
+Local building density is written as \(\delta_k\), and the LoS dB bias is
+written as \(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\). The spread symbols
+\(b_{\mathrm{topology}}\) and \(b_{41}\) remain local to the spread prior:
+the first is a log domain topology offset and the second is a blocker depth
+feature.
 
 \begin{table}[H]
 \centering
@@ -120,9 +115,9 @@ gain over FSPL; positive values mean destructive fading. \\
 Height interpolated effective reflection amplitude. It is fitted from CKM
 rather than assumed from one fixed ground material. \\
 \(\phi(h_{\mathrm{tx}})\) & LoS path loss &
-Height interpolated effective reflection phase. It absorbs the phase offset of
-the simplified one reflection geometry. \\
-\(b(h_{\mathrm{tx}})\) & LoS path loss &
+Height interpolated effective reflection phase, in radians. It absorbs the
+phase offset of the simplified one reflection geometry. \\
+\(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) & LoS path loss &
 Height dependent dB bias remaining after the coherent two ray fit. \\
 \(r(d_{2D},h_{\mathrm{tx}})\) & LoS path loss &
 Smoothed radial residual table. It corrects distance dependent errors that
@@ -130,7 +125,7 @@ remain after FSPL, two ray interference, and height bias. \\
 \(\mathrm{PL}^{(0)}\), \(\mathrm{PL}_{\mathrm{NLoS,raw}}\) & NLoS path loss &
 Raw hybrid formula map and its obstructed pixel branch before
 map morphology calibration. \\
-\(\rho_k\) & NLoS PL and spreads &
+\(\delta_k\) & NLoS PL and spreads &
 Fraction of building pixels in a \(k\times k\) neighbourhood; a local density
 proxy. \\
 \(h_k\) & NLoS PL and spreads &
@@ -160,7 +155,7 @@ looking equation. It is a complete estimator: the formula, fitted calibration,
 feature units, LoS/NLoS mask, topology features, and evaluation mask must be
 identical between fitting and inference. The final prior is strong because it
 keeps those pieces self contained and auditable under the same city holdout
-contract used for the final model.
+split used for the final model.
 
 The distinction matters most for NLoS. A calibration fitted for one physical
 formula cannot reliably correct another; local height and density features

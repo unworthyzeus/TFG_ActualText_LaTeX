@@ -14,6 +14,25 @@ whereas \SI{1.9383}{dB} is the frozen path loss prior baseline used by
 \textsc{HARP-Net CKM} on the final 14-city test split. All final
 model versus prior comparisons use the latter.
 
+All RMSE values in this chapter are pixel weighted over valid ground
+receivers:
+\begin{equation}
+  \mathrm{RMSE}
+  =
+  \sqrt{
+  \frac{\sum_{s,i,j} m_s(i,j)\left(\hat y_s(i,j)-y_s(i,j)\right)^2}
+       {\sum_{s,i,j} m_s(i,j)}
+  }.
+  \label{eq:rmse}
+\end{equation}
+Here \(m_s(i,j)\) is the valid receiver mask for sample \(s\). This is stricter
+than averaging per sample RMSEs because larger valid maps contribute
+proportionally to their number of receiver pixels. The same rule is used for
+channel attenuation, delay spread and angular spread. For the two spread
+targets, every non building pixel is also a receiver pixel in the CKM ground
+truth, so the reported spread RMSE compares the dense prediction with the dense
+ray traced ground truth over all valid ground receivers.
+
 The prior is not a weak reference included only for comparison. It is one of
 the central results of the thesis: a strong, train calibrated baseline that
 absorbs the stable part of the map before the residual model is asked to solve
@@ -69,7 +88,7 @@ output directly as a frozen anchor rather than re-learning it from pixels.
 
 \paragraph{Split comparability note.}
 The final priors and \textsc{HARP-Net CKM} use the same \texttt{city\_holdout}
-contract with \texttt{val\_ratio = 0.15}, \texttt{test\_ratio = 0.15}, and
+split with \texttt{val\_ratio = 0.15}, \texttt{test\_ratio = 0.15}, and
 \texttt{split\_seed = 42}. The standalone path loss prior audit uses the
 training cities and the full validation+test held out pool, giving
 \SI{1.9246}{dB} over 5340 held out samples. The final model comparison remains
@@ -271,7 +290,7 @@ the appendix diagnostic models is kept in Appendix~\ref{app:detailed_attempt_log
 \subsection{Spread priors by topology class}
 
 The delay spread and angular spread priors are also topology dependent. These
-tables use the same city holdout test contract as Table~\ref{tab:spread_prior_results}
+tables use the same city holdout test split as Table~\ref{tab:spread_prior_results}
 and keep the dense pixel weighted metric separated by visibility regime.
 
 \begin{table}[!htbp]
@@ -326,7 +345,7 @@ problem.
 \clearpage
 \section{\textsc{HARP-Net CKM} Results Against Frozen Priors}
 
-\subsection{Final test contract and headline results}
+\subsection{Final test protocol and headline results}
 
 \textsc{HARP-Net CKM} freezes the attenuation and spread priors and learns a bounded residual correction
 for the three radio maps. It is tested on the city holdout test split with
@@ -339,8 +358,8 @@ selected on validation after the deterministic RMSE/MAE dominant
 fine tuning stage. The exact weights of both stages are listed in
 Table~\ref{tab:try80_loss_settings}. The final claim is therefore an RMSE
 improvement over the frozen priors rather than a calibrated probabilistic
-prediction claim. The same pixel weighted RMSE contract defined in
-Chapter~\ref{chap:methodology} is used for the model and for the frozen priors.
+prediction claim. The pixel weighted RMSE rule in \eqref{eq:rmse} is used for
+the model and for the frozen priors.
 Therefore \texttt{model\_rmse} in the evaluation JSON is target specific: it is the RMSE
 for channel attenuation, delay spread, or angular spread individually, not a sum of the
 three RMSE values. The three targets are kept separate because their units are
