@@ -99,47 +99,21 @@ This spatial interference pattern creates the characteristic ring like
 behavior in the LoS path loss maps: concentric rings of constructive and
 destructive interference around the transmitter.
 
-\subsubsection{Comparison with literature two ray models}
+\subsubsection{Effective two ray calibration}
 
-The field sum in \eqref{eq:c2ray} is the standard \emph{exact} coherent
-two ray equation from the literature: a direct ray plus one ground reflected
-ray summed before conversion to dB. The practical adaptation in this thesis
-is not an extra term inside the two ray equation, but the way the reflection
-coefficient is parameterized and calibrated. We refer to this fitted variant
-as the \emph{enhanced two ray} model throughout this work: the underlying
-equation is the textbook coherent two ray model, but the effective reflection
-coefficient is enhanced beyond the Fresnel range and allowed to take
-amplitudes up to $\rho \le 1.5$ in order to absorb constructive multipath
-effects from the surrounding urban scene that a single Fresnel coefficient
-could not represent. The coefficients are fitted
-independently in 5~m UAV height bins and then linearly interpolated across
-neighboring bins at inference time.
-
-\paragraph{Physical vs.\ effective parameters.}
-Classical two ray models usually derive \(\Gamma\) from a smooth ground
-material and a grazing angle \cite{rappaport,goldsmith}. The thesis does not
-assume one flat dielectric plane. It keeps the coherent direct plus reflected
-field sum, but replaces the material coefficient with a height dependent
-effective coefficient \(\Gamma(h_{\mathrm{tx}})=\rho e^{-j\phi}\), fitted from
-training-city CKM LoS pixels in \SI{5}{m} UAV height bins and linearly
-interpolated at inference. Thus \(\rho\) is an effective reflected field
-amplitude and \(\phi\) is the extra fitted phase offset of the simplified one
-reflection geometry.
-
-\paragraph{Search range vs.\ fitted values.}
-The calibration grid search (Sec.~\ref{sec:los_calibration}) allows
-$\rho \in [0, 1.5]$ for robustness. However, the smoothed deployed values
-reported in Table~\ref{tab:los_params} and the stored calibration remain below
-unity, so the deployed model does not rely on an over unity reflected ray. In
-practice, the main difference from a purely physical textbook instantiation is
-therefore the fitted height binned effective coefficient, not an additional
-propagation term.
-
-\paragraph{Extra calibrated terms outside the two ray model.}
-The quantities \(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) and \(r(d_{2D}, h_{\mathrm{tx}})\) in
-\eqref{eq:pl_los} are not part of the literature two ray formula itself.
-They are post fit calibration terms added on top of the standard two ray
-prediction to absorb residual systematic errors.
+Equation~\eqref{eq:c2ray} keeps the standard coherent two ray field sum: one
+direct ray and one ground reflected ray are added before conversion to dB. The
+adaptation in this thesis is not an extra propagation term inside that field
+sum, but the fitted effective reflection coefficient
+\(\Gamma(h_{\mathrm{tx}})=\rho(h_{\mathrm{tx}})e^{-j\phi(h_{\mathrm{tx}})}\).
+Thus \(\rho\) and \(\phi\) are calibration parameters fitted from training city
+LoS pixels in \SI{5}{m} UAV height bins, not material Fresnel constants from a
+single flat ground plane \cite{rappaport,goldsmith}. The search grid allowed
+\(\rho \le 1.5\) for robustness, but the smoothed deployed values remain below
+unity. The additional terms
+\(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) and
+\(r(d_{2D},h_{\mathrm{tx}})\) are post fit calibration terms outside the
+literature two ray formula.
 
 \subsubsection{Calibrated LoS prior}
 
@@ -167,19 +141,10 @@ where:
       distance bin after the two ray fit.
 \end{itemize}
 
-The four terms in \eqref{eq:pl_los} are applied sequentially:
-FSPL gives the geometric baseline; the two ray correction adds the
-interference pattern; the bias corrects for a systematic global offset per
-height; and the radial term corrects for range dependent systematic errors.
-The implementation then clips the frozen LoS prior to the \([20,180]\) dB
-range used by the final model. For the CKM dataset used here, valid calibrated
-LoS values are not expected to fall outside this interval, so this clipping is
-a defensive range consistency guard rather than a correction that should
-materially change the prior.
-
-Table~\ref{tab:pl_los_term_inventory} gives the compact inventory of the
-calibrated LoS terms. The individual distance and angle definitions are not
-repeated here because they are shared support maps.
+Equation~\eqref{eq:pl_los} is applied as a frozen calibrated LoS prior and
+then clipped to the \([20,180]\) dB physical path loss range used by the final
+model. Table~\ref{tab:pl_los_term_inventory} summarizes the calibrated LoS
+terms; the shared distance and angle definitions are not repeated here.
 
 \begin{table}[H]
 \centering
@@ -600,8 +565,8 @@ below do not define a competing path loss model; they give the linear
 calibration the local context that the raw formula cannot see: building
 density, building height, nearby NLoS support, elevation and simple
 interactions. From $\mathrm{PL}^{(0)}(x)$ and the shared topology maps, the
-following 15 element vector is computed:
-This follows the same intuition as urban NLoS models based on building rows and
+following 15 element vector is computed. This follows the same intuition as
+urban NLoS models based on building rows and
 street level descriptors \cite{walfisch1988,ikegami1984}, and as path profile
 surrogates that use map derived profile statistics \cite{juang2021pathprofile},
 but all variables here are computed directly from the CKM grid and fitted only
