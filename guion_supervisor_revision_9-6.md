@@ -97,6 +97,39 @@ Use this list while scrolling through the revised PDF. The short version is: eve
 27. **"Check the fixes against code and other repos."**
     I checked the thesis claims against the implementation facts: nine spatial channels plus scalar height, stored HDF5 LoS mask in the final dataset path, ground pixel masking, receiver height 1.5 m, 513 by 513 maps, centered transmitter, 15 and 41 morphology windows, and the final prior plus residual model flow.
 
+28. **"Make Raw NLoS propagation prior visibly higher level than COST231."**
+    I changed the visual hierarchy so Raw NLoS propagation prior is the parent block, while COST231 and the A2G envelope are subparts under it. This matches the method: the raw NLoS prior first combines two coarse physical estimates, and only then the calibration bends that raw branch.
+
+29. **"Remove LoS redundancy without losing the two ray clarification."**
+    I compressed the repeated two ray discussion into one effective two ray calibration block. The thesis now keeps the important distinction: the field sum is the standard coherent direct plus reflected ray equation, while the fitted reflection coefficient is an effective CKM calibration, not a material Fresnel constant.
+
+30. **"Explain rho and phi only where they are actually needed."**
+    I kept \(\rho(h_{\mathrm{tx}})\) as the effective reflected field amplitude and \(\phi(h_{\mathrm{tx}})\) as the fitted phase offset. I removed repeated restatements of that idea from later paragraphs, so the explanation appears once and the final LoS prior equation can be read cleanly.
+
+31. **"Do not over define every LoS and spread term again."**
+    I removed the long term by term repetition where it duplicated shared support definitions. What remains is the final equation, a compact term inventory only where it helps reproducibility, and cross references back to the shared support maps.
+
+32. **"Clarify that \(h_{\mathrm{norm}}\) is not a local map feature."**
+    I added the exact implementation interpretation: \(h_{\mathrm{norm}}\) is one scalar per sample and is broadcast to each valid receiver row in the spread design matrix. By contrast, \(b_{41}\), \(c_{41}\), and \(t_{41}\) are deterministic \(41\times41\) map summaries.
+
+33. **"Do not delete the useful meaning of the removed spread table."**
+    I removed the redundant direct term inventory table, but I kept its non redundant content in prose. The revised text still says that \(z^{(0)}\) and \((z^{(0)})^2\) anchor and bend the raw log prior, and that the constant entry \(1\) gives the selected regime an additive offset.
+
+34. **"Explain where the raw spread constants come from."**
+    I added the origin and intuition of those constants. They are fixed hyperparameters in the raw spread prior before ridge calibration, not the learned ridge weights. The physical motivation comes from standard channel model practice: delay and angular spread are nonnegative, heavy tailed, often modeled in the log domain, separated by LoS/NLoS state, and affected by elevation because low angle links interact with more rooftops and street canyons.
+
+35. **"Keep the constants once, preferably in a table."**
+    I avoided repeating the same delay and angular spread anchors and coefficients in prose and in equations. The equation defines the structure, and the fixed values are summarized in a compact table, so the reader can see the numbers once without re-reading them in paragraph form.
+
+36. **"Use per regime wording consistently."**
+    I replaced the remaining old regime wording with "per regime" or "calibration by regime". This is cleaner and avoids making the method sound like a separate staged protocol.
+
+37. **"Add the latest review entries."**
+    I added two revision history entries: an EV methodology redundancy review on 09/06/2026 and a GMG corrected version on 10/06/2026 focused on methodology redundancy removal.
+
+38. **"Check that the redundancy cut did not remove too much."**
+    I audited the removed spread material against the implementation in `TFGPractice`. The code confirms that \(h_{\mathrm{norm}}\) is broadcast from one scalar, while the blocker, clearance and taller building quantities are computed through 41 pixel box means. That is why the full repeated table could be removed safely while preserving the unique explanations in the shared support and spread prior text.
+
 ## Page 33
 
 I rewrote the chapter opening. Before, the page looked too empty and the first paragraph was longer and more repetitive. It now starts with a direct summary of the final pipeline, and Table 3.1 acts as a guide to the chapter.
@@ -137,17 +170,25 @@ In the Channel Attenuation Prior section, I removed the repeated geometry defini
 
 I also explicitly clarified what \(\phi\) is: it is the fitted effective phase offset of the reflected path relative to the direct path. This addresses the question of whether it was explained clearly.
 
+After the last redundancy pass, I also condensed the comparison with literature two ray models. The final text now says once that the coherent two ray equation is standard, but the fitted \(\rho\) and \(\phi\) are effective CKM calibration parameters. This removes four repeated mini explanations while keeping the scientific distinction.
+
 ## Pages 51 to 59
 
-In the NLoS branch, I removed the "stage" language and turned it into calculation blocks. The branch is now presented as a calibrated prior using local morphology, obstruction, elevation and regime-wise regression.
+In the NLoS branch, I removed the "stage" language and turned it into calculation blocks. The branch is now presented as a calibrated prior using local morphology, obstruction, elevation and per regime calibration.
 
 I also reduced redundancy: geometry and masks are no longer redefined here, and the text points back to the shared support maps. I changed local densities to \(\delta_{15}\) and \(\delta_{41}\), so they cannot be confused with the LoS reflection \(\rho\).
+
+I also fixed the hierarchy around the raw NLoS propagation prior. Raw NLoS propagation prior is now visibly the parent idea; COST231 and the A2G envelope are the two coarse branches used to form it. This answers the comment that the previous formatting made COST231 look like it was at the same level as the whole raw prior.
 
 ## Pages 60 to 64
 
 In the delay spread and angular spread prior, I removed repeated definitions that were already in the shared support sections. The text now says that the spread vector reuses those common features and only details the new parts: ridge regression, fallback keys, clipping and inverse transform.
 
 The point here is that DS and AS share the same prior machinery, rather than having two duplicated explanations.
+
+The latest pass made this section tighter. I removed the redundant direct term inventory table because those quantities were already defined in the shared support section. I kept the useful parts in prose: \(h_{\mathrm{norm}}\) is a broadcast transmitter height scalar, \(b_{41}\), \(c_{41}\), and \(t_{41}\) are 41 by 41 map summaries, \(z^{(0)}\) and \((z^{(0)})^2\) anchor and bend the raw prior, and the constant entry gives the selected regime its offset.
+
+I also added where the raw spread constants come from and why they are physically reasonable. The values are fixed constants in the raw prior implementation before ridge calibration. They encode a simple physics motivated starting point: spreads are modeled in log space, LoS and NLoS have different base anchors, range and elevation affect the tail, and dense or blocked low elevation areas tend to produce larger spread.
 
 ## Pages 65 to 72
 
