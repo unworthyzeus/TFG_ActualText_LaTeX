@@ -1737,25 +1737,19 @@ targets under the same protocol.} \\
 \end{tabularx}
 \end{table*}
 
-The fair conclusion is narrow but useful. The final channel attenuation number is in the
-same band as strong dense radio map references. It is numerically below the
-recent Gao et al.\ outdoor segmentation results, but that comparison remains
-cross dataset scale context rather than a leaderboard result. The spread
-results now have explicit nearby literature context in
-Table~\ref{tab:spread-soa}, but should still be interpreted primarily against
-same protocol internal baselines because no external dense CKM channel attenuation/DS/AS
-benchmark was found.
+The fair conclusion is narrow: the attenuation result is in the same range as
+strong dense radio map references, while spread results should be read mainly
+against same protocol internal baselines because no external dense CKM
+attenuation/DS/AS benchmark was found.
 
 \subsection{Runtime}
 
-The final generator was compared against the supplied MATLAB ray tracing path
-on Barcelona layouts at full \(513\times513\) resolution on the same laptop:
-an AMD Ryzen~5~5600H CPU and an NVIDIA RTX~3050~Ti Laptop GPU. The surrogate includes
-LoS/NLoS mask generation, frozen priors, final neural prediction, and default
-numeric export after the checkpoint is loaded once. It runs in \SI{0.88}{s} per
-sample versus \SI{99.89}{s} for the local ray tracing path, a \(113.7\times\)
-speedup under this measurement setup. The ray tracing row uses the CPU path;
-the surrogate row uses the laptop GPU with mixed precision.
+Runtime was measured on Barcelona layouts at full \(513\times513\) resolution
+on the same laptop: an AMD Ryzen~5~5600H CPU and an NVIDIA RTX~3050~Ti Laptop
+GPU. After checkpoint loading, the generator includes mask generation, frozen
+priors, final prediction, and numeric export. It runs in \SI{0.88}{s} per sample
+versus \SI{99.89}{s} for the local MATLAB ray tracing path, a \(113.7\times\)
+speedup under this setup.
 
 \begin{table}[t]
 \centering
@@ -1777,89 +1771,64 @@ Final generator & Masks, priors, attenuation/DS/AS prediction, numeric export; C
 
 \subsection{Interpretation and Limitations}
 
-The final result is best interpreted as evidence for a hybrid CKM design rather
-than as a claim that one backbone solves radio mapping in general. The strongest
-technical signal is that the residual model improves a high quality frozen
-prior across train, validation, test, and every morphology/height audit
-group. That makes the gain harder to dismiss as overfitting to a single easy
-city mix. At the same time, the modest size of the delay spread gain is a useful
-warning: once the calibrated prior has absorbed the large geometry trend, the
-remaining spread error is dominated by rare tails and target quantization, not
-by a smooth missing term. The residual errors that remain are most likely where
-low UAV elevation, dense local clutter, and NLoS support coincide, because
-those pixels depend on the particular blocked/scattered path selected by the
-ray tracer rather than only on broad radial or morphology statistics.
+The final result supports a hybrid CKM design rather than a claim that one
+backbone solves radio mapping in general. The residual model improves a strong
+frozen prior across train, validation, test, and every morphology/height audit
+group, making the gain harder to dismiss as one easy city mix. The modest delay
+spread gain is also informative: after the calibrated prior absorbs the large
+geometry trend, remaining spread error is dominated by rare tails, target
+quantization, and local blocked/scattered paths.
 
-Several limitations remain. First, the labels come from ray tracing rather than
-field measurements, so the result is simulator agreement, not over the air
-validation. Second, target quantization limits how much sub unit error
-structure can be learned. This is not a limitation of the output layer: the
-model outputs continuous channel attenuation, DS, and AS values. It is a limitation of the stored
-labels. For channel attenuation, a \SI{0.9298}{dB} final MAE against labels quantized at
-about \SI{1}{dB} is already close to the label step, even though the RMSE still
-reveals harder tails. Third, the final model is selected under one
-city holdout split and one final training seed. Fourth, the dataset fixes
-frequency, antenna pattern, and simulator assumptions; deployment would require
-conditioning or calibration across those variables.
+Limitations remain. The labels come from ray tracing rather than field
+measurements, so the result is simulator agreement, not over the air validation.
+Target quantization also limits sub unit learning even though the model outputs
+continuous channel attenuation, DS, and AS values; the \SI{0.9298}{dB} final
+attenuation MAE is already close to the \SI{1}{dB} label step. Finally, the
+model is selected under one city holdout split and one final seed, with fixed
+frequency, antenna pattern, and simulator assumptions.
 
 \section{Code Availability}
 
-The reproducibility record is public as live source repositories. The citations
-below identify the public source locations and snapshot commits or tags used for
-this manuscript.
-The standalone CKM Generator repository contains the Streamlit interface,
-command line generator, frozen calibration files, final model runtime code, and
-the published checkpoint path used by the demonstrator
-\cite{moreno2026ckmgenerator}; it is the inference/demo entry point. The final training and evaluation
-implementation is collected separately in the final code repository
-\cite{moreno2026finalcode}; it is the source record for reproducing the paper
-metrics. The reported tables are tied to the selected \texttt{best\_model.pt}
-checkpoint and its exported comparison summary and deep breakdown JSON files,
-rather than to a later interactive demo run. For traceability, the LaTeX thesis
-source and project source archive are also available in public repositories
-\cite{moreno2026tfgprogress,moreno2026tfgtext}. Large data and model artifacts
-are treated as external artifacts or Git LFS objects rather than ordinary
-source files.
+The reproducibility record is public as source repositories. The standalone CKM
+Generator repository contains the interface, command line generator, frozen
+calibration files, runtime code, and published checkpoint path
+\cite{moreno2026ckmgenerator}. The final training and evaluation repository is
+the source record for the paper metrics \cite{moreno2026finalcode}, tied to the
+selected \texttt{best\_model.pt} checkpoint and exported breakdown JSON files.
+The LaTeX thesis source and project archive are also public
+\cite{moreno2026tfgprogress,moreno2026tfgtext}; large data and model artifacts
+are external artifacts or Git LFS objects.
 
 \section{Conclusion}
 
 This paper presents a dense variable height UAV CKM surrogate that jointly
-predicts channel attenuation, delay spread, and angular spread on unseen cities. Under the
-strict city holdout setting, the final model reaches \SI{1.6519}{dB},
-\SI{26.5570}{ns}, and \(11.3854^\circ\), respectively, while using one centred
-UAV generator across the sampled height range. The result is not only a neural
-architecture result. Its main contribution is a hybrid recipe: first build
-strong priors fitted only on training cities for the structure that is
-predictable, then learn bounded residual distributions around those anchors.
+predicts channel attenuation, delay spread, and angular spread on unseen cities.
+Under strict city holdout, the final model reaches \SI{1.6519}{dB},
+\SI{26.5570}{ns}, and \(11.3854^\circ\), respectively. Its main contribution is
+a hybrid recipe: fit strong priors on training cities for predictable structure,
+then learn bounded residual distributions around those anchors.
 
-The calibrated priors are themselves an important part of the method. They put
-together coherent two ray LoS path loss, height dependent calibration,
-morphology aware NLoS correction, visibility switching, and log domain DS/AS
-spread statistics. These frozen anchors already explain most radial,
-visibility, height, and spread scale structure; the final residual model then
-improves them by \SI{0.2865}{dB}, \SI{1.5453}{ns}, and \(2.3562^\circ\) RMSE on
-the held out test set. Continuous transmitter height is handled through both the
-height aware priors and a sinusoidal FiLM conditioning path, so the same model
-covers the varying height regime without per altitude retraining.
+The calibrated priors combine coherent two ray LoS path loss, height dependent
+calibration, morphology aware NLoS correction, visibility switching, and log
+domain DS/AS spread statistics. These anchors explain most radial, visibility,
+height, and spread scale structure; the residual model improves them by
+\SI{0.2865}{dB}, \SI{1.5453}{ns}, and \(2.3562^\circ\) RMSE on the held out
+test set. Continuous transmitter height is handled through both the priors and
+a sinusoidal FiLM path, avoiding per altitude retraining.
 
 The distribution first diagnosis remains the key modelling lesson. NLoS
-channel attenuation residuals are mixture-like and prone to mode collapse, while DS/AS
-targets are quantized and spike plus tail rather than single smooth residuals.
-GMM style residual heads and histogram checks therefore matter because they
-prevent visually plausible maps from hiding collapsed marginals. The remaining
-spread errors are consistent with this interpretation: the large scale DS/AS
-structure is usually recovered, but rare high spread pixel groups can still be
-missed, and some false positive high spread patches remain.
+attenuation residuals are mixture like and prone to mode collapse, while DS/AS
+targets are quantized and spike plus tail. GMM style residual heads and
+histogram checks prevent visually plausible maps from hiding collapsed
+marginals, although rare high spread groups and some false positive spread
+patches remain.
 
-The main practical conclusion is narrow and useful. For this fixed ray traced
-CKM simulation setting, \textsc{HARP-Net CKM} is
-accurate, fast, and interpretable enough to reduce repeated ray traced map
-generation for many planning experiments, achieving a measured \(113.7\times\)
-speedup over the local MATLAB ray tracing path. The result is a reproducible surrogate for a
-defined dataset, split, carrier, antenna setup, and receiver mask, and its
-clearest lesson is methodological: diagnose the target distribution, freeze the
-stable structure in auditable priors, and spend neural capacity on the residual
-structure that the priors cannot explain.
+For this fixed ray traced CKM setting, \textsc{HARP-Net CKM} is accurate, fast,
+and interpretable enough to reduce repeated ray traced map generation, achieving
+a measured \(113.7\times\) speedup over the local MATLAB path. The broader
+lesson is methodological: diagnose the target distribution, freeze stable
+structure in auditable priors, and spend neural capacity on the residual
+structure those priors cannot explain.
 
 \bibliographystyle{IEEEtran}
 \bibliography{TFG}
