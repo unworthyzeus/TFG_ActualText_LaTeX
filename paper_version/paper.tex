@@ -336,11 +336,16 @@ the local errors that the frozen estimators cannot explain.
 In this paper, a \emph{prior} means a frozen estimator fitted only on training
 cities, not a hand tuned curve evaluated on the test set. The prior sees the
 same support information available at deployment: centred transmitter geometry,
-transmitter height, topology derived morphology, and the geometric LoS/NLoS mask. Once
-its coefficients and fallback tables are stored, no gradient update is applied
-to it inside the neural training loop. This separation is important because it
-lets the final residual model be judged against a demanding baseline: the model
-must improve an already calibrated predictor rather than merely beat FSPL.
+transmitter height, topology derived morphology, and a LoS/NLoS mask. In the
+CKM benchmark runs, the stored HDF5 mask is used so every reported number uses
+the same simulator support labels. For new datasets where only topology and
+height are available, the generator ray casts the LoS/NLoS mask from those two
+inputs; these generated masks are the operational support masks consumed by the
+priors and by \textsc{HARP-Net CKM}. Once the prior coefficients and fallback
+tables are stored, no gradient update is applied to them inside the neural
+training loop. This separation is important because it lets the final residual
+model be judged against a demanding baseline: the model must improve an already
+calibrated predictor rather than merely beat FSPL.
 
 \begin{figure*}[t]
 \centering
@@ -410,8 +415,8 @@ Channel attenuation, delay spread, and angular spread maps. \\
 
 Thus the full generator has two external inputs and three final outputs. The
 neural residual model has nine spatial map channels plus a separate scalar
-transmitter height conditioning path because the framework has already computed the
-visibility mask, receiver mask, and frozen prior maps.
+transmitter height conditioning path because the framework has already computed
+or loaded the visibility mask, receiver mask, and frozen prior maps.
 
 \subsection{Frozen Priors}
 
@@ -421,7 +426,11 @@ dB term and \eqref{eq:tworay-paper} is the standard coherent direct plus
 ground reflected image source construction \cite{rappaport,goldsmith}, also
 used in low altitude A2G two ray modeling \cite{wocc2021}. The fitted
 \(\rho,\phi,\beta_{\mathrm{LoS}}\), and \(r\) curves are not taken from those references; they are
-CKM train split calibration terms wrapped around that two ray structure. The
+CKM training split calibration terms wrapped around that two ray structure. In
+particular, \(\rho(h_{\mathrm{tx}})\) is an effective reflected field
+amplitude and \(\phi(h_{\mathrm{tx}})\) is the fitted phase offset of that
+reflected field relative to the direct ray; neither quantity is a material
+Fresnel coefficient. The
 NLoS branch uses the COST231/Hata urban macro expression as a coarse blocked
 link trend \cite{cost231}, combines it with an Al-Hourani style
 elevation dependent A2G excess loss envelope \cite{alhourani2014}, and keeps
@@ -503,10 +512,12 @@ around the centred transmitter rather than building edge artifacts. The
 two ray plus radial table removes that height/radius component before the
 network spends capacity on local visibility and morphology corrections.
 
-The NLoS prior starts from the maximum of COST231 like and A2G-NLoS raw
-terms. The first term below is the COST231/Hata urban macro formula adapted as
-a shape prior for the CKM geometry, not as an assertion that the original model
-is directly valid at every transmitter height:
+The raw NLoS propagation prior is the maximum of two coarse branches: a
+COST231 shaped urban loss branch and an A2G NLoS elevation envelope. These are
+subterms of the raw blocked prior, not separate final models. The first term
+below is the COST231/Hata urban macro formula adapted as a shape prior for the
+CKM geometry, not as an assertion that the original model is directly valid at
+every transmitter height:
 \begin{equation}
 \begin{aligned}
 \mathrm{PL}_{C}
@@ -520,7 +531,7 @@ is directly valid at every transmitter height:
 \end{aligned}
 \label{eq:cost-paper}
 \end{equation}
-where \(C\) denotes the COST231-shaped branch,
+where \(C\) denotes the COST231 shaped branch,
 \(d_{\mathrm{km}}=\max(d_{2D}/1000,0.001)\), and
 \(a(h_{\mathrm{rx}})
 =(1.1\log_{10}f_{\mathrm{MHz}}-0.7)h_{\mathrm{rx}}
@@ -530,7 +541,8 @@ retained as the COST231 metropolitan correction inside this empirical basis; it
 is not a claim that the original COST231 deployment domain transfers unchanged
 to \SI{7.125}{GHz} UAV links. The second term is a conservative A2G NLoS
 envelope: it keeps altitude/elevation structure from coverage models, then lets
-the train only calibration correct the fixed excess loss constants:
+the calibration fitted on training cities correct the fixed excess loss
+constants:
 \begin{equation}
 \begin{aligned}
 \mathrm{PL}_{\mathrm{A2G,NLoS}}
@@ -543,8 +555,9 @@ the train only calibration correct the fixed excess loss constants:
 with \(\lambda_0=20\log_{10}(4\pi h_{\mathrm{tx}}f/c)\),
 \(\beta_{\mathrm{NLoS}}=-16.16\) dB,
 \(A_{\mathrm{NLoS}}=12.0436\), and
-\(\tau_{\mathrm{NLoS}}=7.52^\circ\). The raw blocked link
-prior is the conservative envelope
+\(\tau_{\mathrm{NLoS}}=7.52^\circ\). The calibration fitted on training cities
+then bends these fixed constants to the CKM ray traced setting. The raw
+blocked link prior is the conservative envelope
 \begin{equation}
 P_0
 =
@@ -554,8 +567,8 @@ P_0
 \label{eq:nlos-raw-paper}
 \end{equation}
 The maximum is deliberately pessimistic: whichever raw branch predicts stronger
-attenuation is kept. It is then corrected by train only regime wise linear
-calibration:
+attenuation is kept. The retained raw attenuation is then corrected by a per
+regime linear calibration fitted on training cities:
 \begin{equation}
 \mathrm{PL}_{\mathrm{NLoS}}
 =\operatorname{clip}(\mathbf{x}_{\mathrm{NLoS}}^{\top}\mathbf{w}_{\mathrm{NLoS},r},20,180).
@@ -598,7 +611,7 @@ normalized elevation angle feature. The interaction
 \(n_{41}\log(1+d_{2D})\) lets local blockage support vary with range, and
 \(n_{41}\theta_{\mathrm{norm}}\) activates when obstruction and elevation
 jointly matter.
-The constant \(1\) is the regime wise bias term. The
+The constant \(1\) is a per regime bias term. The
 deployed path loss prior is selected by the geometric visibility mask:
 \begin{equation}
 \mathrm{PL}_{\mathrm{prior}}
@@ -655,7 +668,7 @@ Term & Prior block & Source & Role in this paper \\
 \(\theta_{\mathrm{norm}},\theta_{\mathrm{inv}}\) & Spreads & Geometry + A2G elevation dependence
 \cite{alhourani2014,khawaja_survey,tr38901} & Elevation angle and low elevation complement for blocked/spread prone regimes. \\
 \addlinespace[1pt]
-\multicolumn{4}{l}{\emph{CKM train split fitted calibration}} \\
+\multicolumn{4}{l}{\emph{CKM training split fitted calibration}} \\
 \(\rho(h_{\mathrm{tx}}),\phi(h_{\mathrm{tx}})\) & LoS PL & Train split fit + smoothing & Smoothed deployed effective reflection amplitude and phase; not material constants. \\
 \(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) & LoS PL & Train split fit + smoothing & Smoothed deployed height dependent offset left after coherent two ray fitting. \\
 \(r(d_{2D},h_{\mathrm{tx}})\) & LoS PL & Train split fit + smoothing & Smoothed deployed radial residual left by two ray plus bias. \\
@@ -674,7 +687,7 @@ indicate the literature basis of each starting structure.}
 \setlength{\tabcolsep}{3pt}
 \begin{tabularx}{\textwidth}{p{0.13\textwidth}p{0.23\textwidth}p{0.27\textwidth}X}
 \toprule
-Target/regime & Starting structure & Train only calibration & Deployed prior map \\
+Target/regime & Starting structure & Training city calibration & Deployed prior map \\
 \midrule
 PL LoS &
 FSPL plus coherent direct/reflected two ray correction
@@ -685,9 +698,9 @@ and radial residual \(r(d_{2D},h_{\mathrm{tx}})\) in smoothed
 LoS channel attenuation map carrying the dominant height/radius rings before any neural
 residual is added. \\
 PL NLoS &
-Conservative envelope of COST231-shaped urban loss and an elevation aware
+Conservative envelope of COST231 shaped urban loss and an elevation aware
 A2G-NLoS term \cite{cost231,alhourani2014,khawaja_survey,tr38901} &
-Regime wise OLS over \(\mathbf{x}_{\mathrm{NLoS}}\), selected by morphology,
+Per regime OLS over \(\mathbf{x}_{\mathrm{NLoS}}\), selected by morphology,
 visibility, and antenna height group with fallback keys and output clipping &
 NLoS channel attenuation map that stores blocked link scale, local density, blocker, and
 elevation effects. \\
@@ -735,7 +748,7 @@ used as frozen statistical anchors. \\
 \draw[arr] (frozen.south) -- ([yshift=0.28cm]maps.north);
 \draw[arr] (maps.east) -- (residual.west);
 \end{tikzpicture}}
-\caption{Train only prior calibration and deployment. The upper row fits and
+\caption{Prior calibration and deployment. The upper row fits and
 stores the prior parameters using training cities only. The lower row applies
 those frozen tables to a held out sample before the neural residual model is
 called.}
@@ -760,7 +773,7 @@ and the selected pair minimizes the corresponding RMSE. The fitted
 \(\rho\), \(\phi\), and \(\beta_{\mathrm{LoS}}\) curves are then smoothed across neighbouring
 height bins, weighted by bin support, and linearly interpolated at inference.
 
-The NLoS branch uses the same train only principle but with a linear morphology
+The NLoS branch uses the same training city principle but with a linear morphology
 calibrator. For every supported regime \(r\), the calibration weights solve
 \begin{equation}
 \hat{\mathbf{w}}_{\mathrm{NLoS},r}
@@ -806,8 +819,16 @@ z^{(0)}
 \end{aligned}
 \label{eq:spread-raw-paper}
 \end{equation}
-The constants in \eqref{eq:spread-raw-paper} are fixed before ridge
-calibration. For delay spread, \(b_{\mathrm{LoS}}^{\mathrm{nat}}=\SI{4.0}{ns}\),
+The constants in \eqref{eq:spread-raw-paper} are fixed raw prior
+hyperparameters before ridge calibration. They come from the non neural spread
+prior implementation rather than from the final residual network. Their role is
+to give \(z^{(0)}\) a physically motivated starting scale: LoS and NLoS anchors
+encode the spike plus tail split visible in CKM spread histograms, topology
+offsets rank broad morphology classes, and positive weights on range, low
+elevation, density, height, and NLoS support encode the expectation that richer
+urban multipath increases spread. The ridge fit then learns the CKM specific
+linear correction around this raw log prior. Numerically, for delay spread,
+\(b_{\mathrm{LoS}}^{\mathrm{nat}}=\SI{4.0}{ns}\),
 \(b_{\mathrm{NLoS}}^{\mathrm{nat}}=\SI{11.0}{ns}\), and
 \((a_1,\ldots,a_6)=(0.11,0.62,0.48,0.32,0.86,0.60)\). For angular spread,
 \(b_{\mathrm{LoS}}^{\mathrm{nat}}=3.0^\circ\),
@@ -852,11 +873,12 @@ n_{41}\log(1+d_{2D}),\\
 \end{aligned}
 \label{eq:spread-feature-vector-paper}
 \end{equation}
-Here \(h\) is normalized transmitter height, \(b_{41}\) is a local blocker depth
-summary, \(c_{41}\) is transmitter clearance over nearby buildings, and
-\(t_{41}\) is the fraction of locally taller buildings. These height terms are
-not incidental: they tell the spread prior whether the centred UAV is above the
-local skyline, near rooftop level, or below nearby high rise clutter. The
+Here \(h\) is normalized transmitter height: one scalar per sample broadcast to
+each valid receiver row. By contrast, \(b_{41}\), \(c_{41}\), and \(t_{41}\) are
+\(41\times41\) map summaries: local blocker depth, transmitter clearance over
+nearby buildings, and fraction of locally taller buildings. These height terms
+are not incidental: they tell the spread prior whether the centred UAV is above
+the local skyline, near rooftop level, or below nearby high rise clutter. The
 quadratic raw prior terms let the calibration bend the initial log domain
 estimate, while the interaction terms represent cases where range, low
 elevation, dense buildings, and NLoS support become harmful together; in
@@ -1716,7 +1738,7 @@ correlate negatively with the prior error row, which is the expected behavior of
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.92\textwidth,height=0.62\textheight,keepaspectratio]{img/thesis_figures/try80_appendix_panels/try80_panel_dense_mid_ant_Vancouver_sample_15265_6x3.png}
+\includegraphics[width=0.92\textwidth,height=0.62\textheight,keepaspectratio]{img/thesis_figures/harpnet_inspection_panels/harpnet_panel_dense_mid_ant_Vancouver_sample_15265_6x3.png}
 \caption{Representative final model inspection panel for a dense, mid antenna
 held out test sample in Vancouver. Columns are channel attenuation, delay spread, and angular
 spread. Rows show ground truth, frozen prior, final prediction,
@@ -1807,8 +1829,8 @@ strict city holdout setting, the final model reaches \SI{1.6519}{dB},
 \SI{26.5570}{ns}, and \(11.3854^\circ\), respectively, while using one centred
 UAV generator across the sampled height range. The result is not only a neural
 architecture result. Its main contribution is a hybrid recipe: first build
-strong train only calibrated priors for the structure that is predictable, then
-learn bounded residual distributions around those anchors.
+strong priors fitted only on training cities for the structure that is
+predictable, then learn bounded residual distributions around those anchors.
 
 The calibrated priors are themselves an important part of the method. They put
 together coherent two ray LoS path loss, height dependent calibration,
@@ -1839,6 +1861,7 @@ clearest lesson is methodological: diagnose the target distribution, freeze the
 stable structure in auditable priors, and spend neural capacity on the residual
 structure that the priors cannot explain.
 
+\clearpage
 \bibliographystyle{IEEEtran}
 \bibliography{TFG}
 
