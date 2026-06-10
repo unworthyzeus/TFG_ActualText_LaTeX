@@ -55,7 +55,7 @@
 \contentsline {section}{\numberline {3.3}Shared support maps, visibility masks and morphology}{37}{section.3.3}%
 \contentsline {section}{\numberline {3.4}Final priors: overview and literature basis}{41}{section.3.4}%
 \contentsline {subsection}{\numberline {3.4.1}High level architecture}{41}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Prior design rules}{42}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.2}Prior design rules}{43}{subsection.3.4.2}%
 \contentsline {subsection}{\numberline {3.4.3}Literature ingredients and thesis adaptations}{43}{subsection.3.4.3}%
 \contentsline {section}{\numberline {3.5}Channel Attenuation Prior}{44}{section.3.5}%
 \contentsline {subsection}{\numberline {3.5.1}LoS branch: enhanced two ray model}{45}{subsection.3.5.1}%

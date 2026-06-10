@@ -711,9 +711,12 @@ derived rather than read as an independent ground truth label:
 The multiplication by \(m_{\mathrm{ground}}\) is essential; otherwise building
 pixels would be labelled as NLoS receiver pixels.
 
-For topology-only inputs, generated LoS/NLoS masks are an approximate geometric
-fallback. They allow the final model to run outside the original CKM HDF5
-dataset, but they are not expected to be bit-identical to CKM reference masks.
+For topology-only inputs, generated LoS/NLoS masks are the normal operational
+mask source. They allow the final model to run on new datasets outside the
+original CKM HDF5 files. When a CKM reference mask is available it is used for
+benchmark evaluation, but the generated masks remain the deployable geometry
+based support masks; they are not expected to be bit-identical to CKM reference
+masks.
 
 \section{Outputs}
 

@@ -592,8 +592,11 @@ The generated masks are then:
   \label{eq:nlos_mask_generated}
 \end{align}
 CKMGenerator uses the provided mask in automatic mode when it exists; otherwise
-it uses \eqref{eq:los_mask_generated}. The final experiments in this thesis use
-the stored HDF5 mask; the generated mask is only fallback deployment logic.
+it uses \eqref{eq:los_mask_generated}. The final benchmark experiments in this
+thesis use the stored HDF5 mask so that the reported numbers are evaluated
+against the same simulator support labels as the dataset. For new topology-only
+datasets, however, the generated masks are the operational input masks used by
+the generator and the final model.
 
 The local morphology features are also computed before any prior is evaluated.
 The \(15\times15\) windows capture near receiver texture, while the

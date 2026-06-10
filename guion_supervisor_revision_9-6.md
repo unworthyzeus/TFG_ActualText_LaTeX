@@ -50,13 +50,13 @@ Use this list while scrolling through the revised PDF. The short version is: eve
     Meeting sentence: "There is no special \(90\pi\) constant; it was just a confusing degree conversion. I rewrote it directly in radians as \(2\theta/\pi\)."
 
 12. **"Clarify whether LoS/NLoS masks come from the dataset or are calculated."**
-    I clarified that the thesis experiments use the stored HDF5 LoS mask restricted to valid ground receivers. The CKMGenerator ray casting path is described as a deployment fallback for topology only inputs, not as the evaluation mask used for final reported numbers.
+    I clarified the distinction between benchmark evaluation and new dataset operation. The thesis experiments use the stored HDF5 LoS mask restricted to valid ground receivers so the reported numbers use the dataset support labels. For topology only inputs and new datasets, CKMGenerator generates the LoS/NLoS masks by ray casting; those generated masks are the operational masks used by the generator and final model.
 
 13. **"If ray casting remains, explain intuition before math."**
     I rewrote that paragraph so the logic comes first: sample the line between transmitter and receiver, compare the line height with buildings, then formalize it. This follows the comment that intuition should precede equations. In the revised source, this paragraph appears before the definitions of \(L_x\), the sampled points and the generated masks.
 
 14. **"If you use calculated LoS masks, show the error."**
-    I avoided turning the fallback ray casting routine into an evaluated result. Since the final experiments use the HDF5 masks, I did not add an unsupported mask error table. The fallback is now presented only as generator behavior outside the HDF5 setting.
+    I avoided adding an unsupported mask error table to the thesis results because the final benchmark experiments use the HDF5 masks. I still keep the generated masks as an important part of the method: they are the geometry based masks used when the input is a new topology without stored CKM mask labels.
 
 15. **"Explain BoxMean 15 and 41 before equations."**
     I added the purpose of the two window sizes before the formulas. The 15 pixel window is local receiver texture; the 41 pixel window is a wider urban block context. I also avoided claiming they are optimal without an ablation.
