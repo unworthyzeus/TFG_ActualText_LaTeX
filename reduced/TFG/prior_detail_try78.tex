@@ -6,7 +6,7 @@ path loss that would be observed if only the direct ray existed. The deployed
 LoS branch then adds the fitted ground reflection interference term,
 a height dependent bias, and a smoothed radial residual profile. This differs
 from the NLoS branch, which uses a longer pixel feature vector and a
-regime wise linear calibration.
+per regime linear calibration.
 
 \subsubsection{FSPL baseline used by the LoS prior}
 
@@ -477,7 +477,7 @@ with elevation \cite{khawaja_survey,tr38901}. The particular constants below,
 however, are not used as a transferred monotonic law. With the positive
 exponential term, the raw envelope can be larger near overhead; it is therefore
 only one conservative basis branch that is later combined with COST-231 through
-a maximum and corrected by the train only regime wise NLoS calibration.
+a maximum and corrected by the training city per regime NLoS calibration.
 
 \begin{equation}
 \mathrm{PL}_{\mathrm{A2G,NLoS}}(x)
@@ -502,11 +502,11 @@ $A_{\mathrm{NLoS}} = 12.0436$,
 $\tau_{\mathrm{NLoS}} = 7.52$ deg.
 These A2G constants are implementation constants in the path loss prior code
 rather than entries in the calibration JSON files; the JSON artifacts store the
-fitted LoS two ray curves and the regime wise NLoS calibration coefficients.
+fitted LoS two ray curves and the per regime NLoS calibration coefficients.
 The exponential term is kept only as a conservative elevation envelope: near
 overhead links approach \(\lambda_0+\beta_{\mathrm{NLoS}}+A_{\mathrm{NLoS}}\),
 while grazing links approach \(\lambda_0+\beta_{\mathrm{NLoS}}\). The maximum
-operation and the later regime wise calibration decide how much of this branch
+operation and the later per regime calibration decide how much of this branch
 remains active in the final prior.
 
 The raw NLoS prior is then the conservative (higher) of the two estimates:
@@ -662,7 +662,7 @@ because they let the calibration change the distance or elevation slope in
 dense or blocked regions. Their coefficients should be interpreted together
 with the full fitted vector, not as independent physical constants.
 
-\subsubsection{Regime wise linear calibration}
+\subsubsection{Per regime linear calibration}
 
 The regime \(r\) is identified by three keys:
 \begin{itemize}
@@ -761,7 +761,7 @@ as independent physical constants. Their magnitudes mainly reflect the scale
 and correlation of the 15 input features in this NLoS regime.
 This makes the path loss prior an interpretable calibrated surrogate rather than a pure
 first-principles propagation formula: the two ray and A2G terms set the
-shape, while regime wise fitting adapts the coefficients to the CKM simulator
+shape, while per regime fitting adapts the coefficients to the CKM simulator
 and to the dataset's stored masks.
 
 \subsubsection{NLoS clipping}

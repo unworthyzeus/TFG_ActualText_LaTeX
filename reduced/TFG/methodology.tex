@@ -146,7 +146,7 @@ Delay and Angular Spread Prior and Residual Prediction & The calibrated spread p
       at ($(priornote.south east)+(-0.2,-0.4)$) {
       \textbf{NLoS Channel Attenuation Prior}\\[-1pt]
       \textit{Inputs:} \(m_{\mathrm{NLoS}}\), raw blocked link PL, \(d_{2D}\), \(h_{\mathrm{tx}}\), elevation and morphology vector \(\mathbf{x}_{\mathrm{PL,NLoS}}(x)\in\mathbb{R}^{15}\), regime key.\\
-      \textit{Fit:} Training city regime wise multilinear OLS coefficients.\\
+      \textit{Fit:} Training city per regime multilinear OLS coefficients.\\
       \textit{Output:} NLoS prior map \(\widehat{\mathrm{PL}}_{\mathrm{NLoS}}(x)\) in dB.
     };
 
@@ -649,7 +649,11 @@ morphology terms are used:
 \end{align}
 Here \(b_{41}\) measures local blocker depth above the receiver, \(c_{41}\)
 measures the UAV height margin over nearby buildings, and \(t_{41}\) measures
-the local area fraction occupied by buildings taller than the UAV.
+the local area fraction occupied by buildings taller than the UAV. These are
+area weighted \(41\times41\) summaries over the full window: ground cells
+contribute zero because of \(m_{\mathrm{B}}\). Thus \(c_{41}\) is both a
+clearance and local building presence feature, and \(t_{41}\) is not a
+fraction conditioned on the cells already being buildings.
 
 Two topology regime systems are used because the calibrated attenuation prior
 and the spread prior were fitted with different levels of granularity. Both are
@@ -713,7 +717,9 @@ receiver height difference after the \(1+\cdot\) transform. This is a modelling
 cap, not the maximum HDF5 height: the database reaches about \SI{478}{m}, but
 the high altitude tail contains too few training samples after city and regime
 splits to estimate a separate response reliably. Heights above this scale are
-therefore saturated at \(h_{\mathrm{norm}}=1\).
+therefore saturated at \(h_{\mathrm{norm}}=1\). The feature is a scalar for
+each sample and is broadcast to every valid receiver row when the spread design
+matrix is built; it is not a local morphology map.
 
 \section{Final priors: overview and literature basis}
 \label{sec:priors_overview}
@@ -767,7 +773,7 @@ equations, feature inventory and fitting details are included below.
 
 \node[block, below right=1.5cm and 0.5cm of geom] (raw_nlos) {Raw NLoS Prior \\ $\max(\text{COST231}, \text{A2G})$};
 \node[block, below=1.5cm of raw_nlos] (featpl) {Morphology Features \\ $\mathbf{x}_{\mathrm{PL,NLoS}}(x) \in \mathbb{R}^{15}$};
-\node[block, below=1.5cm of featpl] (ols) {Regime wise OLS \\ $\mathbf{x}_{\mathrm{PL,NLoS}}(x)^\top \hat{\mathbf{w}}^{\mathrm{PL,NLoS}}_{r}$};
+\node[block, below=1.5cm of featpl] (ols) {Per regime OLS \\ $\mathbf{x}_{\mathrm{PL,NLoS}}(x)^\top \hat{\mathbf{w}}^{\mathrm{PL,NLoS}}_{r}$};
 \node[branch, below=1.5cm of ols] (pl_nlos) {Calibrated NLoS \\ $\mathrm{PL}_{\mathrm{NLoS}}(x)$};
 
 \draw[->, thick] (geom.south) ++(1,0) |- node[pos=0.75, above, font=\scriptsize] {$\mathbb{R}^{H \times W}$} (raw_nlos.west);
@@ -785,7 +791,7 @@ equations, feature inventory and fitting details are included below.
 
 \end{tikzpicture}
 \caption[Pipeline for the hybrid path loss prior.]%
-{Pipeline for the hybrid path loss prior. The LoS branch uses an explicit two ray interference model, while the NLoS branch calibrates a raw prior against map derived morphology features using regime wise OLS. The two branches are hard switched by the LoS mask to produce the final frozen prior.}
+{Pipeline for the hybrid path loss prior. The LoS branch uses an explicit two ray interference model, while the NLoS branch calibrates a raw prior against map derived morphology features using per regime OLS. The two branches are hard switched by the LoS mask to produce the final frozen prior.}
   \label{fig:path_loss_prior_pipeline}
 \end{figure}
 

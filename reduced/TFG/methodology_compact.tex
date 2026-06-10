@@ -174,7 +174,7 @@ pixels alone.
 \section{Path-loss prior}
 \label{sec:try78_detail}
 
-The path loss prior (Try 78 in the implementation records) has two branches.
+The path loss prior has two branches.
 The LoS branch is a coherent two ray model plus calibrated height/radius
 corrections. For each receiver pixel, with \(d_{2D}\) measured from the centred
 transmitter,
@@ -239,7 +239,7 @@ with \(\lambda_0=20\log_{10}(4\pi h_{\mathrm{tx}}f/c)\). The raw NLoS prior is
 P_0=\max(\mathrm{PL}_{C},\mathrm{PL}_{\mathrm{A2G,NLoS}}).
 \label{eq:nlos_raw}
 \end{equation}
-The final NLoS estimate is not this raw formula. It is a regime wise linear
+The final NLoS estimate is not this raw formula. It is a per regime linear
 calibration over morphology and height features:
 \begin{equation}
 \mathrm{PL}_{\mathrm{NLoS}}
@@ -277,7 +277,7 @@ The deployed path loss prior is selected by the geometric visibility mask:
 \section{Delay and angular spread priors}
 \label{sec:try79_detail}
 
-The spread priors (Try 79 in the implementation records) are fitted in
+The spread priors are fitted in
 \(\log(1+y)\) space:
 \begin{equation}
 z=\log(1+y),

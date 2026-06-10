@@ -211,43 +211,22 @@ Joint geometry and morphology effects. \\
 \label{tab:spread_vector_blocks}
 \end{table}
 
-\begin{table}[!htbp]
-\centering
-\scriptsize
-\setlength{\tabcolsep}{2.5pt}
-\renewcommand{\arraystretch}{0.88}
-\begin{tabularx}{\textwidth}{p{2.7cm} p{3.3cm} X}
-\toprule
-\textbf{Term} & \textbf{Mathematical role} & \textbf{Physical interpretation} \\
-\midrule
-\(z^{(0)}(x)^2\) & Quadratic raw prior basis. & Corrects curvature in the first spread estimate. \\
-\(z^{(0)}(x)\) & Linear raw prior basis. & Anchors the fit to the log domain prior. \\
-\(\log(1+d_{2D})\) & Smooth distance basis. & Captures range growth in delay and angle support. \\
-\(\theta_{\mathrm{norm}}\) & Normalized elevation angle. & Separates overhead from grazing links. \\
-\(\theta_{\mathrm{inv}}\) & Inverse elevation angle. & Highlights low elevation links with stronger obstruction sensitivity \cite{khawaja_survey,tr38901}. \\
-\(h_{\mathrm{norm}},h_{\mathrm{norm}}^2\) & Linear and quadratic UAV height basis. & Learns nonlinear height effects. \\
-\(\delta_{15},\delta_{41}\) & Fine/coarse local building density. & Counts nearby reflectors and blockers. \\
-\(h_{15},h_{41}\) & Fine/coarse density weighted height. & Distinguishes low rise from high rise clutter. \\
-\(n_{15},n_{41}\) & Fine/coarse local NLoS support. & Measures nearby geometric shielding. \\
-\(b_{41}\) & Blocker depth term. & Measures building protrusion above receiver height. \\
-\(1\) & Bias term. & Gives each regime an additive offset. \\
-\(c_{41}\) & Transmitter clearance term. & Measures UAV clearance above local buildings. \\
-\(t_{41}\) & Taller building area fraction. & Measures local area occupied by buildings above the UAV. \\
-\bottomrule
-\end{tabularx}
-\caption{Term by term inventory of the direct terms in the spread calibration vector.}
-\label{tab:spread_direct_term_inventory}
-\end{table}
-
-The first block lets the model bend the raw prior quadratically. The geometry
-block handles range and height. The morphology block measures nearby
-scatterers, while the interaction block expresses effects such as density
-mattering more at low elevation. Some terms are correlated: for instance,
+The direct entries are not redefined here: distances, angles, height bins and
+local morphology terms are the shared support quantities of
+Sec.~\ref{sec:support_geometry_morphology}. The useful distinction is that
+\(h_{\mathrm{norm}}\) is a broadcast transmitter height scalar, whereas
+\(b_{41}\), \(c_{41}\) and \(t_{41}\) are deterministic \(41\times41\)
+map summaries. The \(z^{(0)}\) and \(\left(z^{(0)}\right)^2\) entries anchor the fit to the
+raw log prior and let the calibration bend it quadratically, while the constant
+entry \(1\) gives the selected regime an additive offset. Some entries are
+intentionally correlated: for instance,
 \(z^{(0)}(x)^2\) is determined by \(z^{(0)}(x)\), and
 \(t_{41}(x)n_{41}(x)\) is tied to both taller building and NLoS support
 features. Individual fitted coefficients should therefore not be read as
-isolated physical constants; the terms were kept because the calibrated prior
-improved with them.
+isolated physical constants; they are a calibrated basis.
+
+Only the interaction block needs an extra inventory because those terms combine
+two physical effects at once:
 
 \begin{table}[!htbp]
 \centering
@@ -285,7 +264,7 @@ improved with them.
 \node[group] (morph) at (6.8,0) {Density, height\\and blockage};
 \node[group] (inter) at (10.2,0) {Interaction\\terms};
 \node[fitbox] (vec) at (5.1,-1.8) {Feature vector\\$\textbf{x}_{\mathrm{SP}}(x)\in\mathbb{R}^{23}$};
-\node[fitbox] (ridge) at (5.1,-3.6) {Regime ridge fit\\$\hat z=\textbf{x}_{\mathrm{SP}}^{\top}\textbf{w}^{\mathrm{SP}}_{r}$};
+\node[fitbox] (ridge) at (5.1,-3.6) {Per regime ridge fit\\$\hat z=\textbf{x}_{\mathrm{SP}}^{\top}\textbf{w}^{\mathrm{SP}}_{r}$};
 \node[fitbox, fill=orange!15] (origunit) at (5.1,-5.4) {Original unit prior\\$\hat y=\exp(\hat z)-1$};
 \draw[arr] (prior) -- (vec);
 \draw[arr] (geom) -- (vec);
@@ -305,20 +284,17 @@ The spread vector reuses the shared support features defined in
 Sec.~\ref{sec:support_geometry_morphology}: \(h_{\mathrm{norm}}\),
 \(\delta_k\), \(h_k\), \(n_k\), \(b_{41}\), \(c_{41}\), \(t_{41}\),
 \(\theta_{\mathrm{norm}}\), and \(\theta_{\mathrm{inv}}\). Their definitions
-are not repeated here. The spread prior also uses the six topology labels
-defined in \eqref{eq:topology_class_sp_support}; these labels are map level
-routing keys for the ridge models, not extra per pixel morphology features.
+are not repeated here. The six topology labels of
+\eqref{eq:topology_class_sp_support} are map level routing keys for the ridge
+models, not extra per pixel morphology features.
 
-\subsubsection{Regime wise ridge regression}
+\subsubsection{Ridge calibration by regime}
 
-The regime $r$ for the spread prior is keyed by: metric (DS or AS), topology class (6 classes), propagation state (LoS or NLoS), antenna height bin, giving up to $2 \times 6 \times 2 \times 3 = 72$ regimes.
-The antenna height bins use the same tertile style thresholds as
-\eqref{eq:ant_bin_support}: \texttt{low\_ant} for
-\(h_{\mathrm{tx}}\le\SI{58.12}{m}\), \texttt{mid\_ant} for
-\(\SI{58.12}{m}<h_{\mathrm{tx}}\le\SI{103.85}{m}\), and
-\texttt{high\_ant} above \SI{103.85}{m}. These calibration bins are
-different from the broader height reporting bins used later in the results
-tables.
+The regime \(r\) for the spread prior is keyed by metric (DS or AS),
+\(\mathrm{class}_{\mathrm{SP}}\) as defined in
+\eqref{eq:topology_class_sp_support}, propagation state (LoS or NLoS), and
+\(\mathrm{ant\_bin}\) as defined in \eqref{eq:ant_bin_support}. This gives up
+to \(2 \times 6 \times 2 \times 3 = 72\) regimes.
 
 Valid pixels are subsampled at rate $p = 0.02$ (2\%). The ridge regression:
 \begin{equation}
@@ -456,6 +432,6 @@ $d_{2D}, \theta, h_{\mathrm{tx}}, \delta, h, n$\\$b_{41}, c_{41}, t_{41}$};
 \end{tikzpicture}%
 }
 \caption[Pipeline for the delay and angular spread priors.]%
-{Pipeline for the delay and angular spread priors. Both spread modalities share this identical linear architecture, predicting expected spread in the log domain via regime wise ridge regression over 23 spatial and geometric features.}
+{Pipeline for the delay and angular spread priors. Both spread modalities share this identical linear architecture, predicting expected spread in the log domain through ridge calibration by regime over 23 spatial and geometric features.}
 \label{fig:spread_prior_pipeline}
 \end{figure}

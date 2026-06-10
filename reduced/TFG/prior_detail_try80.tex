@@ -21,7 +21,7 @@ LoS/NLoS masks. The model input contains nine spatial channels:
 
 The seventh channel is named \texttt{path\_loss\_nlos\_prior} in the code,
 but it should be read carefully. It is the calibrated mixed/NLoS path loss map
-computed by the regime wise path loss calibration, not a map that has been
+computed by the per regime path loss calibration, not a map that has been
 zeroed outside NLoS pixels. In the final combined path loss prior and in the
 final output selection, only the explicit LoS/NLoS masks decide which regional
 branch is used.
