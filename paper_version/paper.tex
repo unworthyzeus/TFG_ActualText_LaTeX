@@ -1628,6 +1628,24 @@ be penalized across staircase like target boundaries even when the morphology is
 plausible. This does not invalidate RMSE, but it warns against overinterpreting
 small local residuals.
 
+\subsection{Qualitative Residual Behavior}
+
+Fig.~\ref{fig:panel} is the qualitative check. The model receives the frozen
+prior and predicts a correction. The useful visual evidence is not merely that
+the prediction resembles the target; it is that the correction row tends to
+correlate negatively with the prior error row, which is the expected behavior of a
+\textsc{HARP-Net CKM} residual corrector.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.82\textwidth,height=0.44\textheight,keepaspectratio]{img/thesis_figures/harpnet_inspection_panels/harpnet_panel_dense_mid_ant_Vancouver_sample_15265_6x3.png}
+\caption{Representative final model inspection panel for a dense, mid antenna
+held out test sample in Vancouver. Columns are channel attenuation, delay spread, and angular
+spread. Rows show ground truth, frozen prior, final prediction,
+context/support, prior error, and model correction.}
+\label{fig:panel}
+\end{figure*}
+
 \subsection{External Metric Context}
 
 Table~\ref{tab:soa} places the final channel attenuation result beside the closest
@@ -1727,24 +1745,6 @@ results now have explicit nearby literature context in
 Table~\ref{tab:spread-soa}, but should still be interpreted primarily against
 same protocol internal baselines because no external dense CKM channel attenuation/DS/AS
 benchmark was found.
-
-\subsection{Qualitative Residual Behavior}
-
-Fig.~\ref{fig:panel} is the qualitative check. The model receives the frozen
-prior and predicts a correction. The useful visual evidence is not merely that
-the prediction resembles the target; it is that the correction row tends to
-correlate negatively with the prior error row, which is the expected behavior of a
-\textsc{HARP-Net CKM} residual corrector.
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.92\textwidth,height=0.62\textheight,keepaspectratio]{img/thesis_figures/harpnet_inspection_panels/harpnet_panel_dense_mid_ant_Vancouver_sample_15265_6x3.png}
-\caption{Representative final model inspection panel for a dense, mid antenna
-held out test sample in Vancouver. Columns are channel attenuation, delay spread, and angular
-spread. Rows show ground truth, frozen prior, final prediction,
-context/support, prior error, and model correction.}
-\label{fig:panel}
-\end{figure*}
 
 \subsection{Runtime}
 
@@ -1861,7 +1861,6 @@ clearest lesson is methodological: diagnose the target distribution, freeze the
 stable structure in auditable priors, and spend neural capacity on the residual
 structure that the priors cannot explain.
 
-\clearpage
 \bibliographystyle{IEEEtran}
 \bibliography{TFG}
 
