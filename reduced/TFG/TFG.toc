@@ -87,20 +87,20 @@
 \contentsline {subsection}{\numberline {3.6.3}Raw spread prior in log domain}{58}{subsection.3.6.3}%
 \contentsline {subsection}{\numberline {3.6.4}Calibrated spread prior}{59}{subsection.3.6.4}%
 \contentsline {subsubsection}{Spread feature vector and design matrix}{59}{subsubsection*.67}%
-\contentsline {subsubsection}{Regime wise ridge regression}{60}{subsubsection*.72}%
+\contentsline {subsubsection}{Regime wise ridge regression}{61}{subsubsection*.72}%
 \contentsline {paragraph}{Fallback hierarchy.}{61}{paragraph*.73}%
-\contentsline {subsubsection}{Inverse transform and clipping}{61}{subsubsection*.74}%
+\contentsline {subsubsection}{Inverse transform and clipping}{62}{subsubsection*.74}%
 \contentsline {subsection}{\numberline {3.6.5}Delay and angular spread prior pipeline}{62}{subsection.3.6.5}%
 \contentsline {section}{\numberline {3.7}\textsc {HARP-Net CKM} Neural Residual Model}{62}{section.3.7}%
-\contentsline {subsection}{\numberline {3.7.1}Experimental protocol and reporting status}{62}{subsection.3.7.1}%
+\contentsline {subsection}{\numberline {3.7.1}Experimental protocol and reporting status}{63}{subsection.3.7.1}%
 \contentsline {subsection}{\numberline {3.7.2}HARP-Net CKM Residual Head}{63}{subsection.3.7.2}%
 \contentsline {subsection}{\numberline {3.7.3}Architecture: Shared UNet with FiLM}{65}{subsection.3.7.3}%
-\contentsline {paragraph}{Detailed sinusoidal height embedding and FiLM path.}{66}{paragraph*.77}%
+\contentsline {paragraph}{Detailed sinusoidal height embedding and FiLM path.}{67}{paragraph*.77}%
 \contentsline {paragraph}{Detailed HARP-Net CKM residual head.}{67}{paragraph*.79}%
 \contentsline {subsection}{\numberline {3.7.4}Composite Optimization Objective}{67}{subsection.3.7.4}%
 \contentsline {paragraph}{Map negative log likelihood.}{68}{paragraph*.82}%
 \contentsline {paragraph}{Distributional KL term.}{68}{paragraph*.83}%
-\contentsline {paragraph}{Moment matching.}{68}{paragraph*.84}%
+\contentsline {paragraph}{Moment matching.}{69}{paragraph*.84}%
 \contentsline {paragraph}{Anchor and guard terms.}{69}{paragraph*.85}%
 \contentsline {paragraph}{Outlier budget and deterministic losses.}{69}{paragraph*.86}%
 \contentsline {chapter}{\numberline {4}Results}{70}{chapter.4}%

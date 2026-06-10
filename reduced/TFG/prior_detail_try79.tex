@@ -18,16 +18,18 @@ z_a-z_b
 \label{eq:log_ratio_spread}
 \end{equation}
 Thus, a fixed error in \(z\) corresponds approximately to a fixed
-multiplicative error in \(1+y\). This is more appropriate than native space
-least squares for spreads because large NLoS tails would otherwise dominate
-the fit and the near zero LoS mass would be ignored. The calibrated spread
-prior is still a deterministic log domain ridge estimator; it is not claiming
-to estimate the full spike plus tail probability distribution.
+multiplicative error in \(1+y\). This is more appropriate than least squares in
+the original measured units because large NLoS tails would otherwise dominate
+the fit and the near zero LoS mass would be ignored. Throughout this spread
+section, original units means nanoseconds for delay spread and degrees for
+angular spread, as stored in the CKM targets. The calibrated spread prior is
+still a deterministic log domain ridge estimator; it is not claiming to
+estimate the full spike plus tail probability distribution.
 
 \subsection{Pixel wise notation for the spread prior fit}
 
 Let \(n\) index a valid ground pixel from a training map. For a selected
-metric \(m \in \{\mathrm{DS},\mathrm{AS}\}\), define the native target
+metric \(m \in \{\mathrm{DS},\mathrm{AS}\}\), define the measured target
 \(y_{m,n}\), the transformed target \(z_{m,n}=\log(1+y_{m,n})\), and the
 raw log prior value \(z^{(0)}_{m,n}\). The calibrated prior is linear in a
 23-dimensional feature vector:
@@ -52,7 +54,7 @@ one specialized to a propagation regime.
 \begin{aligned}
 z^{(0)}(x)
 ={}&
-\log\!\left(1+b^{\mathrm{native}}_{\mathrm{LoS/NLoS}}(x)\right)
+\log\!\left(1+b^{\mathrm{orig}}_{\mathrm{LoS/NLoS}}(x)\right)
 + b_{\mathrm{topology}}
 + a_1\log(1+d_{2D})
 + a_2\theta_{\mathrm{inv}}
@@ -66,7 +68,15 @@ a_3\delta_{41}
 \label{eq:raw_spread}
 \end{equation}
 
-where $\theta_{\mathrm{inv}}(x) = 1 - \theta_{\mathrm{norm}}(x)$ (high value at low elevation). Example coefficients for delay spread: the native anchors are $b^{\mathrm{native}}_{\mathrm{LoS}} = 4.0$ ns and $b^{\mathrm{native}}_{\mathrm{NLoS}} = 11.0$ ns, which the implementation converts to $\log(1+4.0)$ and $\log(1+11.0)$ before adding the remaining log domain terms. The delay coefficients are $a_1 = 0.11$, $a_2 = 0.62$, $a_3 = 0.48$, $a_4 = 0.32$, $a_5 = 0.86$, $a_6 = 0.60$. After \eqref{eq:raw_spread}, the raw log prior is clipped to $[0,8]$, inverse transformed with $\exp(\cdot)-1$, and clipped to the metric upper bound. For reproducibility, the \(z^{(0)}(x)\) entries used later in \(\textbf{x}_{\mathrm{SP}}\) denote the log value recovered from this clipped native raw prior, i.e.,
+where $\theta_{\mathrm{inv}}(x) = 1 - \theta_{\mathrm{norm}}(x)$ (high value
+at low elevation), and \(b^{\mathrm{orig}}_{\mathrm{LoS/NLoS}}\) is the
+LoS or NLoS anchor in original measured units. The implementation first
+converts this anchor to \(\log(1+b)\), then adds the remaining log domain
+terms. After \eqref{eq:raw_spread}, the raw log prior is clipped to $[0,8]$,
+inverse transformed with $\exp(\cdot)-1$, and clipped to the metric upper
+bound. For reproducibility, the \(z^{(0)}(x)\) entries used later in
+\(\textbf{x}_{\mathrm{SP}}\) denote the log value recovered from this clipped
+raw prior in original units, i.e.,
 \(\log(1+\mathrm{raw\_prior}_{\mathrm{clipped}}(x))\), not an unconstrained
 copy of \eqref{eq:raw_spread}.
 
@@ -76,49 +86,62 @@ propagation state and represented in log space \cite{tr38901,winner2}, then
 adds CKM specific map morphology terms. UAV measurement studies also motivate
 the elevation angle dependence: low elevation links usually interact with more
 rooftops and street canyons than near overhead links \cite{cai2019,izydorczyk2019}.
-For reproducibility, Table~\ref{tab:spread_raw_constants} lists the fixed
-raw prior constants used before the regime wise ridge calibration. These
-values are fixed hyperparameters of \(z^{(0)}\). They are not the fitted ridge
-weights \(\textbf{w}_{m,r}\), which are learned from training city pixels and
-stored in the calibration file.
+The development repository documents this spread module as a transparent
+non neural baseline whose purpose is to measure how much of DS/AS can already
+be explained by geometry, morphology and lightweight calibration
+\cite{moreno2026tfgprogress}. In those notes, physical intuition means the
+qualitative ordering imposed before calibration: which variables should
+increase spread and which propagation regimes should start higher. That
+ordering has four sources. First, 3GPP and WINNER model delay and angular
+spreads as log domain large scale parameters. Second, UAV A2G measurements
+show that spread statistics vary with link distance, flight height and
+elevation angle. Third, LoS links are dominated by the direct ray whereas NLoS
+links collect delayed and angularly separated reflected or diffracted
+components. Fourth, local building density, height and NLoS support are map
+proxies for available scatterers and blockers. The raw constants encode these
+expected signs and relative magnitudes, while the per regime ridge stage is
+the part fitted from training city pixels. The exact constants used by the
+implementation are the entries of \texttt{METRIC\_SPECS} and
+\texttt{TOPOLOGY\_PRIOR\_BIAS\_LOG}; Table~\ref{tab:spread_raw_constants}
+is the single inventory of those fixed constants. They are not the fitted ridge
+weights \(\textbf{w}_{m,r}\), which are stored separately in the calibration file.
 
 \begin{table}[H]
 \centering
 \caption{Raw prior constants fixed before the ridge calibration in \eqref{eq:raw_spread}.}
 \label{tab:spread_raw_constants}
 \scriptsize
-\setlength{\tabcolsep}{3pt}
-\begin{tabularx}{\textwidth}{lccX}
+\setlength{\tabcolsep}{2pt}
+\begin{tabularx}{\textwidth}{p{2.45cm}p{2.7cm}p{2.7cm}X}
 \toprule
 Quantity & Delay spread & Angular spread & Meaning \\
 \midrule
-\(b^{\mathrm{native}}_{\mathrm{LoS}}\) & \(4.0\) ns & \(3.0^\circ\) &
-Native LoS anchor converted to \(\log(1+b)\). \\
-\(b^{\mathrm{native}}_{\mathrm{NLoS}}\) & \(11.0\) ns & \(7.0^\circ\) &
-Native NLoS anchor converted to \(\log(1+b)\). \\
+\(b^{\mathrm{orig}}_{\mathrm{LoS}}\) & \(4.0\) ns & \(3.0^\circ\) &
+LoS anchor in original units, converted to \(\log(1+b)\). \\
+\(b^{\mathrm{orig}}_{\mathrm{NLoS}}\) & \(11.0\) ns & \(7.0^\circ\) &
+NLoS anchor in original units, converted to \(\log(1+b)\). \\
 \(a_1,\ldots,a_6\) &
-\(0.11,0.62,0.48,0.32,0.86,0.60\) &
-\(0.05,0.52,0.60,0.38,0.58,0.35\) &
+\(\begin{array}{@{}l@{}}0.11,0.62,0.48,\\0.32,0.86,0.60\end{array}\) &
+\(\begin{array}{@{}l@{}}0.05,0.52,0.60,\\0.38,0.58,0.35\end{array}\) &
 Fixed weights multiplying \(\log(1+d_{2D})\), \(\theta_{\mathrm{inv}}\),
 \(\delta_{41}\), \(h_{41}\), \(n_{41}\), and
 \(n_{41}\theta_{\mathrm{inv}}\), respectively. \\
+\(b_{\mathrm{topology}}\) &
+\(\begin{array}{@{}l@{}}0.00,0.18,0.06,\\0.22,0.24,0.34\end{array}\) &
+\(\begin{array}{@{}l@{}}0.00,0.09,0.05,\\0.16,0.18,0.24\end{array}\) &
+Log domain topology offsets in the six class order
+open sparse low rise, open sparse vertical, mixed compact low rise,
+mixed compact mid rise, dense block mid rise, dense block high rise. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-The topology offset \(b_{\mathrm{topology}}\) is also fixed before ridge
-calibration. In the order open sparse low rise, open sparse vertical, mixed
-compact low rise, mixed compact mid rise, dense block mid rise, and dense block
-high rise, the delay spread offsets are
-\(0.00, 0.18, 0.06, 0.22, 0.24, 0.34\). For angular spread, the corresponding
-offsets are \(0.00, 0.09, 0.05, 0.16, 0.18, 0.24\). These are log domain
-offsets, not native ns/degree offsets.
-
 Every term in \eqref{eq:raw_spread} has a physical interpretation:
 \begin{itemize}
-\item \(b_{\mathrm{LoS/NLoS}}\) is the base spread level for the propagation
-      state. NLoS starts higher because blocked paths arrive after additional
-      reflections and diffractions.
+\item \(b^{\mathrm{orig}}_{\mathrm{LoS/NLoS}}\) is the base spread level for
+      the propagation state, in original measured units. NLoS starts higher
+      because blocked paths arrive after additional reflections and
+      diffractions.
 \item \(b_{\mathrm{topology}}\) is a morphology offset. Dense and high rise
       topologies receive larger offsets because they contain more reflectors.
 \item \(\log(1+d_{2D})\) gives a smooth range dependence. Longer links have
@@ -263,13 +286,13 @@ improved with them.
 \node[group] (inter) at (10.2,0) {Interaction\\terms};
 \node[fitbox] (vec) at (5.1,-1.8) {Feature vector\\$\textbf{x}_{\mathrm{SP}}(x)\in\mathbb{R}^{23}$};
 \node[fitbox] (ridge) at (5.1,-3.6) {Regime ridge fit\\$\hat z=\textbf{x}_{\mathrm{SP}}^{\top}\textbf{w}^{\mathrm{SP}}_{r}$};
-\node[fitbox, fill=orange!15] (native) at (5.1,-5.4) {Native prior\\$\hat y=\exp(\hat z)-1$};
+\node[fitbox, fill=orange!15] (origunit) at (5.1,-5.4) {Original unit prior\\$\hat y=\exp(\hat z)-1$};
 \draw[arr] (prior) -- (vec);
 \draw[arr] (geom) -- (vec);
 \draw[arr] (morph) -- (vec);
 \draw[arr] (inter) -- (vec);
 \draw[arr] (vec) -- (ridge);
-\draw[arr] (ridge) -- (native);
+\draw[arr] (ridge) -- (origunit);
 \end{tikzpicture}
 \caption[Feature grouping for the calibrated spread prior.]%
 {Feature grouping used by the calibrated spread prior.

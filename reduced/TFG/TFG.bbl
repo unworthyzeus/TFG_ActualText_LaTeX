@@ -2624,6 +2624,45 @@
       \verb https://ieeexplore.ieee.org/document/8739910
       \endverb
     \endentry
+    \entry{moreno2026tfgprogress}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=328d93fb4ba03cd3a6d556797a814ba9}{%
+           family={Moreno\bibnamedelima Garcia},
+           familyi={M\bibinitperiod\bibinitdelim G\bibinitperiod},
+           given={Guillem},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {GitHub}%
+      }
+      \strng{namehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{fullhash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{fullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{bibnamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorbibnamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authornamehash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorfullhash}{328d93fb4ba03cd3a6d556797a814ba9}
+      \strng{authorfullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Public GitHub repository}
+      \field{note}{Snapshot commit 7c13efd51708}
+      \field{title}{{TFGAllProgress\_Tries\_and\_Attempts}: Development History and Experimental Attempts}
+      \field{urlday}{6}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/unworthyzeus/TFGAllProgress_Tries_and_Attempts
+      \endverb
+      \verb{url}
+      \verb https://github.com/unworthyzeus/TFGAllProgress_Tries_and_Attempts
+      \endverb
+    \endentry
     \entry{mi2024pointcloud}{article}{}{}
       \name{author}{9}{}{%
         {{hash=eef592f5ba9fdc14102f70ec7be4a3e9}{%
@@ -2719,7 +2758,7 @@
       \strng{authornamehash}{328d93fb4ba03cd3a6d556797a814ba9}
       \strng{authorfullhash}{328d93fb4ba03cd3a6d556797a814ba9}
       \strng{authorfullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
-      \field{extraname}{1}
+      \field{extraname}{2}
       \field{sortinit}{1}
       \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
@@ -2758,7 +2797,7 @@
       \strng{authornamehash}{328d93fb4ba03cd3a6d556797a814ba9}
       \strng{authorfullhash}{328d93fb4ba03cd3a6d556797a814ba9}
       \strng{authorfullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
-      \field{extraname}{2}
+      \field{extraname}{3}
       \field{sortinit}{1}
       \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
@@ -2776,45 +2815,6 @@
       \endverb
       \verb{url}
       \verb https://github.com/unworthyzeus/Final_Code_TFG
-      \endverb
-    \endentry
-    \entry{moreno2026tfgprogress}{misc}{}{}
-      \name{author}{1}{}{%
-        {{hash=328d93fb4ba03cd3a6d556797a814ba9}{%
-           family={Moreno\bibnamedelima Garcia},
-           familyi={M\bibinitperiod\bibinitdelim G\bibinitperiod},
-           given={Guillem},
-           giveni={G\bibinitperiod}}}%
-      }
-      \list{publisher}{1}{%
-        {GitHub}%
-      }
-      \strng{namehash}{328d93fb4ba03cd3a6d556797a814ba9}
-      \strng{fullhash}{328d93fb4ba03cd3a6d556797a814ba9}
-      \strng{fullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
-      \strng{bibnamehash}{328d93fb4ba03cd3a6d556797a814ba9}
-      \strng{authorbibnamehash}{328d93fb4ba03cd3a6d556797a814ba9}
-      \strng{authornamehash}{328d93fb4ba03cd3a6d556797a814ba9}
-      \strng{authorfullhash}{328d93fb4ba03cd3a6d556797a814ba9}
-      \strng{authorfullhashraw}{328d93fb4ba03cd3a6d556797a814ba9}
-      \field{extraname}{3}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{Public GitHub repository}
-      \field{note}{Snapshot commit 7c13efd51708}
-      \field{title}{{TFGAllProgress\_Tries\_and\_Attempts}: Development History and Experimental Attempts}
-      \field{urlday}{6}
-      \field{urlmonth}{5}
-      \field{urlyear}{2026}
-      \field{year}{2026}
-      \field{urldateera}{ce}
-      \verb{urlraw}
-      \verb https://github.com/unworthyzeus/TFGAllProgress_Tries_and_Attempts
-      \endverb
-      \verb{url}
-      \verb https://github.com/unworthyzeus/TFGAllProgress_Tries_and_Attempts
       \endverb
     \endentry
     \entry{moreno2026tfgtext}{misc}{}{}
