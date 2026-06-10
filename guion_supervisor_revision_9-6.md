@@ -39,13 +39,21 @@ Use this list while scrolling through the revised PDF. The short version is: eve
     I replaced the old direct 3D path notation with \(d_{\mathrm{LoS}}\). The direct path length and reflected path length are now named consistently as \(d_{\mathrm{LoS}}\) and \(d_{\mathrm{ref}}\).
 
 11. **"Explain the angle normalization, especially the 90 pi expression."**
-    I simplified the notation to the radian form and explained the intuition: the normalized elevation angle is the elevation angle divided by a 90 degree overhead reference, clipped to the unit interval.
+    I simplified the notation to the radian form and explained the intuition: the normalized elevation angle is the elevation angle divided by a 90 degree overhead reference, clipped to the unit interval. The old expression
+    \[
+    \frac{180\theta(x)}{90\pi}
+    \]
+    was only doing "radians to degrees" with \(180/\pi\), and then dividing by \(90^\circ\). Since \(90^\circ=\pi/2\) radians, the same normalization is simply
+    \[
+    \frac{\theta(x)}{\pi/2}=\frac{2\theta(x)}{\pi}.
+    \]
+    Meeting sentence: "There is no special \(90\pi\) constant; it was just a confusing degree conversion. I rewrote it directly in radians as \(2\theta/\pi\)."
 
 12. **"Clarify whether LoS/NLoS masks come from the dataset or are calculated."**
     I clarified that the thesis experiments use the stored HDF5 LoS mask restricted to valid ground receivers. The CKMGenerator ray casting path is described as a deployment fallback for topology only inputs, not as the evaluation mask used for final reported numbers.
 
 13. **"If ray casting remains, explain intuition before math."**
-    I rewrote that paragraph so the logic comes first: sample the line between transmitter and receiver, compare the line height with buildings, then formalize it. This follows the comment that intuition should precede equations.
+    I rewrote that paragraph so the logic comes first: sample the line between transmitter and receiver, compare the line height with buildings, then formalize it. This follows the comment that intuition should precede equations. In the revised source, this paragraph appears before the definitions of \(L_x\), the sampled points and the generated masks.
 
 14. **"If you use calculated LoS masks, show the error."**
     I avoided turning the fallback ray casting routine into an evaluated result. Since the final experiments use the HDF5 masks, I did not add an unsupported mask error table. The fallback is now presented only as generator behavior outside the HDF5 setting.
