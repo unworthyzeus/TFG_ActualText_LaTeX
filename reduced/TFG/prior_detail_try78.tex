@@ -456,7 +456,7 @@ interference term rather than the full final LoS prior.}
 The NLoS path loss branch used in the final model is not a pure literature
 formula. It is a hybrid engineering model built from five calculation blocks.
 
-\subsubsection{Raw NLoS propagation prior}
+\subsubsection{\texorpdfstring{\emph{Raw NLoS propagation prior}}{Raw NLoS propagation prior}}
 
 Two coarse physical estimates are combined.
 
@@ -499,38 +499,10 @@ a(h_{\mathrm{rx}})
 
 \eqref{eq:cost231} should therefore be read as a calibrated
 \emph{feature basis}, not as a trusted absolute predictor or as a claim that
-COST-231 itself transfers to this \SI{7.125}{GHz} UAV geometry. COST-231
-contributes the expected log distance growth, transmitter height dependence and
-receiver height correction of an urban empirical model. The subsequent
-train only calibration stage is what adapts that shape to the ray tracing
-setting used here.
-
-\paragraph{Interpretation of \eqref{eq:cost231}.}
-\begin{itemize}
-\item $46.3 + 33.9\log_{10}(f_{\mathrm{MHz}})$: frequency dependent offset.
-      The coefficient $33.9$ (compare to $20$ for FSPL) reflects stronger
-      frequency dependence in urban scattering.
-\item $-13.82\log_{10}(h_{\mathrm{tx}})$: as the base station / UAV gets
-      higher, path loss decreases (better clearance above rooftops). The
-      $-13.82$ coefficient is a fitted constant from the Hata empirical
-      dataset.
-\item $-a(h_{\mathrm{rx}})$: accounts for the receiver height using the
-      implemented small/medium city Hata correction. For typical pedestrian
-      heights ($h_{\mathrm{rx}} \approx 1.5$ m), this is a small offset
-      relative to the distance and height terms.
-\item $(44.9 - 6.55\log_{10}(h_{\mathrm{tx}}))\log_{10}(d_{\mathrm{km}})$:
-      distance dependent term. The effective path loss exponent is
-      $(44.9 - 6.55\log_{10}(h_{\mathrm{tx}}))/10$, which decreases as the
-      UAV climbs (effectively reducing NLoS scattering losses at longer
-      distances from higher altitudes).
-\item $+3$: the COST-231 metropolitan correction constant (dB), corresponding
-      to the dense-urban correction in the original model \cite{cost231}.
-      In this thesis it is retained only as an implementation basis constant,
-      together with the small/medium city receiver height correction in
-      \eqref{eq:cost231_a}. This deliberate mixture is not a canonical
-      COST-231 deployment recipe; it is one empirical axis later refitted by
-      the regime wise calibration.
-\end{itemize}
+COST-231 itself transfers to this \SI{7.125}{GHz} UAV geometry. It contributes
+the expected log distance growth, transmitter height dependence and receiver
+height correction of an urban empirical model; the train only calibration fit
+then adapts that shape to the ray tracing setting used here.
 
 \paragraph{Elevation-aware UAV envelope.}
 The A2G NLoS envelope is used as a conservative elevation dependent shape term
@@ -563,35 +535,14 @@ The fixed A2G-envelope constants used by the implementation are:
 $\beta_{\mathrm{NLoS}} = -16.16$ dB,
 $A_{\mathrm{NLoS}} = 12.0436$,
 $\tau_{\mathrm{NLoS}} = 7.52$ deg.
-These A2G constants are implementation constants in the path-loss prior code
+These A2G constants are implementation constants in the path loss prior code
 rather than entries in the calibration JSON files; the JSON artifacts store the
 fitted LoS two ray curves and the regime wise NLoS calibration coefficients.
-
-\paragraph{Interpretation of \eqref{eq:a2g_nlos}.}
-\begin{itemize}
-\item $\lambda_0$: the free space reference level used inside the raw A2G NLoS
-      envelope before the empirical NLoS offset and elevation angle modulation
-      are applied~\cite{khawaja_survey,wocc2021}. The CKM dataset uses
-      $f = 7.125$ GHz (FR3 6G frequency band); for
-      $h_{\mathrm{tx}} = 50$ m at that frequency, $\lambda_0 \approx 83.5$ dB.
-\item $\beta_{\mathrm{NLoS}} = -16.16$ dB: a fixed baseline offset relative
-      to $\lambda_0$ in the raw A2G envelope.
-\item $A_{\mathrm{NLoS}}\exp(-\ldots)$: an exponential modulation with
-      $(90 - \theta^\circ)$. When the elevation angle $\theta^\circ$ is high
-      (UAV nearly overhead, $\theta^\circ \to 90^\circ$), the exponent
-      vanishes and the term goes to \(A_{\mathrm{NLoS}}\). When
-      \(\theta^\circ\) is low (grazing incidence), the exponent is large and
-      the term approaches zero. With the current positive
-      \(A_{\mathrm{NLoS}}=12.0436\), this raw envelope therefore adds a larger
-      A2G offset at high elevation. The later
-      \(\max(\mathrm{COST231},\mathrm{A2G})\) switch and the regime wise NLoS
-      calibration decide whether that branch is active in the final raw prior;
-      it should be read as a fitted conservative envelope, not as a standalone
-      monotonic law saying all overhead NLoS links have lower loss.
-\item $\tau_{\mathrm{NLoS}} = 7.52^\circ$: the characteristic angular scale.
-      A low value means the transition from grazing to overhead happens
-      sharply within a small elevation range.
-\end{itemize}
+The exponential term is kept only as a conservative elevation envelope: near
+overhead links approach \(\lambda_0+\beta_{\mathrm{NLoS}}+A_{\mathrm{NLoS}}\),
+while grazing links approach \(\lambda_0+\beta_{\mathrm{NLoS}}\). The maximum
+operation and the later regime wise calibration decide how much of this branch
+remains active in the final prior.
 
 The raw NLoS prior is then the conservative (higher) of the two estimates:
 
@@ -643,42 +594,18 @@ evaluated in this thesis.
 
 \subsubsection{Map derived morphology features}
 
-The raw hybrid prior $\mathrm{PL}^{(0)}(x)$ defined in \eqref{eq:pl0} is
-the scalar formula input to the calibrated NLoS path loss branch. It combines the
-legacy FSPL/two ray LoS path, the A2G envelopes and COST-231, but it still
-knows nothing about the detailed local morphology around each receiver. The
-feature vector $\mathbf{x}_{\mathrm{PL,NLoS}}(x)$ defined below is \emph{not} a competing
-path loss model and \emph{not} an alternative two ray formulation. It is the
-per pixel input row of a calibrated linear regressor whose role is to take
-the raw formula prediction and absorb its residual using context that the
-formula cannot see (urban morphology, NLoS visibility, shadowing and
-elevation geometry). Concretely, $\mathrm{PL}^{(0)}(x)$ is fed in as the
-dominant feature, plus a quadratic of itself so that the linear fit can bend
-the prior, and every other entry adds a quantity that is invisible to the raw
-formula.
-
-From $\mathrm{PL}^{(0)}(x)$ and the map topology, a 15-element feature
-vector is computed:
-
-The choice of these features is deliberately close to classical urban
-propagation modelling, but adapted to the dense CKM setting. The broad
-motivation is the COST 231 Walfisch Ikegami model: urban NLoS loss depends on
-the surrounding built form, not only on distance and frequency \cite{cost231}.
-The Walfisch Bertoni part represents rows of buildings as repeated diffraction
-screens \cite{walfisch1988}. The Ikegami street level part motivates
-descriptors such as mean building height, street width, street orientation with
-respect to the link, and mobile height \cite{ikegami1984}. In this thesis those
-planning variables are replaced by quantities measured directly around each
-receiver in the 513 by 513 topology map: windowed building density, local mean
-building height, and local NLoS support. The elevation and LoS/NLoS split
-follow the same physical intuition as A2G models, where shadowing and blockage
-statistics vary strongly with elevation angle and environment type
-\cite{alhourani2014,khawaja_survey}. The closest modern machine learning
-analogue is Juang's path profile work, which uses building profile statistics
-in a linear surrogate for urban path loss \cite{juang2021pathprofile}. The
-calibrated NLoS branch keeps that explanatory spirit, but fits the coefficients
-on training city pixels only and applies the resulting calibration as a frozen
-prior rather than as a universal propagation law.
+The raw hybrid prior $\mathrm{PL}^{(0)}(x)$ defined in \eqref{eq:pl0} is the
+scalar formula input to the calibrated NLoS branch. The map derived features
+below do not define a competing path loss model; they give the linear
+calibration the local context that the raw formula cannot see: building
+density, building height, nearby NLoS support, elevation and simple
+interactions. From $\mathrm{PL}^{(0)}(x)$ and the shared topology maps, the
+following 15 element vector is computed:
+This follows the same intuition as urban NLoS models based on building rows and
+street level descriptors \cite{walfisch1988,ikegami1984}, and as path profile
+surrogates that use map derived profile statistics \cite{juang2021pathprofile},
+but all variables here are computed directly from the CKM grid and fitted only
+on training city pixels.
 
 \begin{equation}
 \textbf{x}_{\mathrm{PL,NLoS}}(x)
@@ -704,12 +631,13 @@ n_{41}(x)\theta_{\mathrm{norm}}(x) \\
 \end{equation}
 
 The lowercase bold notation is intentional:
-\(\textbf{x}_{\mathrm{PL,NLoS}}(x)\) is a
-per pixel feature vector. When vectors from many pixels in one regime are
-stacked for calibration, they form the uppercase design matrix
-\(\textbf{X}_r\). Table~\ref{tab:pl_nlos_term_inventory} gives the role of each
-entry before the detailed definitions below. For compact table notation, let
-\(\ell_d(x)=\log(1+d_{2D}(x))\).
+\(\textbf{x}_{\mathrm{PL,NLoS}}(x)\) is a per pixel feature vector. When
+vectors from many pixels in one regime are stacked for calibration, they form
+the uppercase design matrix \(\textbf{X}_r\). For compact table notation, let
+\(\ell_d(x)=\log(1+d_{2D}(x))\). Shared support maps such as \(d_{2D}\),
+\(\theta_{\mathrm{norm}}\), \(\delta_k\), \(h_k\), and \(n_k\) are defined once
+in Sec.~\ref{sec:support_geometry_morphology}; Table~\ref{tab:pl_nlos_term_inventory}
+only states how they enter the NLoS calibration.
 
 \begin{table}[H]
 \centering
@@ -737,42 +665,9 @@ vector.}
 \label{tab:pl_nlos_term_inventory}
 \end{table}
 
-Each term is now described in detail. The ground mask \(g\), building occupancy
-mask \(m_{\mathrm{B}}\), LoS/NLoS masks, \(d_{2D}\), \(\theta_{\mathrm{norm}}\),
-\(\delta_k\), \(h_k\), and \(n_k\) are the shared support maps defined in
-Sec.~\ref{sec:support_geometry_morphology}. The NLoS prior therefore does not
-define a separate geometry; it reuses the same receiver grid and visibility
-definitions as the rest of the chapter.
-
-\paragraph{Quadratic raw prior feature.}
-The pair $(\mathrm{PL}^{(0)}(x)^2, \mathrm{PL}^{(0)}(x))$ allows the linear
-model to fit a \emph{quadratic} relationship in the raw prior. Including both
-$P^2$ and $P$ as features lets the calibration curve be:
-$\hat P = \beta_1 P^2 + \beta_2 P + \cdots$, which can correct for
-systematic curvature in the raw prior. This pair is intentionally redundant:
-the squared feature is completely determined by the raw prior feature. It is
-kept because the calibrated fit improves when the linear model is allowed to
-represent a curved mapping from raw prior to measured path loss.
-
-\paragraph{Distance term.}
-$\log(1+d_{2D}(x))$: the logarithm of one plus the horizontal distance,
-providing a distance dependent offset. The $+1$ prevents a singularity at
-$d_{2D}=0$.
-The logarithm is consistent with the log distance structure of empirical
-path loss laws: a multiplicative increase in distance produces an additive
-increase in predicted dB loss \cite{rappaport,cost231}.
-
-\paragraph{Shared morphology and elevation terms.}
-The density terms \(\delta_{15},\delta_{41}\) measure local building coverage.
-The height terms \(h_{15},h_{41}\) measure local density weighted building
-height. The NLoS support terms \(n_{15},n_{41}\) measure how much nearby ground
-is geometrically shielded from the UAV. The angle term
-\(\theta_{\mathrm{norm}}\) separates grazing links from near overhead links.
-Their definitions are not repeated here; the mathematical construction is
-given in \eqref{eq:density_support} to \eqref{eq:n_support} and
-\eqref{eq:elevation_support} to \eqref{eq:theta_inv_support}.
-
 \paragraph{Shadowing proxy.}
+The only additional scalar not already defined in the shared support map
+section is the shadowing proxy used by the NLoS calibration:
 
 \begin{align}
 \sigma_{\mathrm{LoS}}(x) &= \alpha_{\mathrm{LoS}}\,(90-\theta^\circ(x))^{\mu_{\mathrm{LoS}}}
@@ -797,33 +692,10 @@ shadow fading standard deviation. Higher values occur at low elevation angles,
 where propagation conditions are more difficult; the LoS/NLoS blend lets the
 same feature have a different scale in the two visibility regimes.
 
-\paragraph{Interaction terms.}
-The three pairwise products
-\(\delta_{41}(x)\log(1+d_{2D}(x))\),
-$n_{41}(x)\log(1+d_{2D}(x))$, and
-$n_{41}(x)\theta_{\mathrm{norm}}(x)$
-allow the linear model to capture effects where building density or NLoS
-support \emph{modifies} the slope of path loss with distance or elevation
-angle, rather than just shifting it.
-These terms are also deliberately correlated with their factors. For example,
-$n_{41}(x)\log(1+d_{2D}(x))$ cannot vary independently of $n_{41}(x)$ or
-$\log(1+d_{2D}(x))$. This cross correlation makes coefficient interpretation
-less clean, but removing such terms can reduce performance because the fit then
-loses a simple way to express ``distance matters differently in blocked
-streets''. Determining exactly which terms are dispensable would require a
-large ablation sweep over pairs or subsets of features. Even a pairwise
-screening would scale as $O(n^2)$ runs for a vector with $n$ terms, and each
-run would have to regenerate and inspect large calibration artifacts. The LoS
-two ray calibration JSON used by the final model, for example, is about
-200\,000 lines long, mostly because it stores height dependent radial residual
-profiles. Taken together, the stored calibration is height dependent,
-building topology dependent, and density dependent: the LoS JSON contributes
-height dependent radial residuals, while the NLoS side adds morphology
-calibration through building density, building height, NLoS support, topology
-regimes, and antenna height features.
-For this reason the prior should be read as a calibrated baseline with substantial
-stored structure, not as a single hand written formula, and the final vector
-keeps some correlated terms when they improved validation behavior.
+The interaction terms in Table~\ref{tab:pl_nlos_term_inventory} are retained
+because they let the calibration change the distance or elevation slope in
+dense or blocked regions. Their coefficients should be interpreted together
+with the full fitted vector, not as independent physical constants.
 
 \subsubsection{Regime wise linear calibration}
 
