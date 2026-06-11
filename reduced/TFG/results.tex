@@ -29,10 +29,10 @@ test evaluation.
 \subsection{Prior audit protocol and headline results}
 
 The final path loss prior is the clearest evidence that the prior is a strong
-path loss baseline in its own right. The enhanced two ray LoS model
-reduced LoS RMSE from roughly \SI{3.95}{dB} with FSPL to
-\SI{1.75}{dB}. The final hybrid prior reached \SI{1.9246}{dB} overall under the
-pixel weighted metric on the held out validation+test pool.
+path loss baseline in its own right. Its LoS branch reaches
+\SI{1.7516}{dB} RMSE, and the final hybrid prior reaches
+\SI{1.9246}{dB} overall under the pixel weighted metric on the held out
+validation+test pool.
 
 The spread priors are evaluated on the final city holdout test split because
 they are the baselines used by the final residual model. Delay spread reaches
@@ -42,40 +42,9 @@ masking rule as Section~\ref{sec:evaluation_metrics}.
 
 \subsection{Channel attenuation prior result}
 
-The LoS branch of the final path loss prior is compared through three
-increasingly physical component variants fitted on the same city holdout split,
-so the gain from each modelling choice can be isolated
-(Table~\ref{tab:pl_los_waterfall}).
-
-\begin{table}[!htbp]
-\centering
-\caption[LoS path loss prior component comparison.]%
-{LoS path loss prior component comparison: three priors evaluated on the same
-held out validation+test pool (pixel weighted RMSE).}
-\label{tab:pl_los_waterfall}
-\begin{tabular}{lcc}
-\toprule
-Prior & LoS RMSE (dB) & Gain over previous \\
-\midrule
-FSPL only                       & 3.9540 & N/A \\
-FSPL + radial residual          & 3.7086 & $-$0.25 \\
-\textbf{Enhanced two ray}       & \textbf{1.7516} & $\mathbf{-1.96}$ \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Two lessons follow. First, adding a purely radial correction on top of FSPL
-only buys about \SI{0.25}{dB}. The residuals that a non coherent model can
-absorb are small compared to the structured deviation from FSPL. Second,
-switching to the \emph{enhanced} two ray model with a fitted effective reflection
-coefficient $(\rho, \phi)$ per \SI{5}{m} transmitter height bin removes almost
-\SI{2}{dB} of additional error. This is exactly the magnitude expected when the
-dataset contains a visible ground reflection interference pattern, because the
-radial-residual model cannot reproduce the oscillatory ring structure with a
-purely monotonic function of distance. The two ray model is therefore not just
-a better fit numerically; it is a physically motivated explanation of the
-dominant LoS residual shape in CKM, and it is why the final model uses the two ray
-output directly as a frozen anchor rather than re-learning it from pixels.
+The path loss prior is reported here in its final hybrid form. The relevant
+result for this chapter is the frozen calibrated prior that is later used as
+the anchor for \textsc{HARP-Net CKM}.
 
 \paragraph{Split comparability note.}
 The final priors and \textsc{HARP-Net CKM} use the same \texttt{city\_holdout}

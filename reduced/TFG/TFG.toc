@@ -109,12 +109,12 @@
 \contentsline {section}{\numberline {4.1}Standalone Frozen Prior Results}{71}{section.4.1}%
 \contentsline {subsection}{\numberline {4.1.1}Prior audit protocol and headline results}{71}{subsection.4.1.1}%
 \contentsline {subsection}{\numberline {4.1.2}Channel attenuation prior result}{71}{subsection.4.1.2}%
-\contentsline {paragraph}{Split comparability note.}{72}{paragraph*.90}%
+\contentsline {paragraph}{Split comparability note.}{71}{paragraph*.89}%
 \contentsline {subsection}{\numberline {4.1.3}Angular spread prior result}{72}{subsection.4.1.3}%
 \contentsline {subsection}{\numberline {4.1.4}Delay spread prior result}{73}{subsection.4.1.4}%
 \contentsline {subsection}{\numberline {4.1.5}Prior height and topology checks}{73}{subsection.4.1.5}%
-\contentsline {subsubsection}{Path loss prior by topology class}{74}{subsubsection*.95}%
-\contentsline {subsubsection}{Spread priors by topology class}{75}{subsubsection*.97}%
+\contentsline {subsubsection}{Path loss prior by topology class}{74}{subsubsection*.94}%
+\contentsline {subsubsection}{Spread priors by topology class}{74}{subsubsection*.96}%
 \contentsline {section}{\numberline {4.2}\textsc {HARP-Net CKM} Results Against Frozen Priors}{76}{section.4.2}%
 \contentsline {subsection}{\numberline {4.2.1}Final test protocol and headline results}{76}{subsection.4.2.1}%
 \contentsline {subsection}{\numberline {4.2.2}Channel attenuation result}{77}{subsection.4.2.2}%
@@ -130,8 +130,8 @@
 \contentsline {section}{\numberline {5.1}Sustainability matrix}{84}{section.5.1}%
 \contentsline {subsection}{\numberline {5.1.1}Environmental impact}{84}{subsection.5.1.1}%
 \contentsline {subsection}{\numberline {5.1.2}Economic impact}{85}{subsection.5.1.2}%
-\contentsline {subsubsection}{Economic cell: Development of BT}{85}{subsubsection*.111}%
-\contentsline {subsubsection}{Economic cell: Project execution}{86}{subsubsection*.113}%
+\contentsline {subsubsection}{Economic cell: Development of BT}{85}{subsubsection*.110}%
+\contentsline {subsubsection}{Economic cell: Project execution}{86}{subsubsection*.112}%
 \contentsline {subsection}{\numberline {5.1.3}Social impact}{87}{subsection.5.1.3}%
 \contentsline {section}{\numberline {5.2}Ethical implications}{88}{section.5.2}%
 \contentsline {section}{\numberline {5.3}Relationship with the Sustainable Development Goals}{89}{section.5.3}%
@@ -143,9 +143,9 @@
 \contentsline {subsection}{\numberline {6.1.4}Negative results}{92}{subsection.6.1.4}%
 \contentsline {subsection}{\numberline {6.1.5}Personal Statement}{92}{subsection.6.1.5}%
 \contentsline {section}{\numberline {6.2}Future Directions}{93}{section.6.2}%
-\contentsline {paragraph}{Short and medium term.}{93}{paragraph*.114}%
-\contentsline {paragraph}{Medium to long term.}{93}{paragraph*.115}%
-\contentsline {chapter}{Bibliography}{94}{chapter*.116}%
+\contentsline {paragraph}{Short and medium term.}{93}{paragraph*.113}%
+\contentsline {paragraph}{Medium to long term.}{93}{paragraph*.114}%
+\contentsline {chapter}{Bibliography}{94}{chapter*.115}%
 \contentsline {chapter}{\numberline {A}Detailed Attempt Log}{99}{appendix.A}%
 \contentsline {section}{\numberline {A.1}How to read the attempt numbers}{99}{section.A.1}%
 \contentsline {section}{\numberline {A.2}Try-number map}{100}{section.A.2}%
