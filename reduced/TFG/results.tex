@@ -14,32 +14,19 @@ whereas \SI{1.9383}{dB} is the frozen path loss prior baseline used by
 \textsc{HARP-Net CKM} on the final 14-city test split. All final
 model versus prior comparisons use the latter.
 
-All RMSE values in this chapter are pixel weighted over valid ground
-receivers:
-\begin{equation}
-  \mathrm{RMSE}
-  =
-  \sqrt{
-  \frac{\sum_{s,i,j} m_s(i,j)\left(\hat y_s(i,j)-y_s(i,j)\right)^2}
-       {\sum_{s,i,j} m_s(i,j)}
-  }.
-  \label{eq:rmse}
-\end{equation}
-Here \(m_s(i,j)\) is the valid receiver mask for sample \(s\). This is stricter
-than averaging per sample RMSEs because larger valid maps contribute
-proportionally to their number of receiver pixels. The same rule is used for
-channel attenuation, delay spread and angular spread. For the two spread
-targets, every non building pixel is also a receiver pixel in the CKM ground
-truth, so the reported spread RMSE compares the dense prediction with the dense
-ray traced ground truth over all valid ground receivers.
+The evaluation mask, pixel weighted RMSE rule and map correlation definition
+are given in Section~\ref{sec:evaluation_metrics}. All final numbers in this
+chapter use that same valid receiver contract.
 
 The prior is not a weak reference included only for comparison. It is one of
 the central results of the thesis: a strong, train calibrated baseline that
 absorbs the stable part of the map before the residual model is asked to solve
-the harder local errors. Appendix~\ref{app:detailed_attempt_log} keeps the development history and negative
-attempts; this chapter focuses on the frozen priors and final test evaluation.
+the harder local errors. This chapter focuses on the frozen priors and final
+test evaluation.
 
 \section{Standalone Frozen Prior Results}
+
+\subsection{Prior audit protocol and headline results}
 
 The final path loss prior is the clearest evidence that the prior is a strong
 path loss baseline in its own right. The enhanced two ray LoS model
@@ -47,7 +34,13 @@ reduced LoS RMSE from roughly \SI{3.95}{dB} with FSPL to
 \SI{1.75}{dB}. The final hybrid prior reached \SI{1.9246}{dB} overall under the
 pixel weighted metric on the held out validation+test pool.
 
-\subsection{Channel attenuation prior component comparison}
+The spread priors are evaluated on the final city holdout test split because
+they are the baselines used by the final residual model. Delay spread reaches
+\SI{28.10}{ns} RMSE, and angular spread reaches \(13.74^\circ\) RMSE before
+any neural correction. The detailed rows below use the same valid receiver
+masking rule as Section~\ref{sec:evaluation_metrics}.
+
+\subsection{Channel attenuation prior result}
 
 The LoS branch of the final path loss prior is compared through three
 increasingly physical component variants fitted on the same city holdout split,
@@ -84,8 +77,6 @@ a better fit numerically; it is a physically motivated explanation of the
 dominant LoS residual shape in CKM, and it is why the final model uses the two ray
 output directly as a frozen anchor rather than re-learning it from pixels.
 
-\subsection{Channel attenuation prior summary}
-
 \paragraph{Split comparability note.}
 The final priors and \textsc{HARP-Net CKM} use the same \texttt{city\_holdout}
 split with \texttt{val\_ratio = 0.15}, \texttt{test\_ratio = 0.15}, and
@@ -121,12 +112,15 @@ Overall & 1.9246 & dB \\
 \end{tabular}
 \end{table}
 
-\subsection{Delay and angular spread prior summary}
+\subsection{Angular spread prior result}
 
-The final spread priors showed that a large part of the spread targets can also be explained by
-geometry, building layout, and calibration without a neural network. The fitted
-calibration dictionary contains \(114\) case keys, but this number is not
-one simple Cartesian product. For each spread metric, the exact grid has
+The same calibrated spread prior module is used for angular spread and delay
+spread, so Table~\ref{tab:spread_prior_results} reports both targets together
+before the next two subsections interpret them separately. A large part of the
+spread targets can already be explained by geometry, building layout, and
+calibration without a neural network. The fitted calibration dictionary contains
+\(114\) case keys, but this number is not one simple Cartesian product. For each
+spread metric, the exact grid has
 \(6\) topology classes \(\times\) \(2\) LoS/NLoS states \(\times\) \(3\)
 antenna height bins, or \(36\) exact keys. The implementation then adds
 fallback calibrations for sparse cases: \(12\) antenna collapsed topology
@@ -162,8 +156,21 @@ Angular spread ($^\circ$) & 13.74 & 15.28 & 8.66 \\
 \end{tabular}
 \end{table}
 
+For angular spread, the calibrated prior already reaches \(13.74^\circ\)
+overall RMSE on the unseen test split, below the original \(20^\circ\) project
+target. The LoS row is harder than the NLoS row (\(15.28^\circ\) versus
+\(8.66^\circ\)), which indicates that the challenge is not only blockage: local
+angular variation in visible streets also remains important.
 
-\subsection{Prior RMSE by transmitter height}
+\subsection{Delay spread prior result}
+
+For delay spread, the calibrated prior reaches \SI{28.10}{ns} overall RMSE,
+also below the original \SI{50}{ns} project target. Its LoS and NLoS rows are
+closer than in angular spread (\SI{27.49}{ns} and \SI{29.62}{ns}), but the
+largest residual errors still come from rare high delay regions. This is why the
+final residual model is evaluated not only by RMSE but also by MapCorr.
+
+\subsection{Prior height and topology checks}
 
 The CKM dataset covers stored transmitter heights from about \SI{12}{m} to almost
 \SI{478}{m}, while the generator distribution has support up to
@@ -234,7 +241,7 @@ where the path loss prior is already close to the quantisation floor. The
 remaining headroom lives in the low altitude, NLoS heavy bin, which is exactly
 where a distribution aware residual can matter.
 
-\subsection{Path loss prior by topology class}
+\subsubsection{Path loss prior by topology class}
 
 The headline path loss prior number (\SI{1.92}{dB} overall RMSE on the
 held out validation+test split, see Table~\ref{tab:pl_prior_results}) hides the
@@ -285,9 +292,9 @@ to limit deployment in dense urban environments.
 This topology breakdown also makes the central methodological claim of the
 thesis quantitative. The train calibrated prior is not only strong on average,
 but also auditable by city type and LoS/NLoS case. The longer comparison with
-the appendix diagnostic models is kept in Appendix~\ref{app:detailed_attempt_log}.
+the historical development models is kept in Appendix~\ref{app:detailed_attempt_log}.
 
-\subsection{Spread priors by topology class}
+\subsubsection{Spread priors by topology class}
 
 The delay spread and angular spread priors are also topology dependent. These
 tables use the same city holdout test split as Table~\ref{tab:spread_prior_results}
@@ -342,7 +349,6 @@ This supports the final design choice to keep separate residual outputs for the
 three targets instead of treating all CKM maps as one generic image regression
 problem.
 
-\clearpage
 \section{\textsc{HARP-Net CKM} Results Against Frozen Priors}
 
 \subsection{Final test protocol and headline results}
@@ -372,19 +378,93 @@ over all valid ground receivers.
 \centering
 \caption[\textsc{HARP-Net CKM} test results on unseen cities.]
 {\textsc{HARP-Net CKM} test results on unseen cities, compared with the frozen
-priors. Negative \(\Delta\) means that the model improves the prior.}
+priors. Negative \(\Delta\) RMSE means that the model improves the prior.}
 \label{tab:try80_final_test_overall}
 \scriptsize
-\begin{tabular}{lrrrrrrl}
+\begin{tabular}{lrrrrl}
 \toprule
-Target & Model RMSE & Prior RMSE & \(\Delta\) RMSE & Model MAE & Prior MAE & \(\Delta\) MAE & Unit \\
+Target & Model RMSE & Prior RMSE & \(\Delta\) RMSE & Model MAE & Unit \\
 \midrule
-Attenuation & 1.6519 & 1.9383 & -0.2865 & 0.9298 & 1.2319 & -0.3020 & dB \\
-Delay spread & 26.5570 & 28.1023 & -1.5453 & 7.9897 & 7.3033 & +0.6864 & ns \\
-Angular spread & 11.3854 & 13.7416 & -2.3562 & 5.0088 & 4.9890 & +0.0198 & \(^{\circ}\) \\
+Attenuation & 1.6950 & 1.9383 & -0.2433 & 0.9773 & dB \\
+Delay spread & 26.6915 & 28.1211 & -1.4296 & 7.7878 & ns \\
+Angular spread & 11.4197 & 13.7416 & -2.3220 & 4.8597 & \(^{\circ}\) \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{table}[!htbp]
+\centering
+\caption[\textsc{HARP-Net CKM} test map correlation on unseen cities.]%
+{\textsc{HARP-Net CKM} test map correlation on unseen cities. Higher is better;
+\(\Delta\) is model minus frozen prior.}
+\label{tab:try80_final_test_mapcorr}
+\scriptsize
+\begin{tabular}{lrrr}
+\toprule
+Target & Model MapCorr & Prior MapCorr & \(\Delta\) MapCorr \\
+\midrule
+Attenuation & 0.961054 & 0.947710 & +0.013344 \\
+Delay spread & 0.414823 & 0.306026 & +0.108798 \\
+Angular spread & 0.595179 & 0.377700 & +0.217479 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The MapCorr values in Table~\ref{tab:try80_final_test_mapcorr} use the
+per sample valid pixel correlation defined in \eqref{eq:mapcorr}. They are
+interpreted together with the qualitative panels in Section~\ref{sec:qualitative_analysis},
+where the difference between RMSE and structural improvement is discussed.
+
+\begin{table}[!htbp]
+\centering
+\caption[\textsc{HARP-Net CKM} held out test RMSE by topology.]%
+{\textsc{HARP-Net CKM} held out test RMSE by six class topology. Each
+\(\Delta\) column is model minus frozen prior, so negative is better.}
+\label{tab:try80_final_test_topology}
+\scriptsize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrrrrrr}
+\toprule
+Topology class & Samples & PL & \(\Delta\)PL & DS & \(\Delta\)DS & AS & \(\Delta\)AS \\
+\midrule
+\texttt{dense\_block\_highrise} & 55 & 2.8960 & -0.1790 & 42.03 & -1.48 & 12.43 & -2.21 \\
+\texttt{dense\_block\_midrise} & 505 & 2.2449 & -0.2244 & 25.63 & -1.27 & 12.79 & -2.74 \\
+\texttt{mixed\_compact\_lowrise} & 670 & 1.6974 & -0.2472 & 16.70 & -0.67 & 11.80 & -2.57 \\
+\texttt{mixed\_compact\_midrise} & 620 & 2.0068 & -0.2556 & 35.75 & -2.13 & 12.79 & -2.47 \\
+\texttt{open\_sparse\_lowrise} & 520 & 1.2156 & -0.2401 & 16.41 & -0.49 & 8.29 & -1.73 \\
+\texttt{open\_sparse\_vertical} & 220 & 1.2518 & -0.3086 & 38.37 & -2.47 & 10.91 & -1.79 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\caption[\textsc{HARP-Net CKM} held out test RMSE by antenna height bin.]%
+{\textsc{HARP-Net CKM} held out test RMSE by antenna height bin. Each
+\(\Delta\) column is model minus frozen prior, so negative is better.}
+\label{tab:try80_final_test_antenna}
+\scriptsize
+\begin{tabular}{lrrrrrrr}
+\toprule
+Antenna bin & Samples & PL & \(\Delta\)PL & DS & \(\Delta\)DS & AS & \(\Delta\)AS \\
+\midrule
+\texttt{low\_ant} & 846 & 1.8755 & -0.2645 & 35.33 & -2.02 & 13.15 & -2.36 \\
+\texttt{mid\_ant} & 878 & 1.7382 & -0.2527 & 27.70 & -1.40 & 11.92 & -2.54 \\
+\texttt{high\_ant} & 866 & 1.4990 & -0.2165 & 11.78 & -0.46 & 8.81 & -2.08 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Tables~\ref{tab:try80_final_test_topology} and
+\ref{tab:try80_final_test_antenna} show that the residual correction is not an
+artifact of the global average. All six topology classes improve in RMSE for
+all three outputs, and all three antenna height bins improve in RMSE for all
+three outputs. The hardest cases are also physically plausible: dense high rise
+maps remain the hardest channel attenuation case, while delay spread is largest
+in low altitude and sparse vertical or mixed mid rise regimes where long
+multipath tails are more frequent. The same grouped CSV shows positive
+MapCorr gains for every topology class and every antenna bin; the largest
+structural gains are for the two spread targets rather than for channel
+attenuation.
 
 \begin{table}[!htbp]
 \centering
@@ -396,12 +476,12 @@ cities are unseen during training.}
 \toprule
 Target & Scope & Model RMSE & Prior RMSE & \(\Delta\) RMSE \\
 \midrule
-Attenuation & LoS & 1.4675 & 1.7519 & -0.2844 \\
-Attenuation & NLoS & 3.1482 & 3.5143 & -0.3661 \\
-Delay spread & LoS & 25.4419 & 27.4851 & -2.0432 \\
-Delay spread & NLoS & 29.2045 & 29.6157 & -0.4112 \\
-Angular spread & LoS & 12.3510 & 15.2818 & -2.9308 \\
-Angular spread & NLoS & 8.4424 & 8.6614 & -0.2191 \\
+Attenuation & LoS & 1.5177 & 1.7519 & -0.2342 \\
+Attenuation & NLoS & 3.1502 & 3.5143 & -0.3641 \\
+Delay spread & LoS & 25.6189 & 27.5119 & -1.8930 \\
+Delay spread & NLoS & 29.2455 & 29.6157 & -0.3702 \\
+Angular spread & LoS & 12.3914 & 15.2818 & -2.8904 \\
+Angular spread & NLoS & 8.4556 & 8.6614 & -0.2058 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -410,21 +490,20 @@ Angular spread & NLoS & 8.4424 & 8.6614 & -0.2191 \\
 
 Channel attenuation is the cleanest final result because both RMSE and MAE improve over
 the frozen prior on unseen test cities. Overall RMSE drops from
-\SI{1.9383}{dB} to \SI{1.6519}{dB}, while MAE drops from \SI{1.2319}{dB} to
-\SI{0.9298}{dB}. The LoS and NLoS rows in
+\SI{1.9383}{dB} to \SI{1.6950}{dB}, while MAE drops from \SI{1.2319}{dB} to
+\SI{0.9773}{dB}. The LoS and NLoS rows in
 Table~\ref{tab:try80_final_test_los_nlos} show that the improvement is not
-coming from only one visibility case: LoS improves by \SI{0.2844}{dB} RMSE and
-NLoS by \SI{0.3661}{dB}.
+coming from only one visibility case: LoS improves by \SI{0.2342}{dB} RMSE and
+NLoS by \SI{0.3641}{dB}.
 
 \subsection{Angular spread result}
 
 For angular spread, the frozen prior already meets the original project target,
 but \textsc{HARP-Net CKM} still reduces RMSE on unseen test cities. Overall
-RMSE drops from \(13.7416^\circ\) to \(11.3854^\circ\). The MAE is almost
-unchanged (\(+0.0198^\circ\)), so this is a modest residual correction rather
-than a uniform improvement at every pixel. The clearest gain appears in LoS
-pixels, from \(15.2818^\circ\) to \(12.3510^\circ\), while NLoS improves only
-slightly, from \(8.6614^\circ\) to \(8.4424^\circ\).
+RMSE drops from \(13.7416^\circ\) to \(11.4197^\circ\), and MAE drops from
+\(4.9890^\circ\) to \(4.8597^\circ\). The clearest gain appears in LoS
+pixels, from \(15.2818^\circ\) to \(12.3914^\circ\), while NLoS improves only
+slightly, from \(8.6614^\circ\) to \(8.4556^\circ\).
 
 No reviewed external method reports the same dense CKM city holdout angular
 spread map task. One or two papers have similar link level channel statistics
@@ -435,12 +514,12 @@ against the frozen prior and the original thesis target.
 \subsection{Delay spread result}
 
 Delay spread also improves in RMSE, although it is the only output where RMSE
-and MAE move in opposite directions. Overall RMSE drops from \SI{28.1023}{ns}
-to \SI{26.5570}{ns}, while MAE increases from \SI{7.3033}{ns} to
-\SI{7.9897}{ns}. This should be read as a tail focused gain: suppressing the
+and MAE move in opposite directions. Overall RMSE drops from \SI{28.1211}{ns}
+to \SI{26.6915}{ns}, while MAE increases from \SI{7.3041}{ns} to
+\SI{7.7878}{ns}. This should be read as a tail focused gain: suppressing the
 largest delay errors can improve RMSE while many small local shifts slightly
-increase MAE. The LoS RMSE improves by \SI{2.0432}{ns}; the NLoS RMSE improves
-only by \SI{0.4112}{ns}.
+increase MAE. The LoS RMSE improves by \SI{1.8930}{ns}; the NLoS RMSE improves
+only by \SI{0.3702}{ns}.
 
 As with angular spread, no reviewed paper is directly equal to the dense CKM
 city holdout delay spread map task. The nearest references predict scalar
@@ -468,19 +547,19 @@ test row is the final unseen city generalisation result.}
 \toprule
 Split & Samples & PL RMSE & DS RMSE & DS prior RMSE & AS RMSE & Meaning \\
 \midrule
-Validation & 2750 & 1.6157 & 22.1061 & 23.4494 & 11.3782 & Same selected model state evaluated on validation cities. \\
-Test & 2590 & 1.6519 & 26.5570 & 28.1023 & 11.3854 & Separate 14-city holdout; this is the thesis generalisation number. \\
+Validation & 2750 & 1.6272 & 22.1946 & 23.4516 & 11.4141 & Same selected model state evaluated on validation cities. \\
+Test & 2590 & 1.6950 & 26.6915 & 28.1211 & 11.4197 & Separate 14-city holdout; this is the thesis generalisation number. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 The larger delay spread gap between validation and test is mainly a city mix
 effect, not a change of model or metric. The frozen delay spread prior
-also worsens from \SI{23.45}{ns} RMSE on validation to \SI{28.10}{ns} on test,
+also worsens from \SI{23.45}{ns} RMSE on validation to \SI{28.12}{ns} on test,
 so the test cities contain harder delay spread distributions before the neural
 residual is applied. In particular, Kuala Lumpur contributes only 13.2\% of
 the valid delay spread test pixels but 36.2\% of the test delay spread squared
-error, with \SI{44.00}{ns} model RMSE and \SI{46.93}{ns} prior RMSE. This is
+error, with \SI{44.22}{ns} model RMSE and \SI{46.93}{ns} prior RMSE. This is
 why the final test delay spread RMSE is higher than the validation
 row, while still improving over the prior.
 
@@ -488,17 +567,19 @@ Together, the three target sections show the main generalisation result: the
 test cities are completely unseen, and the residual model reduces RMSE for
 channel attenuation, angular spread and delay spread simultaneously.
 
-\section{State of the Art Context and Runtime}
+\section{State of the Art Context}
 
 \subsection{Target vs final result}
 
 The selected final model clears the original numerical targets on the unseen city
-test split: \SI{1.65}{dB} channel attenuation against the \SI{5}{dB} target,
-\SI{26.56}{ns} delay spread against the \SI{50}{ns} target, and
-\(11.39^\circ\) angular spread against the \(20^\circ\) target. The same
-target check also holds on validation and on the all city aggregation; even
-the worst unseen-test subexpert for each output remains below its target
-(\SI{2.66}{dB}, \SI{36.89}{ns}, and \(14.06^\circ\)). On the all city
+test split: \SI{1.70}{dB} channel attenuation against the \SI{5}{dB} target,
+\SI{26.69}{ns} delay spread against the \SI{50}{ns} target, and
+\(11.42^\circ\) angular spread against the \(20^\circ\) target. The same
+target check also holds on validation and on the all city aggregation. The
+fine grouped audit is stricter: all topology classes and antenna bins improve,
+although a few very small topology by antenna cells can exceed the delay spread
+target and should be read as diagnostics rather than as the main evaluation
+contract. On the all city
 subexpert audit, the corresponding worst cases are \SI{2.45}{dB},
 \SI{42.24}{ns}, and \(13.97^\circ\), still below the same targets.
 
@@ -591,7 +672,7 @@ value under the same approximate \SI{36}{dB} assumption. &
 The DS-RPP conversion follows RM3D scaling; the rural conversion is only an
 approximate scale check because the paper reports normalised image-space RMSE. \\
 \textbf{Final model} &
-\textbf{\SI{1.6519}{dB} PL, \SI{26.5570}{ns} DS, \(11.3854^\circ\) AS on unseen CKM cities} &
+\textbf{\SI{1.6950}{dB} PL, \SI{26.6915}{ns} DS, \(11.4197^\circ\) AS on unseen CKM cities} &
 \textbf{Reference row for the ratios above.} &
 Only row here reporting all three dense CKM targets under the final
 city holdout protocol. \\
@@ -648,7 +729,7 @@ Measurement based DL reference that includes both DS and AS. &
 Indoor point cloud measurement task with mostly link level samples, not outdoor
 UAV CKM generation or unseen city dense map testing. \\
 \textbf{Final model} &
-\textbf{\SI{26.5570}{ns} DS RMSE and \(11.3854^\circ\) AS RMSE on unseen CKM
+\textbf{\SI{26.6915}{ns} DS RMSE and \(11.4197^\circ\) AS RMSE on unseen CKM
 cities.} &
 \textbf{Only row here with dense PL/DS/AS maps and the final ground mask
 city holdout contract.} &
@@ -676,7 +757,8 @@ delay spread and angular spread RMSE on unseen CKM cities, improves the closest
 same protocol spread baselines, and keeps the stricter ground mask, LoS/NLoS,
 and continuous height protocol visible.
 
-\paragraph{Inference time sanity check.}
+\section{Runtime}
+\label{sec:runtime}
 
 The secondary runtime objective was checked on the Barcelona geometry supplied
 with the MATLAB ray tracing script. The benchmark uses the same local laptop as
@@ -745,20 +827,38 @@ GT ray-caster with zero LoS/NLoS differences on the Barcelona samples and on
 \label{sec:qualitative_analysis}
 
 The qualitative evidence supports the quantitative story without needing the
-full diagnostic gallery in the main body. The early channel attenuation
+full inspection gallery in the main body. The early channel attenuation
 histograms showed NLoS mode collapse: visually plausible maps could follow the
 radial LoS trend while missing the blocked link tail. The selected final model
 removes the worst of that collapse, reduces RMSE relative to the frozen priors
 across the split and LoS/NLoS checks, and applies residual corrections whose
-sign follows the prior error maps. The diagnostic appendix keeps the
+sign follows the prior error maps. The appendix keeps the
 histogram and spread quantisation checks; the wider gallery and split bar plots
 remain in the generated figure archive.
 The multilinear priors are already strong in RMSE because much of the CKM
 structure is explained by range, height, LoS state and coarse morphology. The
-main role of the residual model is therefore local: it sharpens corrections
+main role of the residual model is therefore local. It sharpens corrections
 around building borders and other spatial transitions that a linear prior cannot
-represent. Structural metrics such as SSIM were not computed, but they may be
-more sensitive than RMSE to this type of spatial improvement.
+represent, so the RMSE gain can look modest even when the spatial structure is
+visibly better. This is exactly what MapCorr is meant to test: after the mean
+and scale of each map are removed, it measures whether high and low regions are
+placed correctly. The gains in Table~\ref{tab:try80_final_test_mapcorr}, especially
+for delay spread and angular spread, therefore show that the model improves the
+map structure much more clearly than the RMSE alone suggests.
+
+The absolute MapCorr values should also be read with care. It is a demanding
+metric because it is computed on every valid receiver pixel of the full map,
+not on smoothed regions or selected visual examples. It also converts each map
+to z scores before comparison, subtracting that map's valid pixel mean and
+dividing by its valid pixel standard deviation, so it gives no credit for
+correcting the global offset or scale that RMSE already measures. For delay spread and angular spread this is
+especially strict: the targets are heavy tailed, with rare local scattering
+regions and sharp transitions. A small spatial shift, a slightly smoother ridge
+or one missed high spread pocket can lower the full map pixel correlation even
+when the prediction looks structurally closer. For that reason, the relevant
+reading is comparative: under the same samples, masks and valid pixels, the
+model raises MapCorr from \(0.306026\) to \(0.414823\) for delay spread and
+from \(0.377700\) to \(0.595179\) for angular spread.
 
 \begin{figure}[!htbp]
 \centering
@@ -774,94 +874,4 @@ The main lesson is that LoS path loss in this dataset has a strong radial ring
 structure, so a calibrated two ray prior is more efficient than asking a CNN to
 learn the same pattern from pixels. The remaining qualitative failures are
 concentrated in sparse NLoS and high spread cases, which is why future spread
-work should include an explicit high tail or outlier diagnostic.
-\section{Limitations}
-\label{sec:limitations}
-
-The dataset is produced by ray tracing, not by field measurements. The results
-therefore measure agreement with a simulator and not direct over the air
-deployment performance. The channel attenuation target is stored as uint8, which imposes
-approximately \SI{1}{dB} quantization. The spread targets are also stored as
-integer maps: delay spread as uint16 in ns and angular spread as uint8 in
-degrees. A more suitable dataset for the final modelling stage would preserve
-the continuous ray traced targets, for example as float32 or as documented
-scaled integers, before any display-oriented quantisation.
-This should not be confused with a quantized model output: \textsc{HARP-Net CKM}
-emits continuous PL/DS/AS values. In that light, the final
-channel attenuation MAE of \SI{0.9298}{dB} on labels stored at approximately
-\SI{1}{dB} resolution is already close to the channel attenuation label step, even
-though the RMSE remains \SI{1.6519}{dB} because it is dominated by the harder
-tail errors.
-
-The effect can be written explicitly. Let \(y^\star\) be the continuous
-ray traced value and \(y_q = Q_\Delta(y^\star) = y^\star + \epsilon_q\) the
-stored value after rounding to step \(\Delta\). Under the usual high resolution
-quantisation approximation, \(\epsilon_q \sim \mathcal{U}(-\Delta/2,\Delta/2)\),
-so
-\begin{equation}
-  \sigma_q = \sqrt{\mathbb{E}[\epsilon_q^2]}
-           = \frac{\Delta}{\sqrt{12}}.
-  \label{eq:quant_floor}
-\end{equation}
-With \(\Delta=1\) in the physical units used here, the hidden uncertainty is
-\(0.289\,\mathrm{dB}\) for channel attenuation, \(0.289\,\mathrm{ns}\) for delay spread,
-and \(0.289^\circ\) for angular spread. This is not the dominant error in the
-reported final model, but it is an irreducible resolution limit of the
-saved labels and becomes important once residual errors approach the sub unit
-regime.
-
-\begin{table}[!htbp]
-\centering
-\caption[Approximate RMSE floor from target quantisation.]%
-{Approximate quantisation RMSE implied by the stored integer target
-precision in the current CKM HDF5 file. The table reports the actual storage
-used in this thesis.}
-\label{tab:quantisation_floor}
-\begin{tabular}{lccc}
-\toprule
-Target & Stored type & Current integer step & Current floor \\
-\midrule
-Attenuation & uint8 & \SI{1}{dB} & \SI{0.289}{dB} \\
-Delay spread & uint16 & \SI{1}{ns} & \SI{0.289}{ns} \\
-Angular spread & uint8 & \(1^\circ\) & \(0.289^\circ\) \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-This also explains why getting very close to the best possible error is
-mathematically harder than the headline RMSE suggests. If model error and
-quantisation error are approximately independent, the observed squared error
-decomposes as
-\begin{equation}
-  \mathbb{E}\!\left[(\hat{y}-y_q)^2\right]
-  \approx
-  \mathbb{E}\!\left[(\hat{y}-y^\star)^2\right] + \sigma_q^2 .
-\label{eq:quantization_error_decomposition}
-\end{equation}
-Near \(\sigma_q\), a real reduction in model error produces only a small change
-in total RMSE because of the square-root compression. In addition, many
-different continuous ray tracing values collapse to the same stored integer, so
-the model cannot learn sub-bin structure from the labels even if the input
-geometry contains enough information. The heavy tailed NLoS distributions add a
-second difficulty: MSE is dominated by rare large misses, so once the common
-LoS pixels are near the quantisation scale, further improvements depend on
-resolving sparse hard NLoS cases rather than on smoothing the whole map.
-
-The LoS/NLoS mask used in these experiments should be interpreted as a
-geometric binary visibility mask, not as an augmented electromagnetic
-propagation label. In the CKM setup the transmitter position is fixed at the
-map centre and the transmitter height is known for each sample, so the same binary mask
-can be derived by line of sight tracing through the building topology. It is
-therefore a deterministic geometric feature and branch key, not extra measured
-radio information unavailable at deployment.
-
-The selected final model is evaluated on one city holdout split and one
-training seed. This demonstrates generalisation to unseen cities, but not full
-robustness: future work should repeat selection across seeds and add field
-measurements, especially for delay spread tails where quantised labels make
-sparse high delay artefacts difficult to interpret.
-
-Finally, the dataset fixes frequency and simulator assumptions. Deployment
-would need conditioning on carrier frequency, bandwidth, antenna pattern, and
-environment class; the city holdout protocol tests urban layouts, not this
-broader domain adaptation.
+work should include an explicit high tail or outlier check.

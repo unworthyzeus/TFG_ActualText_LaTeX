@@ -142,7 +142,7 @@ where:
 \end{itemize}
 
 Equation~\eqref{eq:pl_los} is applied as a frozen calibrated LoS prior and
-then clipped to the \([20,180]\) dB physical path loss range used by the final
+then clipped to the \([20,185]\) dB physical path loss range used by the final
 model. Table~\ref{tab:pl_los_term_inventory} summarizes the calibrated LoS
 terms; the shared distance and angle definitions are not repeated here.
 
@@ -161,7 +161,7 @@ terms; the shared distance and angle definitions are not repeated here.
 \(C_{\mathrm{2ray}}(x)\) & Coherent interference correction. & Converts the complex direct plus reflected field sum into an oscillatory dB correction around FSPL. \\
 \(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) & Height interpolated bias. & Removes a remaining per height offset after the coherent two ray fit. \\
 \(r(d_{2D},h_{\mathrm{tx}})\) & Smoothed radial residual profile, clipped to \(\pm2.5\) dB. & Corrects systematic distance dependent residuals not captured by the two ray equation. \\
-\(\mathrm{clip}_{[20,180]}\) & Output guard. & Keeps the frozen prior inside the physical path loss range used by the final model. \\
+\(\mathrm{clip}_{[20,185]}\) & Output guard. & Keeps the frozen prior inside the physical path loss range used by the final model. \\
 \bottomrule
 \end{tabularx}
 \caption{Term by term inventory of the LoS prior used by
@@ -421,7 +421,45 @@ interference term rather than the full final LoS prior.}
 The NLoS path loss branch used in the final model is not a pure literature
 formula. It is a hybrid engineering model built from five calculation blocks.
 
-\subsubsection{\texorpdfstring{\emph{Raw NLoS propagation prior}}{Raw NLoS propagation prior}}
+\subsubsection{\texorpdfstring{\textit{NLoS calibration vector}}{NLoS calibration vector}}
+
+The easiest way to read the NLoS branch is from the final per pixel calibration
+vector, because the raw propagation estimate is only one of its inputs. The
+first two entries are the raw formula map \(\mathrm{PL}^{(0)}(x)\) and its
+quadratic copy; the following entries add range, morphology, obstruction,
+elevation and a regime bias:
+
+\begin{equation}
+\textbf{x}_{\mathrm{PL,NLoS}}(x)
+=
+\begin{bmatrix}
+\mathrm{PL}^{(0)}(x)^2 \\
+\mathrm{PL}^{(0)}(x) \\
+\log(1+d_{2D}(x)) \\
+\delta_{15}(x) \\
+\delta_{41}(x) \\
+h_{15}(x) \\
+h_{41}(x) \\
+\delta_{41}(x)\log(1+d_{2D}(x)) \\
+n_{15}(x) \\
+n_{41}(x) \\
+n_{41}(x)\log(1+d_{2D}(x)) \\
+\sigma_{\mathrm{shadow}}(x) \\
+\theta_{\mathrm{norm}}(x) \\
+n_{41}(x)\theta_{\mathrm{norm}}(x) \\
+1
+\end{bmatrix}.
+\label{eq:x_pl_nlos}
+\end{equation}
+
+The lowercase bold notation is intentional:
+\(\textbf{x}_{\mathrm{PL,NLoS}}(x)\) is a per pixel feature vector. When
+vectors from many pixels in one regime are stacked for calibration, they form
+the uppercase design matrix \(\textbf{X}_r\). The scalar
+\(\mathrm{PL}^{(0)}(x)\) is defined next, then the map derived terms are
+summarized in Table~\ref{tab:pl_nlos_term_inventory}.
+
+\subsubsection{Raw NLoS propagation prior}
 
 Two coarse physical estimates are combined.
 
@@ -571,38 +609,12 @@ street level descriptors \cite{walfisch1988,ikegami1984}, and as path profile
 surrogates that use map derived profile statistics \cite{juang2021pathprofile},
 but all variables here are computed directly from the CKM grid and fitted only
 on training city pixels.
-
-\begin{equation}
-\textbf{x}_{\mathrm{PL,NLoS}}(x)
-=
-\begin{bmatrix}
-\mathrm{PL}^{(0)}(x)^2 \\
-\mathrm{PL}^{(0)}(x) \\
-\log(1+d_{2D}(x)) \\
-\delta_{15}(x) \\
-\delta_{41}(x) \\
-h_{15}(x) \\
-h_{41}(x) \\
-\delta_{41}(x)\log(1+d_{2D}(x)) \\
-n_{15}(x) \\
-n_{41}(x) \\
-n_{41}(x)\log(1+d_{2D}(x)) \\
-\sigma_{\mathrm{shadow}}(x) \\
-\theta_{\mathrm{norm}}(x) \\
-n_{41}(x)\theta_{\mathrm{norm}}(x) \\
-1
-\end{bmatrix}
-\label{eq:x_pl_nlos}
-\end{equation}
-
-The lowercase bold notation is intentional:
-\(\textbf{x}_{\mathrm{PL,NLoS}}(x)\) is a per pixel feature vector. When
-vectors from many pixels in one regime are stacked for calibration, they form
-the uppercase design matrix \(\textbf{X}_r\). For compact table notation, let
-\(\ell_d(x)=\log(1+d_{2D}(x))\). Shared support maps such as \(d_{2D}\),
-\(\theta_{\mathrm{norm}}\), \(\delta_k\), \(h_k\), and \(n_k\) are defined once
-in Sec.~\ref{sec:support_geometry_morphology}; Table~\ref{tab:pl_nlos_term_inventory}
-only states how they enter the NLoS calibration.
+The vector itself was introduced in \eqref{eq:x_pl_nlos}. For compact table
+notation, let \(\ell_d(x)=\log(1+d_{2D}(x))\). Shared support maps such as
+\(d_{2D}\), \(\theta_{\mathrm{norm}}\), \(\delta_k\), \(h_k\), and \(n_k\) are
+defined once in Sec.~\ref{sec:support_geometry_morphology};
+Table~\ref{tab:pl_nlos_term_inventory} only states how they enter the NLoS
+calibration.
 
 \begin{table}[H]
 \centering
@@ -773,12 +785,12 @@ and to the dataset's stored masks.
 \textbf{x}_{\mathrm{PL,NLoS}}(x)^\top
 \textbf{w}^{\mathrm{PL,NLoS}}_{r},
 20,
-180
+185
 \right)
 \label{eq:pl_nlos_final}
 \end{equation}
 
-Hard clipping to $[20, 180]$ dB prevents the linear model from producing
+Hard clipping to $[20, 185]$ dB prevents the linear model from producing
 physically unreasonable values in the obstructed branch.
 
 \subsection{Final channel attenuation prior assembly}

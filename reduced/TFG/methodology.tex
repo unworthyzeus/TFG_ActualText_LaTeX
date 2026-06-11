@@ -67,6 +67,7 @@ Final priors: overview and literature basis & Why the frozen priors are determin
 Channel Attenuation Prior and Residual Prediction & The calibrated LoS/NLoS attenuation prior and the residual channel attenuation branch. \\
 Delay and Angular Spread Prior and Residual Prediction & The calibrated spread prior and the residual DS/AS branches. \\
 \textsc{HARP-Net CKM} Neural Residual Model & The neural network used in the final system: input channels, height conditioning, bounded residual heads and training losses. \\
+Evaluation Metrics & The valid receiver RMSE, MAE and map correlation rules used for the final test comparisons. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -173,9 +174,9 @@ Delay and Angular Spread Prior and Residual Prediction & The calibrated spread p
       \textit{Inputs:} \(513\times513\) support maps from Step~2 and prior maps from Step~3. The path loss branch also forms per pixel
       \(\widehat{\mathrm{PL}}_{\mathrm{prior}}(x)=m_{\mathrm{LoS}}(x)\widehat{\mathrm{PL}}_{\mathrm{LoS}}(x)+m_{\mathrm{NLoS}}(x)\widehat{\mathrm{PL}}_{\mathrm{NLoS}}(x)\).\\
       \textit{Output:} Input tensor \(X\in\mathbb{R}^{9\times513\times513}\) with channels
-      \([T_{\mathrm{in}}=Tg/90\) (geometry via masks/morphology/priors), \(m_{\mathrm{LoS}},m_{\mathrm{NLoS}},g,\widehat{\mathrm{PL}}_{\mathrm{prior}}/180,
-      \widehat{\mathrm{PL}}_{\mathrm{LoS}}/180,\widehat{\mathrm{PL}}_{\mathrm{NLoS}}/180,\ell_{\mathrm{DS}},\ell_{\mathrm{AS}}]\),
-      with \(\ell_{\mathrm{DS}}=\log(1+\widehat{\mathrm{DS}}_{\mathrm{prior}})/\log(401)\), \(\ell_{\mathrm{AS}}=\log(1+\widehat{\mathrm{AS}}_{\mathrm{prior}})/\log(91)\),
+      \([T_{\mathrm{in}}=Tg/90\) (geometry via masks/morphology/priors), \(m_{\mathrm{LoS}},m_{\mathrm{NLoS}},g,\widehat{\mathrm{PL}}_{\mathrm{prior}}/185,
+      \widehat{\mathrm{PL}}_{\mathrm{LoS}}/185,\widehat{\mathrm{PL}}_{\mathrm{NLoS}}/185,\ell_{\mathrm{DS}},\ell_{\mathrm{AS}}]\),
+      with \(\ell_{\mathrm{DS}}=\log(1+\widehat{\mathrm{DS}}_{\mathrm{prior}})/\log(911)\), \(\ell_{\mathrm{AS}}=\log(1+\widehat{\mathrm{AS}}_{\mathrm{prior}})/\log(91)\),
       plus scalar condition \(h_{\mathrm{tx}}\).
     };
 
@@ -192,7 +193,7 @@ Delay and Angular Spread Prior and Residual Prediction & The calibrated spread p
       \textit{Inputs:} Prior maps, bounded residual maps \(\Delta_{\mathrm{PL}},\Delta_{\mathrm{DS}},\Delta_{\mathrm{AS}}\in\mathbb{R}^{513\times513}\), LoS/NLoS masks and valid-ground mask \(m_{\mathrm{ground}}\).\\
       \textit{Assembly (per pixel):} Masks select LoS/NLoS point maps. PL is prior plus bounded dB residual; DS/AS mix capped native component means in \(\log(1+y)\), then invert.\\
       \textit{Outputs:} Three final dense \(513\times513\) CKM maps: \(\widehat{\mathrm{PL}}\) (dB), \(\widehat{\mathrm{DS}}\) (ns), \(\widehat{\mathrm{AS}}\) (deg).\\
-      \textit{Evaluation:} Pixel weighted RMSE and MAE over unseen city valid ground pixels.
+      \textit{Evaluation:} Pixel weighted RMSE, MAE and map correlation over unseen city valid ground pixels.
     };
 
     \draw[arrow] (framework.south) -- (features.north);
@@ -237,6 +238,28 @@ the distribution first and final neural models the split uses
 city assignment. This avoids the most common optimistic error in spatial radio
 prediction: training on one part of a city and testing on another visually
 similar part of the same city.
+
+\begin{table}[ht]
+\centering
+\small
+\caption{Stored target ranges over valid receiver pixels.}
+\label{tab:target_valid_ranges}
+\begin{tabular}{llc}
+\toprule
+Target & Stored type & All valid receivers \\
+\midrule
+Channel attenuation & uint8 & \SIrange{65}{184}{dB} \\
+Delay spread & uint16 & \SIrange{0}{910}{ns} \\
+Angular spread & uint8 & \(0^\circ\)--\(180^\circ\) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The channel attenuation upper guard is therefore set to \SI{185}{dB}, just
+above the largest valid receiver label stored in the full HDF5 database. The
+guard is a numerical consistency limit for the prior and residual assembly, not
+an extra training label or a claim that larger losses cannot occur outside this
+particular simulator export.
 
 The transmitter height samples are not uniformly distributed. They are produced
 by the dataset generator through the affine beta mixture
@@ -378,10 +401,8 @@ Multilinear regression and calculation prior outputs &
 Combined path loss prior, path loss LoS prior, path loss NLoS prior,
 delay spread prior, angular spread prior. \\
 Inputs to \textsc{HARP-Net CKM} &
-Nine map channels in the final model order: topology, LoS mask, NLoS mask, ground mask,
-combined path loss prior, path loss LoS prior, path loss NLoS prior,
-delay spread prior and angular spread prior; plus scalar transmitter-height
-FiLM conditioning. \\
+Nine spatial map channels plus scalar transmitter height FiLM conditioning;
+the exact order and scaling are specified in Section~\ref{sec:try80_detail}. \\
 Final outputs &
 Channel attenuation map, delay spread map, angular spread map. \\
 \bottomrule
@@ -830,12 +851,11 @@ given below.
 \section{\textsc{HARP-Net CKM} Neural Residual Model}
 \label{sec:try80_detail}
 
-\textsc{HARP-Net CKM} receives nine spatial channels plus a separate scalar
-transmitter height conditioning path. The channels are the normalized topology
-map, LoS mask, NLoS mask, ground mask, combined attenuation prior, LoS
-attenuation prior, calibrated NLoS attenuation branch, delay spread prior and
-angular spread prior. The scalar height is encoded with sinusoidal features and
-injected through FiLM layers rather than copied as a constant image.
+\textsc{HARP-Net CKM} receives the frozen prior maps, receiver and visibility
+masks, the topology map, and a separate scalar transmitter height conditioning
+path. The exact channel order and scaling are listed in the detailed protocol
+below. The scalar height is encoded with sinusoidal features and injected
+through FiLM layers.
 
 The network is a shared GroupNorm U-Net with task specific residual heads. For
 each target and visibility region, the head predicts bounded residual
@@ -847,10 +867,79 @@ mapped back to ns or degrees. The explicit LoS/NLoS masks select the final
 regional branch at each valid ground receiver pixel.
 
 Training uses the same city holdout split, receiver mask and pixel weighted
-RMSE rule defined in Chapter~\ref{chap:results}. The selected final stage is
+RMSE rule defined in Section~\ref{sec:evaluation_metrics}. The selected final stage is
 RMSE/MAE oriented, with small anchor and prior guard terms so that the residual
 model improves the prior baselines without freely overwriting them. The full
 architecture diagram, residual assembly equations and loss family are included
 below.
 
 \input{prior_detail_try80}
+
+\section{Evaluation Metrics}
+\label{sec:evaluation_metrics}
+
+All reported final metrics use the valid receiver mask \(m_s(i,j)\). For
+channel attenuation, valid receivers are non building pixels with a stored path
+loss value at least \SI{20}{dB}; for delay spread and angular spread, all
+finite non building pixels are valid. Pixel weighted RMSE is
+\begin{equation}
+  \mathrm{RMSE}
+  =
+  \sqrt{
+  \frac{\sum_{s,i,j} m_s(i,j)\left(\hat y_s(i,j)-y_s(i,j)\right)^2}
+       {\sum_{s,i,j} m_s(i,j)}
+  }.
+  \label{eq:rmse}
+\end{equation}
+This is a pixel aggregate, not a correction for different image sizes: every
+CKM sample has the same \(513\times513\) grid. The reason for using it is that
+the targets are dense maps. Every valid receiver pixel contributes directly, so
+clusters of large local errors are not hidden by first reducing each sample to
+one RMSE and then averaging those sample scores. MAE is computed with the same
+mask and pixel weighting, replacing the squared error in \eqref{eq:rmse} by
+\(|\hat y_s(i,j)-y_s(i,j)|\):
+\begin{equation}
+  \mathrm{MAE}
+  =
+  \frac{\sum_{s,i,j} m_s(i,j)\left|\hat y_s(i,j)-y_s(i,j)\right|}
+       {\sum_{s,i,j} m_s(i,j)}.
+  \label{eq:mae}
+\end{equation}
+
+Map correlation is reported as the main companion structural metric. For each
+sample and target, let \(\Omega_s=\{(i,j):m_s(i,j)=1\}\),
+\(N_s=|\Omega_s|\), and let
+\(\bar y_s,\bar{\hat y}_s\) be the mean of the target and prediction over
+\(\Omega_s\). The standard deviations are computed over the same valid pixels,
+with the population normalization,
+\(\sigma_{y,s}^2=N_s^{-1}\sum_{\Omega_s}(y_s-\bar y_s)^2\) and
+\(\sigma_{\hat y,s}^2=N_s^{-1}\sum_{\Omega_s}(\hat y_s-\bar{\hat y}_s)^2\).
+For non degenerate maps, the per sample map correlation is the Pearson
+correlation of the two valid pixel maps after both have been converted to local
+\(z\)-scores, meaning that each map has its valid pixel mean subtracted and is
+then divided by its valid pixel standard deviation:
+\begin{equation}
+  \mathrm{MapCorr}_s
+  =
+  \frac{1}{N_s}
+  \sum_{(i,j)\in\Omega_s}
+  \frac{\left(y_s(i,j)-\bar y_s\right)
+        \left(\hat y_s(i,j)-\bar{\hat y}_s\right)}
+       {\sigma_{y,s}\sigma_{\hat y,s}} .
+  \label{eq:mapcorr}
+\end{equation}
+Let \(\mathcal{C}\) be the set of samples with \(N_s\ge 2\) and non zero
+standard deviation in both maps. Degenerate maps do not contribute a
+correlation term. The final split value is aggregated by valid pixel count:
+\begin{equation}
+  \mathrm{MapCorr}
+  =
+  \frac{\sum_{s\in\mathcal{C}} N_s\,\mathrm{MapCorr}_s}
+       {\sum_{s\in\mathcal{C}} N_s}.
+  \label{eq:mapcorr_aggregate}
+\end{equation}
+MapCorr is high when the prediction places the relative high and low regions of
+each map correctly after removing that map's mean and scale. It does not replace
+RMSE, because a map can be well correlated but biased in physical units; it is
+used here to check whether the residual model improves spatial structure beyond
+the frozen priors.

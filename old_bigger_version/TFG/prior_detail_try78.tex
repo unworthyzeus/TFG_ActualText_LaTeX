@@ -378,7 +378,7 @@ The entries are computed as follows:
 \(C_{\mathrm{2ray}}(x)\) & Coherent interference correction. & Converts the complex direct-plus-reflected field sum into an oscillatory dB correction around FSPL. \\
 \(b(h_{\mathrm{tx}})\) & Height-interpolated bias. & Removes a remaining per-height offset after the coherent two-ray fit. \\
 \(r(d_{2D},h_{\mathrm{tx}})\) & Smoothed radial residual profile, clipped to \(\pm2.5\) dB. & Corrects systematic distance-dependent residuals not captured by the two-ray equation. \\
-\(\mathrm{clip}_{[20,180]}\) & Output guard. & Keeps the frozen prior inside the physical path-loss range used by the final model. \\
+\(\mathrm{clip}_{[20,185]}\) & Output guard. & Keeps the frozen prior inside the physical path-loss range used by the final model. \\
 \bottomrule
 \end{tabularx}
 \caption{Term-by-term inventory of the LoS prior used by
@@ -1296,12 +1296,12 @@ and to the dataset's stored masks.
 \mathrm{clip}\!\left(
 \textbf{x}_{78}(x)^\top \textbf{w}^{78}_{r},
 20,
-180
+185
 \right)
 \label{eq:pl_nlos_final}
 \end{equation}
 
-Hard clipping to $[20, 180]$ dB prevents the linear model from producing
+Hard clipping to $[20, 185]$ dB prevents the linear model from producing
 physically unreasonable values. The final hybrid path-loss prior is:
 
 \begin{equation}

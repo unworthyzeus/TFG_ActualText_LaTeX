@@ -1,6 +1,6 @@
-# GMG Revision 10/6: Delivery Draft Plan
+# GMG Revision 11/6: Delivery Draft Plan
 
-Status: working Markdown version for the GMG revision to deliver after applying the reviewed methodology fixes.
+Status: working Markdown version for the GMG revision to deliver after applying the reviewed methodology fixes, metric definitions, valid range corrections and results structure updates.
 
 Source PDF: `C:\Users\guill\Downloads\26_06_09_TFG_Guillem_GV.pdf`
 Extracted annotations: 53 total, including 33 text comments and 20 markup annotations.

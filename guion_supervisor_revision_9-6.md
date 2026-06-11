@@ -33,7 +33,7 @@ Use this list while scrolling through the revised PDF. The short version is: eve
    I removed the redundant building mask as a main thesis level quantity. The valid receiver set is defined through the ground mask, and building occupancy only appears where a morphology computation needs that complement.
 
 9. **"Buildings being removed from losses and metrics belongs with evaluation, not support maps."**
-   I stopped emphasizing metrics inside the support map section. The support map section now defines the valid receiver set, while the pixel weighted RMSE rule is defined in Results where the numerical tables are interpreted.
+   I stopped emphasizing metrics inside the support map section. The support map section now defines the valid receiver set, while the pixel weighted RMSE rule is defined later in the Methodology chapter under Evaluation Metrics.
 
 10. **"Do not use d3D."**
     I replaced the old direct 3D path notation with \(d_{\mathrm{LoS}}\). The direct path length and reflected path length are now named consistently as \(d_{\mathrm{LoS}}\) and \(d_{\mathrm{ref}}\).
@@ -85,8 +85,8 @@ Use this list while scrolling through the revised PDF. The short version is: eve
 23. **"Reduce redundancy in the spread prior."**
     I made the DS and AS section share one explanation of the log domain ridge prior. Reused support maps and topology classes are referenced instead of redefined.
 
-24. **"Move the RMSE equation to Results."**
-    I moved the pixel weighted RMSE formula into Chapter 4. This makes it easier to find when reading the numerical tables and avoids putting a results metric inside support map definitions.
+24. **"Move the RMSE equation out of the support maps."**
+    I moved the pixel weighted RMSE formula into the Methodology chapter as a dedicated Evaluation Metrics section. This keeps it close to the receiver mask and split definition, but not inside the support map section itself.
 
 25. **"Page 33 should explain the neural network section, not training and evaluation protocol."**
     I renamed the section and the page 33 table row to HARP-Net CKM Neural Residual Model. The description now says it explains the network used in the final system: input channels, height conditioning, bounded residual heads and training losses.
@@ -125,10 +125,28 @@ Use this list while scrolling through the revised PDF. The short version is: eve
     I replaced the remaining old regime wording with "per regime" or "calibration by regime". This is cleaner and avoids making the method sound like a separate staged protocol.
 
 37. **"Add the latest review entries."**
-    I added two revision history entries: an EV methodology redundancy review on 09/06/2026 and a GMG corrected version on 10/06/2026 focused on methodology redundancy removal.
+    I added two revision history entries: an EV methodology redundancy review on 09/06/2026 and a GMG corrected version on 11/06/2026 covering methodology redundancy removal, metric definitions, valid range corrections and results structure.
 
 38. **"Check that the redundancy cut did not remove too much."**
     I audited the removed spread material against the implementation in `TFGPractice`. The code confirms that \(h_{\mathrm{norm}}\) is broadcast from one scalar, while the blocker, clearance and taller building quantities are computed through 41 pixel box means. That is why the full repeated table could be removed safely while preserving the unique explanations in the shared support and spread prior text.
+
+39. **"The NLoS vector includes the raw path loss prior, so the vector should appear before the raw prior details."**
+    I reordered the NLoS branch. It now starts with the 15 term NLoS calibration vector, where \(\mathrm{PL}^{(0)}\) appears as the first raw formula input. Only after the reader has seen the vector do I explain how \(\mathrm{PL}^{(0)}\) is built from COST231 and the A2G envelope.
+
+40. **"Report the real stored target ranges."**
+    I added a target range table in the dataset section. Over all valid receivers, channel attenuation reaches \SI{184}{dB}, delay spread reaches \SI{910}{ns}, and angular spread reaches \(180^\circ\). On the final test split the corresponding ranges are \SIrange{66}{174}{dB}, \SIrange{0}{895}{ns}, and \(0^\circ\) to \(180^\circ\).
+
+41. **"Update the code and text after the real ranges."**
+    I changed the path loss guard and normalization from 180 to 185 dB, because the largest valid stored receiver label is 184 dB. I also changed delay spread clipping and log normalization from 400 ns to 910 ns, using \(\log(911)\). I checked the active code and thesis sources so the old 180 dB and 400 ns limits are no longer used in the final path.
+
+42. **"SSIM was not representing spread structure well."**
+    I removed SSIM from the thesis and paper. I also decided not to include GradCorr in the main text after reviewing the results, because it is harsher and less useful for the final story. The thesis now reports RMSE and MAE for physical error, plus MapCorr as the structural metric.
+
+43. **"Explain MapCorr clearly."**
+    I added MapCorr to the Evaluation Metrics section. It is a per sample Pearson correlation over valid receiver pixels after the target and prediction maps are each converted to their own valid pixel \(z\) scores. This means MapCorr measures whether high and low regions are in the right places, while RMSE still measures absolute physical error.
+
+44. **"Make the Results structure consistent."**
+    I reorganized Chapter 4 so Section 4.1 and Section 4.2 follow the same reading pattern: protocol and headline numbers first, then channel attenuation, angular spread, delay spread, and then diagnostics. This makes the prior only section and final model section easier to compare.
 
 ## Page 33
 
@@ -146,7 +164,7 @@ I also adjusted the visual notation: masks, distances and LoS/NLoS branches now 
 
 The dataset and split section is clearer now. It separates the HDF5 fields, the transmitter position, the 1.5 m receiver height and the rule that building pixels are not receivers.
 
-I also moved the metric discussion out of Methodology. Here I only keep the receiver mask and the split; the exact RMSE formula is now defined in Results.
+I also moved the metric discussion out of the support map definitions. The dataset section now introduces the valid receiver ranges, while the exact RMSE and MapCorr rules are defined later in the Methodology chapter under Evaluation Metrics.
 
 ## Page 37
 
@@ -178,7 +196,7 @@ In the NLoS branch, I removed the "stage" language and turned it into calculatio
 
 I also reduced redundancy: geometry and masks are no longer redefined here, and the text points back to the shared support maps. I changed local densities to \(\delta_{15}\) and \(\delta_{41}\), so they cannot be confused with the LoS reflection \(\rho\).
 
-I also fixed the hierarchy around the raw NLoS propagation prior. Raw NLoS propagation prior is now visibly the parent idea; COST231 and the A2G envelope are the two coarse branches used to form it. This answers the comment that the previous formatting made COST231 look like it was at the same level as the whole raw prior.
+I also fixed the hierarchy around the raw NLoS propagation prior. The NLoS section now starts with the full 15 term calibration vector, because that vector includes the raw formula map \(\mathrm{PL}^{(0)}\). Then Raw NLoS propagation prior is introduced as the parent idea that defines \(\mathrm{PL}^{(0)}\); COST231 and the A2G envelope are its two coarse branches. This answers both comments: the vector appears before its raw PL input is unpacked, and COST231 is no longer visually at the same level as the whole NLoS branch.
 
 ## Pages 60 to 64
 
@@ -196,12 +214,18 @@ In the HARP-Net CKM Neural Residual Model section, I made the network descriptio
 
 I also clarified an important code detail: `path_loss_nlos_prior` does not mean the map is zeroed outside NLoS. It is the calibrated NLoS branch, and the final selection is done by the explicit LoS/NLoS masks.
 
-## Page 73
+## Evaluation Metrics
 
-I moved the global RMSE formula to Results. It fits better here because this is where all numerical tables are interpreted.
+I moved the global RMSE formula into a dedicated Evaluation Metrics section at the end of Methodology. It fits there because it depends on the same valid receiver mask defined earlier in the chapter.
 
-Chapter 4 now defines that RMSE is pixel weighted over valid receivers, and the same rule is used for priors and the final model in PL, DS and AS.
+That section now defines pixel weighted RMSE, MAE and MapCorr. MapCorr is described as the valid pixel Pearson correlation after each map is normalized by its own mean and standard deviation. In plain language: RMSE says whether the absolute value is right, and MapCorr says whether the high and low regions are in the right places.
+
+## Chapter 4 Results
+
+I reorganized the Results chapter so the prior section and final model section follow the same rhythm. Section 4.1 now has prior audit protocol, channel attenuation prior result, angular spread prior result, delay spread prior result and diagnostic breakdowns. Section 4.2 then mirrors that with final model protocol, channel attenuation result, angular spread result, delay spread result and validation to test check.
+
+I also added the MapCorr table for the final model. The model improves MapCorr from 0.947710 to 0.962556 for channel attenuation, from 0.306040 to 0.415482 for delay spread, and from 0.377700 to 0.592630 for angular spread.
 
 ## Closing
 
-In summary, I addressed the comments in four main ways: I reduced redundancy, moved the metric definition to the results chapter, corrected the section structure, and revised the notation so it is consistent with the code and the actual priors. The compiled version is updated and has no broken references.
+In summary, I addressed the comments in four main ways: I reduced redundancy, moved the metric definition into a clear Evaluation Metrics section, corrected the section structure, and revised the notation so it is consistent with the code and the actual priors. The compiled version is updated and has no broken references.

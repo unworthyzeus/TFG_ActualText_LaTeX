@@ -35,7 +35,7 @@ Bias toward represented city morphologies and risk of overclaiming simulated res
 \end{tabularx}
 \end{table}
 
-\section{Environmental impact}
+\subsection{Environmental impact}
 
 The main environmental cost during development was computation. The final
 \textsc{HARP-Net CKM} line used a four GPU RTX~2080~Ti node for approximately
@@ -107,19 +107,19 @@ but the conclusion is robust in direction: the environmental case depends on
 amortizing the research footprint through many reused predictions, not on
 claiming that model training itself is free.
 
-\section{Economic and social impact}
+\subsection{Economic impact}
+
+\subsubsection{Economic cell: Development of BT}
 
 Economically, this work is not yet a product ready to take to market. Its value
 is as a technical prototype showing that, under the fixed \SI{7.125}{GHz} CKM
-contract used here, dense ray traced targets can be approximated much faster
-than rerunning the simulator for every candidate deployment once the target city
-representation and calibration protocol are fixed. The main development cost was human time:
+contract used here, dense ray traced targets can be approximated by a reusable
+surrogate once the target city representation and calibration protocol are fixed.
+The main development cost was human time:
 literature review, dataset handling, training/debugging, analysis, supervision
 and writing. The compute cost is small compared with this time cost in an
 academic project, but it is still relevant because the full exploration
-required many GPU hours. In a planning workflow, a mature version of this
-surrogate could reduce repeated simulation runs and enable faster scenario
-studies over elevated transmitter heights or city layouts.
+required many GPU hours.
 
 Table~\ref{tab:sustainability_budget} gives an indicative professional cost
 view of the BT development. It is not a billed project budget, but it answers
@@ -160,6 +160,8 @@ Storage and code hosting & N/A & free & 0\,EUR & GitHub and local storage \\
 \end{tabularx}
 \end{table}
 
+\subsubsection{Economic cell: Project execution}
+
 The most realistic economic path is a planning tool rather than a standalone
 consumer product. A mature version could be licensed as software for network
 planning teams, integrated into a digital twin workflow, or offered as a
@@ -187,6 +189,8 @@ The main viability risks are that operators may need other frequencies, antenna
 patterns, map formats or field validated accuracy levels, which would increase
 calibration cost. Other projects could still benefit from the reusable priors,
 mask generation code, evaluation scripts and documented city holdout protocol.
+
+\subsection{Social impact}
 
 Socially, faster CKM prediction can support temporary coverage planning for
 public events, rural extensions, emergency response or infrastructure
@@ -238,7 +242,7 @@ future deployment should report uncertainty or at least split diagnostics by
 morphology and height, instead of using the global average as the only quality
 indicator.
 
-\section{Ethical implications and SDGs}
+\section{Ethical implications}
 
 The exact need addressed is faster dense CKM generation for UAV and elevated base
 station planning under the thesis dataset contract. This need was defined by the
@@ -279,6 +283,8 @@ responsible use of resources, and respect for the people who may be affected by
 technical decisions. A future operational version should include human review
 before coverage maps affect public service, emergency response or critical
 infrastructure decisions.
+
+\section{Relationship with the Sustainable Development Goals}
 
 The project aligns most directly with SDG~9, because it develops a faster tool
 for wireless infrastructure planning; SDG~11, because it can support resilient

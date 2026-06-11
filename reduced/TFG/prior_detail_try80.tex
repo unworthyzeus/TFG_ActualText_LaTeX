@@ -28,12 +28,15 @@ branch is used.
 
 The three mask channels are passed as binary maps. The topology channel is
 masked to ground pixels and divided by \(90\,\mathrm{m}\); the three
-path loss prior channels are divided by \(180\,\mathrm{dB}\); and the
+path loss prior channels are divided by \(185\,\mathrm{dB}\); and the
 delay and angular spread priors are passed as
-\(\log(1+\mathrm{prior})/\log(1+400)\) and
+\(\log(1+\mathrm{prior})/\log(1+910)\) and
 \(\log(1+\mathrm{prior})/\log(1+90)\), respectively. These scaling constants
 only affect the neural network input representation; the residual targets and
-reported metrics remain in the native units.
+reported metrics remain in the native units. The path loss scale now matches
+the physical output guard used by the priors and final assembly,
+\([20,185]\) dB, so that the stored
+\SI{184}{dB} valid receiver labels are not clipped.
 
 The scalar UAV height is not appended as a constant image channel. It is
 encoded with a sinusoidal embedding and injected into the network through FiLM

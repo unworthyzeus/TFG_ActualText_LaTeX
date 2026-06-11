@@ -613,9 +613,9 @@ channels = np.stack([
     los,
     nlos,
     ground_f,
-    path_prior / 180.0,
-    path_prior_los / 180.0,
-    path_prior_nlos / 180.0,
+    path_prior / 185.0,
+    path_prior_los / 185.0,
+    path_prior_nlos / 185.0,
     np.log1p(np.clip(delay_prior, 0.0, None)) / LOG1P_DELAY_NORM,
     np.log1p(np.clip(angular_prior, 0.0, None)) / LOG1P_ANGULAR_NORM,
 ], axis=0)
