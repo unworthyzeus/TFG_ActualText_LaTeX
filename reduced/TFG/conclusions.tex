@@ -39,14 +39,14 @@ like the ray traced target, especially for the two spread maps.
 \textbf{RQ1. Can a single deep learning surrogate predict per pixel channel
 attenuation, delay spread and angular spread on \(513\times513\) channel
 knowledge maps under strict city holdout evaluation?} Yes, within the fixed CKM
-contract used in this thesis. The final model predicts all three targets
+setting used in this thesis. The final model predicts all three targets
 jointly on unseen cities and clears the original target thresholds. The result
 is tied to one carrier frequency, one centred UAV, valid ground receivers only,
 and city level train, validation and test separation.
 
 \textbf{RQ2. Which part should be left to calibrated priors and which part
 should be learned by the neural network?} The predictable part should be left to
-the priors: two ray LoS path loss, height binned LoS calibration, morphology
+the priors: two-ray LoS path loss, height binned LoS calibration, morphology
 aware NLoS correction and log domain spread calibration. These priors are
 useful on their own and provide the model with a stable physical baseline. The
 neural network is most useful as a residual corrector, improving local
@@ -55,7 +55,7 @@ the calibrated priors cannot fully represent.
 
 \textbf{RQ3. How does continuous UAV height affect the prediction and can the
 same architecture cover the full height range without per height retraining?}
-Height changes the visibility, two ray interference and spread regimes of the
+Height changes the visibility, two-ray interference and spread regimes of the
 same city footprint, so it must be represented explicitly. In the final model,
 height enters through the calibrated priors and through sinusoidal FiLM
 conditioning in the neural residual model. Low altitude maps are harder because
@@ -71,7 +71,7 @@ predictor that jointly estimates channel attenuation, delay spread and angular
 spread for unseen city layouts.
 
 The second contribution is the calibrated prior family. The path loss prior
-combines radial structure, coherent two ray LoS behaviour, height dependent
+combines radial structure, coherent two-ray LoS behaviour, height dependent
 calibration and NLoS morphology features. The spread priors use log domain
 ridge calibration with topology, visibility and height regimes. Most of these
 components are deliberately simple after the support maps have been computed:
@@ -97,17 +97,17 @@ NLoS attenuation modes or suppressing spread tails. The final design keeps the
 distribution first insight by predicting residuals around calibrated anchors
 and by checking both numeric error and spatial structure.
 
-The fourth contribution is the evaluation contract. City holdout splitting,
+The fourth contribution is the evaluation protocol. City holdout splitting,
 valid ground receiver masking, LoS/NLoS reporting, topology checks, height
 stratification, RMSE, MAE and MapCorr are all needed to make the final claim
-meaningful. Without that contract, a lower error could come from solving an
+meaningful. Without those rules, a lower error could come from solving an
 easier problem rather than from better CKM prediction.
 
 \subsection{Scope and limitations}
 \label{sec:limitations}
 
 The result is strongest as a reproducible surrogate for the CKM simulation
-contract used here. It is not a universal replacement for ray tracing across
+setting used here. It is not a universal replacement for ray tracing across
 all frequencies, antenna patterns, bandwidths or cities. The dataset is
 ray traced rather than measured in the field, so the results measure agreement
 with a simulator, not direct over the air performance. Broader deployment would
@@ -158,7 +158,7 @@ looked attractive but did not generalize, and checking the same claim through
 metrics, figures, code and text until it became defensible.
 
 I also leave the project with more respect for the quiet work behind a clean
-technical result: defining the evaluation contract, protecting the city split,
+technical result: defining the evaluation protocol, protecting the city split,
 checking edge cases, writing the explanation again when it was not clear
 enough, and making sure that a good number means what it appears to mean. That
 kind of care is less visible than a new model name, but it is what makes the
@@ -171,7 +171,7 @@ question and reuse the result.
 
 \paragraph{Short and medium term.}
 The next step is to strengthen the residual model without changing the
-evaluation contract. Useful additions include transmitter oriented mixup,
+evaluation protocol. Useful additions include transmitter oriented mixup,
 explicit corridor losses, ablations of each residual head and losses that
 optimize spatial structure as well as RMSE. This is especially relevant for
 delay spread and angular spread, where MapCorr improves much more clearly than

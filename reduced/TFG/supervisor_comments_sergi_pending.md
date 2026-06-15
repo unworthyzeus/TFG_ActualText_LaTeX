@@ -107,10 +107,10 @@ and how.
   - Current local status: pending unless already removed during later edits.
   - What to do: use two or three significant figures in prose, or scientific notation only where it improves readability. Keep full precision only in reproducibility tables if needed.
 
-- [ ] SG-013 - Make the two ray explanation self contained
+- [ ] SG-013 - Make the two-ray explanation self contained
   - Old PDF page: 22.
   - Refers to: define the direct and reflected fields, include height dependent expression or an illustrative diagram, and justify where the calibrated result comes from.
-  - Current local status: mostly addressed. The current version has a corrected diagram and a clearer two ray section. Still verify the paragraph does not claim the 1.75 dB result without pointing to Chapter 4 or the methodology prior evaluation.
+  - Current local status: mostly addressed. The current version has a corrected diagram and a clearer two-ray section. Still verify the paragraph does not claim the 1.75 dB result without pointing to Chapter 4 or the methodology prior evaluation.
   - What to do: ensure Chapter 2 explains the physics only, while Chapter 4 reports the numeric result.
 
 - [ ] SG-014 - Explain why training stabilization techniques are needed
@@ -187,7 +187,7 @@ and how.
 
 - Page 2: acronym definition and delay/angular spread wording. Covered by SG-009.
 - Pages 16 to 19: introduction onboarding, naming, city holdout, mask input, terminology, chapter outline, and chronology. Mostly fixed, but SG-004, SG-009, and SG-010 remain.
-- Pages 21 to 33: Chapter 2 structure, background versus state of the art, two ray explanation, spread formulas, limitations paragraphs, precision, training stabilization bridge, and misplaced quantitative comparison. Covered by SG-005, SG-012, SG-013, and SG-014.
+- Pages 21 to 33: Chapter 2 structure, background versus state of the art, two-ray explanation, spread formulas, limitations paragraphs, precision, training stabilization bridge, and misplaced quantitative comparison. Covered by SG-005, SG-012, SG-013, and SG-014.
 - Pages 34 to 38: Chapter 3 structure, dataset reminder, height distribution, methodology diagram, numbered equations, PMHHNet chronology, and legacy material. Covered by SG-002, SG-003, SG-011, and SG-015.
 - Page 59 and page 69: local wording strikeouts around path loss and explanatory overstatement. Covered by SG-010 and the local prose cleanup pass.
 - Page 86: results should focus on final results and comparison. Covered by SG-008.

@@ -511,7 +511,7 @@ Instead, keep the existing chapter but make the hierarchy easier to scan:
 
 `reduced/TFG/state_of_art.tex`
 
-### Two ray wording
+### Two-ray wording
 
 Current line 86:
 
@@ -529,7 +529,7 @@ prediction with a fitted calibration constant.
 
 ### Where the 1.75 dB comes from
 
-After the two ray paragraph, add:
+After the two-ray paragraph, add:
 
 ```latex
 The numerical gain of this prior is not reported here because this chapter is
@@ -838,7 +838,7 @@ Use "channel attenuation" for the final predicted dense dB CKM target.
 
 Keep "path loss" in these cases:
 
-1. Physical propagation formulas, for example FSPL, two ray, COST 231, 3GPP
+1. Physical propagation formulas, for example FSPL, two-ray, COST 231, 3GPP
    path loss.
 2. Names of cited papers, datasets, challenges or model fields.
 3. Code or dataset identifiers such as `path_loss` and PL.

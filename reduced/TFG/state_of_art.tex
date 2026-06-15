@@ -1,19 +1,19 @@
 \chapter[State of the Art]{State of the Art and Technical Background}
+\label{chap:soa}
 
-This chapter gives the background needed before the method is introduced. It
-has four roles. First, it defines the propagation and spread quantities used in
-the thesis. Second, it reviews dense radio map prediction methods and their
-limitations. Third, it introduces the training and distribution tools used
-later. Fourth, it explains why external results cannot be compared as a simple
-leaderboard. Final thesis results are reported only in
-Chapter~\ref{chap:results}.
-
-\noindent\textbf{Reader map.}
-Sections~\ref{sec:soa_ckm_context} to~\ref{sec:soa_classical} introduce CKMs,
-path loss models and A2G propagation. The angular and delay spread sections
-define the two non attenuation targets. Section~\ref{sec:soa_distribution}
-collects the training tools and fair comparison rules that are needed to read
-the methodology and results.
+This chapter separates the technical background from the related work needed to
+read the method. Section~\ref{sec:soa_ckm_context} defines the channel
+knowledge map (CKM) surrogate setting and the evaluation protocol.
+Section~\ref{sec:soa_classical} is technical background only: path loss,
+two-ray propagation, UAV air to ground conditioning, and the delay and angular
+spread definitions used later. Sections~\ref{sec:soa_pathloss_sota}
+to~\ref{sec:soa_distribution} are the state of the art review: dense path loss
+map prediction, spread prediction, distribution aware tools and fair comparison
+conditions. Final thesis results are not reported in this chapter.
+The boundary is practical: the background sections define the quantities,
+models and evaluation rules that a reader needs before Chapter~3, while the
+state of the art sections ask which parts of this task have already been solved
+and under what benchmark setup.
 
 % Section separator
 \section{General Framework: CKM Surrogates and Evaluation Contracts}
@@ -52,11 +52,11 @@ continuous UAV height conditioning, real city holdout split, and simultaneous
 channel attenuation, delay spread, and angular spread targets.
 
 % Section separator
-\section{Channel Attenuation Prediction}
+\section{Propagation and Channel Statistics Background}
 \label{sec:soa_classical}
 % Section separator
 
-\subsection{Free space and two ray propagation}
+\subsection{Free space and two-ray propagation}
 
 The most fundamental path loss term is the \emph{free space path loss} (FSPL),
 which depends only on carrier frequency~$f$ and Tx/Rx distance~$d$:
@@ -78,7 +78,7 @@ are
   d_{\mathrm{ref}} =
   \sqrt{d_{2D}^{2} + (h_{\mathrm{tx}}+h_{\mathrm{rx}})^{2}} .
 \end{equation}
-With wavelength \(\lambda\), the coherent two ray model adds the direct and
+With wavelength \(\lambda\), the coherent two-ray model adds the direct and
 ground reflected fields before converting to dB \cite{rappaport,wocc2021}:
 \begin{equation}
   E_{\mathrm{total}}
@@ -91,9 +91,7 @@ ground reflected fields before converting to dB \cite{rappaport,wocc2021}:
 where \(\Gamma\) is the effective ground reflection coefficient. The received
 field magnitude \(|E_{\mathrm{total}}|\) is then converted to a dB attenuation
 prediction with a fitted calibration constant. This is the physical origin of
-the radial rings later exploited by the path loss prior. The numerical gain of
-this prior is not reported here because this chapter is background. The fitted
-CKM result is evaluated later in Chapter~\ref{chap:results}.
+the radial rings later exploited by the path loss prior.
 
 \begin{figure}[ht]
   \centering
@@ -127,7 +125,7 @@ CKM result is evaluated later in Chapter~\ref{chap:results}.
     \node[fill=white,inner sep=1pt] at (3.1,1.25) {ground reflected path};
     \node[below,fill=white,inner sep=1pt] at (R) {\scriptsize reflection point};
   \end{tikzpicture}
-  \caption{Direct and specular ground reflected paths in the two ray model.}
+  \caption{Direct and specular ground reflected paths in the two-ray model.}
   \label{fig:two_ray_schematic}
 \end{figure}
 
@@ -162,6 +160,7 @@ respectively and $d_{2D}$ is the horizontal distance. 3GPP~TR~38.901
 \cite{tr38901} is used here as standardized LoS/NLoS large scale channel model
 context, not as the direct source of that elevation-logistic A2G formula.
 
+\paragraph{Related UAV evidence.}
 Recent work by Saboor and Vinogradov \cite{saboor2025height} makes this
 height dependence especially relevant for the present thesis: in simulated
 26~GHz urban A2G links, LoS path loss remains close to a free space exponent,
@@ -226,7 +225,15 @@ representing the dominant LoS path. A Gaussian model cannot represent this
 shape faithfully. This is why the methodology later checks the empirical target
 histograms before choosing distribution aware heads.
 
+This closes the technical background block. The remaining sections review the
+state of the art and therefore discuss published methods, benchmarks and gaps
+rather than defining the quantities themselves.
+
 % Section separator
+\section{State of the Art for Dense Path Loss Maps}
+\label{sec:soa_pathloss_sota}
+% Section separator
+
 \subsection{Deep learning for path loss maps}
 \label{sec:soa_dl}
 % Section separator
@@ -255,7 +262,7 @@ Chapter~\ref{chap:results} as scale references for the final channel attenuation
 
 \textbf{Limitations:} These papers are useful path loss scale references, but
 they do not report dense delay spread or angular spread maps and do not use the
-CKM city holdout, continuous UAV height contract.
+CKM city holdout, continuous UAV height protocol.
 
 \subsubsection{PMNet and the ICASSP outdoor challenge family}
 
@@ -322,13 +329,13 @@ the reported channel prediction error of \(8.10\times10^{-3}\) corresponds to
 roughly \SI{2.06}{dB}.
 This supports the use of attention for long range urban context, but it is not
 inserted in Table~\ref{tab:icassp2023corrected} because it is not measured on
-RadioMap3DSeer or under the ICASSP challenge contract.
+RadioMap3DSeer or under the ICASSP challenge setup.
 
 Recent attention and foundation model variants extend the effective receptive
 field of radio map predictors \cite{wicopg2025,fmrme2026}. This is useful when
 large scale urban context affects the prediction, but these methods normally
 need more data and compute than convolutional models and their reported
-benchmarks do not match the CKM UAV height contract.
+benchmarks do not match the CKM UAV height setting.
 
 \subsubsection{Foundation models for radio maps}
 
@@ -399,15 +406,15 @@ reduces the effective learning problem from the full path loss range to a
 narrower residual distribution, improving data efficiency and interpretability.
 
 Chapter~3 applies this philosophy to the three thesis targets. For the channel
-attenuation target, an enhanced two ray path loss model fitted per height bin provides a prior map
+attenuation target, an enhanced two-ray path loss model fitted per height bin provides a prior map
 $\hat{y}_{\mathrm{PL}}(\textbf{x}) = \mathrm{TwoRay}(d, h_{\mathrm{tx}})$,
 and the neural component predicts the residual
 $\epsilon = y - \hat{y}_{\mathrm{PL}}$. For delay spread and angular spread,
 the same prior residual idea can be implemented with a ridge regression model
 in log space using TX centred geometric features and local morphology
 statistics. The important background point is the decomposition itself: a
-frozen train calibrated prior defines what the neural model should not have to
-rediscover.
+frozen prior calibrated only on training cities defines what the neural model
+should not have to rediscover.
 
 % Section separator
 \section{Angular Spread Prediction}
@@ -638,7 +645,7 @@ valid comparison:
 This thesis uses a strict city holdout split, continuous UAV height, valid
 ground receiver metrics (building pixels excluded from loss and metrics), native
 $513 \times 513$ pixel maps, and no test data or field calibration after the
-train calibrated priors and the model under evaluation are frozen. Calibration is
+training city calibrated priors and the model under evaluation are frozen. Calibration is
 therefore not shown as a binary column in Table~\ref{tab:fairness}: the relevant
 question is not whether a method has fitted parameters, but whether it adapts
 to the evaluation scene using validation, test, or field measurements.
@@ -662,7 +669,7 @@ AIRMap \cite{airmap2025} & Partial & No & No & Partial \\
 Gao et al.\ \cite{gao2026} & No & No & Partial & Partial \\
 Tarhouni et al.\ \cite{tarhouni2025} & No & No & No & Physical ref. \\
 PathFinder \cite{pathfinder2025} & Partial & No & No & Partial \\
-This thesis task contract & Yes & Yes & Yes & Reference contract \\
+This thesis task setting & Yes & Yes & Yes & Reference protocol \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -779,11 +786,62 @@ diffraction priors \cite{geomDL2024}, PDE style physics losses such as ReVeal
 \cite{radiopit2025}, diffusion refinement \cite{radiodiff2025}, and larger
 radio map foundation models \cite{fmrme2026}.
 
-For the present thesis, the literature points to four practical design
-requirements. First, the comparison contract must be explicit because datasets,
-splits, height protocols, and target units differ widely. Second, A2G prediction
-requires continuous UAV height conditioning rather than a fixed transmitter
-height. Third, LoS/NLoS and environment type effects should be reported
-separately because one global RMSE hides the hardest regimes. Fourth,
-distribution aware outputs are useful when targets contain multiple modes or
-long tails. These observations motivate the methodology in Chapter~3.
+The spread targets add a second lesson. For delay spread and angular spread,
+the reviewed literature is stronger in modelling technique than in directly
+comparable dense-map results. 3GPP and WINNER style models treat spreads as
+log-domain large scale parameters conditioned on scenario, distance and
+LoS/NLoS state \cite{tr38901,winner2}. Recent learning based A2G work can
+predict scalar channel characteristics from link features
+\cite{yang2019a2gml,huang2025a2gtransformer}, and probabilistic wireless
+models support heteroscedastic or mixture outputs when the channel statistics
+are multi-modal \cite{kendall2017uncertainties,saleh2021probabilistic,garciamarti2020mixture}.
+However, these references do not provide the same evaluation setup as this thesis:
+per pixel DS and AS maps at \(513\times513\) resolution, continuous UAV height,
+strict unseen-city evaluation and ground receiver masking. Therefore the useful
+state of the art transfer is not a headline DS/AS RMSE number, but the
+combination of log-domain spread modelling, regime conditioning,
+geometry/morphology features, multitask sharing and distribution aware residual
+heads.
+
+For the present thesis, the literature points to five practical design
+requirements. First, the comparison protocol must be explicit because datasets,
+splits, height protocols, masks and target units differ widely. Second, A2G
+prediction requires continuous UAV height conditioning rather than a fixed
+transmitter height. Third, LoS/NLoS and environment type effects should be
+reported separately because one global RMSE hides the hardest regimes. Fourth,
+DS and AS should be treated as first class CKM targets with their own log-space
+priors and residual heads, not as loosely interpreted side outputs of a path
+loss network. Fifth, distribution aware outputs are useful when targets contain
+multiple modes, near-zero masses or long tails. These observations motivate the
+methodology in Chapter~3.
+
+\section{Synthesis: Gap Addressed by This Thesis}
+\label{sec:soa_gap_synthesis}
+
+The reviewed work leaves a specific combination only partially covered.
+Classical models such as FSPL, two-ray propagation, A2G LoS probability and
+3GPP large scale parameters explain important mechanisms, but they do not
+produce three dense CKM maps from a city height image. RadioUNet, PMNet,
+RadioGUNet and recent transformer variants provide strong path loss map
+references, but their reported setups usually differ in split, transmitter
+height, map size, masking rule or target scaling. Delay spread and angular
+spread papers are even farther from the present task because they mostly
+predict scalar link quantities or channel statistics rather than per pixel
+\(513\times513\) maps for unseen cities.
+
+This thesis therefore occupies the following gap. It studies channel
+attenuation, delay spread and angular spread together under one strict CKM
+evaluation setting: real city holdout, continuous UAV height, ground receiver pixels only,
+native map resolution and calibration only on training cities. The method
+follows the most useful lesson from the literature, namely that physics and geometry should
+not be relearned from scratch when they can be frozen as auditable priors. The
+neural model is then evaluated as a residual correction over those priors.
+
+The reporting protocol in Chapter~4 follows from this gap. It first shows a
+qualitative panel so the reader can see the target, prior, residual and final
+prediction side by side. It then reports validation and test cities, topology
+and height profiles, LoS/NLoS rows and only then the final aggregate averages.
+That order is important because the main scientific claim is not a single
+leaderboard number. The claim is that a prior based, height conditioned joint
+model improves all three CKM targets on unseen cities while making the
+evaluation rules visible enough to compare fairly with the literature.

@@ -6,53 +6,52 @@
 \begin{center}
   \huge\bfseries\raggedright Resum~\hrulefill
 \end{center}
-Aquest TFG estudia la predicció de mapes de coneixement de canal per a xarxes
-6G amb UAVs. A partir del conjunt CKM de ciutats reals, amb mapes urbans,
-màscares LoS/NLoS i altura d'antena contínua, es prediuen atenuació de canal,
-delay spread i angular spread sota validació estricta per ciutats completes. El
-sistema final, \textsc{HARP-Net CKM}, combina priors interpretables amb un
-corrector neural residual. Aquests priors són sobretot regressions multilineals
-calibrades sobre geometria, morfologia urbana, visibilitat i altura d'antena,
-amb un component físic per a l'atenuació LoS. El model neuronal no substitueix
-aquesta base: l'aprofita i aprèn el residual local condicionat pels mapes
-prior, la geometria i les màscares. Els resultats mostren una millora
-consistent sobre els priors congelats en ciutats no vistes. La contribució
-principal és una estratègia híbrida, divideix i venceràs, més que una nova llei
-universal de propagació, i manté la interpretabilitat del sistema final.
+Aquest TFG estudia la predicció de mapes de coneixement de canal (CKM) per a
+xarxes 6G amb vehicles aeris no tripulats. L'objectiu és generar mapes densos
+d'atenuació del canal, dispersió de retard i dispersió angular a partir de
+mapes d'edificis, visibilitat i altura d'antena contínua, mantenint ciutats
+completes fora de l'entrenament. La proposta, \textsc{HARP-Net CKM}, Height
+Aware Residual Prior Network for CKM prediction, combina priors físics calibrats
+amb una xarxa residual. Els priors recullen distància, geometria, morfologia
+urbana, visibilitat i altura; la xarxa aprèn correccions locals que aquests
+models simples no expliquen. La metodologia defineix píxels receptors,
+separació per ciutat i avaluació per visibilitat, topologia i altura. La
+contribució és una estratègia híbrida, reproduïble i interpretable per
+accelerar la generació de CKM densos, sense proposar una llei universal de
+propagació.
 
 %%% RESUMEN EN CASTELLANO
 \begin{center}
   \huge\bfseries\raggedleft\vspace*{.5\baselineskip} \hrulefill ~Resumen
 \end{center}
-Este TFG estudia la predicción de mapas de conocimiento de canal para redes 6G
-con UAVs. A partir del conjunto CKM de ciudades reales, con mapas urbanos,
-máscaras LoS/NLoS y altura de antena continua, se predicen atenuación de canal,
-delay spread y angular spread bajo una validación estricta por ciudades
-completas. El sistema final, \textsc{HARP-Net CKM}, combina priors
-interpretables con un corrector neural residual. Esos priors son sobre todo
-regresiones multilineales calibradas sobre geometría, morfología urbana,
-visibilidad y altura de antena, con un componente físico para la atenuación LoS.
-La red neuronal no sustituye esa base: la usa y aprende el residual local
-condicionado por los mapas prior, la geometría y las máscaras. Los resultados
-muestran una mejora consistente sobre los priors congelados en ciudades no
-vistas. La contribución principal es una estrategia híbrida, divide y vencerás,
-más que una nueva ley universal de propagación, sin perder interpretabilidad.
+Este TFG estudia la predicción de mapas de conocimiento de canal (CKM) para
+redes 6G con vehículos aéreos no tripulados. Busca generar mapas densos de
+atenuación de canal, dispersión de retardo y dispersión angular desde edificios,
+visibilidad y altura continua, con ciudades completas fuera del entrenamiento.
+La propuesta,
+\textsc{HARP-Net CKM}, Height Aware Residual Prior Network for CKM prediction,
+combina priors físicos calibrados con una red residual. Los priors recogen
+distancia, geometría, morfología urbana, visibilidad y altura; la red aprende
+correcciones locales que esos modelos simples no explican. La metodología
+define píxeles receptores, separación por ciudad y evaluación por visibilidad,
+topología y altura. La contribución es una estrategia híbrida,
+reproducible e interpretable para acelerar la generación de CKM densos, sin
+proponer una ley universal de propagación.
 
 %%% ENGLISH SUMMARY
 \begin{center}
   \huge\bfseries\raggedright\vspace*{.5\baselineskip} Summary~\hrulefill
 \end{center}
-This thesis studies channel knowledge map prediction for 6G UAV enabled
-networks. Using the CKM dataset of real cities, with urban maps, LoS/NLoS masks,
-and continuous UAV antenna height, the project predicts channel attenuation,
-delay spread, and angular spread under a strict city holdout protocol. The final
-system, \textsc{HARP-Net CKM}, combines interpretable priors with a neural
-residual corrector. Those priors are mostly calibrated multilinear regressions
-over geometry, urban morphology, visibility, and antenna height, with a physical
-component for LoS attenuation. The neural model does not replace this base: it
-uses it and learns the local residual conditioned on prior maps, geometry, and
-masks. The results show a consistent improvement over frozen priors on unseen
-cities, without claiming a universal propagation law. The main contribution is a
-hybrid divide and conquer strategy for making dense UAV channel prediction
-accurate and practical while preserving the final system's overall
-interpretability.
+This thesis studies channel knowledge map (CKM) prediction for 6G networks with
+unmanned aerial vehicles. The goal is to generate dense maps of channel
+attenuation, delay spread and angular spread from building maps, visibility
+information and continuous antenna height, while keeping complete cities
+outside training. The proposed system, \textsc{HARP-Net CKM}, short for Height
+Aware Residual Prior Network for CKM prediction, combines calibrated physical
+priors with a residual neural network. The priors summarize distance, geometry,
+urban morphology, visibility and height; the network learns the local
+corrections that these simple models cannot explain. The methodology also
+defines valid receiver pixels, city holdout splitting and reporting by
+visibility state, topology and antenna height. The main contribution is a
+reproducible and interpretable hybrid strategy for faster dense CKM generation,
+without proposing a universal propagation law.

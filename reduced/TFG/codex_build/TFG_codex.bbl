@@ -19,40 +19,6 @@
 
 \refsection{0}
   \datalist[entry]{none/global//global/global/global}
-    \entry{threegpp22125}{report}{}{}
-      \name{author}{1}{}{%
-        {{hash=49952770ed51bcb32792566644a0032e}{%
-           family={{3GPP}},
-           familyi={3\bibinitperiod}}}%
-      }
-      \list{institution}{1}{%
-        {3rd Generation Partnership Project}%
-      }
-      \strng{namehash}{49952770ed51bcb32792566644a0032e}
-      \strng{fullhash}{49952770ed51bcb32792566644a0032e}
-      \strng{fullhashraw}{49952770ed51bcb32792566644a0032e}
-      \strng{bibnamehash}{49952770ed51bcb32792566644a0032e}
-      \strng{authorbibnamehash}{49952770ed51bcb32792566644a0032e}
-      \strng{authornamehash}{49952770ed51bcb32792566644a0032e}
-      \strng{authorfullhash}{49952770ed51bcb32792566644a0032e}
-      \strng{authorfullhashraw}{49952770ed51bcb32792566644a0032e}
-      \field{extraname}{1}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{note}{Specification details page, accessed 21 May 2026}
-      \field{number}{TS 22.125}
-      \field{title}{Uncrewed Aerial System ({UAS}) Support in {3GPP}; Stage 1}
-      \field{type}{techreport}
-      \field{year}{2026}
-      \verb{urlraw}
-      \verb https://portal.3gpp.org/desktopmodules/Specifications/SpecificationDetails.aspx?specificationId=3545
-      \endverb
-      \verb{url}
-      \verb https://portal.3gpp.org/desktopmodules/Specifications/SpecificationDetails.aspx?specificationId=3545
-      \endverb
-    \endentry
     \entry{zengx2021ckm}{article}{}{}
       \name{author}{2}{}{%
         {{hash=eeb1ba32a79977b191ab560499454e9e}{%
@@ -74,8 +40,8 @@
       \strng{authornamehash}{347d16dd10b4415c95f49bf4f24dad5c}
       \strng{authorfullhash}{347d16dd10b4415c95f49bf4f24dad5c}
       \strng{authorfullhashraw}{347d16dd10b4415c95f49bf4f24dad5c}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Wireless Communications}
@@ -150,8 +116,8 @@
       \strng{authornamehash}{e8497c7ccf4ffb8f2ff49fc06a863005}
       \strng{authorfullhash}{b155b9c95600a1db22a2cf38f6fe7ea8}
       \strng{authorfullhashraw}{b155b9c95600a1db22a2cf38f6fe7ea8}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Communications Surveys \& Tutorials}
@@ -163,6 +129,40 @@
       \range{pages}{42}
       \verb{doi}
       \verb 10.1109/COMST.2024.3364508
+      \endverb
+    \endentry
+    \entry{threegpp22125}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=49952770ed51bcb32792566644a0032e}{%
+           family={{3GPP}},
+           familyi={3\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {3rd Generation Partnership Project}%
+      }
+      \strng{namehash}{49952770ed51bcb32792566644a0032e}
+      \strng{fullhash}{49952770ed51bcb32792566644a0032e}
+      \strng{fullhashraw}{49952770ed51bcb32792566644a0032e}
+      \strng{bibnamehash}{49952770ed51bcb32792566644a0032e}
+      \strng{authorbibnamehash}{49952770ed51bcb32792566644a0032e}
+      \strng{authornamehash}{49952770ed51bcb32792566644a0032e}
+      \strng{authorfullhash}{49952770ed51bcb32792566644a0032e}
+      \strng{authorfullhashraw}{49952770ed51bcb32792566644a0032e}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Specification details page, accessed 21 May 2026}
+      \field{number}{TS 22.125}
+      \field{title}{Uncrewed Aerial System ({UAS}) Support in {3GPP}; Stage 1}
+      \field{type}{techreport}
+      \field{year}{2026}
+      \verb{urlraw}
+      \verb https://portal.3gpp.org/desktopmodules/Specifications/SpecificationDetails.aspx?specificationId=3545
+      \endverb
+      \verb{url}
+      \verb https://portal.3gpp.org/desktopmodules/Specifications/SpecificationDetails.aspx?specificationId=3545
       \endverb
     \endentry
     \entry{ckmdata2024}{article}{}{}
@@ -2253,6 +2253,69 @@
       \verb https://doi.org/10.23919/APCC64555.2025.11279807
       \endverb
     \endentry
+    \entry{yang2019a2gml}{article}{}{}
+      \name{author}{6}{}{%
+        {{hash=386e832aaf225af29c1dac127dbcd692}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Guanshu},
+           giveni={G\bibinitperiod}}}%
+        {{hash=28f91f3a4b62ce57b7a533e742e8aae1}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Yan},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=118259515832e4cbd40eb2def7240341}{%
+           family={He},
+           familyi={H\bibinitperiod},
+           given={Zunwen},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=234c6cb9ecc353be3fa996bf877e38f7}{%
+           family={Wen},
+           familyi={W\bibinitperiod},
+           given={Jinxiao},
+           giveni={J\bibinitperiod}}}%
+        {{hash=0d63bec2be0b2e510b7416a55c917074}{%
+           family={Ji},
+           familyi={J\bibinitperiod},
+           given={Zijie},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=0e1dff109644a2423d611a0bfe123178}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Yue},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \strng{namehash}{2e2051e00443bad756afe17f32395478}
+      \strng{fullhash}{5a58ff2bd9f0e4bd6fe590847a440c16}
+      \strng{fullhashraw}{5a58ff2bd9f0e4bd6fe590847a440c16}
+      \strng{bibnamehash}{2e2051e00443bad756afe17f32395478}
+      \strng{authorbibnamehash}{2e2051e00443bad756afe17f32395478}
+      \strng{authornamehash}{2e2051e00443bad756afe17f32395478}
+      \strng{authorfullhash}{5a58ff2bd9f0e4bd6fe590847a440c16}
+      \strng{authorfullhashraw}{5a58ff2bd9f0e4bd6fe590847a440c16}
+      \field{extraname}{3}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IET Microwaves, Antennas \& Propagation}
+      \field{number}{8}
+      \field{title}{Machine-Learning-Based Prediction Methods for Path Loss and Delay Spread in Air-to-Ground Millimetre-Wave Channels}
+      \field{volume}{13}
+      \field{year}{2019}
+      \field{pages}{1113\bibrangedash 1121}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1049/iet-map.2018.6187
+      \endverb
+      \verb{urlraw}
+      \verb https://onlinelibrary.wiley.com/doi/10.1049/iet-map.2018.6187
+      \endverb
+      \verb{url}
+      \verb https://onlinelibrary.wiley.com/doi/10.1049/iet-map.2018.6187
+      \endverb
+    \endentry
     \entry{pmnet2023}{inproceedings}{}{}
       \name{author}{4}{}{%
         {{hash=393cdd40783f7202249fac294578a57a}{%
@@ -2300,69 +2363,6 @@
       \endverb
       \verb{url}
       \verb https://arxiv.org/abs/2211.10527
-      \endverb
-    \endentry
-    \entry{yang2019a2gml}{article}{}{}
-      \name{author}{6}{}{%
-        {{hash=386e832aaf225af29c1dac127dbcd692}{%
-           family={Yang},
-           familyi={Y\bibinitperiod},
-           given={Guanshu},
-           giveni={G\bibinitperiod}}}%
-        {{hash=28f91f3a4b62ce57b7a533e742e8aae1}{%
-           family={Zhang},
-           familyi={Z\bibinitperiod},
-           given={Yan},
-           giveni={Y\bibinitperiod}}}%
-        {{hash=118259515832e4cbd40eb2def7240341}{%
-           family={He},
-           familyi={H\bibinitperiod},
-           given={Zunwen},
-           giveni={Z\bibinitperiod}}}%
-        {{hash=234c6cb9ecc353be3fa996bf877e38f7}{%
-           family={Wen},
-           familyi={W\bibinitperiod},
-           given={Jinxiao},
-           giveni={J\bibinitperiod}}}%
-        {{hash=0d63bec2be0b2e510b7416a55c917074}{%
-           family={Ji},
-           familyi={J\bibinitperiod},
-           given={Zijie},
-           giveni={Z\bibinitperiod}}}%
-        {{hash=0e1dff109644a2423d611a0bfe123178}{%
-           family={Li},
-           familyi={L\bibinitperiod},
-           given={Yue},
-           giveni={Y\bibinitperiod}}}%
-      }
-      \strng{namehash}{2e2051e00443bad756afe17f32395478}
-      \strng{fullhash}{5a58ff2bd9f0e4bd6fe590847a440c16}
-      \strng{fullhashraw}{5a58ff2bd9f0e4bd6fe590847a440c16}
-      \strng{bibnamehash}{2e2051e00443bad756afe17f32395478}
-      \strng{authorbibnamehash}{2e2051e00443bad756afe17f32395478}
-      \strng{authornamehash}{2e2051e00443bad756afe17f32395478}
-      \strng{authorfullhash}{5a58ff2bd9f0e4bd6fe590847a440c16}
-      \strng{authorfullhashraw}{5a58ff2bd9f0e4bd6fe590847a440c16}
-      \field{extraname}{3}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{journaltitle}{IET Microwaves, Antennas \& Propagation}
-      \field{number}{8}
-      \field{title}{Machine-Learning-Based Prediction Methods for Path Loss and Delay Spread in Air-to-Ground Millimetre-Wave Channels}
-      \field{volume}{13}
-      \field{year}{2019}
-      \field{pages}{1113\bibrangedash 1121}
-      \range{pages}{9}
-      \verb{doi}
-      \verb 10.1049/iet-map.2018.6187
-      \endverb
-      \verb{urlraw}
-      \verb https://onlinelibrary.wiley.com/doi/10.1049/iet-map.2018.6187
-      \endverb
-      \verb{url}
-      \verb https://onlinelibrary.wiley.com/doi/10.1049/iet-map.2018.6187
       \endverb
     \endentry
     \entry{goldsmith}{book}{}{}
@@ -2415,8 +2415,8 @@
       \strng{authornamehash}{8176233a4a9eaf5091cd6adbe0ea11c2}
       \strng{authorfullhash}{8176233a4a9eaf5091cd6adbe0ea11c2}
       \strng{authorfullhashraw}{8176233a4a9eaf5091cd6adbe0ea11c2}
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Antennas and Propagation}
@@ -2461,8 +2461,8 @@
       \strng{authornamehash}{c2267c128b3d66b74a0246161cdbe96e}
       \strng{authorfullhash}{868681bb03f82309f935f1e9a17c4739}
       \strng{authorfullhashraw}{868681bb03f82309f935f1e9a17c4739}
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Antennas and Propagation}

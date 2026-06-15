@@ -1,6 +1,6 @@
 This section provides the entry point for the ML calibrated physical
 path loss and spread priors and the \textsc{HARP-Net CKM} residual architecture.
-The propagation ingredients follow classical FSPL, two ray,
+The propagation ingredients follow classical FSPL, two-ray,
 empirical NLoS and large scale parameter models
 \cite{rappaport,wocc2021,cost231,tr38901,winner2,khawaja_survey}, while the
 residual network inherits dense prediction, FiLM conditioning and
@@ -67,7 +67,7 @@ the neural residual correction. Three such estimators are used:
       above the local skyline, consistent with A2G elevation and scenario
       modelling practice \cite{cost231,tr38901,alhourani2014,khawaja_survey}.
       It is deliberately separate from the LoS branch
-      because blocked pixels do not follow the same two ray mechanism.
+      because blocked pixels do not follow the same two-ray mechanism.
 \item \textbf{Delay and angular spread priors.} These are fitted in
       \(\log(1+y)\) space. The raw estimate captures propagation state,
       distance, elevation, and local morphology; the final ridge calibration
@@ -107,7 +107,7 @@ Term & Prior block & Interpretation \\
 \(h_{\mathrm{rx}}=\SI{1.5}{m}\) receiver height. \\
 \(d_{\mathrm{ref}}\) & LoS path loss &
 Image source reflected distance. It is the length of the single
-ground reflected path used in the coherent two ray correction. \\
+ground reflected path used in the coherent two-ray correction. \\
 \(C_{\mathrm{2ray}}\) & LoS path loss &
 Direct plus reflected field correction in dB. Negative values mean constructive
 gain over FSPL; positive values mean destructive fading. \\
@@ -118,10 +118,10 @@ rather than assumed from one fixed ground material. \\
 Height interpolated effective reflection phase, in radians. It absorbs the
 phase offset of the simplified one reflection geometry. \\
 \(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) & LoS path loss &
-Height dependent dB bias remaining after the coherent two ray fit. \\
+Height dependent dB bias remaining after the coherent two-ray fit. \\
 \(r(d_{2D},h_{\mathrm{tx}})\) & LoS path loss &
 Smoothed radial residual table. It corrects distance dependent errors that
-remain after FSPL, two ray interference, and height bias. \\
+remain after FSPL, two-ray interference, and height bias. \\
 \(\mathrm{PL}^{(0)}\), \(\mathrm{PL}_{\mathrm{NLoS,raw}}\) & NLoS path loss &
 Raw hybrid formula map and its obstructed pixel branch before
 map morphology calibration. \\
@@ -229,7 +229,7 @@ attenuation prior, spread prior, and \textsc{HARP-Net CKM} residual model.
 Block & Literature basis & CKM adaptation & New role in this thesis \\
 \midrule
 LoS path loss prior &
-FSPL and coherent two ray propagation \cite{rappaport,wocc2021}. &
+FSPL and coherent two-ray propagation \cite{rappaport,wocc2021}. &
 Effective complex reflection, height bin interpolation, and radial residual
 fitting on CKM LoS pixels. &
 Reconstructs the radial interference pattern and supplies the frozen LoS

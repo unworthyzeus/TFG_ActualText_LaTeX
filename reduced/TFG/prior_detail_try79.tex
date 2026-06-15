@@ -105,6 +105,15 @@ implementation are the entries of \texttt{METRIC\_SPECS} and
 \texttt{TOPOLOGY\_PRIOR\_BIAS\_LOG}; Table~\ref{tab:spread_raw_constants}
 is the single inventory of those fixed constants. They are not the fitted ridge
 weights \(\textbf{w}_{m,r}\), which are stored separately in the calibration file.
+The two base anchors were rounded from the observed training pixel scale:
+small but nonzero LoS spreads and larger NLoS spreads. The topology offsets
+were chosen from the observed ordering of the six morphology classes, with
+dense and high rise maps starting higher. The six raw weights were then set as
+coarse relative sensitivities with the expected signs: range, low elevation,
+local density, local height, local NLoS support and their interaction should
+increase spread before calibration. Their purpose is only to provide a sensible
+starting surface; the calibrated ridge stage absorbs the dataset specific
+magnitude errors.
 
 \begin{table}[H]
 \centering
@@ -183,6 +192,8 @@ states the membership explicitly.
 
 \begin{table}[H]
 \centering
+\caption{Block membership of the 23 entries in the spread calibration vector.}
+\label{tab:spread_vector_blocks}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.05}
@@ -207,8 +218,6 @@ Regime offset. \\
 Joint geometry and morphology effects. \\
 \bottomrule
 \end{tabularx}
-\caption{Block membership of the 23 entries in the spread calibration vector.}
-\label{tab:spread_vector_blocks}
 \end{table}
 
 The direct entries are not redefined here: distances, angles, height bins and
@@ -230,6 +239,8 @@ two physical effects at once:
 
 \begin{table}[!htbp]
 \centering
+\caption{Interaction terms in the spread calibration vector.}
+\label{tab:spread_interaction_inventory}
 \scriptsize
 \setlength{\tabcolsep}{2.5pt}
 \renewcommand{\arraystretch}{0.88}
@@ -245,8 +256,6 @@ two physical effects at once:
 \(t_{41}n_{41}\) & Tall building NLoS interaction. & Activates where tall buildings and shielding coincide. \\
 \bottomrule
 \end{tabularx}
-\caption{Interaction terms in the spread calibration vector.}
-\label{tab:spread_interaction_inventory}
 \end{table}
 
 \begin{figure}[H]

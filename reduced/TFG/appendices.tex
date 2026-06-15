@@ -86,13 +86,13 @@ Try & Public definition \\
 29 & Radial path-loss objective variant, testing whether distance-structured supervision reduced physically implausible maps. \\
 30 & Spread-priority objective, deliberately weighting delay/angular spread behaviour more heavily than the path-loss baseline. \\
 31 & Prior-residual path-loss branch, early move from direct image regression toward learning corrections over a physical estimate. \\
-32 & Support-amplitude spread decomposition, last spread/prior exploratory run before the ground-mask contract changed. \\
+32 & Support-amplitude spread decomposition, last spread/prior exploratory run before the ground-mask rule changed. \\
 33 & Ground-only receiver mask becomes mandatory; building pixels are excluded from loss and metrics. \\
-34 & Restart under the corrected ground-mask evaluation contract, used to make post-mask scores comparable. \\
+34 & Restart under the corrected ground-mask evaluation rule, used to make post-mask scores comparable. \\
 35 & Spread-plus-building-mask run, applying the corrected receiver mask to spread-oriented learning. \\
 36 & Second spread-building-mask run, checking whether the masked spread branch was stable across reruns. \\
-37 & Building-mask path-loss rerun, returning the corrected receiver contract to path-loss prediction. \\
-38 & Hybrid two ray prior input run, injecting a physical propagation prior as an input channel rather than only a loss/metric. \\
+37 & Building-mask path-loss rerun, returning the corrected receiver rule to path-loss prediction. \\
+38 & Hybrid two-ray prior input run, injecting a physical propagation prior as an input channel rather than only a loss/metric. \\
 39 & Building-mask continuation before Try 40; small internal pivot for masked evaluation and spread/path-loss balance. \\
 40 & Spread-building-mask consolidation, final masked-evaluation run before explicit prior-residual learning. \\
 \bottomrule
@@ -177,7 +177,7 @@ Internal line & Public definition \\
 \midrule
 76 & Distribution first GMM path-loss architecture: sample level mixture estimation plus pixel assignment. \\
 77 & Distribution first spread architecture: delay/angular spread GMM and spike-plus-tail modelling. \\
-Calibrated path loss prior & Enhanced two ray LoS branch plus a legacy mixed branch linear calibration table with 18 visibility/morphology/height regimes, from which the final assembly uses the NLoS pixels. \\
+Calibrated path loss prior & Enhanced two-ray LoS branch plus a legacy mixed branch linear calibration table with 18 visibility/morphology/height regimes, from which the final assembly uses the NLoS pixels. \\
 Calibrated spread priors & Log-domain ridge calibration for delay and angular spread, with 36 exact regimes per metric and fallbacks. \\
 \textsc{HARP-Net CKM} & Frozen path loss and spread priors plus a shared neural residual model selected through the wide residual model, relaxed residual bounds, a large capacity stage, and the final residual fine tuning stage. \\
 \bottomrule
@@ -212,14 +212,14 @@ Tries 15 to 22 then attacked visible artifacts and missing large scale structure
 GroupNorm was better suited to the small full-resolution batches than
 BatchNorm, distance channels exposed radial geometry directly, Try 20 isolated
 bilinear upsampling, Try 21 isolated multiscale supervision, and Try 22
-combined both. In the early contract, Try 22 was the strongest clean
+combined both. In the early setting, Try 22 was the strongest clean
 pre-prior path-loss baseline at about \SI{16.72}{dB}. The phase ended because
 the maps became cleaner, but the model still had to rediscover physics from
 pixels.
 
-\subsection{Masking and evaluation contract}
+\subsection{Masking and evaluation rule}
 
-Tries 33 to 40 are important mainly because they changed the metric contract.
+Tries 33 to 40 are important mainly because they changed the metric rule.
 Pixels inside buildings are not valid receiver locations, so after Try 33 the
 project excluded \(topology\_map \ne 0\) pixels from training loss,
 validation/test metrics, and error-map visualization. This made the task
@@ -301,10 +301,10 @@ distribution first lines are the conceptual bridge to the mixture based
 
 The calibrated path-loss prior showed that LoS path loss was more deterministic than the neural
 history suggested. The dominant residual over FSPL was a radial ring field,
-well explained by the enhanced two ray model with fitted effective reflection
+well explained by the enhanced two-ray model with fitted effective reflection
 parameters. Its stored mixed-branch linear calibration table contains 18
 visibility, morphology, and height regimes. In the final frozen path loss
-assembly, the LoS pixels come from the enhanced two ray branch, while the
+assembly, the LoS pixels come from the enhanced two-ray branch, while the
 NLoS pixels come from that calibrated branch.
 
 The calibrated spread-prior module applied the same estimator discipline to delay spread and angular

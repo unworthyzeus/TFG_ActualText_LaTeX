@@ -34,7 +34,7 @@ Updated `introduction.tex`:
 Updated `state_of_art.tex`:
 
 1. Added a reader map explaining the role of the background chapter.
-2. Reduced result like claims in the two ray and SOA sections.
+2. Reduced result like claims in the two-ray and SOA sections.
 3. Clarified that papers may report received power or path loss depending on convention.
 4. Converted RMTransformer normalised errors to scientific notation for readability.
 5. Renamed the training section to include distribution aware methods and fair comparison.
@@ -171,7 +171,7 @@ Checked the exact implementation plan after the follow-up clarification:
    references; flowchart labels no longer produce plain `Eq. 3.x` text in the
    PDF.
 8. Task 8 completed: Chapter 2 has a reader map and clearer structure.
-9. Task 9 completed: two ray wording, RMTransformer precision and received
+9. Task 9 completed: two-ray wording, RMTransformer precision and received
    power/path loss wording were corrected.
 10. Task 10 completed: Chapter 4 is result focused and hidden development
     history was removed.

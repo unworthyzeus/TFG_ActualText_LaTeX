@@ -143,7 +143,7 @@ their empirical distributions are different.
   arr/.style={-{Stealth[length=2.1mm]}, thick, rounded corners=3pt}
 ]
 \node[input] (support) at (0,0) {Topology + masks\\centred UAV\\variable \(h_{\mathrm{tx}}\)};
-\node[prior] (los) at (3.4,1.35) {LoS PL\\FSPL + two ray\\height-bin curves};
+\node[prior] (los) at (3.4,1.35) {LoS PL\\FSPL + two-ray\\height-bin curves};
 \node[prior] (nlos) at (3.4,0) {NLoS PL\\COST/A2G envelope\\\(\mathbf{x}_{78}\) OLS};
 \node[prior] (spread) at (3.4,-1.35) {DS/AS\\\(\log(1+y)\) raw prior\\\(\mathbf{x}_{79}\) ridge};
 \node[cal] (stack) at (6.9,0) {Frozen prior maps\\PL, DS, AS};
@@ -175,7 +175,7 @@ pixels alone.
 \label{sec:try78_detail}
 
 The path loss prior has two branches.
-The LoS branch is a coherent two ray model plus calibrated height/radius
+The LoS branch is a coherent two-ray model plus calibrated height/radius
 corrections. For each receiver pixel, with \(d_{2D}\) measured from the centred
 transmitter,
 \begin{equation}
@@ -212,7 +212,7 @@ Here \(\rho\) and \(\phi\) are effective reflection amplitude and phase,
 fitted in \SI{5}{m} height bins, smoothed across bins and interpolated to the
 actual UAV height. The term \(b\) removes a remaining height-dependent offset
 and \(r\) is a smoothed radial residual table. These extra terms are outside
-the textbook two ray formula; they make the prior match the CKM dataset while
+the textbook two-ray formula; they make the prior match the CKM dataset while
 keeping the ring-like LoS structure explicit and auditable.
 
 The NLoS branch begins with a conservative raw blocked-link prior. A

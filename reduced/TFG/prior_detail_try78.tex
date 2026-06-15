@@ -1,7 +1,7 @@
-\subsection{LoS branch: enhanced two ray model}
+\subsection{LoS branch: enhanced two-ray model}
 
 The LoS prior is not a pure FSPL prior. FSPL is kept because it is the
-direct ray normalization term of the coherent two ray model: it gives the
+direct ray normalization term of the coherent two-ray model: it gives the
 path loss that would be observed if only the direct ray existed. The deployed
 LoS branch then adds the fitted ground reflection interference term,
 a height dependent bias, and a smoothed radial residual profile. This differs
@@ -23,9 +23,9 @@ standard free space path loss expression as the direct ray baseline:
 \label{eq:fspl}
 \end{equation}
 
-\subsubsection{Enhanced two ray correction}
+\subsubsection{Enhanced two-ray correction}
 
-In the two ray model, the received field is the superposition of the direct
+In the two-ray model, the received field is the superposition of the direct
 path and a ground reflected path. Let \(\lambda=c/f\) be the wavelength. The
 complex sum of the two waves at the receiver is:
 
@@ -57,7 +57,7 @@ a claim that a passive ground reflection coefficient exceeds unity; the
 deployed smoothed values reported later remain below one.
 Both parameters depend on the UAV height bin.
 
-The two ray path loss correction term in dB is:
+The two-ray path loss correction term in dB is:
 
 \begin{equation}
 C_{\mathrm{2ray}}(x)
@@ -99,9 +99,9 @@ This spatial interference pattern creates the characteristic ring like
 behavior in the LoS path loss maps: concentric rings of constructive and
 destructive interference around the transmitter.
 
-\subsubsection{Effective two ray calibration}
+\subsubsection{Effective two-ray calibration}
 
-Equation~\eqref{eq:c2ray} keeps the standard coherent two ray field sum: one
+Equation~\eqref{eq:c2ray} keeps the standard coherent two-ray field sum: one
 direct ray and one ground reflected ray are added before conversion to dB. The
 adaptation in this thesis is not an extra propagation term inside that field
 sum, but the fitted effective reflection coefficient
@@ -113,7 +113,7 @@ single flat ground plane \cite{rappaport,goldsmith}. The search grid allowed
 unity. The additional terms
 \(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) and
 \(r(d_{2D},h_{\mathrm{tx}})\) are post fit calibration terms outside the
-literature two ray formula.
+literature two-ray formula.
 
 \subsubsection{Calibrated LoS prior}
 
@@ -132,13 +132,13 @@ The full calibrated LoS prior is:
 where:
 \begin{itemize}
 \item \(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) is a height dependent bias (dB): a constant
-      correction that shifts the overall two ray prediction for a given UAV
+      correction that shifts the overall two-ray prediction for a given UAV
       height.
 \item $r(d_{2D}(x), h_{\mathrm{tx}})$ is a radial residual correction: a
       smooth function of horizontal distance (and height bin) that captures
-      systematic over-/under-prediction of the two ray model as a function of
+      systematic over-/under-prediction of the two-ray model as a function of
       range. It is obtained by smoothing the empirical mean residual in each
-      distance bin after the two ray fit.
+      distance bin after the two-ray fit.
 \end{itemize}
 
 Equation~\eqref{eq:pl_los} is applied as a frozen calibrated LoS prior and
@@ -148,6 +148,11 @@ terms; the shared distance and angle definitions are not repeated here.
 
 \begin{table}[H]
 \centering
+\caption{Term by term inventory of the LoS prior used by
+the final model. Unlike the NLoS branch, this is not a long pixel feature
+regression vector; it is a height interpolated two-ray calibration plus a
+radial residual table.}
+\label{tab:pl_los_term_inventory}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.08}
@@ -155,23 +160,18 @@ terms; the shared distance and angle definitions are not repeated here.
 \toprule
 \textbf{Stored / computed term} & \textbf{Mathematical role} & \textbf{Interpretation} \\
 \midrule
-\(\mathrm{FSPL}(d_{\mathrm{LoS}},f)\) & Direct ray baseline. & Gives the geometric free space loss before any reflected path is added. It is a component of the two ray prior, not the final LoS model by itself. \\
+\(\mathrm{FSPL}(d_{\mathrm{LoS}},f)\) & Direct ray baseline. & Gives the geometric free space loss before any reflected path is added. It is a component of the two-ray prior, not the final LoS model by itself. \\
 \(\rho(h_{\mathrm{tx}})\) & Height interpolated reflected ray amplitude. & Controls how strongly the ground reflected wave contributes relative to the direct wave. \\
 \(\phi(h_{\mathrm{tx}})\) & Height interpolated phase offset. & Captures the effective reflection phase after fitting to CKM instead of assuming a fixed Fresnel coefficient. \\
 \(C_{\mathrm{2ray}}(x)\) & Coherent interference correction. & Converts the complex direct plus reflected field sum into an oscillatory dB correction around FSPL. \\
-\(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) & Height interpolated bias. & Removes a remaining per height offset after the coherent two ray fit. \\
-\(r(d_{2D},h_{\mathrm{tx}})\) & Smoothed radial residual profile, clipped to \(\pm2.5\) dB. & Corrects systematic distance dependent residuals not captured by the two ray equation. \\
+\(\beta_{\mathrm{LoS}}(h_{\mathrm{tx}})\) & Height interpolated bias. & Removes a remaining per height offset after the coherent two-ray fit. \\
+\(r(d_{2D},h_{\mathrm{tx}})\) & Smoothed radial residual profile, clipped to \(\pm2.5\) dB. & Corrects systematic distance dependent residuals not captured by the two-ray equation. \\
 \(\mathrm{clip}_{[20,185]}\) & Output guard. & Keeps the frozen prior inside the physical path loss range used by the final model. \\
 \bottomrule
 \end{tabularx}
-\caption{Term by term inventory of the LoS prior used by
-the final model. Unlike the NLoS branch, this is not a long pixel feature
-regression vector; it is a height-interpolated two ray calibration plus a
-radial residual table.}
-\label{tab:pl_los_term_inventory}
 \end{table}
 
-\subsection{Calibration of the LoS two ray model}
+\subsection{Calibration of the LoS two-ray model}
 \label{sec:los_calibration}
 
 \subsubsection{Data preparation}
@@ -206,7 +206,7 @@ For each height bin, $(\rho, \phi)$ are found by grid search:
 
 For each pair $(\hat\rho, \hat\phi) \in \rho_{\mathrm{grid}} \times
 \phi_{\mathrm{grid}}$, and for each pixel $x_i$ in the height bin, define
-the two ray prediction without bias:
+the two-ray prediction without bias:
 
 \begin{equation}
 \hat p_i(\hat\rho, \hat\phi)
@@ -289,7 +289,7 @@ instead of introducing discrete jumps every 5 m.
 
 \subsubsection{Radial residual correction}
 
-After fitting the two ray model, a residual correction is computed separately
+After fitting the two-ray model, a residual correction is computed separately
 per height bin and integer radius:
 
 \begin{equation}
@@ -312,19 +312,19 @@ clip is applied both to individual residual samples during accumulation and
 to the interpolated profile used at inference. Radius bins with no samples in
 a height bin fall back to the global radial profile before smoothing. At
 inference, the profile is linearly interpolated across the stored height bins,
-then indexed by the pixel-radius map and added to the coherent two ray
+then indexed by the pixel-radius map and added to the coherent two-ray
 prediction.
 
 \subsubsection{Smoothed deployed parameter values}
 
-Table~\ref{tab:los_params} shows representative LoS two ray parameters after
+Table~\ref{tab:los_params} shows representative LoS two-ray parameters after
 the post fit Gaussian smoothing across height bins. These are the deployed
 calibration values used by the prior at inference time, not the unsmoothed
 per bin grid-search optima.
 
 \begin{table}[H]
 \centering
-\caption{Representative smoothed deployed LoS two ray parameters by height bin.}
+\caption{Representative smoothed deployed LoS two-ray parameters by height bin.}
 \label{tab:los_params}
 \small
 \begin{tabular}{rrrr}
@@ -390,7 +390,7 @@ very-high altitude bins used by the calibration.}
   xtick={0,100,200,300,400,500,600,700},
   grid=major,
   legend pos=south east,
-  title={FSPL vs.\ coherent two ray component ($h_{\mathrm{tx}} = 60$ m, $f = 7.125$ GHz)}
+  title={FSPL vs.\ coherent two-ray component ($h_{\mathrm{tx}} = 60$ m, $f = 7.125$ GHz)}
 ]
 \addplot[thick, blue, domain=5:700, samples=500]
   {32.45 + 20*ln(sqrt(x^2+3422.25)/1000)/ln(10) + 20*ln(7125)/ln(10)};
@@ -402,11 +402,11 @@ very-high altitude bins used by the calibration.}
    + (0.4718 * sqrt(x^2+3422.25)/sqrt(x^2+3782.25) *
    sin(deg(2*3.14159*(sqrt(x^2+3782.25)-sqrt(x^2+3422.25))*7125e6/3e8)))^2))/ln(10)
    - 0.044};
-\addlegendentry{Coherent two ray + bias}
+\addlegendentry{Coherent two-ray + bias}
 \end{axis}
 \end{tikzpicture}
-\caption[FSPL versus coherent two ray component.]%
-{Schematic comparison of FSPL and the calibrated coherent two ray component for
+\caption[FSPL versus coherent two-ray component.]%
+{Schematic comparison of FSPL and the calibrated coherent two-ray component for
 a 60 m UAV at 7.125 GHz ($h_{\mathrm{rx}} = 1.5$ m), zoomed to the
 \SI{700}{m} near field that contains the full \(513\times513\) map diagonal.
 The plotted red curve uses the code loaded 60 m calibration values before
@@ -540,7 +540,7 @@ $A_{\mathrm{NLoS}} = 12.0436$,
 $\tau_{\mathrm{NLoS}} = 7.52$ deg.
 These A2G constants are implementation constants in the path loss prior code
 rather than entries in the calibration JSON files; the JSON artifacts store the
-fitted LoS two ray curves and the per regime NLoS calibration coefficients.
+fitted LoS two-ray curves and the per regime NLoS calibration coefficients.
 The exponential term is kept only as a conservative elevation envelope: near
 overhead links approach \(\lambda_0+\beta_{\mathrm{NLoS}}+A_{\mathrm{NLoS}}\),
 while grazing links approach \(\lambda_0+\beta_{\mathrm{NLoS}}\). The maximum
@@ -586,7 +586,7 @@ m_{\mathrm{LoS}}(x)\,\mathrm{PL}_{\mathrm{LoS,aux}}(x)
 The auxiliary term \(\mathrm{PL}_{\mathrm{LoS,aux}}\) is only a legacy formula
 helper used to keep \(\mathrm{PL}^{(0)}\) defined over the whole map. In the
 final frozen path, LoS output pixels come directly from the separate enhanced
-two ray prior \(\mathrm{PL}_{\mathrm{LoS}}\) of \eqref{eq:pl_los}; the raw
+two-ray prior \(\mathrm{PL}_{\mathrm{LoS}}\) of \eqref{eq:pl_los}; the raw
 formula map \(\mathrm{PL}^{(0)}\) in \eqref{eq:pl0} is used only as one input
 feature for the calibrated NLoS branch.
 The LoS/NLoS mask used here is the explicit CKM mask provided with the
@@ -618,6 +618,9 @@ calibration.
 
 \begin{table}[H]
 \centering
+\caption{Term by term inventory of the NLoS calibration
+vector.}
+\label{tab:pl_nlos_term_inventory}
 \small
 \begin{tabularx}{\textwidth}{p{3.1cm} X X}
 \toprule
@@ -637,9 +640,6 @@ calibration.
 \(1\) & Bias term. & Lets each regime learn a constant offset after all physical terms are included. \\
 \bottomrule
 \end{tabularx}
-\caption{Term by term inventory of the NLoS calibration
-vector.}
-\label{tab:pl_nlos_term_inventory}
 \end{table}
 
 \paragraph{Shadowing proxy.}
@@ -689,7 +689,7 @@ This gives up to \(3 \times 2 \times 3 = 18\) regimes.
 The stored calibration for this legacy mixed-prior map still contains both LoS
 and NLoS regime coefficients. However, in the final frozen
 path loss assembly only the NLoS pixels from this calibrated map are used,
-because LoS pixels are replaced by the separate enhanced two ray
+because LoS pixels are replaced by the separate enhanced two-ray
 prior.
 The regime labels are map level labels, not extra per pixel features. Their
 derivation from \(\bar\delta_{\mathrm{map}}\), \(\bar h_{\mathrm{map}}\) and
@@ -772,7 +772,7 @@ weights should be interpreted together as one fitted calibration vector, not
 as independent physical constants. Their magnitudes mainly reflect the scale
 and correlation of the 15 input features in this NLoS regime.
 This makes the path loss prior an interpretable calibrated surrogate rather than a pure
-first-principles propagation formula: the two ray and A2G terms set the
+first-principles propagation formula: the two-ray and A2G terms set the
 shape, while per regime fitting adapts the coefficients to the CKM simulator
 and to the dataset's stored masks.
 

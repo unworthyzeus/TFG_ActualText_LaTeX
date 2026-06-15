@@ -37,6 +37,8 @@ Bias toward represented city morphologies and risk of overclaiming simulated res
 
 \subsection{Environmental impact}
 
+\textbf{Development of BT.}
+
 The main environmental cost during development was computation. The final
 \textsc{HARP-Net CKM} line used a four GPU RTX~2080~Ti node for approximately
 \SI{12}{h}; the distribution first and prior calibration phase used additional
@@ -90,12 +92,12 @@ phase.
 Because this is a software thesis, raw material use is indirect: the laptop,
 shared GPU node, storage and network infrastructure already existed. No dedicated
 device or project specific material was purchased. Supplier environmental reports
-for the hardware were not audited, which is a limitation of the analysis. At the
-end of life, the project mainly generates digital artefacts that can be archived
-or deleted; no project specific physical waste is expected. If the work were
-repeated, the footprint could be reduced by freezing the experiment plan earlier,
-running smaller pilot subsets before full training, reusing checkpoints more
-aggressively and scheduling heavy jobs when cleaner electricity is available.
+and public codes of ethics or conduct for the shared hardware providers were not
+audited, which is a limitation of the analysis. For a future operational version,
+cloud, hardware or data providers should be selected with public environmental
+and ethical reporting when possible.
+
+\textbf{Project execution.}
 
 For the use phase, the older detailed estimate remains useful because it
 connects the benchmark with energy rather than only speed. Extrapolating the
@@ -107,13 +109,24 @@ but the conclusion is robust in direction: the environmental case depends on
 amortizing the research footprint through many reused predictions, not on
 claiming that model training itself is free.
 
+\textbf{Risks and limitations.}
+
+At the end of life, the project mainly generates digital artefacts that can be
+archived or deleted; no project specific physical waste is expected. The main
+environmental risk is poor reuse. If the model is retrained from scratch for
+every new city, or scaled by larger architectures without a measured need, the
+environmental benefit can disappear. If the work were repeated, the footprint
+could be reduced by freezing the experiment plan earlier, running smaller pilot
+subsets before full training, reusing checkpoints more aggressively and
+scheduling heavy jobs when cleaner electricity is available.
+
 \subsection{Economic impact}
 
-\subsubsection{Economic cell: Development of BT}
+\textbf{Development of BT.}
 
 Economically, this work is not yet a product ready to take to market. Its value
 is as a technical prototype showing that, under the fixed \SI{7.125}{GHz} CKM
-contract used here, dense ray traced targets can be approximated by a reusable
+setting used here, dense ray traced targets can be approximated by a reusable
 surrogate once the target city representation and calibration protocol are fixed.
 The main development cost was human time:
 literature review, dataset handling, training/debugging, analysis, supervision
@@ -160,7 +173,7 @@ Storage and code hosting & N/A & free & 0\,EUR & GitHub and local storage \\
 \end{tabularx}
 \end{table}
 
-\subsubsection{Economic cell: Project execution}
+\textbf{Project execution.}
 
 The most realistic economic path is a planning tool rather than a standalone
 consumer product. A mature version could be licensed as software for network
@@ -178,6 +191,19 @@ models already exist in the literature; the more plausible near term value is
 know how, implementation, calibration data and integration into operator
 planning workflows.
 
+As a simplified execution budget, a first year pilot version would be dominated
+by engineering and validation rather than compute. A reasonable minimum estimate
+is about \SI{40}{h} of engineering packaging and documentation at 30~EUR/h
+(\(\approx\)1200~EUR), \SI{10}{h} of technical validation or supervisor review
+at 40~EUR/h (\(\approx\)400~EUR), less than 50~EUR of storage and routine batch
+inference, and 50 to 150~EUR of shared GPU time if one recalibration or small
+retraining pass is required. This gives an indicative first year maintenance
+and pilot operation cost of roughly 1700 to 2000~EUR, excluding field measurement
+campaigns. If real measurements are required, they become the dominant cost and
+should be budgeted as a separate deployment validation task.
+
+\textbf{Risks and limitations.}
+
 The economic limitations are therefore not only computational. The project
 would also need packaging, documentation, support, validation datasets, update
 procedures and periodic recalibration if it were maintained as planning
@@ -192,14 +218,24 @@ mask generation code, evaluation scripts and documented city holdout protocol.
 
 \subsection{Social impact}
 
+\textbf{Development of BT.}
+
+From the development perspective, the work also had a personal and professional
+training impact. It required propagation theory, machine learning, HPC
+workflows, reproducible evaluation, scientific writing and continuous critical
+review of failed approaches. Inclusive language is used where applicable, and
+the thesis does not assign technical roles, expected users or beneficiaries by
+gender. Since no dedicated distributors, manufacturers or suppliers were
+contracted for this thesis, their public codes of ethics or conduct were not
+audited; a future maintained tool should include that check when selecting
+external cloud, data or hardware providers.
+
+\textbf{Project execution.}
+
 Socially, faster CKM prediction can support temporary coverage planning for
 public events, rural extensions, emergency response or infrastructure
 restoration. The direct users would be network planners; the indirect
-beneficiaries would be users receiving more reliable wireless coverage. The
-main social risk is overconfidence: a simulated city holdout result should not
-be treated as certified field performance. Errors should continue to be reported
-by LoS/NLoS state, transmitter height bin and morphology group rather than hidden behind
-one global RMSE.
+beneficiaries would be users receiving more reliable wireless coverage.
 
 The social value is strongest when the tool is used as decision support rather
 than as an automatic decision maker. A fast surrogate can help planners compare
@@ -209,13 +245,8 @@ the model has been validated on simulated CKM cities and inherits the
 assumptions of the ray tracer, the topology representation, and the ground mask
 definition.
 
-From the development perspective, the work also had a personal and professional
-training impact. It required propagation theory, machine learning, HPC
-workflows, reproducible evaluation, scientific writing and continuous critical
-review of failed approaches. Inclusive language is used where applicable, and
-the thesis does not assign technical roles, expected users or beneficiaries by
-gender. From the project execution perspective, usability matters because the
-tool would likely be used by engineers rather than by the general public: input
+From the project execution perspective, usability matters because the tool would
+likely be used by engineers rather than by the general public: input
 metadata, mask policy, antenna height, checkpoint version and limitations
 should be visible enough that users with different levels of ML expertise can
 understand what the generated map does and does not certify.
@@ -228,10 +259,17 @@ balance between cost, accuracy, transparency and accessibility. The main barrier
 to this prototype are technical: users need access to map inputs, metadata and
 basic interpretation of uncertainty and masks. A future interface should provide
 accessible plots, documented defaults and clear warnings so that age, disability,
-cultural background or limited ML expertise do not become hidden barriers. A
-dependency risk also exists: if planners rely only on the surrogate and stop
-running measurements or high fidelity simulation, users could become vulnerable
-to systematic model errors.
+cultural background or limited ML expertise do not become hidden barriers.
+
+\textbf{Risks and limitations.}
+
+The main social risk is overconfidence: a simulated city holdout result should
+not be treated as certified field performance. Errors should continue to be
+reported by LoS/NLoS state, transmitter height bin and morphology group rather
+than hidden behind one global RMSE. A dependency risk also exists: if planners
+rely only on the surrogate and stop running measurements or high fidelity
+simulation, users could become vulnerable to systematic model errors in certain
+environments.
 
 There is also a fairness dimension in the morphology split. The model is tested
 on unseen cities, but the training distribution is still finite and urban
@@ -245,7 +283,7 @@ indicator.
 \section{Ethical implications}
 
 The exact need addressed is faster dense CKM generation for UAV and elevated base
-station planning under the thesis dataset contract. This need was defined by the
+station planning under the thesis dataset setting. This need was defined by the
 BT proposal, the supervisors' research context and the broader network planning
 problem of replacing repeated simulation with documented surrogates where this
 is justified. Consequences beyond the intended use include misplaced confidence
@@ -276,7 +314,7 @@ useful only if the output remains traceable.
 
 The project also aligns with the professional ethics expected in engineering
 and research work by documenting assumptions, avoiding data leakage between
-cities, reporting limitations, and keeping the evaluation contract explicit.
+cities, reporting limitations, and keeping the evaluation rules explicit.
 In UPC terms, the relevant principles are those of the Code of Ethics and the
 Code of Research Integrity: transparency, honesty in reporting results,
 responsible use of resources, and respect for the people who may be affected by

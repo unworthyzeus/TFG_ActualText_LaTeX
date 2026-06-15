@@ -109,7 +109,7 @@ I would like to express my sincere gratitude to my supervisors, Sergi Abadal and
 Vinogradov, for their guidance throughout this project. Although I worked on this thesis
 with a high degree of independence, their advice was extremely valuable. I am especially
 grateful to Evgenii Vinogradov, whose propagation-domain perspective and suggestions,
-such as encouraging me to study the two ray model, helped me tremendously in shaping
+such as encouraging me to study the two-ray model, helped me tremendously in shaping
 and improving this work.
 I would also like to thank ETSETB for creating the PARS programme, which allows
 students to begin the Master’s Degree in Telecommunications Engineering before com-
@@ -180,7 +180,7 @@ Position Project Author                      Position Project Supervisors
 2 State of the Art                                                                     22
   2.1 General Framework: CKM Surrogates and Evaluation Contracts . . . . . 22
   2.2 Path Loss Prediction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
-       2.2.1 Free space and two ray propagation . . . . . . . . . . . . . . . . 23
+       2.2.1 Free space and two-ray propagation . . . . . . . . . . . . . . . . 23
        2.2.2 Empirical and semi empirical models . . . . . . . . . . . . . . . . 23
        2.2.3 UAV and air to ground channel models . . . . . . . . . . . . . . . 24
        2.2.4 Spread definitions used later . . . . . . . . . . . . . . . . . . . . . 24
@@ -210,8 +210,8 @@ Position Project Author                      Position Project Supervisors
          3.3.2 Prior design rules . . . . . . . . . . . . . . . . . . . . . . . . . . .    39
          3.3.3 Literature ingredients and thesis adaptations . . . . . . . . . . .         40
    3.4   Channel Attenuation Prior . . . . . . . . . . . . . . . . . . . . . . . . . .     41
-         3.4.1 LoS branch: enhanced two ray model . . . . . . . . . . . . . . . .          41
-         3.4.2 Calibration of the LoS two ray model . . . . . . . . . . . . . . . .        47
+         3.4.1 LoS branch: enhanced two-ray model . . . . . . . . . . . . . . . .          41
+         3.4.2 Calibration of the LoS two-ray model . . . . . . . . . . . . . . . .        47
          3.4.3 NLoS branch . . . . . . . . . . . . . . . . . . . . . . . . . . . . .       50
          3.4.4 Evaluation metric: pixel weighted RMSE . . . . . . . . . . . . . .          61
          3.4.5 Observed path loss-prior results . . . . . . . . . . . . . . . . . . .      61
@@ -291,7 +291,7 @@ E Declaration on Generative AI Use                                              
 
 1.1   Project’s Gantt diagram . . . . . . . . . . . . . . . . . . . . . . . . . . . .    20
 
-2.1   Direct and specular ground reflected paths in the two ray model. . . . . .         23
+2.1   Direct and specular ground reflected paths in the two-ray model. . . . . .         23
 
 3.1  Empirical UAV transmitter height density read directly from the CKM
      HDF5 database using the 3 m histogram of Eq. (3.1), linearly interpolated
@@ -302,9 +302,9 @@ E Declaration on Generative AI Use                                              
      frozen prior maps, then HARP-Net CKM predicts residual corrections
      for the three CKM outputs. . . . . . . . . . . . . . . . . . . . . . . . . . .      37
 3.3 Overall prior anchored pipeline with bounded DNN corrections. . . . . .              39
-3.4 Two ray geometry. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      42
+3.4 Two-ray geometry. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      42
 3.5 Effective ground reflection amplitude as a function of UAV height. . . . .           50
-3.6 FSPL versus coherent two ray component. . . . . . . . . . . . . . . . . .            50
+3.6 FSPL versus coherent two-ray component. . . . . . . . . . . . . . . . . .            50
 3.7 Pipeline for the hybrid path loss prior. . . . . . . . . . . . . . . . . . . . .     62
 3.8 Feature grouping for the calibrated spread prior. . . . . . . . . . . . . . .        66
 3.9 Pipeline for the delay and angular spread priors. . . . . . . . . . . . . . .        70
@@ -356,8 +356,8 @@ C.4   CKMGenerator metadata and numerical array archive. . . . . . . . . . . 114
 3.5 Literature to design mapping used by the final prior anchored model. . . 40
 3.6 Term by term inventory of the LoS prior used by the final model. Unlike
      the NLoS branch, this is not a long pixel feature regression vector; it is a
-     height-interpolated two ray calibration plus a radial residual table. . . . . 47
-3.7 Representative smoothed deployed LoS two ray parameters by height bin. 49
+     height-interpolated two-ray calibration plus a radial residual table. . . . . 47
+3.7 Representative smoothed deployed LoS two-ray parameters by height bin. 49
 3.8 Term by term inventory of the NLoS calibration vector. . . . . . . . . . . 55
 3.9 Fixed constants used in the raw spread prior of Eq. (3.64). . . . . . . . . . 64
 3.10 Term by term inventory of the direct terms in the spread calibration vector. 65
@@ -594,7 +594,7 @@ The main contributions corresponding to these questions are:
      • A reproducible CKM prediction pipeline for ground users served by a centred UAV
         transmitter. The evaluation uses 513 × 513 maps, city holdout train/validation/test
         splits, valid ground receiver pixels only, and continuous UAV altitude conditioning.
-     • A train calibrated channel attenuation prior based on enhanced two ray LoS path
+     • A train calibrated channel attenuation prior based on enhanced two-ray LoS path
         loss propagation and ordinary least-squares (OLS) NLoS calibration over environ-
 
                                             18
@@ -756,7 +756,7 @@ spread targets.
 
 
 2.2      Path Loss Prediction
-2.2.1     Free space and two ray propagation
+2.2.1     Free space and two-ray propagation
 The most fundamental path loss term is the free space path loss (FSPL), which depends
 only on carrier frequency 𝑓 and Tx/Rx distance 𝑑:
                                                                   4𝜋
@@ -771,7 +771,7 @@ the receiver height. The direct and reflected path lengths are
                 𝑑dir = 𝑑2𝐷2
                              + (ℎtx − ℎrx )2 ,  𝑑ref = 𝑑2𝐷2
                                                             + (ℎtx + ℎrx )2 .        (2.2)
-With wavelength 𝜆, the coherent two ray model adds the direct and ground reflected
+With wavelength 𝜆, the coherent two-ray model adds the direct and ground reflected
 fields before converting to dB [9, 10]:
                                        𝑒 −𝑗2𝜋𝑑dir /𝜆    𝑒 −𝑗2𝜋𝑑ref /𝜆
                                 𝐸total =             +Γ               ,                 (2.3)
@@ -793,7 +793,7 @@ result is evaluated later in Chapter 4.
                                                                                  ground
                                                                            image Rx
                                              𝑑2𝐷
-Figure 2.1: Direct and specular ground reflected paths in the two ray model.
+Figure 2.1: Direct and specular ground reflected paths in the two-ray model.
 
 2.2.2     Empirical and semi empirical models
 Empirical models such as the Okumura-Hata and COST-231/Hata formulas extend FSPL
@@ -991,7 +991,7 @@ component to predict only the structured residual. This design reduces the effec
 ing problem from the full path loss range to a narrower residual distribution, improving
 data efficiency and interpretability.
 Chapter 3 applies this philosophy to the three thesis targets. For the channel attenuation
-target, an enhanced two ray path loss model fitted per height bin provides a prior map
+target, an enhanced two-ray path loss model fitted per height bin provides a prior map
 𝑦̂ PL (x) = TwoRay(𝑑, ℎtx ), and the neural component predicts the residual 𝜖 = 𝑦 − 𝑦̂ PL .
 For delay spread and angular spread, the same prior residual idea can be implemented
 with a ridge regression model in log space using TX centred geometric features and local
@@ -1498,7 +1498,7 @@ joint residual network trained on top of them.
 3.3        Final priors: overview and literature basis
 This section provides the compact entry point for the ML calibrated physical path loss and
 spread priors and the final joint residual GMM head model architecture. The propagation
-ingredients follow classical FSPL, two ray, empirical NLoS and large scale parameter
+ingredients follow classical FSPL, two-ray, empirical NLoS and large scale parameter
 models [9, 10, 11, 12, 17, 14], while the residual network inherits dense prediction,
 FiLM conditioning and distribution aware regression ideas [46, 35, 29, 30]. The detailed
 mathematical derivations and implementation level fitting notes follow in the same
@@ -1545,7 +1545,7 @@ physical hint:
       changes qualitatively when the centred UAV rises above the local skyline, con-
       sistent with A2G elevation and scenario modelling practice [11, 12, 13, 14]. It is
       deliberately separate from the LoS branch because blocked pixels do not follow the
-      same two ray mechanism.
+      same two-ray mechanism.
     • Delay and angular spread priors. These are fitted in log(1 + 𝑦) space. The raw
       estimate captures propagation state, distance, elevation, and local morphology; the
       final ridge calibration adds the 23-feature vector of Sec. 3.5. That vector includes
@@ -1573,16 +1573,16 @@ Table 3.3: Term by term interpretation of the main frozen prior quantities.
  𝑑LoS                          LoS path loss              3D direct Tx–Rx distance. It sets the FSPL baseline and uses the fixed
                                                           ℎrx = 1.5 m receiver height.
  𝑑ref                          LoS path loss              Image source reflected distance. It is the length of the single ground
-                                                          reflected path used in the coherent two ray correction.
+                                                          reflected path used in the coherent two-ray correction.
  𝐶2ray                         LoS path loss              Direct plus reflected field correction in dB. Negative values mean
                                                           constructive gain over FSPL; positive values mean destructive fading.
  𝜌(ℎtx )                       LoS path loss              Height interpolated effective reflection amplitude. It is fitted from CKM
                                                           rather than assumed from one fixed ground material.
  𝜙(ℎtx )                       LoS path loss              Height interpolated effective reflection phase. It absorbs the phase offset
                                                           of the simplified one reflection geometry.
- 𝑏(ℎtx )                       LoS path loss              Height dependent dB bias remaining after the coherent two ray fit.
+ 𝑏(ℎtx )                       LoS path loss              Height dependent dB bias remaining after the coherent two-ray fit.
  𝑟(𝑑2𝐷 , ℎtx )                 LoS path loss              Smoothed radial residual table. It corrects distance dependent errors that
-                                                          remain after FSPL, two ray interference, and height bias.
+                                                          remain after FSPL, two-ray interference, and height bias.
  PL(0) , PLNLoS,raw            NLoS path loss             Raw hybrid formula map and its obstructed pixel branch before map
                                                           morphology calibration.
  𝜌𝑘                            NLoS PL and spreads        Fraction of building pixels in a 𝑘 × 𝑘 neighbourhood; a local density
@@ -1667,7 +1667,7 @@ prior, and residual GMM methodology sections.
 Table 3.5: Literature to design mapping used by the final prior anchored model.
  Block                  Literature basis                     CKM adaptation                     New role in this thesis
 
- LoS path loss prior    FSPL and coherent two ray            Effective complex reflection,      Reconstructs the radial
+ LoS path loss prior    FSPL and coherent two-ray            Effective complex reflection,      Reconstructs the radial
                         propagation [9, 10].                 height bin interpolation, and      interference pattern and
                                                              radial residual fitting on CKM     supplies the frozen LoS anchor.
                                                              LoS pixels.
@@ -1701,7 +1701,7 @@ and the LoS branch is a physical path loss model in the standard propagation sen
 the thesis prose, however, the final dense predicted dB map is called channel attenuation,
 following the terminology note in Chapter 1.
 A reader only interested in the modelling logic can follow it in four passes. First, the
-LoS branch starts from FSPL and adds an enhanced two ray field sum, which explains
+LoS branch starts from FSPL and adds an enhanced two-ray field sum, which explains
 the radial ring structure observed in the CKM maps. Second, the NLoS branch uses a
 calibrated regime wise model over topology and obstruction features, because a LoS
 shaped formula cannot explain blocked streets by itself. Third, both branches are fitted
@@ -1711,9 +1711,9 @@ attenuation anchor consumed by HARP-Net CKM.
 The corresponding quantitative audit is reported in Chapter 4; this methodology section
 focuses on how the prior is constructed and why its output is frozen before residual
 learning.
-3.4.1    LoS branch: enhanced two ray model
+3.4.1    LoS branch: enhanced two-ray model
 The LoS prior is not a pure FSPL prior. FSPL is kept because it is the direct ray normaliza-
-tion term of the coherent two ray model: it gives the path loss that would be observed
+tion term of the coherent two-ray model: it gives the path loss that would be observed
 if only the direct ray existed. The deployed LoS branch then adds the fitted ground
 reflection interference term, a height dependent bias, and a smoothed radial residual
 profile. This differs from the NLoS branch, which uses a longer pixel feature vector and a
@@ -1762,7 +1762,7 @@ antenna is exactly on the ground plane, it would be equal rather than longer.
 
                                                               image source height
                     image (−ℎtx )
-Figure 3.4: Two ray geometry. Direct path (blue) has length 𝑑LoS ; reflected path (green) has the same
+Figure 3.4: Two-ray geometry. Direct path (blue) has length 𝑑LoS ; reflected path (green) has the same
 total length as the image source path (gray dashed), which is 𝑑ref .
 
 Free-space path loss baseline
@@ -1794,8 +1794,8 @@ ground interaction, scattering, or diffraction.
                                                                3.4 - Channel Attenuation Prior
 
 
-Enhanced two ray correction
-In the two ray model, the received field is the superposition of the direct path and a
+Enhanced two-ray correction
+In the two-ray model, the received field is the superposition of the direct path and a
 ground reflected path. Let 𝑘 = 2𝜋𝑓 /𝑐 be the free space wavenumber. The complex sum
 of the two waves at the receiver is:
 
@@ -1813,7 +1813,7 @@ calibration search) and 𝜙 ∈ [−𝜋, 𝜋] is the effective phase offset. 
 allowance for an effective CKM fitted parameter, not a claim that a passive Fresnel
 reflection coefficient exceeds unity; the deployed smoothed values reported later remain
 below one. Both parameters depend on the UAV height bin.
-The two ray path loss correction term in dB is:
+The two-ray path loss correction term in dB is:
 
                                    |            𝑑LoS (𝑥) −𝑗 (𝑘(𝑑ref (𝑥)−𝑑LoS (𝑥))+𝜙(ℎtx )) ||
                                    |
@@ -1845,13 +1845,13 @@ transmitter.
 Chapter 3. Methodology
 
 
-Comparison with literature two ray models
-The field sum in Eq. (3.10) is the standard exact coherent two ray equation from the
+Comparison with literature two-ray models
+The field sum in Eq. (3.10) is the standard exact coherent two-ray equation from the
 literature: a direct ray plus one ground reflected ray summed before conversion to dB.
-The practical adaptation in this thesis is not an extra term inside the two ray equation, but
+The practical adaptation in this thesis is not an extra term inside the two-ray equation, but
 the way the reflection coefficient is parameterized and calibrated. We refer to this fitted
-variant as the enhanced two ray model throughout this work: the underlying equation is
-the textbook coherent two ray model, but the effective reflection coefficient is enhanced
+variant as the enhanced two-ray model throughout this work: the underlying equation is
+the textbook coherent two-ray model, but the effective reflection coefficient is enhanced
 beyond the Fresnel range and allowed to take amplitudes up to 𝜌 ≤ 1.5 in order to absorb
 constructive multipath effects from the surrounding urban scene that a single Fresnel
 coefficient could not represent. The coefficients are fitted independently in 5 m UAV
@@ -1870,14 +1870,14 @@ of the ground. Here 𝜖𝑟 is the relative dielectric constant, 𝜎 is the gr
 assuming physical constants for the ground (typically 𝜖𝑟 ≈ 15 for urban soil). The symbol
 is deliberately written as 𝜃g here because the later A2G and morphology features use
 𝜃(𝑥) for the elevation angle of the UAV to receiver link.
-In contrast, our enhanced two ray implementation keeps the same coherent field sum
+In contrast, our enhanced two-ray implementation keeps the same coherent field sum
 equation but replaces the angle dependent Γ(𝜃) with a height dependent effective co-
 efficient Γ(ℎtx ) = 𝜌𝑒 −𝑗𝜙 . We do not assume a flat dielectric plane; instead, 𝜌 and 𝜙 are
 fitted to the CKM dataset in 5 m UAV height bins, with linear interpolation between bins
 during prediction. This allows the model to capture aggregate scattering effects from the
 real, non flat urban terrain that a pure Fresnel calculation would miss.
 
-The 𝑑 4 approximation. Many literature sources [9, 48] simplify the two ray model
+The 𝑑 4 approximation. Many literature sources [9, 48] simplify the two-ray model
 for large distances (𝑑 ≫ ℎtx , ℎrx ) into the classic fourth power law:
                                                    ℎ2tx ℎ2rx
                                    𝑃𝑟 (𝑑) ≈ 𝑃𝑡 𝐺𝑡 𝐺𝑟                                     (3.12)
@@ -1901,9 +1901,9 @@ over unity reflected ray. In practice, the main difference from a purely physica
 instantiation is therefore the fitted height binned effective coefficient, not an additional
 propagation term.
 
-Extra calibrated terms outside the two ray model. The quantities 𝑏(ℎtx ) and
-𝑟(𝑑2𝐷 , ℎtx ) in Eq. (3.13) are not part of the literature two ray formula itself. They are
-post fit calibration terms added on top of the standard two ray prediction to absorb
+Extra calibrated terms outside the two-ray model. The quantities 𝑏(ℎtx ) and
+𝑟(𝑑2𝐷 , ℎtx ) in Eq. (3.13) are not part of the literature two-ray formula itself. They are
+post fit calibration terms added on top of the standard two-ray prediction to absorb
 residual systematic errors.
 Calibrated LoS prior
 The full calibrated LoS prior is:
@@ -1912,13 +1912,13 @@ The full calibrated LoS prior is:
                  PLLoS (𝑥) = FSPL(𝑥) + 𝐶2ray (𝑥) + 𝑏(ℎtx ) + 𝑟(𝑑2𝐷 (𝑥), ℎtx )             (3.13)
 where:
     • 𝑏(ℎtx ) is a height dependent bias (dB): a constant correction that shifts the overall
-      two ray prediction for a given UAV height.
+      two-ray prediction for a given UAV height.
     • 𝑟(𝑑2𝐷 (𝑥), ℎtx ) is a radial residual correction: a smooth function of horizontal distance
-      (and height bin) that captures systematic over-/under-prediction of the two ray
+      (and height bin) that captures systematic over-/under-prediction of the two-ray
       model as a function of range. It is obtained by smoothing the empirical mean
-      residual in each distance bin after the two ray fit.
+      residual in each distance bin after the two-ray fit.
 The four terms in Eq. (3.13) are applied sequentially: FSPL gives the geometric baseline;
-the two ray correction adds the interference pattern; the bias corrects for a systematic
+the two-ray correction adds the interference pattern; the bias corrects for a systematic
 global offset per height; and the radial term corrects for range dependent systematic
 errors. The implementation then clips the frozen LoS prior to the [20, 180] dB range used
 by the final model. For the CKM dataset used here, valid calibrated LoS values are not
@@ -1943,7 +1943,7 @@ diagnostic vector:
                                          ⎣ 𝑟(𝑑2𝐷 (𝑥), ℎtx ) ⎦
 
 This vector is not multiplied by a learned coefficient vector at inference time. Instead, it
-exposes the calibrated quantities used by the nonlinear two ray expression PLLoS (𝑥) =
+exposes the calibrated quantities used by the nonlinear two-ray expression PLLoS (𝑥) =
        78 (𝑥)) = FSPL(𝑥) + 𝐶2ray (𝑥) + 𝑏(ℎtx ) + 𝑟(𝑑2𝐷 (𝑥), ℎtx ). The entries are computed as
 𝑔LoS (𝐱LoS
 follows:
@@ -1992,11 +1992,11 @@ follows:
      at inference time. Its role is to remove the remaining height dependent offset after
      the interference pattern has been fitted.
 
-   • 𝑟(𝑑2𝐷 (𝑥), ℎtx ) is fitted after the smoothed two ray model is fixed. The residual target-
+   • 𝑟(𝑑2𝐷 (𝑥), ℎtx ) is fitted after the smoothed two-ray model is fixed. The residual target-
      minus-prediction is accumulated in integer radial bins around the transmitter,
      separately for each 5 m height bin; empty bins fall back to a global radial profile,
      the profile is smoothed, and the applied correction is clipped to ±2.5 dB. This term
-     removes range dependent structure that remains after the coherent two ray model
+     removes range dependent structure that remains after the coherent two-ray model
      and the height bias.
 
                                              46
@@ -2007,7 +2007,7 @@ Stored / computed Mathematical role                               Interpretation
 term
 FSPL(𝑑LoS , 𝑓 )          Direct ray baseline.                  Gives the geometric free space loss be-
                                                                fore any reflected path is added. It is
-                                                               a component of the two ray prior, not
+                                                               a component of the two-ray prior, not
                                                                the final LoS model by itself.
 𝜌(ℎtx )                  Height interpolated reflected ray am- Controls how strongly the ground re-
                          plitude.                              flected wave contributes relative to the
@@ -2019,7 +2019,7 @@ FSPL(𝑑LoS , 𝑓 )          Direct ray baseline.                  Gives the g
                                                                flected field sum into an oscillatory dB
                                                                correction around FSPL.
 𝑏(ℎtx )                  Height interpolated bias.             Removes a remaining per height offset
-                                                               after the coherent two ray fit.
+                                                               after the coherent two-ray fit.
 𝑟(𝑑2𝐷 , ℎtx )            Smoothed radial residual profile, Corrects systematic distance depen-
                          clipped to ±2.5 dB.                   dent residuals not captured by the two
                                                                ray equation.
@@ -2027,11 +2027,11 @@ clip[20,180]             Output guard.                         Keeps the frozen 
                                                                ical path loss range used by the final
                                                                model.
 Table 3.6: Term by term inventory of the LoS prior used by the final model. Unlike the NLoS branch,
-this is not a long pixel feature regression vector; it is a height-interpolated two ray calibration plus a
+this is not a long pixel feature regression vector; it is a height-interpolated two-ray calibration plus a
 radial residual table.
 
 
-3.4.2          Calibration of the LoS two ray model
+3.4.2          Calibration of the LoS two-ray model
 Data preparation
 All training samples are used. For each sample, valid LoS pixels are selected as those
 satisfying:
@@ -2132,7 +2132,7 @@ outside the fitted range. This keeps the prior continuous with respect to UAV he
 instead of introducing discrete jumps every 5 m.
 
 Radial residual correction
-After fitting the two ray model, a residual correction is computed separately per height
+After fitting the two-ray model, a residual correction is computed separately per height
 bin and integer radius:
 
 
@@ -2146,14 +2146,14 @@ Gaussian smoothing radius, and the ±2.5 dB clip is applied both to individual r
 samples during accumulation and to the interpolated profile used at inference. Radius
 bins with no samples in a height bin fall back to the global radial profile before smoothing.
 At inference, the profile is linearly interpolated across the stored height bins, then indexed
-by the pixel-radius map and added to the coherent two ray prediction.
+by the pixel-radius map and added to the coherent two-ray prediction.
 
 Smoothed deployed parameter values
-Table 3.7 shows representative LoS two ray parameters after the post fit Gaussian smooth-
+Table 3.7 shows representative LoS two-ray parameters after the post fit Gaussian smooth-
 ing across height bins. These are the deployed calibration values used by the prior at
 inference time, not the unsmoothed per bin grid-search optima.
 
-Table 3.7: Representative smoothed deployed LoS two ray parameters by height bin.
+Table 3.7: Representative smoothed deployed LoS two-ray parameters by height bin.
 
                                ℎtx (m)        𝜌̃ 𝜙̃ (rad)    𝑏̃ (dB)
 
@@ -2198,7 +2198,7 @@ across 5 m height bins. Values are stable in the range 0.46 to 0.56 for 10 to 20
 sparsely sampled very-high altitude bins used by the calibration.
 
 
-            FSPL vs. coherent two ray component (ℎtx = 60 m, 𝑓 = 7.125 GHz)
+            FSPL vs. coherent two-ray component (ℎtx = 60 m, 𝑓 = 7.125 GHz)
 
                                    120
             Path loss (dB)
@@ -2208,10 +2208,10 @@ sparsely sampled very-high altitude bins used by the calibration.
 
                                    100
                                                                                   FSPL
-                                           80                             Coherent two ray + bias
+                                           80                             Coherent two-ray + bias
                                                 0       200 400 600 800 1,0001,2001,4001,6001,8002,000
                                                                    2D distance 𝑑2𝐷 (m)
-Figure 3.6: Schematic comparison of FSPL and the calibrated coherent two ray component for a 60 m
+Figure 3.6: Schematic comparison of FSPL and the calibrated coherent two-ray component for a 60 m
 UAV at 7.125 GHz (ℎrx = 1.5 m). The plotted red curve uses the code-loaded 60 m calibration values
 before adding the radial residual profile, so it shows the constructive/destructive interference term
 rather than the full final LoS prior.
@@ -2294,7 +2294,7 @@ where:
 The fixed A2G-envelope constants used by the implementation are: 𝛽NLoS = −16.16 dB,
 𝐴NLoS = 12.0436, 𝜏NLoS = 7.52 deg. These A2G constants are implementation constants in
 the path-loss prior code rather than entries in the calibration JSON files; the JSON artifacts
-store the fitted LoS two ray curves and the regime wise NLoS calibration coefficients.
+store the fitted LoS two-ray curves and the regime wise NLoS calibration coefficients.
 
 
 Interpretation of Eq. (3.26).
@@ -2327,7 +2327,7 @@ Stage 2: raw hybrid prior assembly
 The NLoS construction above defines only the obstructed branch. The full raw formula
 map used by the NLoS calibration stage is assembled only after both legacy branch
 estimates are available: the auxiliary LoS blend from Eq. (3.32), and the conservative
-NLoS branch from Eq. (3.28). This auxiliary LoS blend is not the final enhanced two ray
+NLoS branch from Eq. (3.28). This auxiliary LoS blend is not the final enhanced two-ray
 LoS prior; it is retained only because PL(0) is one input feature of the calibrated NLoS
 branch.
 The legacy LoS path term used by this auxiliary branch is:
@@ -2345,9 +2345,9 @@ with                                       {          }
                                         4𝜋ℎtx ℎrx                           𝑐
                                𝑑c = max           ,1 m ,               𝜆=     .                       (3.30)
                                            𝜆                                𝑓
-Equation (3.29) switches from FSPL to the classical asymptotic two ray 𝑑 4 path loss law
+Equation (3.29) switches from FSPL to the classical asymptotic two-ray 𝑑 4 path loss law
 after the crossover distance 𝑑c . It is an older helper used only to construct the raw PL(0)
-feature for the NLoS calibration, not the final enhanced coherent two ray LoS prior of
+feature for the NLoS calibration, not the final enhanced coherent two-ray LoS prior of
 Eq. (3.13).
 The legacy LoS blend is then defined as:
 
@@ -2362,7 +2362,7 @@ weight to the lower-loss of the legacy path model and the A2G LoS envelope. Beca
 lower dB means a stronger received signal, the min(⋅) operation should not be read as a
 conservative guard against low path loss peaks; it is simply the older low-loss auxiliary
 blend inherited by the raw PL(0) feature. Here PLLoS,path (𝑥) denotes the legacy LoS path
-term defined in Eq. (3.29). It is not the calibrated enhanced two ray map of Eq. (3.13).
+term defined in Eq. (3.29). It is not the calibrated enhanced two-ray map of Eq. (3.13).
 The full raw prior combines the LoS and NLoS estimates using the binary LoS mask
 𝑚LoS (𝑥) ∈ {0, 1}:
 
@@ -2370,7 +2370,7 @@ The full raw prior combines the LoS and NLoS estimates using the binary LoS mask
 Since 𝑚LoS (𝑥) is binary, Eq. (3.33) is a hard switch: it selects the auxiliary LoS expression
 on LoS pixels and the NLoS expression on NLoS pixels. The auxiliary blend in Eq. (3.32)
 was used in older variants to keep the LoS formula below an A2G envelope. In the final
-frozen path, LoS output pixels come directly from the separate enhanced two ray prior
+frozen path, LoS output pixels come directly from the separate enhanced two-ray prior
 PLLoS of Eq. (3.13); the raw hybrid map PL(0) in Eq. (3.33) is still computed only as an input
 feature for the calibrated NLoS path loss branch. The LoS/NLoS mask used here is the
 explicit CKM mask provided with the dataset and treated as an available side channel. A
@@ -2379,7 +2379,7 @@ geometry or another inexpensive pre-processing step; replacing the supplied mask
 evaluated in this thesis.
 Stage 3: map derived morphology features
 The raw hybrid prior PL(0) (𝑥) defined in Eq. (3.33) is the scalar formula input to the
-calibrated NLoS path loss branch. It combines the legacy FSPL/two ray LoS path, the A2G
+calibrated NLoS path loss branch. It combines the legacy FSPL/two-ray LoS path, the A2G
 
                                                       53
 Chapter 3. Methodology
@@ -2387,7 +2387,7 @@ calibrated NLoS path loss branch. It combines the legacy FSPL/two ray LoS path, 
 
 envelopes and COST-231, but it still knows nothing about the detailed local morphology
 around each receiver. The feature vector 𝐱78 (𝑥) defined below is not a competing path
-loss model and not an alternative two ray formulation. It is the per pixel input row of a
+loss model and not an alternative two-ray formulation. It is the per pixel input row of a
 calibrated linear regressor whose role is to take the raw formula prediction and absorb
 its residual using context that the formula cannot see (urban morphology, NLoS visibility,
 shadowing and elevation geometry). Concretely, PL(0) (𝑥) is fed in as the dominant feature,
@@ -2660,7 +2660,7 @@ terms can reduce performance because the fit then loses a simple way to express 
 matters differently in blocked streets”. Determining exactly which terms are dispensable
 would require a large ablation sweep over pairs or subsets of features. Even a pairwise
 screening would scale as 𝑂(𝑛2 ) runs for a vector with 𝑛 terms, and each run would
-have to regenerate and inspect large calibration artifacts. The LoS two ray calibration
+have to regenerate and inspect large calibration artifacts. The LoS two-ray calibration
 JSON used by the final model, for example, is about 200 000 lines long, mostly because it
 stores height dependent radial residual profiles. Taken together, the stored calibration is
 height dependent, building topology dependent, and density dependent: the LoS JSON
@@ -2678,7 +2678,7 @@ This gives up to 3 × 2 × 3 = 18 regimes.
 The stored calibration for this legacy mixed-prior map still contains both LoS and NLoS
 regime coefficients. However, in the final frozen path loss assembly only the NLoS
 pixels from this calibrated map are used, because LoS pixels are replaced by the separate
-enhanced two ray prior.
+enhanced two-ray prior.
 
 How topology class and antenna bin are computed. These are per map scalar labels,
 not per pixel quantities. They are derived once from the full topology tensor and UAV
@@ -2792,7 +2792,7 @@ The large bias weight and the sizeable morphology, elevation and raw prior weigh
 should be interpreted together as one fitted calibration vector, not as independent physical
 constants. Their magnitudes mainly reflect the scale and correlation of the 15 input
 features in this NLoS regime. This makes the path loss prior an interpretable calibrated
-surrogate rather than a pure first-principles propagation formula: the two ray and A2G
+surrogate rather than a pure first-principles propagation formula: the two-ray and A2G
 terms set the shape, while regime wise fitting adapts the coefficients to the CKM simulator
 and to the dataset’s stored masks.
 Stage 5: region replacement and clipping
@@ -2824,7 +2824,7 @@ RMSEs. Units are dB (path loss), ns (delay spread), and degrees (angular spread)
 the native non-transformed domain.
 3.4.5    Observed path loss-prior results
 The headline path loss numbers for the calibrated prior are reported in the results chapter
-(LoS waterfall in Table 4.1): the enhanced LoS two ray prior PLLoS reaches 1.7516 dB pixel
+(LoS waterfall in Table 4.1): the enhanced LoS two-ray prior PLLoS reaches 1.7516 dB pixel
 weighted RMSE on LoS pixels, the regime wise OLS NLoS head reaches 3.3967 dB on NLoS
 pixels, and the combined prior reaches 1.9246 dB overall on the held out validation+test
 split.
@@ -2873,7 +2873,7 @@ split.
 
                             Hybrid Path Loss Prior
                                   PLprior (𝑥)
-Figure 3.7: Pipeline for the hybrid path loss prior. The LoS branch relies on an explicit two ray
+Figure 3.7: Pipeline for the hybrid path loss prior. The LoS branch relies on an explicit two-ray
 interference model, while the NLoS branch calibrates a raw prior against map derived morphology
 features using regime wise OLS. The two branches are hard-switched based on the LoS mask to
 produce the final frozen prior.
@@ -3840,7 +3840,7 @@ priors and final test evaluation.
 
 4.1      Final test contract and frozen priors
 The final path loss prior is the clearest evidence that the prior is a strong path loss baseline
-in its own right. The enhanced two ray LoS model reduced LoS RMSE from roughly
+in its own right. The enhanced two-ray LoS model reduced LoS RMSE from roughly
 3.95 dB with FSPL to 1.75 dB. The final hybrid prior reached 1.9246 dB overall under the
 pixel weighted metric on the held out validation+test pool.
 4.1.1     LoS path loss prior progression
@@ -3853,11 +3853,11 @@ pool (pixel weighted RMSE).
                 Prior                       LoS RMSE (dB) Gain over previous
                 FSPL only                        3.9540                 N/A
                 FSPL + radial residual           3.7086                 −0.25
-                Enhanced two ray                 1.7516                 −𝟏.𝟗𝟔
+                Enhanced two-ray                 1.7516                 −𝟏.𝟗𝟔
 
 Two lessons follow. First, adding a purely radial correction on top of FSPL only buys
 about 0.25 dB. The residuals that a non coherent model can absorb are small compared to
-the structured deviation from FSPL. Second, switching to the enhanced two ray model
+the structured deviation from FSPL. Second, switching to the enhanced two-ray model
 with a fitted effective reflection coefficient (𝜌, 𝜙) per 5 m UAV height bin removes almost
 2 dB of additional error. This is exactly the magnitude expected when the dataset contains
 a visible ground reflection interference pattern, because the radial-residual model cannot
@@ -3867,9 +3867,9 @@ a visible ground reflection interference pattern, because the radial-residual mo
 
 
 reproduce the oscillatory ring structure with a purely monotonic function of distance.
-The two ray model is therefore not just a better fit numerically; it is a physically motivated
+The two-ray model is therefore not just a better fit numerically; it is a physically motivated
 explanation of the dominant LoS residual shape in CKM, and it is why the final model
-uses the two ray output directly as a frozen anchor rather than re-learning it from pixels.
+uses the two-ray output directly as a frozen anchor rather than re-learning it from pixels.
 
 4.2      Channel Attenuation Results
 Split comparability note. The final priors and HARP-Net CKM use the same
@@ -3998,7 +3998,7 @@ topology assigned samples.
  Overall                                                            1.75   3.40      1.92      4994
 
 
-The LoS dependency on building layout is monotonic. The two ray prior fits its own
+The LoS dependency on building layout is monotonic. The two-ray prior fits its own
 ground reflection ring against an LoS marginal whose width grows with city density
 and building height, so the LoS RMSE of the analytic model rises from 1.39 dB in the
 open sparse lowrise class to 2.44 dB in the dense block highrise class. The NLoS branch
@@ -4341,7 +4341,7 @@ applies residual corrections whose sign follows the prior error maps. The comple
 histogram figures, split/regime bar plots, and representative inspection panel are kept in
 Appendix D.
 The main lesson is that LoS path loss in this dataset has a strong radial ring structure, so
-a calibrated two ray prior is more efficient than asking a CNN to learn the same pattern
+a calibrated two-ray prior is more efficient than asking a CNN to learn the same pattern
 from pixels. The remaining qualitative failures are concentrated in sparse NLoS and high
 
                                                            87
@@ -4606,11 +4606,11 @@ The clearest contribution is a working CKM predictor for variable height UAV map
 final model receives geometry, masks, frozen priors, and a continuous height condition,
 and produces dense channel attenuation, delay spread, and angular spread maps jointly.
 The height dependence is physically important: the same city footprint changes its
-visibility structure, two ray interference pattern, and spread regimes as the UAV altitude
+visibility structure, two-ray interference pattern, and spread regimes as the UAV altitude
 changes. The final architecture handles this by combining height aware priors with a
 sinusoidal height embedding injected through FiLM conditioning.
 The channel attenuation result is the strongest success case. Most LoS path loss structure
-is radial, height-dependent, and coherent enough that an enhanced two ray prior can
+is radial, height-dependent, and coherent enough that an enhanced two-ray prior can
 explain much of it before any neural correction is applied. The residual model still matters,
 but its role is narrower and more realistic: it improves local blocked streets, transition
 regions, and geometry to radio misalignments that the analytic prior cannot fully capture.
@@ -4654,7 +4654,7 @@ ground receivers only, and city level train/validation/test separation.
 RQ2. Which part of the prediction should be left to a calibrated analytic prior
 and which part should be left to the neural network, so that the hybrid model
 is both accurate and interpretable? The calibrated priors should handle the most
-predictable propagation structure: two ray LoS path loss, height-binned LoS calibration,
+predictable propagation structure: two-ray LoS path loss, height-binned LoS calibration,
 morphology aware NLoS corrections, and log-domain ridge models for DS and AS. These
 priors are strong enough to be useful on their own. The neural model is then valuable
 because it learns bounded residual corrections around them, reducing the frozen-prior
@@ -4679,7 +4679,7 @@ anchored residual GMM head model that jointly predicts channel attenuation, dela
 spread, and angular spread for unseen city layouts while conditioning on continuous
 UAV height.
 The second contribution is the calibrated prior family. The path loss prior combines free
-space/radial structure, coherent two ray LoS behaviour, height-dependent calibration,
+space/radial structure, coherent two-ray LoS behaviour, height-dependent calibration,
 NLoS morphology features, and fallback regimes. The spread priors extend the same phi-
 losophy to DS and AS through log-domain ridge calibration, topology/visibility grouping,
 height regimes, and robust fallbacks. Together, these priors put a large amount of physical
@@ -5027,7 +5027,7 @@ Attempt range   Phase                               Why it matters in the final 
 76–77           Distribution first models            GMM/spike-plus-tail heads showed that modelling the target distribution
                                                      before pixel assignment could remove much of the collapse.
 78–79           Frozen calibrated priors             Produced the final train only attenuation and spread priors, including
-                                                     height aware LoS two ray calibration and log-domain spread ridge calibra-
+                                                     height aware LoS two-ray calibration and log-domain spread ridge calibra-
                                                      tion.
 80              Final prior anchored residual GMM Combined frozen priors with a shared residual GMM head model and
                 model                                selected the RMSE-dominant fine tuning stage reported in Chapter 4.
