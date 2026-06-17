@@ -733,19 +733,16 @@ form solution, when \(\textbf{X}_r^\top\textbf{X}_r\) is nonsingular:
 where $\textbf{X}_r$ stacks the feature vectors and $\textbf{y}_r$ stacks
 the measured path loss values. The runtime code does not refit this model; it
 loads the stored coefficient vectors from the NLoS regime calibration artifact.
-At inference, if the exact
-antenna height key is absent, the implementation only tries alternative
-antenna bins in the order current, mid, low, high while keeping the same
-path loss prior city type and LoS/NLoS label. It does not use the broader cross-topology
-fallback hierarchy of the spread prior calibration.
+If the exact antenna height key is absent, inference tries the current, mid,
+low and high antenna bins for the same path loss prior city type and LoS/NLoS
+label; it does not use the broader cross-topology spread fallback.
 
 In \eqref{eq:ols_closed}, \(\textbf{X}_r^\top\textbf{X}_r\) is the
-\emph{Gram matrix}: its diagonal and off-diagonal entries encode feature
-energy and feature correlation inside regime \(r\). The vector
-\(\textbf{X}_r^\top\textbf{y}_r\) encodes feature-target correlation. The
-written inverse is full-rank ordinary least squares notation; the
-implementation stores the least squares solution, using the corresponding
-pseudoinverse solution if the normal equations are singular or ill conditioned.
+\emph{Gram matrix}, encoding feature energy and correlation inside regime
+\(r\), while \(\textbf{X}_r^\top\textbf{y}_r\) encodes feature-target
+correlation. The inverse is full-rank ordinary least squares notation: the
+implementation stores the least squares solution, using a pseudoinverse if the
+normal equations are singular or ill conditioned.
 
 An example fitted coefficient vector for the \texttt{dense\_highrise|NLoS|mid\_ant}
 regime is:
@@ -760,16 +757,18 @@ regime is:
 \label{eq:pl_nlos_dense_highrise_mid_coefficients}
 \end{equation}
 The coefficients form one calibration vector, not separate physical constants;
-their sizes mainly reflect correlated feature scales. The path loss prior is
-therefore a calibrated surrogate: two-ray and A2G terms set the shape, while
-per regime fitting adapts it to the CKM simulator and stored masks.
+their sizes mainly reflect correlated feature scales. The prior is therefore a
+calibrated surrogate: two-ray and A2G terms set the shape, while per regime
+fitting adapts it to the CKM simulator and stored masks.
 
 \emph{Implementation note.} The coefficient attached to \texttt{prior\_sq} in
 \eqref{eq:pl_nlos_dense_highrise_mid_coefficients} multiplies the
-\(\mathrm{PL}^{(0)}(x)^2\) basis term. It is retained because this is the
-stored result of the final expensive calibration run, although tests showed
-that removing the feature or zeroing its coefficient does not meaningfully
-change the path loss maps. A later calibration should drop it.
+\(\mathrm{PL}^{(0)}(x)^2\) basis term, a quadratic copy of the raw path loss
+prior. It is kept because the stored final calibration vector was expensive to
+rerun. Follow-up tests showed that removing the feature or zeroing this
+coefficient does not meaningfully change the maps; the linear raw prior,
+morphology, elevation and bias terms carry the practical effect. A later
+calibration should drop it.
 
 \subsubsection{NLoS clipping}
 
@@ -791,9 +790,8 @@ the dataset, and the available labels already lie inside it.
 
 \subsection{Final channel attenuation prior assembly}
 
-The calibrated LoS and NLoS branches are assembled only after both branches have
-been defined. The final frozen channel attenuation prior switches with the CKM
-LoS mask:
+After both branches are defined, the final frozen channel attenuation prior
+switches with the CKM LoS mask:
 
 \begin{equation}
 \mathrm{PL}_{\mathrm{prior}}(x)

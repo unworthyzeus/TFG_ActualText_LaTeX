@@ -44,9 +44,9 @@ raw log prior value \(z^{(0)}_{m,n}\). The calibrated prior is linear in a
 \label{eq:spread_pixel_linear}
 \end{equation}
 The regime \(r(n)\) is a discrete key containing the metric, topology class,
-LoS/NLoS state and UAV height bin. In other words, the spread prior does not fit one
-global line through all pixels. It fits a family of small linear models, each
-one specialized to a propagation regime.
+LoS/NLoS state and UAV height bin. Thus the spread prior fits a family of
+small linear models, each specialized to a propagation regime, rather than one
+global line through all pixels.
 
 \subsection{Raw spread prior in log domain}
 
@@ -398,14 +398,14 @@ y_{\max,r},
 \end{equation}
 with delay spread clipped to $[0, 910]$~ns and angular spread clipped to
 $[0, 180^\circ]$ in both LoS and NLoS. These bounds are applied only to the
-frozen priors used as Try~80 input channels, not to the final neural model
-output, and they match the natural value ranges stored in the CKM dataset.
+frozen Try~80 prior channels, not to the final neural output. Because they are
+the values present in the CKM dataset, they do not alter any stored spread
+target; they only state the prior support.
 
 \subsection{Delay and angular spread prior pipeline}
 
-The topology class RMSE tables for the calibrated spread priors are reported in
-Chapter~\ref{chap:results}. This subsection keeps the final pipeline diagram
-and the method level data flow used by both spread modalities.
+Chapter~\ref{chap:results} reports the prior RMSE tables; this subsection keeps
+the shared pipeline diagram and data flow.
 
 \begin{figure}[H]
 \centering
