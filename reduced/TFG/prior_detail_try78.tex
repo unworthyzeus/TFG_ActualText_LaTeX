@@ -739,21 +739,13 @@ antenna bins in the order current, mid, low, high while keeping the same
 path loss prior city type and LoS/NLoS label. It does not use the broader cross-topology
 fallback hierarchy of the spread prior calibration.
 
-The terms in \eqref{eq:ols_closed} are standard linear least squares
-quantities. The matrix \(\textbf{X}_r^\top\textbf{X}_r\) is the
-\emph{Gram matrix}; its diagonal entries measure the energy of each feature
-inside regime \(r\), and its off-diagonal entries measure correlations between
-features. The vector \(\textbf{X}_r^\top\textbf{y}_r\) measures how strongly
-each feature correlates with measured path loss. The inverse maps those
-feature target correlations into the fitted coefficient vector
-\(\hat{\textbf{w}}^{\mathrm{PL,NLoS}}_{r}\). This is the classical ordinary least squares
-solution, but applied separately per propagation regime rather than globally.
-Because the feature vector intentionally contains correlated terms, the
-important object is the stored least squares coefficient vector; if a normal equation matrix is
-rank deficient or ill conditioned, \eqref{eq:ols_closed} should be
-understood as the full-rank notation for the corresponding least squares or
-pseudoinverse solution, not as a requirement that every calibration block be
-perfectly invertible.
+In \eqref{eq:ols_closed}, \(\textbf{X}_r^\top\textbf{X}_r\) is the
+\emph{Gram matrix}: its diagonal and off-diagonal entries encode feature
+energy and feature correlation inside regime \(r\). The vector
+\(\textbf{X}_r^\top\textbf{y}_r\) encodes feature-target correlation. The
+written inverse is full-rank ordinary least squares notation; the
+implementation stores the least squares solution, using the corresponding
+pseudoinverse solution if the normal equations are singular or ill conditioned.
 
 An example fitted coefficient vector for the \texttt{dense\_highrise|NLoS|mid\_ant}
 regime is:
@@ -767,26 +759,17 @@ regime is:
 \end{bmatrix}^\top
 \label{eq:pl_nlos_dense_highrise_mid_coefficients}
 \end{equation}
-The large bias weight and the sizeable morphology, elevation and raw prior
-weights should be interpreted together as one fitted calibration vector, not
-as independent physical constants. Their magnitudes mainly reflect the scale
-and correlation of the 15 input features in this NLoS regime.
-This makes the path loss prior an interpretable calibrated surrogate rather than a pure
-first-principles propagation formula: the two-ray and A2G terms set the
-shape, while per regime fitting adapts the coefficients to the CKM simulator
-and to the dataset's stored masks.
+The coefficients form one calibration vector, not separate physical constants;
+their sizes mainly reflect correlated feature scales. The path loss prior is
+therefore a calibrated surrogate: two-ray and A2G terms set the shape, while
+per regime fitting adapts it to the CKM simulator and stored masks.
 
-\emph{Implementation note.} The first coefficient in
-\eqref{eq:pl_nlos_dense_highrise_mid_coefficients} multiplies
-\texttt{prior\_sq}, the quadratic raw NLoS prior feature \(P_0(x)^2\). The
-released code keeps this term because the stored calibration vector is the
-result of the final full calibration run, which was expensive to repeat.
-However, in the final code path, deleting this feature or setting only this
-coefficient to zero produces no meaningful change in the resulting path loss
-maps. Therefore the quadratic term has little practical influence compared with
-the linear raw prior, morphology, elevation and bias terms. In a later
-calibration iteration this feature could, and probably should, be removed; it
-is kept here mainly as an artifact of the calibration process.
+\emph{Implementation note.} The coefficient attached to \texttt{prior\_sq} in
+\eqref{eq:pl_nlos_dense_highrise_mid_coefficients} multiplies the
+\(\mathrm{PL}^{(0)}(x)^2\) basis term. It is retained because this is the
+stored result of the final expensive calibration run, although tests showed
+that removing the feature or zeroing its coefficient does not meaningfully
+change the path loss maps. A later calibration should drop it.
 
 \subsubsection{NLoS clipping}
 
