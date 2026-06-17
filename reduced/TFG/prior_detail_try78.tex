@@ -769,9 +769,10 @@ quadratic relationship with the raw path loss prior. Its coefficient is visibly
 much smaller than most other entries, and tests showed that removing this
 feature or setting only this coefficient to zero does not change the maps in
 any practical way. It is kept only because the stored final calibration vector
-was very expensive to rerun: the calibration aggregates \(513\times513\) pixels
-over roughly \(10\,000\) samples. The linear raw prior, morphology, elevation
-and bias terms carry the effect. A later calibration should drop it.
+was very expensive to rerun: the calibration processes roughly \(10\,000\)
+\(513\times513\) pixel images, even though only valid pixels enter the fit. The
+linear raw prior, morphology, elevation and bias terms carry the effect. A
+later calibration should drop it.
 
 \subsubsection{NLoS clipping}
 
