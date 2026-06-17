@@ -761,14 +761,16 @@ their sizes mainly reflect correlated feature scales. The prior is therefore a
 calibrated surrogate: two-ray and A2G terms set the shape, while per regime
 fitting adapts it to the CKM simulator and stored masks.
 
-\emph{Implementation note.} The coefficient attached to \texttt{prior\_sq} in
-\eqref{eq:pl_nlos_dense_highrise_mid_coefficients} multiplies the
-\(\mathrm{PL}^{(0)}(x)^2\) basis term, a quadratic copy of the raw path loss
-prior. It is kept because the stored final calibration vector was expensive to
-rerun. Follow-up tests showed that removing the feature or zeroing this
-coefficient does not meaningfully change the maps; the linear raw prior,
-morphology, elevation and bias terms carry the practical effect. A later
-calibration should drop it.
+\emph{Implementation note.} The first entry in
+\eqref{eq:pl_nlos_dense_highrise_mid_coefficients}, \(0.005737\), is the
+coefficient of \texttt{prior\_sq}, the \(\mathrm{PL}^{(0)}(x)^2\) basis term.
+It is visibly much smaller than most other entries, but it also multiplies a
+squared path loss prior, so its scale is not directly comparable to the linear
+features. It is kept only because the stored final calibration vector was
+expensive to rerun. Tests showed that removing this feature or setting only
+this coefficient to zero does not change the maps in any practical way; the
+linear raw prior, morphology, elevation and bias terms carry the effect. A
+later calibration should drop it.
 
 \subsubsection{NLoS clipping}
 
