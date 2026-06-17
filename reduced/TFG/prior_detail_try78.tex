@@ -755,17 +755,17 @@ understood as the full-rank notation for the corresponding least squares or
 pseudoinverse solution, not as a requirement that every calibration block be
 perfectly invertible.
 
-An example fitted coefficient vector for the \texttt{mixed\_midrise|NLoS|high\_ant}
+An example fitted coefficient vector for the \texttt{dense\_highrise|NLoS|mid\_ant}
 regime is:
 \begin{equation}
-\textbf{w}^{\mathrm{PL,NLoS}}_{\texttt{mixed|NLoS|high}}
+\textbf{w}^{\mathrm{PL,NLoS}}_{\texttt{dense|NLoS|mid}}
 =
 \begin{bmatrix}
--0.000338,\ -0.0266,\ 8.233,\ -1.452,\ -11.659 \\[3pt]
-3.508,\ -5.611,\ 1.904,\ 0.926,\ 12.084 \\[3pt]
--1.628,\ -7.487,\ -12.665,\ -10.959,\ 121.480
+0.005737,\ -1.410,\ 4.113,\ 1.312,\ -34.561 \\[3pt]
+6.209,\ 6.476,\ 5.236,\ 1.369,\ 12.404 \\[3pt]
+-1.799,\ -3.674,\ -7.715,\ -5.821,\ 195.571
 \end{bmatrix}^\top
-\label{eq:pl_nlos_mixed_midrise_high_coefficients}
+\label{eq:pl_nlos_dense_highrise_mid_coefficients}
 \end{equation}
 The large bias weight and the sizeable morphology, elevation and raw prior
 weights should be interpreted together as one fitted calibration vector, not

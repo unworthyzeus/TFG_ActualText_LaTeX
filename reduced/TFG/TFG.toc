@@ -75,7 +75,7 @@
 \contentsline {subsubsection}{Calibrated LoS prior}{52}{subsubsection*.48}%
 \contentsline {subsection}{\numberline {3.6.2}Calibration of the LoS two-ray model}{53}{subsection.3.6.2}%
 \contentsline {subsubsection}{Data preparation}{53}{subsubsection*.50}%
-\contentsline {subsubsection}{Grid search for $(\rho , \phi )$}{53}{subsubsection*.51}%
+\contentsline {subsubsection}{Grid search for $(\mitrho , \mitphi )$}{53}{subsubsection*.51}%
 \contentsline {subsubsection}{Post fit Gaussian smoothing across height bins}{54}{subsubsection*.52}%
 \contentsline {subsubsection}{Radial residual correction}{55}{subsubsection*.53}%
 \contentsline {subsubsection}{Smoothed deployed parameter values}{55}{subsubsection*.54}%
@@ -100,85 +100,85 @@
 \contentsline {subsubsection}{Ridge calibration by regime}{66}{subsubsection*.74}%
 \contentsline {paragraph}{Fallback hierarchy.}{67}{paragraph*.75}%
 \contentsline {subsubsection}{Inverse transform and clipping}{67}{subsubsection*.76}%
-\contentsline {subsection}{\numberline {3.7.5}Delay and angular spread prior pipeline}{67}{subsection.3.7.5}%
+\contentsline {subsection}{\numberline {3.7.5}Delay and angular spread prior pipeline}{68}{subsection.3.7.5}%
 \contentsline {section}{\numberline {3.8}\textsc {HARP-Net CKM} Neural Residual Model}{68}{section.3.8}%
 \contentsline {subsection}{\numberline {3.8.1}Experimental protocol and reporting status}{69}{subsection.3.8.1}%
-\contentsline {subsection}{\numberline {3.8.2}HARP-Net CKM Residual Head}{69}{subsection.3.8.2}%
+\contentsline {subsection}{\numberline {3.8.2}HARP-Net CKM Residual Head}{70}{subsection.3.8.2}%
 \contentsline {subsection}{\numberline {3.8.3}Architecture: Shared UNet with FiLM}{71}{subsection.3.8.3}%
 \contentsline {paragraph}{Detailed sinusoidal height embedding and FiLM path.}{72}{paragraph*.79}%
-\contentsline {paragraph}{Detailed HARP-Net CKM residual head.}{73}{paragraph*.81}%
-\contentsline {subsection}{\numberline {3.8.4}Composite Optimization Objective}{73}{subsection.3.8.4}%
-\contentsline {paragraph}{Map negative log likelihood.}{74}{paragraph*.84}%
-\contentsline {paragraph}{Distributional KL term.}{74}{paragraph*.85}%
-\contentsline {paragraph}{Moment matching.}{74}{paragraph*.86}%
+\contentsline {paragraph}{Detailed HARP-Net CKM residual head.}{72}{paragraph*.81}%
+\contentsline {subsection}{\numberline {3.8.4}Composite Optimization Objective}{74}{subsection.3.8.4}%
+\contentsline {paragraph}{Map negative log likelihood.}{75}{paragraph*.84}%
+\contentsline {paragraph}{Distributional KL term.}{75}{paragraph*.85}%
+\contentsline {paragraph}{Moment matching.}{75}{paragraph*.86}%
 \contentsline {paragraph}{Anchor and guard terms.}{75}{paragraph*.87}%
-\contentsline {paragraph}{Outlier budget and deterministic losses.}{75}{paragraph*.88}%
-\contentsline {section}{\numberline {3.9}Evaluation Metrics}{76}{section.3.9}%
-\contentsline {chapter}{\numberline {4}Results}{77}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Qualitative Reader Map}{77}{section.4.1}%
-\contentsline {section}{\numberline {4.2}City and Profile Audit}{77}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Standalone Frozen Prior Results}{80}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Prior audit protocol and headline results}{80}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Channel attenuation prior result}{80}{subsection.4.3.2}%
-\contentsline {paragraph}{Split comparability note.}{80}{paragraph*.93}%
-\contentsline {subsection}{\numberline {4.3.3}Angular spread prior result}{80}{subsection.4.3.3}%
-\contentsline {subsection}{\numberline {4.3.4}Delay spread prior result}{81}{subsection.4.3.4}%
-\contentsline {subsection}{\numberline {4.3.5}Prior height and topology checks}{81}{subsection.4.3.5}%
-\contentsline {subsubsection}{Path loss prior by topology class}{82}{subsubsection*.98}%
-\contentsline {subsubsection}{Spread priors by topology class}{83}{subsubsection*.100}%
-\contentsline {section}{\numberline {4.4}\textsc {HARP-Net CKM} Results Against Frozen Priors}{84}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}Final test protocol and grouped profiles}{84}{subsection.4.4.1}%
-\contentsline {subsection}{\numberline {4.4.2}Final aggregate test result}{85}{subsection.4.4.2}%
-\contentsline {subsection}{\numberline {4.4.3}Channel attenuation result}{87}{subsection.4.4.3}%
-\contentsline {subsection}{\numberline {4.4.4}Angular spread result}{87}{subsection.4.4.4}%
-\contentsline {subsection}{\numberline {4.4.5}Delay spread result}{88}{subsection.4.4.5}%
-\contentsline {subsection}{\numberline {4.4.6}Validation to test check}{89}{subsection.4.4.6}%
-\contentsline {section}{\numberline {4.5}State of the Art Context}{89}{section.4.5}%
-\contentsline {subsection}{\numberline {4.5.1}Target vs final result}{89}{subsection.4.5.1}%
-\contentsline {subsection}{\numberline {4.5.2}Comparison with closest state of the art metrics}{90}{subsection.4.5.2}%
-\contentsline {section}{\numberline {4.6}Runtime}{90}{section.4.6}%
-\contentsline {section}{\numberline {4.7}Qualitative Analysis}{93}{section.4.7}%
-\contentsline {chapter}{\numberline {5}Sustainability Analysis and Ethical Implications}{95}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Sustainability matrix}{95}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Environmental impact}{95}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Economic impact}{97}{subsection.5.1.2}%
-\contentsline {subsection}{\numberline {5.1.3}Social impact}{99}{subsection.5.1.3}%
-\contentsline {section}{\numberline {5.2}Ethical implications}{100}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Relationship with the Sustainable Development Goals}{101}{section.5.3}%
-\contentsline {chapter}{\numberline {6}Conclusions and Future Work}{102}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Conclusions}{102}{section.6.1}%
-\contentsline {subsection}{\numberline {6.1.1}Answers to the research questions}{102}{subsection.6.1.1}%
-\contentsline {subsection}{\numberline {6.1.2}Main contributions}{103}{subsection.6.1.2}%
-\contentsline {subsection}{\numberline {6.1.3}Scope and limitations}{104}{subsection.6.1.3}%
-\contentsline {subsection}{\numberline {6.1.4}Negative results}{104}{subsection.6.1.4}%
-\contentsline {subsection}{\numberline {6.1.5}Personal Statement}{104}{subsection.6.1.5}%
-\contentsline {section}{\numberline {6.2}Future Directions}{105}{section.6.2}%
-\contentsline {paragraph}{Short and medium term.}{105}{paragraph*.115}%
-\contentsline {paragraph}{Medium to long term.}{105}{paragraph*.116}%
-\contentsline {chapter}{Bibliography}{106}{chapter*.117}%
-\contentsline {chapter}{\numberline {A}Detailed Attempt Log}{111}{appendix.A}%
-\contentsline {section}{\numberline {A.1}How to read the attempt numbers}{111}{section.A.1}%
-\contentsline {section}{\numberline {A.2}Try-number map}{111}{section.A.2}%
-\contentsline {section}{\numberline {A.3}Expanded chronological timeline}{112}{section.A.3}%
-\contentsline {subsection}{\numberline {A.3.1}Early image to image baselines}{112}{subsection.A.3.1}%
-\contentsline {subsection}{\numberline {A.3.2}Geometry conditioning and artifact control}{112}{subsection.A.3.2}%
-\contentsline {subsection}{\numberline {A.3.3}Masking and evaluation rule}{113}{subsection.A.3.3}%
-\contentsline {subsection}{\numberline {A.3.4}Prior-guided residual learning}{113}{subsection.A.3.4}%
-\contentsline {subsection}{\numberline {A.3.5}PMHHNet and expert-routing phase}{113}{subsection.A.3.5}%
-\contentsline {subsection}{\numberline {A.3.6}Regularization and distribution diagnosis}{113}{subsection.A.3.6}%
-\contentsline {subsection}{\numberline {A.3.7}Distribution first modelling}{114}{subsection.A.3.7}%
-\contentsline {subsection}{\numberline {A.3.8}Frozen calibrated priors}{114}{subsection.A.3.8}%
-\contentsline {subsection}{\numberline {A.3.9}\textsc {HARP-Net CKM}}{114}{subsection.A.3.9}%
-\contentsline {chapter}{\numberline {B}Representative \textsc {HARP-Net CKM} Inspection Panels}{115}{appendix.B}%
-\contentsline {chapter}{\numberline {C}CKM Generator Interface and Reproducibility Tool}{119}{appendix.C}%
-\contentsline {section}{\numberline {C.1}Public source record and checkpoint artifact}{119}{section.C.1}%
-\contentsline {section}{\numberline {C.2}Interface overview}{119}{section.C.2}%
-\contentsline {section}{\numberline {C.3}How the tool is run}{121}{section.C.3}%
-\contentsline {section}{\numberline {C.4}Accepted inputs}{121}{section.C.4}%
-\contentsline {section}{\numberline {C.5}Configurable controls}{122}{section.C.5}%
-\contentsline {section}{\numberline {C.6}Image scaling and raw numeric data}{122}{section.C.6}%
-\contentsline {section}{\numberline {C.7}Model-grid fitting and interpolation}{122}{section.C.7}%
-\contentsline {section}{\numberline {C.8}Mask policies}{123}{section.C.8}%
-\contentsline {section}{\numberline {C.9}Outputs}{123}{section.C.9}%
-\contentsline {section}{\numberline {C.10}Performance controls}{125}{section.C.10}%
-\contentsline {chapter}{\numberline {D}Declaration on Generative AI Use}{126}{appendix.D}%
+\contentsline {paragraph}{Outlier budget and deterministic losses.}{76}{paragraph*.88}%
+\contentsline {section}{\numberline {3.9}Evaluation Metrics}{77}{section.3.9}%
+\contentsline {chapter}{\numberline {4}Results}{78}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Qualitative Reader Map}{78}{section.4.1}%
+\contentsline {section}{\numberline {4.2}City and Profile Audit}{78}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Standalone Frozen Prior Results}{81}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Prior audit protocol and headline results}{81}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Channel attenuation prior result}{81}{subsection.4.3.2}%
+\contentsline {paragraph}{Split comparability note.}{81}{paragraph*.93}%
+\contentsline {subsection}{\numberline {4.3.3}Angular spread prior result}{81}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.3.4}Delay spread prior result}{82}{subsection.4.3.4}%
+\contentsline {subsection}{\numberline {4.3.5}Prior height and topology checks}{82}{subsection.4.3.5}%
+\contentsline {subsubsection}{Path loss prior by topology class}{83}{subsubsection*.98}%
+\contentsline {subsubsection}{Spread priors by topology class}{84}{subsubsection*.100}%
+\contentsline {section}{\numberline {4.4}\textsc {HARP-Net CKM} Results Against Frozen Priors}{85}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Final test protocol and grouped profiles}{85}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Final aggregate test result}{86}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}Channel attenuation result}{88}{subsection.4.4.3}%
+\contentsline {subsection}{\numberline {4.4.4}Angular spread result}{88}{subsection.4.4.4}%
+\contentsline {subsection}{\numberline {4.4.5}Delay spread result}{89}{subsection.4.4.5}%
+\contentsline {subsection}{\numberline {4.4.6}Validation to test check}{90}{subsection.4.4.6}%
+\contentsline {section}{\numberline {4.5}State of the Art Context}{90}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Target vs final result}{90}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}Comparison with closest state of the art metrics}{91}{subsection.4.5.2}%
+\contentsline {section}{\numberline {4.6}Runtime}{91}{section.4.6}%
+\contentsline {section}{\numberline {4.7}Qualitative Analysis}{94}{section.4.7}%
+\contentsline {chapter}{\numberline {5}Sustainability Analysis and Ethical Implications}{96}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Sustainability matrix}{96}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Environmental impact}{96}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Economic impact}{98}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Social impact}{100}{subsection.5.1.3}%
+\contentsline {section}{\numberline {5.2}Ethical implications}{101}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Relationship with the Sustainable Development Goals}{102}{section.5.3}%
+\contentsline {chapter}{\numberline {6}Conclusions and Future Work}{103}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Conclusions}{103}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Answers to the research questions}{103}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Main contributions}{104}{subsection.6.1.2}%
+\contentsline {subsection}{\numberline {6.1.3}Scope and limitations}{105}{subsection.6.1.3}%
+\contentsline {subsection}{\numberline {6.1.4}Negative results}{105}{subsection.6.1.4}%
+\contentsline {subsection}{\numberline {6.1.5}Personal Statement}{105}{subsection.6.1.5}%
+\contentsline {section}{\numberline {6.2}Future Directions}{106}{section.6.2}%
+\contentsline {paragraph}{Short and medium term.}{106}{paragraph*.115}%
+\contentsline {paragraph}{Medium to long term.}{106}{paragraph*.116}%
+\contentsline {chapter}{Bibliography}{107}{chapter*.117}%
+\contentsline {chapter}{\numberline {A}Detailed Attempt Log}{112}{appendix.A}%
+\contentsline {section}{\numberline {A.1}How to read the attempt numbers}{112}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Try-number map}{112}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Expanded chronological timeline}{113}{section.A.3}%
+\contentsline {subsection}{\numberline {A.3.1}Early image to image baselines}{113}{subsection.A.3.1}%
+\contentsline {subsection}{\numberline {A.3.2}Geometry conditioning and artifact control}{113}{subsection.A.3.2}%
+\contentsline {subsection}{\numberline {A.3.3}Masking and evaluation rule}{114}{subsection.A.3.3}%
+\contentsline {subsection}{\numberline {A.3.4}Prior-guided residual learning}{114}{subsection.A.3.4}%
+\contentsline {subsection}{\numberline {A.3.5}PMHHNet and expert-routing phase}{114}{subsection.A.3.5}%
+\contentsline {subsection}{\numberline {A.3.6}Regularization and distribution diagnosis}{114}{subsection.A.3.6}%
+\contentsline {subsection}{\numberline {A.3.7}Distribution first modelling}{115}{subsection.A.3.7}%
+\contentsline {subsection}{\numberline {A.3.8}Frozen calibrated priors}{115}{subsection.A.3.8}%
+\contentsline {subsection}{\numberline {A.3.9}\textsc {HARP-Net CKM}}{115}{subsection.A.3.9}%
+\contentsline {chapter}{\numberline {B}Representative \textsc {HARP-Net CKM} Inspection Panels}{116}{appendix.B}%
+\contentsline {chapter}{\numberline {C}CKM Generator Interface and Reproducibility Tool}{120}{appendix.C}%
+\contentsline {section}{\numberline {C.1}Public source record and checkpoint artifact}{120}{section.C.1}%
+\contentsline {section}{\numberline {C.2}Interface overview}{120}{section.C.2}%
+\contentsline {section}{\numberline {C.3}How the tool is run}{122}{section.C.3}%
+\contentsline {section}{\numberline {C.4}Accepted inputs}{122}{section.C.4}%
+\contentsline {section}{\numberline {C.5}Configurable controls}{123}{section.C.5}%
+\contentsline {section}{\numberline {C.6}Image scaling and raw numeric data}{123}{section.C.6}%
+\contentsline {section}{\numberline {C.7}Model-grid fitting and interpolation}{123}{section.C.7}%
+\contentsline {section}{\numberline {C.8}Mask policies}{124}{section.C.8}%
+\contentsline {section}{\numberline {C.9}Outputs}{124}{section.C.9}%
+\contentsline {section}{\numberline {C.10}Performance controls}{126}{section.C.10}%
+\contentsline {chapter}{\numberline {D}Declaration on Generative AI Use}{127}{appendix.D}%
