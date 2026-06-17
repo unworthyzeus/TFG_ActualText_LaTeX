@@ -15,6 +15,20 @@ texput.log
 build/
 tmp_pdf_check*/
 
+# Citation audit downloaded papers and local cache artifacts.
+cited_papers/**/*.pdf
+cited_papers/**/*.zip
+cited_papers/**/*.ZIP
+cited_papers/**/*_preview.png
+cited_papers/**/__pycache__/
+cited_papers/**/*.pyc
+cited_papers/.metadata_cache/
+cited_papers/node_modules/
+cited_papers/*.inspect.ndjson
+!cited_papers/**/*.md
+!cited_papers/**/*.csv
+!cited_papers/**/*.xlsx
+
 # Final deliverables and thesis/paper figures are repository artifacts.
 # Keep these explicit so broad local TeX-ignore rules never hide them.
 !reduced/TFG/TFG.pdf

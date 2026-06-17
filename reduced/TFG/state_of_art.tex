@@ -252,9 +252,10 @@ dominate the error budget in the CKM dataset.
 
 RadioUNet \cite{radiounet2020} is the canonical convolutional path loss map
 baseline before the PMNet challenge family. In its accurate map settings it
-reports grey level RMSE values around \(0.0203\)--\(0.0384\); using the paper's
-\SI{80}{dB} grey level conversion gives an approximate \SI{1.6}{dB}--\SI{3.1}{dB}
-path loss scale. RadioGUNet \cite{radiogunet2025} extends this outdoor
+reports grey level RMSE values around \(0.0203\)--\(0.0384\); using the
+RadioMapSeer dataset \SI{80}{dB} path loss range \cite{dataset2212} gives an
+approximate \SI{1.6}{dB}--\SI{3.1}{dB} path loss scale. RadioGUNet
+\cite{radiogunet2025} extends this outdoor
 RadioMapSeer line with group equivariant convolutions, reporting
 \SI{1.304}{dB} on the easiest DPM setting, \SI{1.936}{dB} on the IRT setting,
 and \SI{1.392}{dB} with cars. These values are used again in
@@ -555,7 +556,7 @@ before the model solves the harder pixel placement problem.
 Conditional diffusion models applied to radio maps \cite{radiodiff2025} generate
 physically plausible stochastic variations in deep shadow zones rather than
 predicting a single blurry mean.  The iterative denoising procedure can be
-conditioned on topology maps, transmitter locations, and obstacle prompts.
+conditioned on topology maps, transmitter locations, and environment features.
 RadioDiff reports lower normalised RMSE and higher image quality metrics than CNN and
 sequence model baselines on static and dynamic RadioMapSeer settings, but its
 metrics are image normalised rather than physical dB values.  These models are

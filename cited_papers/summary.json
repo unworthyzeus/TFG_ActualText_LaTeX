@@ -1,0 +1,11 @@
+{
+  "total_bib_entries": 60,
+  "downloaded_or_already": 50,
+  "downloaded_pdfs": 49,
+  "downloaded_report_parts": 1,
+  "skipped_non_paper_or_software": 10,
+  "open_pdf_not_found": 0,
+  "output_folder": "C:\\TFG\\FINAL_THESIS\\cited_papers",
+  "manifest_csv": "C:\\TFG\\FINAL_THESIS\\cited_papers\\download_manifest.csv",
+  "missing_list": "C:\\TFG\\FINAL_THESIS\\cited_papers\\open_pdf_not_found.txt"
+}

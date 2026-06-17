@@ -1,0 +1,1502 @@
+[
+  {
+    "number": 1,
+    "key": "zengx2021ckm",
+    "contexts": [
+      {
+        "file": "introduction.tex",
+        "section": "Introduction",
+        "raw_cite": "\\cite{zengx2021ckm,ckmtutorial2024}",
+        "paragraph": "Reliable radio coverage prediction is a central requirement for future 6G systems. A channel knowledge map (CKM) is a site specific repository of channel information that can support environment aware planning and reduce online channel acquisition overhead [citation] . Classical ray tracing can generate detailed CKMs, but it is too expensive to repeat for ev"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "General Framework: CKM Surrogates and Evaluation Contracts",
+        "raw_cite": "\\cite{zengx2021ckm,ckmtutorial2024}",
+        "paragraph": "The term channel knowledge map (CKM) refers to a site specific database of location tagged channel knowledge, such as channel gain, angles, or delay information, used to make future radio systems environment aware [citation] . This framing is more precise than a generic radio map: the map is not only an image like coverage estimate, but a queryable prior tha"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Channel knowledge maps and dense radio map prediction",
+        "raw_cite": "\\cite{zengx2021ckm}",
+        "paragraph": "Channel knowledge maps (CKMs) store location-indexed radio information that can be queried without running a full ray tracer or a new measurement campaign for every candidate link [citation] . Dense path-loss maps are the most common target, but the same idea extends naturally to delay spread and angular spread when the map is used to reason about wideband o"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "key": "ckmtutorial2024",
+    "contexts": [
+      {
+        "file": "introduction.tex",
+        "section": "Introduction",
+        "raw_cite": "\\cite{zengx2021ckm,ckmtutorial2024}",
+        "paragraph": "Reliable radio coverage prediction is a central requirement for future 6G systems. A channel knowledge map (CKM) is a site specific repository of channel information that can support environment aware planning and reduce online channel acquisition overhead [citation] . Classical ray tracing can generate detailed CKMs, but it is too expensive to repeat for ev"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "General Framework: CKM Surrogates and Evaluation Contracts",
+        "raw_cite": "\\cite{zengx2021ckm,ckmtutorial2024}",
+        "paragraph": "The term channel knowledge map (CKM) refers to a site specific database of location tagged channel knowledge, such as channel gain, angles, or delay information, used to make future radio systems environment aware [citation] . This framing is more precise than a generic radio map: the map is not only an image like coverage estimate, but a queryable prior tha"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "key": "threegpp22125",
+    "contexts": [
+      {
+        "file": "introduction.tex",
+        "section": "Introduction",
+        "raw_cite": "\\cite{threegpp22125}",
+        "paragraph": "Unmanned aerial vehicles (UAVs) make this prediction problem more useful and more difficult. In Third Generation Partnership Project (3GPP) terminology, a UAV mounted radio access node is called a UxNB [citation] , so the transmitter height is no longer a fixed rooftop constant. It becomes a continuous input that changes visibility, interference patterns and"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "key": "ckmdata2024",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "General Framework: CKM Surrogates and Evaluation Contracts",
+        "raw_cite": "\\cite{ckmdata2024}",
+        "paragraph": "Recent CKM literature also clarifies why the thesis uses a large offline ray traced dataset rather than sparse field samples. Xu and Zeng [citation] analyse how CKM construction error depends on spatial sample density and on the number of neighbouring samples used for online prediction, showing the explicit cost/accuracy trade off of measurement driven CKM c"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "key": "dataset2212",
+    "contexts": [
+      {
+        "file": "methodology.tex",
+        "section": "Dataset and split",
+        "raw_cite": "\\cite{dataset2212}",
+        "paragraph": "Dataset and split sec:methodology_dataset_split The data source is CKM_Dataset_270326.h5, a project HDF5 version of the CKM radio map data associated with the public path loss and ToA radio map dataset of Yapar et al.~ [citation] . At dataset level, it contains 16180 ray traced urban samples from 66 real city scenarios. The fields used by the final pipeline"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "General Framework: CKM Surrogates and Evaluation Contracts",
+        "raw_cite": "\\cite{dataset2212}",
+        "paragraph": "The data ecosystem has also expanded since the first path loss challenge. RadioMap3DSeer [citation] and the ICASSP~2023 challenge [citation] provide the closest open benchmark family for path loss image prediction, while the directive antenna dataset of Jaensch et al.\\ [citation] and CKMImageNet [citation] show the broader move toward open, location specific"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Image to image translation baselines",
+        "raw_cite": "\\cite{dataset2212}",
+        "paragraph": "RadioUNet [citation] is the canonical convolutional path loss map baseline before the PMNet challenge family. In its accurate map settings it reports grey level RMSE values around \\(0.0203\\)-\\(0.0384\\); using the RadioMapSeer dataset 80dB path loss range [citation] gives an approximate 1.6dB-3.1dB path loss scale. RadioGUNet [citation] extends this outdoor R"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "PMNet and the ICASSP outdoor challenge family",
+        "raw_cite": "\\cite{dataset2212}",
+        "paragraph": "PMNet [citation] was the winner of the first ICASSP 2023 Outdoor Pathloss Radio Map Prediction Challenge [citation] . It uses a deep encoder decoder with skip connections, trained and evaluated on the RadioMap3DSeer dataset~ [citation] . RadioMap3DSeer consists of city maps derived from urban 3D geometry with rooftop transmitters placed 3~m above the selecte"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "PMNet and the ICASSP outdoor challenge family",
+        "raw_cite": "\\cite{icassp2023challenge,dataset2212}",
+        "paragraph": "table[ht] [Approximate ICASSP 2023 outdoor RMSE scale.] Approximate dB scale RMSE references for ICASSP~2023 outdoor challenge methods. The normalised scores are taken from the challenge family and converted with the 36dB RadioMap3DSeer image window described in the dataset paper [citation] . tab:icassp2023corrected tabularlcc Method & RMSE (norm.) & Approx."
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "PMNet and the ICASSP outdoor challenge family",
+        "raw_cite": "\\cite{icassp2023challenge,dataset2212}",
+        "paragraph": "table[ht] [Approximate ICASSP 2023 outdoor RMSE scale.] Approximate dB scale RMSE references for ICASSP~2023 outdoor challenge methods. The normalised scores are taken from the challenge family and converted with the 36dB RadioMap3DSeer image window described in the dataset paper [citation] . tab:icassp2023corrected tabularlcc Method & RMSE (norm.) & Approx."
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "key": "icassp2023challenge",
+    "contexts": [
+      {
+        "file": "results.tex",
+        "section": "Comparison with closest state of the art metrics",
+        "raw_cite": "\\cite{pmnet_icassp2023,icassp2023challenge}",
+        "paragraph": "table[!htbp] [Plain language comparison with closest path loss metrics.] Plain language comparison with the closest available path loss side metrics. No scalar indoor or link level spread predictor is included as a table row, because those numbers are not dense CKM-style map benchmarks. tab:soa_result_comparison 3pt 0.98 tabularx>p0.18 >p0.25 >p0.29 >X Refer"
+      },
+      {
+        "file": "results_compact.tex",
+        "section": "Comparison with nearby SOA metrics",
+        "raw_cite": "\\cite{pmnet_icassp2023,icassp2023challenge}",
+        "paragraph": "table[htbp] Compact comparison with nearby path-loss-side metrics. tab:soa_result_comparison 3pt tabularxp0.25p0.25X Reference & PL-side metric & Reading / caveat \\\\ RadioUNet [citation] & 1.6dB-3.1dB equivalent PL RMSE & Final PL is in this band; no UAV height or spread targets. \\\\ RadioGUNet [citation] & 1.304dB DPM; 1.936dB IRT & Final PL lies between tho"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "General Framework: CKM Surrogates and Evaluation Contracts",
+        "raw_cite": "\\cite{icassp2023challenge}",
+        "paragraph": "The data ecosystem has also expanded since the first path loss challenge. RadioMap3DSeer [citation] and the ICASSP~2023 challenge [citation] provide the closest open benchmark family for path loss image prediction, while the directive antenna dataset of Jaensch et al.\\ [citation] and CKMImageNet [citation] show the broader move toward open, location specific"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "PMNet and the ICASSP outdoor challenge family",
+        "raw_cite": "\\cite{icassp2023challenge}",
+        "paragraph": "PMNet [citation] was the winner of the first ICASSP 2023 Outdoor Pathloss Radio Map Prediction Challenge [citation] . It uses a deep encoder decoder with skip connections, trained and evaluated on the RadioMap3DSeer dataset~ [citation] . RadioMap3DSeer consists of city maps derived from urban 3D geometry with rooftop transmitters placed 3~m above the selecte"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "PMNet and the ICASSP outdoor challenge family",
+        "raw_cite": "\\cite{icassp2023challenge,dataset2212}",
+        "paragraph": "table[ht] [Approximate ICASSP 2023 outdoor RMSE scale.] Approximate dB scale RMSE references for ICASSP~2023 outdoor challenge methods. The normalised scores are taken from the challenge family and converted with the 36dB RadioMap3DSeer image window described in the dataset paper [citation] . tab:icassp2023corrected tabularlcc Method & RMSE (norm.) & Approx."
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "PMNet and the ICASSP outdoor challenge family",
+        "raw_cite": "\\cite{icassp2023challenge}",
+        "paragraph": "table[ht] [Approximate ICASSP 2023 outdoor RMSE scale.] Approximate dB scale RMSE references for ICASSP~2023 outdoor challenge methods. The normalised scores are taken from the challenge family and converted with the 36dB RadioMap3DSeer image window described in the dataset paper [citation] . tab:icassp2023corrected tabularlcc Method & RMSE (norm.) & Approx."
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "PMNet and the ICASSP outdoor challenge family",
+        "raw_cite": "\\cite{icassp2023challenge,dataset2212}",
+        "paragraph": "table[ht] [Approximate ICASSP 2023 outdoor RMSE scale.] Approximate dB scale RMSE references for ICASSP~2023 outdoor challenge methods. The normalised scores are taken from the challenge family and converted with the 36dB RadioMap3DSeer image window described in the dataset paper [citation] . tab:icassp2023corrected tabularlcc Method & RMSE (norm.) & Approx."
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Position of the final model",
+        "raw_cite": "\\cite{pmnet_icassp2023,icassp2023challenge}",
+        "paragraph": "table[htbp] Compact state of the art positioning. tab:position 3pt tabularxp0.23p0.25X Family / reference & Relevant metric or capability & Caveat for this thesis \\\\ RadioUNet [citation] & Dense radio map CNN, about 1.6dB-3.1dB PL-scale error in its setting & No variable-height UAV and no DS/AS targets. \\\\ PMNet / ICASSP [citation] & Strong outdoor path-loss"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "key": "jaensch2024directiverme",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "General Framework: CKM Surrogates and Evaluation Contracts",
+        "raw_cite": "\\cite{jaensch2024directiverme}",
+        "paragraph": "The data ecosystem has also expanded since the first path loss challenge. RadioMap3DSeer [citation] and the ICASSP~2023 challenge [citation] provide the closest open benchmark family for path loss image prediction, while the directive antenna dataset of Jaensch et al.\\ [citation] and CKMImageNet [citation] show the broader move toward open, location specific"
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "key": "ckmimagenet2025",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "General Framework: CKM Surrogates and Evaluation Contracts",
+        "raw_cite": "\\cite{ckmimagenet2025}",
+        "paragraph": "The data ecosystem has also expanded since the first path loss challenge. RadioMap3DSeer [citation] and the ICASSP~2023 challenge [citation] provide the closest open benchmark family for path loss image prediction, while the directive antenna dataset of Jaensch et al.\\ [citation] and CKMImageNet [citation] show the broader move toward open, location specific"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "key": "rappaport",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "",
+        "raw_cite": "\\cite{rappaport,wocc2021,cost231,tr38901,winner2,khawaja_survey}",
+        "paragraph": "This section provides the entry point for the ML calibrated physical path loss and spread priors and the HARP-Net CKM residual architecture. The propagation ingredients follow classical FSPL, two-ray, empirical NLoS and large scale parameter models [citation] , while the residual network inherits dense prediction, FiLM conditioning and distribution aware reg"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "High level architecture",
+        "raw_cite": "\\cite{rappaport,wocc2021}",
+        "paragraph": "In this chapter, a prior is a deterministic frozen estimator map computed before the neural residual correction. Three such estimators are used: itemize 0.16em 0pt 0.15em LoS path loss prior. This is the clearest physical branch: \\(PL_LoS=FSPL+C_2ray+_LoS+r\\). FSPL uses the 3D direct Tx-Rx distance; \\(C_2ray\\) comes from a coherent direct plus ground reflect"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{rappaport,wocc2021}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "prior_detail_try78.tex",
+        "section": "Effective two-ray calibration",
+        "raw_cite": "\\cite{rappaport,goldsmith}",
+        "paragraph": "Equation~eq:c2ray keeps the standard coherent two-ray field sum: one direct ray and one ground reflected ray are added before conversion to dB. The adaptation in this thesis is not an extra propagation term inside that field sum, but the fitted effective reflection coefficient \\((h_tx)=(h_tx)e^-j(h_tx)\\). Thus \\(\\) and \\(\\) are calibration parameters fitted"
+      },
+      {
+        "file": "prior_detail_try78.tex",
+        "section": "Map derived morphology features",
+        "raw_cite": "\\cite{rappaport,cost231}",
+        "paragraph": "table[H] Term by term inventory of the NLoS calibration vector. tab:pl_nlos_term_inventory tabularxp3.1cm X X Term & Mathematical role & Physical interpretation \\\\ \\(PL^(0)(x)^2\\) & Quadratic basis term. & Lets the linear calibration bend the raw path loss curve when the raw model is systematically curved. \\\\ \\(PL^(0)(x)\\) & Linear raw prior term. & Keeps th"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Free space and two-ray propagation",
+        "raw_cite": "\\cite{rappaport,wocc2021}",
+        "paragraph": "The most fundamental path loss term is the free space path loss (FSPL), which depends only on carrier frequency~$f$ and Tx/Rx distance~$d$: equation PL_FSPL = 20_10(d) + 20_10(f) + 20_10\\!(4c). equation FSPL is the single direct ray reference baseline in unobstructed conditions, not a lower bound on the final path loss once coherent reflections are present."
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Empirical and semi empirical models",
+        "raw_cite": "\\cite{rappaport,cost231}",
+        "paragraph": "Empirical models such as the Okumura-Hata and COST-231/Hata formulas extend FSPL by incorporating frequency, antenna heights, and city type correction terms [citation] . While computationally cheap, they are calibrated on specific frequency bands and city/environment types, limiting accuracy when the geometry departs from the fitting dataset."
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Channel knowledge maps and dense radio map prediction",
+        "raw_cite": "\\cite{rappaport,goldsmith,cost231,alhourani2014,tr38901,winner2}",
+        "paragraph": "Classical propagation models supply the physical vocabulary used by the final method. Free-space path loss and two-ray propagation describe the LoS radial structure; COST231/Hata-like and A2G models provide empirical NLoS attenuation shapes; 3GPP and WINNER-style models motivate log-domain treatment of spread statistics and their dependence on visibility, ra"
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "key": "wocc2021",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "",
+        "raw_cite": "\\cite{rappaport,wocc2021,cost231,tr38901,winner2,khawaja_survey}",
+        "paragraph": "This section provides the entry point for the ML calibrated physical path loss and spread priors and the HARP-Net CKM residual architecture. The propagation ingredients follow classical FSPL, two-ray, empirical NLoS and large scale parameter models [citation] , while the residual network inherits dense prediction, FiLM conditioning and distribution aware reg"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "High level architecture",
+        "raw_cite": "\\cite{rappaport,wocc2021}",
+        "paragraph": "In this chapter, a prior is a deterministic frozen estimator map computed before the neural residual correction. Three such estimators are used: itemize 0.16em 0pt 0.15em LoS path loss prior. This is the clearest physical branch: \\(PL_LoS=FSPL+C_2ray+_LoS+r\\). FSPL uses the 3D direct Tx-Rx distance; \\(C_2ray\\) comes from a coherent direct plus ground reflect"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{rappaport,wocc2021}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Free space and two-ray propagation",
+        "raw_cite": "\\cite{rappaport,wocc2021}",
+        "paragraph": "The most fundamental path loss term is the free space path loss (FSPL), which depends only on carrier frequency~$f$ and Tx/Rx distance~$d$: equation PL_FSPL = 20_10(d) + 20_10(f) + 20_10\\!(4c). equation FSPL is the single direct ray reference baseline in unobstructed conditions, not a lower bound on the final path loss once coherent reflections are present."
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "key": "cost231",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "",
+        "raw_cite": "\\cite{rappaport,wocc2021,cost231,tr38901,winner2,khawaja_survey}",
+        "paragraph": "This section provides the entry point for the ML calibrated physical path loss and spread priors and the HARP-Net CKM residual architecture. The propagation ingredients follow classical FSPL, two-ray, empirical NLoS and large scale parameter models [citation] , while the residual network inherits dense prediction, FiLM conditioning and distribution aware reg"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "High level architecture",
+        "raw_cite": "\\cite{cost231,tr38901,alhourani2014,khawaja_survey}",
+        "paragraph": "In this chapter, a prior is a deterministic frozen estimator map computed before the neural residual correction. Three such estimators are used: itemize 0.16em 0pt 0.15em LoS path loss prior. This is the clearest physical branch: \\(PL_LoS=FSPL+C_2ray+_LoS+r\\). FSPL uses the 3D direct Tx-Rx distance; \\(C_2ray\\) comes from a coherent direct plus ground reflect"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{cost231,tr38901,alhourani2014,khawaja_survey}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "prior_detail_try78.tex",
+        "section": "COST-231 term.",
+        "raw_cite": "\\cite{cost231}",
+        "paragraph": "COST-231 term. The COST-231 / Hata extension for urban macro cells gives the empirical large scale path loss expression used below [citation] . It is included because it is one of the standard references for urban NLoS macrocell loss, even though the CKM scenario is outside its original frequency and base station height range. None of the COST-231 coefficien"
+      },
+      {
+        "file": "prior_detail_try78.tex",
+        "section": "Map derived morphology features",
+        "raw_cite": "\\cite{rappaport,cost231}",
+        "paragraph": "table[H] Term by term inventory of the NLoS calibration vector. tab:pl_nlos_term_inventory tabularxp3.1cm X X Term & Mathematical role & Physical interpretation \\\\ \\(PL^(0)(x)^2\\) & Quadratic basis term. & Lets the linear calibration bend the raw path loss curve when the raw model is systematically curved. \\\\ \\(PL^(0)(x)\\) & Linear raw prior term. & Keeps th"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Empirical and semi empirical models",
+        "raw_cite": "\\cite{rappaport,cost231}",
+        "paragraph": "Empirical models such as the Okumura-Hata and COST-231/Hata formulas extend FSPL by incorporating frequency, antenna heights, and city type correction terms [citation] . While computationally cheap, they are calibrated on specific frequency bands and city/environment types, limiting accuracy when the geometry departs from the fitting dataset."
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Channel knowledge maps and dense radio map prediction",
+        "raw_cite": "\\cite{rappaport,goldsmith,cost231,alhourani2014,tr38901,winner2}",
+        "paragraph": "Classical propagation models supply the physical vocabulary used by the final method. Free-space path loss and two-ray propagation describe the LoS radial structure; COST231/Hata-like and A2G models provide empirical NLoS attenuation shapes; 3GPP and WINNER-style models motivate log-domain treatment of spread statistics and their dependence on visibility, ra"
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "key": "tr38901",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "",
+        "raw_cite": "\\cite{rappaport,wocc2021,cost231,tr38901,winner2,khawaja_survey}",
+        "paragraph": "This section provides the entry point for the ML calibrated physical path loss and spread priors and the HARP-Net CKM residual architecture. The propagation ingredients follow classical FSPL, two-ray, empirical NLoS and large scale parameter models [citation] , while the residual network inherits dense prediction, FiLM conditioning and distribution aware reg"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "High level architecture",
+        "raw_cite": "\\cite{cost231,tr38901,alhourani2014,khawaja_survey}",
+        "paragraph": "In this chapter, a prior is a deterministic frozen estimator map computed before the neural residual correction. Three such estimators are used: itemize 0.16em 0pt 0.15em LoS path loss prior. This is the clearest physical branch: \\(PL_LoS=FSPL+C_2ray+_LoS+r\\). FSPL uses the 3D direct Tx-Rx distance; \\(C_2ray\\) comes from a coherent direct plus ground reflect"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "High level architecture",
+        "raw_cite": "\\cite{tr38901,winner2,yang2019a2gml,huang2025a2gtransformer}",
+        "paragraph": "In this chapter, a prior is a deterministic frozen estimator map computed before the neural residual correction. Three such estimators are used: itemize 0.16em 0pt 0.15em LoS path loss prior. This is the clearest physical branch: \\(PL_LoS=FSPL+C_2ray+_LoS+r\\). FSPL uses the 3D direct Tx-Rx distance; \\(C_2ray\\) comes from a coherent direct plus ground reflect"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{cost231,tr38901,alhourani2014,khawaja_survey}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{tr38901,winner2,yang2019a2gml,huang2025a2gtransformer}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "prior_detail_try78.tex",
+        "section": "Elevation-aware UAV envelope.",
+        "raw_cite": "\\cite{khawaja_survey,tr38901}",
+        "paragraph": "Elevation-aware UAV envelope. The A2G NLoS envelope is used as a conservative elevation dependent shape term for urban air to ground path loss. UAV channel models motivate elevation angle as an important modelling axis because obstruction and shadowing statistics vary with elevation [citation] . The particular constants below, however, are not used as a tran"
+      },
+      {
+        "file": "prior_detail_try78.tex",
+        "section": "Map derived morphology features",
+        "raw_cite": "\\cite{khawaja_survey,tr38901}",
+        "paragraph": "table[H] Term by term inventory of the NLoS calibration vector. tab:pl_nlos_term_inventory tabularxp3.1cm X X Term & Mathematical role & Physical interpretation \\\\ \\(PL^(0)(x)^2\\) & Quadratic basis term. & Lets the linear calibration bend the raw path loss curve when the raw model is systematically curved. \\\\ \\(PL^(0)(x)\\) & Linear raw prior term. & Keeps th"
+      },
+      {
+        "file": "prior_detail_try79.tex",
+        "section": "Physical motivation for log domain modeling",
+        "raw_cite": "\\cite{tr38901,winner2}",
+        "paragraph": "Delay spread (DS) and angular spread (AS) are nonnegative, often zero inflated, and heavy tailed. Their empirical distributions are commonly modeled in the logarithmic domain in standard channel models [citation] . For a spread variable $y$, define: equation z(x) = (1 + y(x)), y(x) = ( z(x)) - 1 eq:log_transform_spread equation"
+      },
+      {
+        "file": "prior_detail_try79.tex",
+        "section": "Raw spread prior in log domain",
+        "raw_cite": "\\cite{tr38901,winner2}",
+        "paragraph": "The raw prior is not a 3GPP formula copied directly into CKM. Instead, it takes the 3GPP/WINNER lesson that spread statistics should be separated by propagation state and represented in log space [citation] , then adds CKM specific map morphology terms. UAV measurement studies also motivate the elevation angle dependence: low elevation links usually interact"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Empirical and semi empirical models",
+        "raw_cite": "\\cite{tr38901}",
+        "paragraph": "The 3GPP Technical Report 38.901 [citation] formalises stochastic channel models for frequencies from 500~MHz to 100~GHz for urban macro (UMa), urban micro (UMi), rural macro (RMa), and indoor scenarios. It provides separate path loss expressions for LoS and non-LoS (NLoS) conditions, breakpoint distances, and shadow fading standard deviations, which serve a"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "UAV and air to ground channel models",
+        "raw_cite": "\\cite{tr38901}",
+        "paragraph": "Classical terrestrial channel models assume the transmitter is at rooftop height or below. Unmanned aerial vehicle (UAV) base station scenarios introduce a third dimension: the UAV can fly from near ground level to several hundred metres. Al-Hourani et al.~ [citation] showed that the LoS probability increases monotonically with elevation angle and depends on"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Spread definitions used later",
+        "raw_cite": "\\cite{tr38901}",
+        "paragraph": "3GPP~TR~38.901 [citation] models both quantities as log normal random variables conditioned on the LoS/NLoS state and distance. WINNER~II follows the same broad log domain large scale parameter convention [citation] . In practice, the distributions of delay spread and angular spread are right skewed with a heavy exponential tail and often include a spike nea"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Empirical models for spread parameters",
+        "raw_cite": "\\cite{tr38901}",
+        "paragraph": "Standard channel models characterise delay spread and angular spread through log domain large scale parameters tied to propagation state and scenario. TR~38.901 [citation] provides scenario specific tables and formulae for these parameters, with dependencies on variables such as distance, frequency, terminal heights, and LoS/NLoS state across UMa, UMi, and R"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Emerging techniques and implications for this thesis",
+        "raw_cite": "\\cite{tr38901,winner2}",
+        "paragraph": "The spread targets add a second lesson. For delay spread and angular spread, the reviewed literature is stronger in modelling technique than in directly comparable dense-map results. 3GPP and WINNER style models treat spreads as log-domain large scale parameters conditioned on scenario, distance and LoS/NLoS state [citation] . Recent learning based A2G work"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Channel knowledge maps and dense radio map prediction",
+        "raw_cite": "\\cite{rappaport,goldsmith,cost231,alhourani2014,tr38901,winner2}",
+        "paragraph": "Classical propagation models supply the physical vocabulary used by the final method. Free-space path loss and two-ray propagation describe the LoS radial structure; COST231/Hata-like and A2G models provide empirical NLoS attenuation shapes; 3GPP and WINNER-style models motivate log-domain treatment of spread statistics and their dependence on visibility, ra"
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "key": "alhourani2014",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "High level architecture",
+        "raw_cite": "\\cite{cost231,tr38901,alhourani2014,khawaja_survey}",
+        "paragraph": "In this chapter, a prior is a deterministic frozen estimator map computed before the neural residual correction. Three such estimators are used: itemize 0.16em 0pt 0.15em LoS path loss prior. This is the clearest physical branch: \\(PL_LoS=FSPL+C_2ray+_LoS+r\\). FSPL uses the 3D direct Tx-Rx distance; \\(C_2ray\\) comes from a coherent direct plus ground reflect"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{cost231,tr38901,alhourani2014,khawaja_survey}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "UAV and air to ground channel models",
+        "raw_cite": "\\cite{alhourani2014}",
+        "paragraph": "Classical terrestrial channel models assume the transmitter is at rooftop height or below. Unmanned aerial vehicle (UAV) base station scenarios introduce a third dimension: the UAV can fly from near ground level to several hundred metres. Al-Hourani et al.~ [citation] showed that the LoS probability increases monotonically with elevation angle and depends on"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "UAV and air to ground channel models",
+        "raw_cite": "\\cite{alhourani2014,khawaja_survey}",
+        "paragraph": "Classical terrestrial channel models assume the transmitter is at rooftop height or below. Unmanned aerial vehicle (UAV) base station scenarios introduce a third dimension: the UAV can fly from near ground level to several hundred metres. Al-Hourani et al.~ [citation] showed that the LoS probability increases monotonically with elevation angle and depends on"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Channel knowledge maps and dense radio map prediction",
+        "raw_cite": "\\cite{rappaport,goldsmith,cost231,alhourani2014,tr38901,winner2}",
+        "paragraph": "Classical propagation models supply the physical vocabulary used by the final method. Free-space path loss and two-ray propagation describe the LoS radial structure; COST231/Hata-like and A2G models provide empirical NLoS attenuation shapes; 3GPP and WINNER-style models motivate log-domain treatment of spread statistics and their dependence on visibility, ra"
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "key": "khawaja_survey",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "",
+        "raw_cite": "\\cite{rappaport,wocc2021,cost231,tr38901,winner2,khawaja_survey}",
+        "paragraph": "This section provides the entry point for the ML calibrated physical path loss and spread priors and the HARP-Net CKM residual architecture. The propagation ingredients follow classical FSPL, two-ray, empirical NLoS and large scale parameter models [citation] , while the residual network inherits dense prediction, FiLM conditioning and distribution aware reg"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "High level architecture",
+        "raw_cite": "\\cite{cost231,tr38901,alhourani2014,khawaja_survey}",
+        "paragraph": "In this chapter, a prior is a deterministic frozen estimator map computed before the neural residual correction. Three such estimators are used: itemize 0.16em 0pt 0.15em LoS path loss prior. This is the clearest physical branch: \\(PL_LoS=FSPL+C_2ray+_LoS+r\\). FSPL uses the 3D direct Tx-Rx distance; \\(C_2ray\\) comes from a coherent direct plus ground reflect"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{cost231,tr38901,alhourani2014,khawaja_survey}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "prior_detail_try78.tex",
+        "section": "Elevation-aware UAV envelope.",
+        "raw_cite": "\\cite{khawaja_survey,tr38901}",
+        "paragraph": "Elevation-aware UAV envelope. The A2G NLoS envelope is used as a conservative elevation dependent shape term for urban air to ground path loss. UAV channel models motivate elevation angle as an important modelling axis because obstruction and shadowing statistics vary with elevation [citation] . The particular constants below, however, are not used as a tran"
+      },
+      {
+        "file": "prior_detail_try78.tex",
+        "section": "Map derived morphology features",
+        "raw_cite": "\\cite{khawaja_survey,tr38901}",
+        "paragraph": "table[H] Term by term inventory of the NLoS calibration vector. tab:pl_nlos_term_inventory tabularxp3.1cm X X Term & Mathematical role & Physical interpretation \\\\ \\(PL^(0)(x)^2\\) & Quadratic basis term. & Lets the linear calibration bend the raw path loss curve when the raw model is systematically curved. \\\\ \\(PL^(0)(x)\\) & Linear raw prior term. & Keeps th"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "UAV and air to ground channel models",
+        "raw_cite": "\\cite{alhourani2014,khawaja_survey}",
+        "paragraph": "Classical terrestrial channel models assume the transmitter is at rooftop height or below. Unmanned aerial vehicle (UAV) base station scenarios introduce a third dimension: the UAV can fly from near ground level to several hundred metres. Al-Hourani et al.~ [citation] showed that the LoS probability increases monotonically with elevation angle and depends on"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "key": "saboor2025height",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "Related UAV evidence.",
+        "raw_cite": "\\cite{saboor2025height}",
+        "paragraph": "Related UAV evidence. Recent work by Saboor and Vinogradov [citation] makes this height dependence especially relevant for the present thesis: in simulated 26~GHz urban A2G links, LoS path loss remains close to a free space exponent, whereas NLoS path loss exponents and shadow fading evolve with ABS height and with urban layout. Vinogradov et al.\\ [citation]"
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "key": "vinogradov2026shadow",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "Related UAV evidence.",
+        "raw_cite": "\\cite{vinogradov2026shadow}",
+        "paragraph": "Related UAV evidence. Recent work by Saboor and Vinogradov [citation] makes this height dependence especially relevant for the present thesis: in simulated 26~GHz urban A2G links, LoS path loss remains close to a free space exponent, whereas NLoS path loss exponents and shadow fading evolve with ABS height and with urban layout. Vinogradov et al.\\ [citation]"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Geometry assisted and diffraction aware deep learning",
+        "raw_cite": "\\cite{vinogradov2026shadow}",
+        "paragraph": "Shadow projection methods [citation] occupy an intermediate point between stochastic LoS probability models and full ray tracing. They use 3D building geometry to project blocked ground regions from the aerial transmitter, producing a deterministic LoS map that is spatially consistent along user trajectories. The CKM dataset already provides a ray traced LoS"
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "key": "winner2",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "",
+        "raw_cite": "\\cite{rappaport,wocc2021,cost231,tr38901,winner2,khawaja_survey}",
+        "paragraph": "This section provides the entry point for the ML calibrated physical path loss and spread priors and the HARP-Net CKM residual architecture. The propagation ingredients follow classical FSPL, two-ray, empirical NLoS and large scale parameter models [citation] , while the residual network inherits dense prediction, FiLM conditioning and distribution aware reg"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "High level architecture",
+        "raw_cite": "\\cite{tr38901,winner2,yang2019a2gml,huang2025a2gtransformer}",
+        "paragraph": "In this chapter, a prior is a deterministic frozen estimator map computed before the neural residual correction. Three such estimators are used: itemize 0.16em 0pt 0.15em LoS path loss prior. This is the clearest physical branch: \\(PL_LoS=FSPL+C_2ray+_LoS+r\\). FSPL uses the 3D direct Tx-Rx distance; \\(C_2ray\\) comes from a coherent direct plus ground reflect"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{tr38901,winner2,yang2019a2gml,huang2025a2gtransformer}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "prior_detail_try79.tex",
+        "section": "Physical motivation for log domain modeling",
+        "raw_cite": "\\cite{tr38901,winner2}",
+        "paragraph": "Delay spread (DS) and angular spread (AS) are nonnegative, often zero inflated, and heavy tailed. Their empirical distributions are commonly modeled in the logarithmic domain in standard channel models [citation] . For a spread variable $y$, define: equation z(x) = (1 + y(x)), y(x) = ( z(x)) - 1 eq:log_transform_spread equation"
+      },
+      {
+        "file": "prior_detail_try79.tex",
+        "section": "Raw spread prior in log domain",
+        "raw_cite": "\\cite{tr38901,winner2}",
+        "paragraph": "The raw prior is not a 3GPP formula copied directly into CKM. Instead, it takes the 3GPP/WINNER lesson that spread statistics should be separated by propagation state and represented in log space [citation] , then adds CKM specific map morphology terms. UAV measurement studies also motivate the elevation angle dependence: low elevation links usually interact"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Spread definitions used later",
+        "raw_cite": "\\cite{winner2}",
+        "paragraph": "3GPP~TR~38.901 [citation] models both quantities as log normal random variables conditioned on the LoS/NLoS state and distance. WINNER~II follows the same broad log domain large scale parameter convention [citation] . In practice, the distributions of delay spread and angular spread are right skewed with a heavy exponential tail and often include a spike nea"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Emerging techniques and implications for this thesis",
+        "raw_cite": "\\cite{tr38901,winner2}",
+        "paragraph": "The spread targets add a second lesson. For delay spread and angular spread, the reviewed literature is stronger in modelling technique than in directly comparable dense-map results. 3GPP and WINNER style models treat spreads as log-domain large scale parameters conditioned on scenario, distance and LoS/NLoS state [citation] . Recent learning based A2G work"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Channel knowledge maps and dense radio map prediction",
+        "raw_cite": "\\cite{rappaport,goldsmith,cost231,alhourani2014,tr38901,winner2}",
+        "paragraph": "Classical propagation models supply the physical vocabulary used by the final method. Free-space path loss and two-ray propagation describe the LoS radial structure; COST231/Hata-like and A2G models provide empirical NLoS attenuation shapes; 3GPP and WINNER-style models motivate log-domain treatment of spread statistics and their dependence on visibility, ra"
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "key": "isola2017pix2pix",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{isola2017pix2pix,pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic,garciamarti2020mixture}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Image to image translation baselines",
+        "raw_cite": "\\cite{isola2017pix2pix}",
+        "paragraph": "The radio map prediction problem can be cast as an image to image regression: given an input topology map (and optionally a transmitter location channel), the model predicts a path loss map of the same spatial extent. The pix2pix framework [citation] established a general recipe for such tasks using a conditional GAN with a U-Net generator and a PatchGAN dis"
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "key": "radiounet2020",
+    "contexts": [
+      {
+        "file": "results.tex",
+        "section": "Comparison with closest state of the art metrics",
+        "raw_cite": "\\cite{radiounet2020}",
+        "paragraph": "table[!htbp] [Plain language comparison with closest path loss metrics.] Plain language comparison with the closest available path loss side metrics. No scalar indoor or link level spread predictor is included as a table row, because those numbers are not dense CKM-style map benchmarks. tab:soa_result_comparison 3pt 0.98 tabularx>p0.18 >p0.25 >p0.29 >X Refer"
+      },
+      {
+        "file": "results_compact.tex",
+        "section": "Comparison with nearby SOA metrics",
+        "raw_cite": "\\cite{radiounet2020}",
+        "paragraph": "table[htbp] Compact comparison with nearby path-loss-side metrics. tab:soa_result_comparison 3pt tabularxp0.25p0.25X Reference & PL-side metric & Reading / caveat \\\\ RadioUNet [citation] & 1.6dB-3.1dB equivalent PL RMSE & Final PL is in this band; no UAV height or spread targets. \\\\ RadioGUNet [citation] & 1.304dB DPM; 1.936dB IRT & Final PL lies between tho"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Image to image translation baselines",
+        "raw_cite": "\\cite{radiounet2020}",
+        "paragraph": "RadioUNet [citation] is the canonical convolutional path loss map baseline before the PMNet challenge family. In its accurate map settings it reports grey level RMSE values around \\(0.0203\\)-\\(0.0384\\); using the RadioMapSeer dataset 80dB path loss range [citation] gives an approximate 1.6dB-3.1dB path loss scale. RadioGUNet [citation] extends this outdoor R"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Deep learning, hybrid models and distribution aware heads",
+        "raw_cite": "\\cite{radiounet2020}",
+        "paragraph": "Deep radio map prediction is usually formulated as image to image regression. RadioUNet [citation] , PMNet [citation] , RadioGUNet [citation] , RMTransformer [citation] , PathFinder [citation] , Gao et al.\\ [citation] , ReVeal [citation] , and AIRMap [citation] are the closest methodological neighbours. They show that CNN, graph, attention, corridor-weightin"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Position of the final model",
+        "raw_cite": "\\cite{radiounet2020}",
+        "paragraph": "table[htbp] Compact state of the art positioning. tab:position 3pt tabularxp0.23p0.25X Family / reference & Relevant metric or capability & Caveat for this thesis \\\\ RadioUNet [citation] & Dense radio map CNN, about 1.6dB-3.1dB PL-scale error in its setting & No variable-height UAV and no DS/AS targets. \\\\ PMNet / ICASSP [citation] & Strong outdoor path-loss"
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "key": "radiogunet2025",
+    "contexts": [
+      {
+        "file": "results.tex",
+        "section": "Comparison with closest state of the art metrics",
+        "raw_cite": "\\cite{radiogunet2025}",
+        "paragraph": "table[!htbp] [Plain language comparison with closest path loss metrics.] Plain language comparison with the closest available path loss side metrics. No scalar indoor or link level spread predictor is included as a table row, because those numbers are not dense CKM-style map benchmarks. tab:soa_result_comparison 3pt 0.98 tabularx>p0.18 >p0.25 >p0.29 >X Refer"
+      },
+      {
+        "file": "results_compact.tex",
+        "section": "Comparison with nearby SOA metrics",
+        "raw_cite": "\\cite{radiogunet2025}",
+        "paragraph": "table[htbp] Compact comparison with nearby path-loss-side metrics. tab:soa_result_comparison 3pt tabularxp0.25p0.25X Reference & PL-side metric & Reading / caveat \\\\ RadioUNet [citation] & 1.6dB-3.1dB equivalent PL RMSE & Final PL is in this band; no UAV height or spread targets. \\\\ RadioGUNet [citation] & 1.304dB DPM; 1.936dB IRT & Final PL lies between tho"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Image to image translation baselines",
+        "raw_cite": "\\cite{radiogunet2025}",
+        "paragraph": "RadioUNet [citation] is the canonical convolutional path loss map baseline before the PMNet challenge family. In its accurate map settings it reports grey level RMSE values around \\(0.0203\\)-\\(0.0384\\); using the RadioMapSeer dataset 80dB path loss range [citation] gives an approximate 1.6dB-3.1dB path loss scale. RadioGUNet [citation] extends this outdoor R"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Why headline numbers cannot be compared directly",
+        "raw_cite": "\\cite{radiogunet2025}",
+        "paragraph": "table[ht] Evaluation condition comparison across representative methods. tab:fairness tabularxXcccc Method & Unseen city & Cont.\\ UAV height & $$512\\,px & Comparable? \\\\ PMNet / ICASSP~2023 [citation] & No & No & No & No \\\\ RMTransformer [citation] & No & No & No & No \\\\ RadioGUNet [citation] & Partial & No & No & Partial \\\\ AIRMap [citation] & Partial & No"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Deep learning, hybrid models and distribution aware heads",
+        "raw_cite": "\\cite{radiogunet2025}",
+        "paragraph": "Deep radio map prediction is usually formulated as image to image regression. RadioUNet [citation] , PMNet [citation] , RadioGUNet [citation] , RMTransformer [citation] , PathFinder [citation] , Gao et al.\\ [citation] , ReVeal [citation] , and AIRMap [citation] are the closest methodological neighbours. They show that CNN, graph, attention, corridor-weightin"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Position of the final model",
+        "raw_cite": "\\cite{radiogunet2025}",
+        "paragraph": "table[htbp] Compact state of the art positioning. tab:position 3pt tabularxp0.23p0.25X Family / reference & Relevant metric or capability & Caveat for this thesis \\\\ RadioUNet [citation] & Dense radio map CNN, about 1.6dB-3.1dB PL-scale error in its setting & No variable-height UAV and no DS/AS targets. \\\\ PMNet / ICASSP [citation] & Strong outdoor path-loss"
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "key": "pmnet_icassp2023",
+    "contexts": [
+      {
+        "file": "results.tex",
+        "section": "Comparison with closest state of the art metrics",
+        "raw_cite": "\\cite{pmnet_icassp2023,icassp2023challenge}",
+        "paragraph": "table[!htbp] [Plain language comparison with closest path loss metrics.] Plain language comparison with the closest available path loss side metrics. No scalar indoor or link level spread predictor is included as a table row, because those numbers are not dense CKM-style map benchmarks. tab:soa_result_comparison 3pt 0.98 tabularx>p0.18 >p0.25 >p0.29 >X Refer"
+      },
+      {
+        "file": "results_compact.tex",
+        "section": "Comparison with nearby SOA metrics",
+        "raw_cite": "\\cite{pmnet_icassp2023,icassp2023challenge}",
+        "paragraph": "table[htbp] Compact comparison with nearby path-loss-side metrics. tab:soa_result_comparison 3pt tabularxp0.25p0.25X Reference & PL-side metric & Reading / caveat \\\\ RadioUNet [citation] & 1.6dB-3.1dB equivalent PL RMSE & Final PL is in this band; no UAV height or spread targets. \\\\ RadioGUNet [citation] & 1.304dB DPM; 1.936dB IRT & Final PL lies between tho"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "PMNet and the ICASSP outdoor challenge family",
+        "raw_cite": "\\cite{pmnet_icassp2023}",
+        "paragraph": "PMNet [citation] was the winner of the first ICASSP 2023 Outdoor Pathloss Radio Map Prediction Challenge [citation] . It uses a deep encoder decoder with skip connections, trained and evaluated on the RadioMap3DSeer dataset~ [citation] . RadioMap3DSeer consists of city maps derived from urban 3D geometry with rooftop transmitters placed 3~m above the selecte"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "PMNet and the ICASSP outdoor challenge family",
+        "raw_cite": "\\cite{pmnet_icassp2023}",
+        "paragraph": "table[ht] [Approximate ICASSP 2023 outdoor RMSE scale.] Approximate dB scale RMSE references for ICASSP~2023 outdoor challenge methods. The normalised scores are taken from the challenge family and converted with the 36dB RadioMap3DSeer image window described in the dataset paper [citation] . tab:icassp2023corrected tabularlcc Method & RMSE (norm.) & Approx."
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Why headline numbers cannot be compared directly",
+        "raw_cite": "\\cite{pmnet_icassp2023}",
+        "paragraph": "table[ht] Evaluation condition comparison across representative methods. tab:fairness tabularxXcccc Method & Unseen city & Cont.\\ UAV height & $$512\\,px & Comparable? \\\\ PMNet / ICASSP~2023 [citation] & No & No & No & No \\\\ RMTransformer [citation] & No & No & No & No \\\\ RadioGUNet [citation] & Partial & No & No & Partial \\\\ AIRMap [citation] & Partial & No"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Position of the final model",
+        "raw_cite": "\\cite{pmnet_icassp2023,icassp2023challenge}",
+        "paragraph": "table[htbp] Compact state of the art positioning. tab:position 3pt tabularxp0.23p0.25X Family / reference & Relevant metric or capability & Caveat for this thesis \\\\ RadioUNet [citation] & Dense radio map CNN, about 1.6dB-3.1dB PL-scale error in its setting & No variable-height UAV and no DS/AS targets. \\\\ PMNet / ICASSP [citation] & Strong outdoor path-loss"
+      }
+    ]
+  },
+  {
+    "number": 22,
+    "key": "rmtransformer2025",
+    "contexts": [
+      {
+        "file": "results.tex",
+        "section": "Comparison with closest state of the art metrics",
+        "raw_cite": "\\cite{rmtransformer2025}",
+        "paragraph": "table[!htbp] [Plain language comparison with closest path loss metrics.] Plain language comparison with the closest available path loss side metrics. No scalar indoor or link level spread predictor is included as a table row, because those numbers are not dense CKM-style map benchmarks. tab:soa_result_comparison 3pt 0.98 tabularx>p0.18 >p0.25 >p0.29 >X Refer"
+      },
+      {
+        "file": "results_compact.tex",
+        "section": "Comparison with nearby SOA metrics",
+        "raw_cite": "\\cite{rmtransformer2025,pathfinder2025}",
+        "paragraph": "table[htbp] Compact comparison with nearby path-loss-side metrics. tab:soa_result_comparison 3pt tabularxp0.25p0.25X Reference & PL-side metric & Reading / caveat \\\\ RadioUNet [citation] & 1.6dB-3.1dB equivalent PL RMSE & Final PL is in this band; no UAV height or spread targets. \\\\ RadioGUNet [citation] & 1.304dB DPM; 1.936dB IRT & Final PL lies between tho"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Transformers, state space models, and attention based encoders",
+        "raw_cite": "\\cite{rmtransformer2025}",
+        "paragraph": "The RMTransformer [citation] evaluates a hybrid MaxViT/CNN encoder-decoder on the USC/PMNet dataset rather than on the ICASSP challenge test set. It reports a normalised RMSE of \\(7.1510^-3\\), compared with \\(1.0510^-2\\) for PMNet under a random 90/10 split on \\(256256\\) maps. The paper normalises received power or path loss, depending on the paper conventio"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Why headline numbers cannot be compared directly",
+        "raw_cite": "\\cite{rmtransformer2025}",
+        "paragraph": "table[ht] Evaluation condition comparison across representative methods. tab:fairness tabularxXcccc Method & Unseen city & Cont.\\ UAV height & $$512\\,px & Comparable? \\\\ PMNet / ICASSP~2023 [citation] & No & No & No & No \\\\ RMTransformer [citation] & No & No & No & No \\\\ RadioGUNet [citation] & Partial & No & No & Partial \\\\ AIRMap [citation] & Partial & No"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Deep learning, hybrid models and distribution aware heads",
+        "raw_cite": "\\cite{rmtransformer2025}",
+        "paragraph": "Deep radio map prediction is usually formulated as image to image regression. RadioUNet [citation] , PMNet [citation] , RadioGUNet [citation] , RMTransformer [citation] , PathFinder [citation] , Gao et al.\\ [citation] , ReVeal [citation] , and AIRMap [citation] are the closest methodological neighbours. They show that CNN, graph, attention, corridor-weightin"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Position of the final model",
+        "raw_cite": "\\cite{rmtransformer2025,pathfinder2025}",
+        "paragraph": "table[htbp] Compact state of the art positioning. tab:position 3pt tabularxp0.23p0.25X Family / reference & Relevant metric or capability & Caveat for this thesis \\\\ RadioUNet [citation] & Dense radio map CNN, about 1.6dB-3.1dB PL-scale error in its setting & No variable-height UAV and no DS/AS targets. \\\\ PMNet / ICASSP [citation] & Strong outdoor path-loss"
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "key": "wicopg2025",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "Transformers, state space models, and attention based encoders",
+        "raw_cite": "\\cite{wicopg2025,fmrme2026}",
+        "paragraph": "Recent attention and foundation model variants extend the effective receptive field of radio map predictors [citation] . This is useful when large scale urban context affects the prediction, but these methods normally need more data and compute than convolutional models and their reported benchmarks do not match the CKM UAV height setting."
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Foundation models for radio maps",
+        "raw_cite": "\\cite{wicopg2025}",
+        "paragraph": "The most recent shift in the literature is towards wireless channel foundation models pretrained on large heterogeneous datasets before task specific fine tuning. WiCo-PG [citation] uses dual VQGANs and a transformer with frequency-guided mixture-of-experts. It exploits RGB drone camera images as an auxiliary modality and achieves an NMSE of~0.012 on its con"
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "key": "fmrme2026",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "Transformers, state space models, and attention based encoders",
+        "raw_cite": "\\cite{wicopg2025,fmrme2026}",
+        "paragraph": "Recent attention and foundation model variants extend the effective receptive field of radio map predictors [citation] . This is useful when large scale urban context affects the prediction, but these methods normally need more data and compute than convolutional models and their reported benchmarks do not match the CKM UAV height setting."
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Foundation models for radio maps",
+        "raw_cite": "\\cite{fmrme2026}",
+        "paragraph": "The most recent shift in the literature is towards wireless channel foundation models pretrained on large heterogeneous datasets before task specific fine tuning. WiCo-PG [citation] uses dual VQGANs and a transformer with frequency-guided mixture-of-experts. It exploits RGB drone camera images as an auxiliary modality and achieves an NMSE of~0.012 on its con"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Emerging techniques and implications for this thesis",
+        "raw_cite": "\\cite{fmrme2026}",
+        "paragraph": "Across the benchmarks reviewed here, the recurring $9$ to $10\\,dB$ error band in harder NLoS heavy settings reflects the difficulty of inferring volumetric propagation from a 2D building height map. The most plausible routes beyond that wall are richer geometry and diffraction priors [citation] , PDE style physics losses such as ReVeal [citation] , sparse ta"
+      }
+    ]
+  },
+  {
+    "number": 25,
+    "key": "radiolam2025",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "Foundation models for radio maps",
+        "raw_cite": "\\cite{radiolam2025}",
+        "paragraph": "The most recent shift in the literature is towards wireless channel foundation models pretrained on large heterogeneous datasets before task specific fine tuning. WiCo-PG [citation] uses dual VQGANs and a transformer with frequency-guided mixture-of-experts. It exploits RGB drone camera images as an auxiliary modality and achieves an NMSE of~0.012 on its con"
+      }
+    ]
+  },
+  {
+    "number": 26,
+    "key": "geomDL2024",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "Geometry assisted and diffraction aware deep learning",
+        "raw_cite": "\\cite{geomDL2024}",
+        "paragraph": "Geometry assisted diffraction features~ [citation] use virtual obstacles, multi screen knife edge propagation, and scattering aware local geometry cues to inject physically meaningful NLoS information into a deep model. This is closely related to the motivation behind the diffraction-prior experiments in this thesis, although the implementation used later is"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Emerging techniques and implications for this thesis",
+        "raw_cite": "\\cite{geomDL2024}",
+        "paragraph": "Across the benchmarks reviewed here, the recurring $9$ to $10\\,dB$ error band in harder NLoS heavy settings reflects the difficulty of inferring volumetric propagation from a 2D building height map. The most plausible routes beyond that wall are richer geometry and diffraction priors [citation] , PDE style physics losses such as ReVeal [citation] , sparse ta"
+      }
+    ]
+  },
+  {
+    "number": 27,
+    "key": "reveal2025",
+    "contexts": [
+      {
+        "file": "results.tex",
+        "section": "Comparison with closest state of the art metrics",
+        "raw_cite": "\\cite{reveal2025}",
+        "paragraph": "table[!htbp] [Plain language comparison with closest path loss metrics.] Plain language comparison with the closest available path loss side metrics. No scalar indoor or link level spread predictor is included as a table row, because those numbers are not dense CKM-style map benchmarks. tab:soa_result_comparison 3pt 0.98 tabularx>p0.18 >p0.25 >p0.29 >X Refer"
+      },
+      {
+        "file": "results_compact.tex",
+        "section": "Comparison with nearby SOA metrics",
+        "raw_cite": "\\cite{reveal2025}",
+        "paragraph": "table[htbp] Compact comparison with nearby path-loss-side metrics. tab:soa_result_comparison 3pt tabularxp0.25p0.25X Reference & PL-side metric & Reading / caveat \\\\ RadioUNet [citation] & 1.6dB-3.1dB equivalent PL RMSE & Final PL is in this band; no UAV height or spread targets. \\\\ RadioGUNet [citation] & 1.304dB DPM; 1.936dB IRT & Final PL lies between tho"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Physics informed neural networks",
+        "raw_cite": "\\cite{reveal2025}",
+        "paragraph": "The ReVeal architecture [citation] operates as a physics informed neural network (PINN) by incorporating a second order PDE residual as an auxiliary loss term. This penalises predictions with inconsistent local spatial curvature under the derived propagation constraint, reducing corner transition artefacts. ReVeal achieves~$1.95\\,dB$ RMSE in rural scenarios"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Emerging techniques and implications for this thesis",
+        "raw_cite": "\\cite{reveal2025}",
+        "paragraph": "Across the benchmarks reviewed here, the recurring $9$ to $10\\,dB$ error band in harder NLoS heavy settings reflects the difficulty of inferring volumetric propagation from a 2D building height map. The most plausible routes beyond that wall are richer geometry and diffraction priors [citation] , PDE style physics losses such as ReVeal [citation] , sparse ta"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Deep learning, hybrid models and distribution aware heads",
+        "raw_cite": "\\cite{reveal2025}",
+        "paragraph": "Deep radio map prediction is usually formulated as image to image regression. RadioUNet [citation] , PMNet [citation] , RadioGUNet [citation] , RMTransformer [citation] , PathFinder [citation] , Gao et al.\\ [citation] , ReVeal [citation] , and AIRMap [citation] are the closest methodological neighbours. They show that CNN, graph, attention, corridor-weightin"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Position of the final model",
+        "raw_cite": "\\cite{reveal2025}",
+        "paragraph": "table[htbp] Compact state of the art positioning. tab:position 3pt tabularxp0.23p0.25X Family / reference & Relevant metric or capability & Caveat for this thesis \\\\ RadioUNet [citation] & Dense radio map CNN, about 1.6dB-3.1dB PL-scale error in its setting & No variable-height UAV and no DS/AS targets. \\\\ PMNet / ICASSP [citation] & Strong outdoor path-loss"
+      }
+    ]
+  },
+  {
+    "number": 28,
+    "key": "huang2025a2gtransformer",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "High level architecture",
+        "raw_cite": "\\cite{tr38901,winner2,yang2019a2gml,huang2025a2gtransformer}",
+        "paragraph": "In this chapter, a prior is a deterministic frozen estimator map computed before the neural residual correction. Three such estimators are used: itemize 0.16em 0pt 0.15em LoS path loss prior. This is the clearest physical branch: \\(PL_LoS=FSPL+C_2ray+_LoS+r\\). FSPL uses the 3D direct Tx-Rx distance; \\(C_2ray\\) comes from a coherent direct plus ground reflect"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{tr38901,winner2,yang2019a2gml,huang2025a2gtransformer}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "results.tex",
+        "section": "Comparison with closest state of the art metrics",
+        "raw_cite": "\\cite{huang2025a2gtransformer}",
+        "paragraph": "table[!htbp] [Spread side comparison with nearby state of the art.] Spread side comparison with nearby state of the art channel parameter prediction papers. Rows with external papers are scope comparisons, not direct rankings against the dense CKM map task. tab:spread_soa_context 3pt 0.98 tabularx>p0.19 >p0.30 >p0.24 >X Reference & Spread side output and rep"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Deep learning for wideband channel statistics",
+        "raw_cite": "\\cite{huang2025a2gtransformer}",
+        "paragraph": "The closest external quantitative references for spreads are therefore scalar channel characteristic predictors rather than dense CKM-map benchmarks. Huang et al.\\ [citation] are not used in the results comparison tables because their Wireless InSite campus dataset predicts scalar A2G link characteristics from coordinates and link features, not dense CKM map"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Emerging techniques and implications for this thesis",
+        "raw_cite": "\\cite{yang2019a2gml,huang2025a2gtransformer}",
+        "paragraph": "The spread targets add a second lesson. For delay spread and angular spread, the reviewed literature is stronger in modelling technique than in directly comparable dense-map results. 3GPP and WINNER style models treat spreads as log-domain large scale parameters conditioned on scenario, distance and LoS/NLoS state [citation] . Recent learning based A2G work"
+      }
+    ]
+  },
+  {
+    "number": 29,
+    "key": "kendall2017uncertainties",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "",
+        "raw_cite": "\\cite{pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic}",
+        "paragraph": "This section provides the entry point for the ML calibrated physical path loss and spread priors and the HARP-Net CKM residual architecture. The propagation ingredients follow classical FSPL, two-ray, empirical NLoS and large scale parameter models [citation] , while the residual network inherits dense prediction, FiLM conditioning and distribution aware reg"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{isola2017pix2pix,pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic,garciamarti2020mixture}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Heteroscedastic uncertainty",
+        "raw_cite": "\\cite{kendall2017uncertainties}",
+        "paragraph": "Kendall and Gal [citation] established the framework for heteroscedastic neural networks in computer vision: predict both a mean output $(x)$ and a log variance $ ^2(x)$, optimising the negative log likelihood (NLL) equation L = ( - y)^2^2 + ^2. equation Pixels with high aleatoric uncertainty (deep NLoS shadows, building edges) receive lower effective weight"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Emerging techniques and implications for this thesis",
+        "raw_cite": "\\cite{kendall2017uncertainties,saleh2021probabilistic,garciamarti2020mixture}",
+        "paragraph": "The spread targets add a second lesson. For delay spread and angular spread, the reviewed literature is stronger in modelling technique than in directly comparable dense-map results. 3GPP and WINNER style models treat spreads as log-domain large scale parameters conditioned on scenario, distance and LoS/NLoS state [citation] . Recent learning based A2G work"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Deep learning, hybrid models and distribution aware heads",
+        "raw_cite": "\\cite{kendall2017uncertainties,saleh2021probabilistic,\ngarciamarti2020mixture,radiodiff2025}",
+        "paragraph": "Distribution aware prediction is the other essential ingredient. A single MSE head assumes that the conditional target is well summarized by its mean. The late project diagnostics showed that this was false: LoS and NLoS path loss marginals are different, and delay/angular spread maps contain a near zero LoS spike plus NLoS heavy tails. Heteroscedastic losse"
+      }
+    ]
+  },
+  {
+    "number": 30,
+    "key": "saleh2021probabilistic",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "",
+        "raw_cite": "\\cite{pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic}",
+        "paragraph": "This section provides the entry point for the ML calibrated physical path loss and spread priors and the HARP-Net CKM residual architecture. The propagation ingredients follow classical FSPL, two-ray, empirical NLoS and large scale parameter models [citation] , while the residual network inherits dense prediction, FiLM conditioning and distribution aware reg"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{isola2017pix2pix,pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic,garciamarti2020mixture}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Gaussian mixture model heads",
+        "raw_cite": "\\cite{saleh2021probabilistic}",
+        "paragraph": "Beyond heteroscedastic Gaussians, the GMM head allows multimodal output distributions. Mixture density networks have already appeared in wireless channel modelling: Saleh et al.\\ [citation] use an MDN to predict probabilistic mmWave path loss distributions, Garcia Marti et al.\\ [citation] learn a stochastic Gaussian mixture channel model for physical layer d"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Emerging techniques and implications for this thesis",
+        "raw_cite": "\\cite{kendall2017uncertainties,saleh2021probabilistic,garciamarti2020mixture}",
+        "paragraph": "The spread targets add a second lesson. For delay spread and angular spread, the reviewed literature is stronger in modelling technique than in directly comparable dense-map results. 3GPP and WINNER style models treat spreads as log-domain large scale parameters conditioned on scenario, distance and LoS/NLoS state [citation] . Recent learning based A2G work"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Deep learning, hybrid models and distribution aware heads",
+        "raw_cite": "\\cite{kendall2017uncertainties,saleh2021probabilistic,\ngarciamarti2020mixture,radiodiff2025}",
+        "paragraph": "Distribution aware prediction is the other essential ingredient. A single MSE head assumes that the conditional target is well summarized by its mean. The late project diagnostics showed that this was false: LoS and NLoS path loss marginals are different, and delay/angular spread maps contain a near zero LoS spike plus NLoS heavy tails. Heteroscedastic losse"
+      }
+    ]
+  },
+  {
+    "number": 31,
+    "key": "garciamarti2020mixture",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{isola2017pix2pix,pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic,garciamarti2020mixture}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Gaussian mixture model heads",
+        "raw_cite": "\\cite{garciamarti2020mixture}",
+        "paragraph": "Beyond heteroscedastic Gaussians, the GMM head allows multimodal output distributions. Mixture density networks have already appeared in wireless channel modelling: Saleh et al.\\ [citation] use an MDN to predict probabilistic mmWave path loss distributions, Garcia Marti et al.\\ [citation] learn a stochastic Gaussian mixture channel model for physical layer d"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Emerging techniques and implications for this thesis",
+        "raw_cite": "\\cite{kendall2017uncertainties,saleh2021probabilistic,garciamarti2020mixture}",
+        "paragraph": "The spread targets add a second lesson. For delay spread and angular spread, the reviewed literature is stronger in modelling technique than in directly comparable dense-map results. 3GPP and WINNER style models treat spreads as log-domain large scale parameters conditioned on scenario, distance and LoS/NLoS state [citation] . Recent learning based A2G work"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Deep learning, hybrid models and distribution aware heads",
+        "raw_cite": "\\cite{kendall2017uncertainties,saleh2021probabilistic,\ngarciamarti2020mixture,radiodiff2025}",
+        "paragraph": "Distribution aware prediction is the other essential ingredient. A single MSE head assumes that the conditional target is well summarized by its mean. The late project diagnostics showed that this was false: LoS and NLoS path loss marginals are different, and delay/angular spread maps contain a near zero LoS spike plus NLoS heavy tails. Heteroscedastic losse"
+      }
+    ]
+  },
+  {
+    "number": 32,
+    "key": "lee2024timevarying",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "Gaussian mixture model heads",
+        "raw_cite": "\\cite{lee2024timevarying}",
+        "paragraph": "Beyond heteroscedastic Gaussians, the GMM head allows multimodal output distributions. Mixture density networks have already appeared in wireless channel modelling: Saleh et al.\\ [citation] use an MDN to predict probabilistic mmWave path loss distributions, Garcia Marti et al.\\ [citation] learn a stochastic Gaussian mixture channel model for physical layer d"
+      }
+    ]
+  },
+  {
+    "number": 33,
+    "key": "radiodiff2025",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "Stochastic diffusion models",
+        "raw_cite": "\\cite{radiodiff2025}",
+        "paragraph": "Conditional diffusion models applied to radio maps [citation] generate physically plausible stochastic variations in deep shadow zones rather than predicting a single blurry mean. The iterative denoising procedure can be conditioned on topology maps, transmitter locations, and environment features. RadioDiff reports lower normalised RMSE and higher image qua"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Emerging techniques and implications for this thesis",
+        "raw_cite": "\\cite{radiodiff2025}",
+        "paragraph": "Across the benchmarks reviewed here, the recurring $9$ to $10\\,dB$ error band in harder NLoS heavy settings reflects the difficulty of inferring volumetric propagation from a 2D building height map. The most plausible routes beyond that wall are richer geometry and diffraction priors [citation] , PDE style physics losses such as ReVeal [citation] , sparse ta"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Deep learning, hybrid models and distribution aware heads",
+        "raw_cite": "\\cite{kendall2017uncertainties,saleh2021probabilistic,\ngarciamarti2020mixture,radiodiff2025}",
+        "paragraph": "Distribution aware prediction is the other essential ingredient. A single MSE head assumes that the conditional target is well summarized by its mean. The late project diagnostics showed that this was false: LoS and NLoS path loss marginals are different, and delay/angular spread maps contain a near zero LoS spike plus NLoS heavy tails. Heteroscedastic losse"
+      }
+    ]
+  },
+  {
+    "number": 34,
+    "key": "perez2018film",
+    "contexts": [
+      {
+        "file": "methodology_compact.tex",
+        "section": "Final pipeline",
+        "raw_cite": "\\cite{perez2018film}",
+        "paragraph": "The model receives nine aligned channels: topology, LoS mask, NLoS mask, ground mask, combined path loss prior, LoS path loss prior, NLoS path loss prior, delay spread prior and angular spread prior. The scalar \\(h_tx\\) is encoded with sinusoidal features and injected through FiLM modulation [citation] . The network therefore learns a residual around already"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "",
+        "raw_cite": "\\cite{pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic}",
+        "paragraph": "This section provides the entry point for the ML calibrated physical path loss and spread priors and the HARP-Net CKM residual architecture. The propagation ingredients follow classical FSPL, two-ray, empirical NLoS and large scale parameter models [citation] , while the residual network inherits dense prediction, FiLM conditioning and distribution aware reg"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{isola2017pix2pix,pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic,garciamarti2020mixture}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Height conditioning for the residual model",
+        "raw_cite": "\\cite{perez2018film}",
+        "paragraph": "Feature wise linear modulation (FiLM) [citation] conditions the activations of a neural network on a scalar or vector input by applying learned affine transforms $(c) h + (c)$ to intermediate feature maps. Sinusoidal positional encoding of the UAV height scalar (using log spaced frequencies over the full 12 to 478~m range) is fed into FiLM layers at multiple"
+      }
+    ]
+  },
+  {
+    "number": 35,
+    "key": "izmailov2018swa",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "Height conditioning for the residual model",
+        "raw_cite": "\\cite{izmailov2018swa}",
+        "paragraph": "Two other tools used during development, stochastic weight averaging (SWA) [citation] and exponential moving average (EMA) tracking, are kept in this review because they explain some of the training choices in Appendix~app:detailed_attempt_log. SWA averages model weights from later training checkpoints in order to select a flatter region of the loss landscap"
+      }
+    ]
+  },
+  {
+    "number": 36,
+    "key": "airmap2025",
+    "contexts": [
+      {
+        "file": "results.tex",
+        "section": "Comparison with closest state of the art metrics",
+        "raw_cite": "\\cite{airmap2025}",
+        "paragraph": "table[!htbp] [Plain language comparison with closest path loss metrics.] Plain language comparison with the closest available path loss side metrics. No scalar indoor or link level spread predictor is included as a table row, because those numbers are not dense CKM-style map benchmarks. tab:soa_result_comparison 3pt 0.98 tabularx>p0.18 >p0.25 >p0.29 >X Refer"
+      },
+      {
+        "file": "results_compact.tex",
+        "section": "Comparison with nearby SOA metrics",
+        "raw_cite": "\\cite{airmap2025}",
+        "paragraph": "table[htbp] Compact comparison with nearby path-loss-side metrics. tab:soa_result_comparison 3pt tabularxp0.25p0.25X Reference & PL-side metric & Reading / caveat \\\\ RadioUNet [citation] & 1.6dB-3.1dB equivalent PL RMSE & Final PL is in this band; no UAV height or spread targets. \\\\ RadioGUNet [citation] & 1.304dB DPM; 1.936dB IRT & Final PL lies between tho"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Why headline numbers cannot be compared directly",
+        "raw_cite": "\\cite{airmap2025}",
+        "paragraph": "table[ht] Evaluation condition comparison across representative methods. tab:fairness tabularxXcccc Method & Unseen city & Cont.\\ UAV height & $$512\\,px & Comparable? \\\\ PMNet / ICASSP~2023 [citation] & No & No & No & No \\\\ RMTransformer [citation] & No & No & No & No \\\\ RadioGUNet [citation] & Partial & No & No & Partial \\\\ AIRMap [citation] & Partial & No"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "AIRMap: adaptive digital twin radio maps",
+        "raw_cite": "\\cite{airmap2025}",
+        "paragraph": "AIRMap [citation] is an adaptive U-Net autoencoder processing fixed \\(200200\\) elevation-map tensors with variable spatial resolution (2.5-15~m/pixel, corresponding to 500m-3km per side) for ultra low latency digital twin synchronisation. It reports sub-4dB RMSE against ray traced path gain maps, and a separate lightweight calibration step using 20\\,\\ measur"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Deep learning, hybrid models and distribution aware heads",
+        "raw_cite": "\\cite{airmap2025}",
+        "paragraph": "Deep radio map prediction is usually formulated as image to image regression. RadioUNet [citation] , PMNet [citation] , RadioGUNet [citation] , RMTransformer [citation] , PathFinder [citation] , Gao et al.\\ [citation] , ReVeal [citation] , and AIRMap [citation] are the closest methodological neighbours. They show that CNN, graph, attention, corridor-weightin"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Position of the final model",
+        "raw_cite": "\\cite{airmap2025}",
+        "paragraph": "table[htbp] Compact state of the art positioning. tab:position 3pt tabularxp0.23p0.25X Family / reference & Relevant metric or capability & Caveat for this thesis \\\\ RadioUNet [citation] & Dense radio map CNN, about 1.6dB-3.1dB PL-scale error in its setting & No variable-height UAV and no DS/AS targets. \\\\ PMNet / ICASSP [citation] & Strong outdoor path-loss"
+      }
+    ]
+  },
+  {
+    "number": 37,
+    "key": "gao2026",
+    "contexts": [
+      {
+        "file": "results.tex",
+        "section": "Comparison with closest state of the art metrics",
+        "raw_cite": "\\cite{gao2026}",
+        "paragraph": "table[!htbp] [Plain language comparison with closest path loss metrics.] Plain language comparison with the closest available path loss side metrics. No scalar indoor or link level spread predictor is included as a table row, because those numbers are not dense CKM-style map benchmarks. tab:soa_result_comparison 3pt 0.98 tabularx>p0.18 >p0.25 >p0.29 >X Refer"
+      },
+      {
+        "file": "results_compact.tex",
+        "section": "Comparison with nearby SOA metrics",
+        "raw_cite": "\\cite{gao2026}",
+        "paragraph": "table[htbp] Compact comparison with nearby path-loss-side metrics. tab:soa_result_comparison 3pt tabularxp0.25p0.25X Reference & PL-side metric & Reading / caveat \\\\ RadioUNet [citation] & 1.6dB-3.1dB equivalent PL RMSE & Final PL is in this band; no UAV height or spread targets. \\\\ RadioGUNet [citation] & 1.304dB DPM; 1.936dB IRT & Final PL lies between tho"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Why headline numbers cannot be compared directly",
+        "raw_cite": "\\cite{gao2026}",
+        "paragraph": "table[ht] Evaluation condition comparison across representative methods. tab:fairness tabularxXcccc Method & Unseen city & Cont.\\ UAV height & $$512\\,px & Comparable? \\\\ PMNet / ICASSP~2023 [citation] & No & No & No & No \\\\ RMTransformer [citation] & No & No & No & No \\\\ RadioGUNet [citation] & Partial & No & No & Partial \\\\ AIRMap [citation] & Partial & No"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Gao et al.: multilayer segmentation with corridor weighting",
+        "raw_cite": "\\cite{gao2026}",
+        "paragraph": "Gao et al.\\ [citation] propose a ResNet based outdoor path loss predictor with Tx depth maps, Rx depth maps, a distance map, and a weighting map that emphasises the direct Tx/Rx corridor. Using the ICASSP~2023 outdoor data, Table~III of the paper reports their method at 5.59dB RMSE, compared to 8.09dB for PPNet, 9.56dB for RPNet, and 8.72dB for a twelve laye"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Deep learning, hybrid models and distribution aware heads",
+        "raw_cite": "\\cite{gao2026}",
+        "paragraph": "Deep radio map prediction is usually formulated as image to image regression. RadioUNet [citation] , PMNet [citation] , RadioGUNet [citation] , RMTransformer [citation] , PathFinder [citation] , Gao et al.\\ [citation] , ReVeal [citation] , and AIRMap [citation] are the closest methodological neighbours. They show that CNN, graph, attention, corridor-weightin"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Position of the final model",
+        "raw_cite": "\\cite{gao2026}",
+        "paragraph": "table[htbp] Compact state of the art positioning. tab:position 3pt tabularxp0.23p0.25X Family / reference & Relevant metric or capability & Caveat for this thesis \\\\ RadioUNet [citation] & Dense radio map CNN, about 1.6dB-3.1dB PL-scale error in its setting & No variable-height UAV and no DS/AS targets. \\\\ PMNet / ICASSP [citation] & Strong outdoor path-loss"
+      }
+    ]
+  },
+  {
+    "number": 38,
+    "key": "tarhouni2025",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "Why headline numbers cannot be compared directly",
+        "raw_cite": "\\cite{tarhouni2025}",
+        "paragraph": "table[ht] Evaluation condition comparison across representative methods. tab:fairness tabularxXcccc Method & Unseen city & Cont.\\ UAV height & $$512\\,px & Comparable? \\\\ PMNet / ICASSP~2023 [citation] & No & No & No & No \\\\ RMTransformer [citation] & No & No & No & No \\\\ RadioGUNet [citation] & Partial & No & No & Partial \\\\ AIRMap [citation] & Partial & No"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Tarhouni et al.: measured suburban path loss prediction",
+        "raw_cite": "\\cite{tarhouni2025}",
+        "paragraph": "Tarhouni et al.\\ [citation] study machine learning based path loss prediction in a sub-6GHz suburban campus. It is useful because the errors are in physical dB and tied to a concrete environment, but it is terrestrial, lower frequency, and not a dense UAV CKM with delay- and angular spread targets. Its role here is qualitative: real environment generalisatio"
+      }
+    ]
+  },
+  {
+    "number": 39,
+    "key": "pathfinder2025",
+    "contexts": [
+      {
+        "file": "results.tex",
+        "section": "Comparison with closest state of the art metrics",
+        "raw_cite": "\\cite{pathfinder2025}",
+        "paragraph": "table[!htbp] [Plain language comparison with closest path loss metrics.] Plain language comparison with the closest available path loss side metrics. No scalar indoor or link level spread predictor is included as a table row, because those numbers are not dense CKM-style map benchmarks. tab:soa_result_comparison 3pt 0.98 tabularx>p0.18 >p0.25 >p0.29 >X Refer"
+      },
+      {
+        "file": "results_compact.tex",
+        "section": "Comparison with nearby SOA metrics",
+        "raw_cite": "\\cite{rmtransformer2025,pathfinder2025}",
+        "paragraph": "table[htbp] Compact comparison with nearby path-loss-side metrics. tab:soa_result_comparison 3pt tabularxp0.25p0.25X Reference & PL-side metric & Reading / caveat \\\\ RadioUNet [citation] & 1.6dB-3.1dB equivalent PL RMSE & Final PL is in this band; no UAV height or spread targets. \\\\ RadioGUNet [citation] & 1.304dB DPM; 1.936dB IRT & Final PL lies between tho"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Why headline numbers cannot be compared directly",
+        "raw_cite": "\\cite{pathfinder2025}",
+        "paragraph": "table[ht] Evaluation condition comparison across representative methods. tab:fairness tabularxXcccc Method & Unseen city & Cont.\\ UAV height & $$512\\,px & Comparable? \\\\ PMNet / ICASSP~2023 [citation] & No & No & No & No \\\\ RMTransformer [citation] & No & No & No & No \\\\ RadioGUNet [citation] & Partial & No & No & Partial \\\\ AIRMap [citation] & Partial & No"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "PathFinder: multi transmitter domain adaptation",
+        "raw_cite": "\\cite{pathfinder2025}",
+        "paragraph": "PathFinder [citation] tackles distribution shift via disentangled feature encoding and mask guided low rank attention, reporting the lowest MSE of~$0.1068$ and RMSE of~$0.3263$ on unseen rural datasets. On the RadioMap3DSeer DS-RPP split, its normalised RMSE of~$0.0331$ can be approximately converted with the same 36dB RadioMap3DSeer image window convention,"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Deep learning, hybrid models and distribution aware heads",
+        "raw_cite": "\\cite{pathfinder2025}",
+        "paragraph": "Deep radio map prediction is usually formulated as image to image regression. RadioUNet [citation] , PMNet [citation] , RadioGUNet [citation] , RMTransformer [citation] , PathFinder [citation] , Gao et al.\\ [citation] , ReVeal [citation] , and AIRMap [citation] are the closest methodological neighbours. They show that CNN, graph, attention, corridor-weightin"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Position of the final model",
+        "raw_cite": "\\cite{rmtransformer2025,pathfinder2025}",
+        "paragraph": "table[htbp] Compact state of the art positioning. tab:position 3pt tabularxp0.23p0.25X Family / reference & Relevant metric or capability & Caveat for this thesis \\\\ RadioUNet [citation] & Dense radio map CNN, about 1.6dB-3.1dB PL-scale error in its setting & No variable-height UAV and no DS/AS targets. \\\\ PMNet / ICASSP [citation] & Strong outdoor path-loss"
+      }
+    ]
+  },
+  {
+    "number": 40,
+    "key": "icassp2025indoor",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "ICASSP 2025 indoor challenge",
+        "raw_cite": "\\cite{icassp2025indoor}",
+        "paragraph": "The ICASSP 2025 Indoor Pathloss Challenge [citation] presents a structurally different problem, dense wall penetration NLoS effects in bounded interior spaces, but its public results are a useful warning against overinterpreting sub-2dB outdoor challenge numbers. The official result page reports that the winning SIP2Net submission obtains a weighted average"
+      }
+    ]
+  },
+  {
+    "number": 41,
+    "key": "indoor2025results",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "ICASSP 2025 indoor challenge",
+        "raw_cite": "\\cite{indoor2025results,sip2net2025,ippnet2025,transPathNet2025}",
+        "paragraph": "The ICASSP 2025 Indoor Pathloss Challenge [citation] presents a structurally different problem, dense wall penetration NLoS effects in bounded interior spaces, but its public results are a useful warning against overinterpreting sub-2dB outdoor challenge numbers. The official result page reports that the winning SIP2Net submission obtains a weighted average"
+      }
+    ]
+  },
+  {
+    "number": 42,
+    "key": "sip2net2025",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "ICASSP 2025 indoor challenge",
+        "raw_cite": "\\cite{indoor2025results,sip2net2025,ippnet2025,transPathNet2025}",
+        "paragraph": "The ICASSP 2025 Indoor Pathloss Challenge [citation] presents a structurally different problem, dense wall penetration NLoS effects in bounded interior spaces, but its public results are a useful warning against overinterpreting sub-2dB outdoor challenge numbers. The official result page reports that the winning SIP2Net submission obtains a weighted average"
+      }
+    ]
+  },
+  {
+    "number": 43,
+    "key": "ippnet2025",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "ICASSP 2025 indoor challenge",
+        "raw_cite": "\\cite{indoor2025results,sip2net2025,ippnet2025,transPathNet2025}",
+        "paragraph": "The ICASSP 2025 Indoor Pathloss Challenge [citation] presents a structurally different problem, dense wall penetration NLoS effects in bounded interior spaces, but its public results are a useful warning against overinterpreting sub-2dB outdoor challenge numbers. The official result page reports that the winning SIP2Net submission obtains a weighted average"
+      }
+    ]
+  },
+  {
+    "number": 44,
+    "key": "transPathNet2025",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "ICASSP 2025 indoor challenge",
+        "raw_cite": "\\cite{indoor2025results,sip2net2025,ippnet2025,transPathNet2025}",
+        "paragraph": "The ICASSP 2025 Indoor Pathloss Challenge [citation] presents a structurally different problem, dense wall penetration NLoS effects in bounded interior spaces, but its public results are a useful warning against overinterpreting sub-2dB outdoor challenge numbers. The official result page reports that the winning SIP2Net submission obtains a weighted average"
+      }
+    ]
+  },
+  {
+    "number": 45,
+    "key": "radiopit2025",
+    "contexts": [
+      {
+        "file": "state_of_art.tex",
+        "section": "Emerging techniques and implications for this thesis",
+        "raw_cite": "\\cite{radiopit2025}",
+        "paragraph": "Across the benchmarks reviewed here, the recurring $9$ to $10\\,dB$ error band in harder NLoS heavy settings reflects the difficulty of inferring volumetric propagation from a 2D building height map. The most plausible routes beyond that wall are richer geometry and diffraction priors [citation] , PDE style physics losses such as ReVeal [citation] , sparse ta"
+      }
+    ]
+  },
+  {
+    "number": 46,
+    "key": "yang2019a2gml",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "High level architecture",
+        "raw_cite": "\\cite{tr38901,winner2,yang2019a2gml,huang2025a2gtransformer}",
+        "paragraph": "In this chapter, a prior is a deterministic frozen estimator map computed before the neural residual correction. Three such estimators are used: itemize 0.16em 0pt 0.15em LoS path loss prior. This is the clearest physical branch: \\(PL_LoS=FSPL+C_2ray+_LoS+r\\). FSPL uses the 3D direct Tx-Rx distance; \\(C_2ray\\) comes from a coherent direct plus ground reflect"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{tr38901,winner2,yang2019a2gml,huang2025a2gtransformer}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "results.tex",
+        "section": "Comparison with closest state of the art metrics",
+        "raw_cite": "\\cite{yang2019a2gml}",
+        "paragraph": "table[!htbp] [Spread side comparison with nearby state of the art.] Spread side comparison with nearby state of the art channel parameter prediction papers. Rows with external papers are scope comparisons, not direct rankings against the dense CKM map task. tab:spread_soa_context 3pt 0.98 tabularx>p0.19 >p0.30 >p0.24 >X Reference & Spread side output and rep"
+      },
+      {
+        "file": "state_of_art.tex",
+        "section": "Emerging techniques and implications for this thesis",
+        "raw_cite": "\\cite{yang2019a2gml,huang2025a2gtransformer}",
+        "paragraph": "The spread targets add a second lesson. For delay spread and angular spread, the reviewed literature is stronger in modelling technique than in directly comparable dense-map results. 3GPP and WINNER style models treat spreads as log-domain large scale parameters conditioned on scenario, distance and LoS/NLoS state [citation] . Recent learning based A2G work"
+      }
+    ]
+  },
+  {
+    "number": 47,
+    "key": "pmnet2023",
+    "contexts": [
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "",
+        "raw_cite": "\\cite{pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic}",
+        "paragraph": "This section provides the entry point for the ML calibrated physical path loss and spread priors and the HARP-Net CKM residual architecture. The propagation ingredients follow classical FSPL, two-ray, empirical NLoS and large scale parameter models [citation] , while the residual network inherits dense prediction, FiLM conditioning and distribution aware reg"
+      },
+      {
+        "file": "prior_detail_overview.tex",
+        "section": "Literature ingredients and thesis adaptations",
+        "raw_cite": "\\cite{isola2017pix2pix,pmnet2023,perez2018film,kendall2017uncertainties,saleh2021probabilistic,garciamarti2020mixture}",
+        "paragraph": "table[H] Literature to design mapping used by HARP-Net CKM. tab:prior_literature_mapping 1.12 tabularx>p0.18 >X >X >X Block & Literature basis & CKM adaptation & New role in this thesis \\\\ LoS path loss prior & FSPL and coherent two-ray propagation [citation] . & Effective complex reflection, height bin interpolation, and radial residual fitting on CKM LoS p"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Deep learning, hybrid models and distribution aware heads",
+        "raw_cite": "\\cite{pmnet2023}",
+        "paragraph": "Deep radio map prediction is usually formulated as image to image regression. RadioUNet [citation] , PMNet [citation] , RadioGUNet [citation] , RMTransformer [citation] , PathFinder [citation] , Gao et al.\\ [citation] , ReVeal [citation] , and AIRMap [citation] are the closest methodological neighbours. They show that CNN, graph, attention, corridor-weightin"
+      }
+    ]
+  },
+  {
+    "number": 48,
+    "key": "goldsmith",
+    "contexts": [
+      {
+        "file": "prior_detail_try78.tex",
+        "section": "Effective two-ray calibration",
+        "raw_cite": "\\cite{rappaport,goldsmith}",
+        "paragraph": "Equation~eq:c2ray keeps the standard coherent two-ray field sum: one direct ray and one ground reflected ray are added before conversion to dB. The adaptation in this thesis is not an extra propagation term inside that field sum, but the fitted effective reflection coefficient \\((h_tx)=(h_tx)e^-j(h_tx)\\). Thus \\(\\) and \\(\\) are calibration parameters fitted"
+      },
+      {
+        "file": "state_of_art_compact.tex",
+        "section": "Channel knowledge maps and dense radio map prediction",
+        "raw_cite": "\\cite{rappaport,goldsmith,cost231,alhourani2014,tr38901,winner2}",
+        "paragraph": "Classical propagation models supply the physical vocabulary used by the final method. Free-space path loss and two-ray propagation describe the LoS radial structure; COST231/Hata-like and A2G models provide empirical NLoS attenuation shapes; 3GPP and WINNER-style models motivate log-domain treatment of spread statistics and their dependence on visibility, ra"
+      }
+    ]
+  },
+  {
+    "number": 49,
+    "key": "walfisch1988",
+    "contexts": [
+      {
+        "file": "prior_detail_try78.tex",
+        "section": "Map derived morphology features",
+        "raw_cite": "\\cite{walfisch1988,ikegami1984}",
+        "paragraph": "The raw hybrid prior $PL^(0)(x)$ defined in eq:pl0 is the scalar formula input to the calibrated NLoS branch. The map derived features below do not define a competing path loss model; they give the linear calibration the local context that the raw formula cannot see: building density, building height, nearby NLoS support, elevation and simple interactions. F"
+      }
+    ]
+  },
+  {
+    "number": 50,
+    "key": "ikegami1984",
+    "contexts": [
+      {
+        "file": "prior_detail_try78.tex",
+        "section": "Map derived morphology features",
+        "raw_cite": "\\cite{walfisch1988,ikegami1984}",
+        "paragraph": "The raw hybrid prior $PL^(0)(x)$ defined in eq:pl0 is the scalar formula input to the calibrated NLoS branch. The map derived features below do not define a competing path loss model; they give the linear calibration the local context that the raw formula cannot see: building density, building height, nearby NLoS support, elevation and simple interactions. F"
+      }
+    ]
+  },
+  {
+    "number": 51,
+    "key": "juang2021pathprofile",
+    "contexts": [
+      {
+        "file": "prior_detail_try78.tex",
+        "section": "Map derived morphology features",
+        "raw_cite": "\\cite{juang2021pathprofile}",
+        "paragraph": "The raw hybrid prior $PL^(0)(x)$ defined in eq:pl0 is the scalar formula input to the calibrated NLoS branch. The map derived features below do not define a competing path loss model; they give the linear calibration the local context that the raw formula cannot see: building density, building height, nearby NLoS support, elevation and simple interactions. F"
+      }
+    ]
+  },
+  {
+    "number": 52,
+    "key": "cai2019",
+    "contexts": [
+      {
+        "file": "prior_detail_try79.tex",
+        "section": "Raw spread prior in log domain",
+        "raw_cite": "\\cite{cai2019,izydorczyk2019}",
+        "paragraph": "The raw prior is not a 3GPP formula copied directly into CKM. Instead, it takes the 3GPP/WINNER lesson that spread statistics should be separated by propagation state and represented in log space [citation] , then adds CKM specific map morphology terms. UAV measurement studies also motivate the elevation angle dependence: low elevation links usually interact"
+      }
+    ]
+  },
+  {
+    "number": 53,
+    "key": "izydorczyk2019",
+    "contexts": [
+      {
+        "file": "prior_detail_try79.tex",
+        "section": "Raw spread prior in log domain",
+        "raw_cite": "\\cite{cai2019,izydorczyk2019}",
+        "paragraph": "The raw prior is not a 3GPP formula copied directly into CKM. Instead, it takes the 3GPP/WINNER lesson that spread statistics should be separated by propagation state and represented in log space [citation] , then adds CKM specific map morphology terms. UAV measurement studies also motivate the elevation angle dependence: low elevation links usually interact"
+      }
+    ]
+  },
+  {
+    "number": 54,
+    "key": "moreno2026tfgprogress",
+    "contexts": [
+      {
+        "file": "appendices.tex",
+        "section": "Public source record and checkpoint artifact",
+        "raw_cite": "\\cite{moreno2026ckmgenerator,moreno2026finalcode,moreno2026tfgprogress,moreno2026tfgtext}",
+        "paragraph": "The reproducibility record is split across public repositories. The standalone generator is maintained in CKMGenerator; the final training and evaluation code is collected in Final_Code_TFG; the broader experimental history is preserved in TFGAllProgress_Tries_and_Attempts; and the thesis source is kept in TFG_ActualText_LaTeX [citation] ."
+      },
+      {
+        "file": "prior_detail_try79.tex",
+        "section": "Raw spread prior in log domain",
+        "raw_cite": "\\cite{moreno2026tfgprogress}",
+        "paragraph": "The raw prior is not a 3GPP formula copied directly into CKM. Instead, it takes the 3GPP/WINNER lesson that spread statistics should be separated by propagation state and represented in log space [citation] , then adds CKM specific map morphology terms. UAV measurement studies also motivate the elevation angle dependence: low elevation links usually interact"
+      }
+    ]
+  },
+  {
+    "number": 55,
+    "key": "mi2024pointcloud",
+    "contexts": [
+      {
+        "file": "results.tex",
+        "section": "Comparison with closest state of the art metrics",
+        "raw_cite": "\\cite{mi2024pointcloud}",
+        "paragraph": "table[!htbp] [Spread side comparison with nearby state of the art.] Spread side comparison with nearby state of the art channel parameter prediction papers. Rows with external papers are scope comparisons, not direct rankings against the dense CKM map task. tab:spread_soa_context 3pt 0.98 tabularx>p0.19 >p0.30 >p0.24 >X Reference & Spread side output and rep"
+      }
+    ]
+  },
+  {
+    "number": 56,
+    "key": "moreno2026ckmgenerator",
+    "contexts": [
+      {
+        "file": "appendices.tex",
+        "section": "Public source record and checkpoint artifact",
+        "raw_cite": "\\cite{moreno2026ckmgenerator,moreno2026finalcode,moreno2026tfgprogress,moreno2026tfgtext}",
+        "paragraph": "The reproducibility record is split across public repositories. The standalone generator is maintained in CKMGenerator; the final training and evaluation code is collected in Final_Code_TFG; the broader experimental history is preserved in TFGAllProgress_Tries_and_Attempts; and the thesis source is kept in TFG_ActualText_LaTeX [citation] ."
+      }
+    ]
+  },
+  {
+    "number": 57,
+    "key": "moreno2026finalcode",
+    "contexts": [
+      {
+        "file": "appendices.tex",
+        "section": "Public source record and checkpoint artifact",
+        "raw_cite": "\\cite{moreno2026ckmgenerator,moreno2026finalcode,moreno2026tfgprogress,moreno2026tfgtext}",
+        "paragraph": "The reproducibility record is split across public repositories. The standalone generator is maintained in CKMGenerator; the final training and evaluation code is collected in Final_Code_TFG; the broader experimental history is preserved in TFGAllProgress_Tries_and_Attempts; and the thesis source is kept in TFG_ActualText_LaTeX [citation] ."
+      }
+    ]
+  },
+  {
+    "number": 58,
+    "key": "moreno2026tfgtext",
+    "contexts": [
+      {
+        "file": "appendices.tex",
+        "section": "Public source record and checkpoint artifact",
+        "raw_cite": "\\cite{moreno2026ckmgenerator,moreno2026finalcode,moreno2026tfgprogress,moreno2026tfgtext}",
+        "paragraph": "The reproducibility record is split across public repositories. The standalone generator is maintained in CKMGenerator; the final training and evaluation code is collected in Final_Code_TFG; the broader experimental history is preserved in TFGAllProgress_Tries_and_Attempts; and the thesis source is kept in TFG_ActualText_LaTeX [citation] ."
+      }
+    ]
+  }
+]

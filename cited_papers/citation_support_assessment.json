@@ -1,0 +1,466 @@
+[
+  {
+    "key": "zengx2021ckm",
+    "number": 1,
+    "status": "SUPPORTED",
+    "cited_info": "El concepto de CKM como base de datos específica del entorno con información de canal útil para comunicaciones conscientes del entorno y para reducir la adquisición online de CSI.",
+    "evidence": "Local PDF supports CKM as a site specific database of channel related information for environment aware wireless communications and reduced online CSI acquisition.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "ckmtutorial2024",
+    "number": 2,
+    "status": "SUPPORTED",
+    "cited_info": "La definición tutorial de CKM y sus tipos de información, incluyendo ganancia, ángulos y retardo, como marco para 6G consciente del entorno.",
+    "evidence": "Local tutorial PDF supports CKMs as location tagged channel knowledge, including channel gain, angles, and delay information for environment aware 6G.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "threegpp22125",
+    "number": 3,
+    "status": "SUPPORTED WITH CAVEAT",
+    "cited_info": "La terminología 3GPP UxNB y la idea de un nodo de acceso radio montado en un UAV.",
+    "evidence": "Official 3GPP/ETSI TS 22.125 material supports UxNB as a radio access node on board a UAV and requirements for UxNB operation. The audit folder does not include a local copy of the whole standard.",
+    "action": "No thesis wording change needed; keep the source as an official specification rather than a paper."
+  },
+  {
+    "key": "ckmdata2024",
+    "number": 4,
+    "status": "SUPPORTED",
+    "cited_info": "La relación entre densidad de muestras, vecinos usados y error de construcción de un CKM.",
+    "evidence": "Local PDF studies CKM construction error versus spatial sample density and number of neighbouring samples, matching the measurement density/cost accuracy tradeoff citation.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "dataset2212",
+    "number": 5,
+    "status": "SUPPORTED AFTER TEXT CHANGE",
+    "cited_info": "El dataset público de mapas de path loss y ToA, el marco RadioMapSeer y el rango de path loss de 80 dB usado para convertir errores normalizados.",
+    "evidence": "Local PDF supports the RadioMapSeer style pathloss/ToA radio map dataset and states that pathloss values were scaled as images with an 80 dB PL range.",
+    "action": "Added this citation to the RadioUNet conversion sentence in state_of_art.tex so the 80 dB range is attributed to the dataset source."
+  },
+  {
+    "key": "icassp2023challenge",
+    "number": 6,
+    "status": "SUPPORTED",
+    "cited_info": "El contrato del reto ICASSP 2023: dataset RadioMap3DSeer, conjunto de test oculto y métrica RMSE para mapas de path loss.",
+    "evidence": "Local PDF supports the ICASSP 2023 pathloss radio map prediction challenge, RadioMap3DSeer training data, held out challenge test data, and RMSE evaluation contract.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "jaensch2024directiverme",
+    "number": 7,
+    "status": "SUPPORTED",
+    "cited_info": "Un dataset abierto de estimación de radio maps con antenas transmisoras directivas.",
+    "evidence": "Local PDF supports an open radio map estimation dataset with directive transmitter antennas and initial experiments.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "ckmimagenet2025",
+    "number": 8,
+    "status": "SUPPORTED",
+    "cited_info": "CKMImageNet como ejemplo reciente de dataset CKM rico para comunicación y sensado conscientes del entorno.",
+    "evidence": "Local PDF supports CKMImageNet as an AI based CKM dataset for environment aware communication and sensing.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "rappaport",
+    "number": 9,
+    "status": "SUPPORTED WITH CAVEAT",
+    "cited_info": "Los fundamentos clásicos de FSPL, propagación de dos rayos y vocabulario de propagación a gran escala.",
+    "evidence": "Book reference is appropriate for FSPL, two ray, and large scale propagation vocabulary, but the book is not locally text extracted in the audit folder.",
+    "action": "No thesis wording change needed; source is used as a whole textbook reference."
+  },
+  {
+    "key": "wocc2021",
+    "number": 10,
+    "status": "SUPPORTED",
+    "cited_info": "El modelo A2G UAV con reflexión de suelo de dos rayos y su uso para path loss.",
+    "evidence": "Local PDF directly studies A2G UAV signal measurement with a two ray ground reflection model and path loss comparison.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "cost231",
+    "number": 11,
+    "status": "SUPPORTED",
+    "cited_info": "El modelo COST 231 Hata y su papel como referencia empírica de path loss urbano NLoS.",
+    "evidence": "Local extracted COST 231 report parts contain the COST 231 Hata model, urban macrocell context, Hata/Okumura basis, and path loss formula material used for the NLoS prior.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "tr38901",
+    "number": 12,
+    "status": "SUPPORTED WITH CAVEAT",
+    "cited_info": "El modelo 3GPP TR 38.901 para LoS/NLoS, parámetros a gran escala y estadísticas de spread en dominio logarítmico.",
+    "evidence": "3GPP TR 38.901 is the correct standard source for 0.5 to 100 GHz channel models, LoS/NLoS states, large scale parameters, and spread modelling. The full report was not locally downloaded because it is a standard source.",
+    "action": "No thesis wording change needed; keep it as an official technical report citation."
+  },
+  {
+    "key": "alhourani2014",
+    "number": 13,
+    "status": "SUPPORTED",
+    "cited_info": "La dependencia de la probabilidad LoS y la cobertura A2G con el ángulo de elevación y la altitud.",
+    "evidence": "Local PDF supports elevation angle and LoS probability as central A2G modelling axes and motivates altitude dependent coverage.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "khawaja_survey",
+    "number": 14,
+    "status": "SUPPORTED",
+    "cited_info": "La motivación general de modelos de canal UAV A2G, incluyendo elevación, shadowing y condiciones de propagación.",
+    "evidence": "Local survey PDF supports A2G UAV channel modelling, elevation angle dependence, and shadowing/fading context.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "saboor2025height",
+    "number": 15,
+    "status": "SUPPORTED",
+    "cited_info": "La dependencia del path loss y del shadowing mmWave UAV con la altura, separando comportamiento LoS y NLoS.",
+    "evidence": "Local PDF supports height dependent mmWave UAV path loss and shadowing in urban scenarios; it reports LoS exponent near free space and NLoS/shadowing changes with altitude.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "vinogradov2026shadow",
+    "number": 16,
+    "status": "SUPPORTED",
+    "cited_info": "Las proyecciones de sombra 3D para generar mapas LoS A2G espacialmente consistentes sin ray tracing completo.",
+    "evidence": "Local PDF supports 3D shadow projections for fast, spatially consistent A2G LoS map generation and LoS aware deterministic path loss with stochastic shadow fading.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "winner2",
+    "number": 17,
+    "status": "SUPPORTED",
+    "cited_info": "Los parámetros a gran escala WINNER, incluyendo delay spread, angular spread, shadowing lognormal y estados LoS/NLoS.",
+    "evidence": "Local report PDF supports large scale parameters, delay spread, angular spread, lognormal shadowing, and LOS/NLOS condition tables.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "isola2017pix2pix",
+    "number": 18,
+    "status": "SUPPORTED",
+    "cited_info": "La formulación image to image con cGAN y U-Net como antecedente de predicción densa.",
+    "evidence": "Local PDF supports image to image translation with conditional GANs and U-Net style dense prediction baseline context.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "radiounet2020",
+    "number": 19,
+    "status": "SUPPORTED AFTER TEXT CHANGE",
+    "cited_info": "RadioUNet como baseline CNN de radio maps y sus valores RMSE normalizados en escala de imagen.",
+    "evidence": "Local PDF supports RadioUNet as the canonical CNN radio map baseline and contains the 0.0203 to 0.0384 grey level RMSE values. The 80 dB scaling is supported by dataset2212, not by this paper alone.",
+    "action": "Changed state_of_art.tex so the 80 dB conversion is attributed to the RadioMapSeer dataset citation."
+  },
+  {
+    "key": "radiogunet2025",
+    "number": 20,
+    "status": "SUPPORTED",
+    "cited_info": "RadioGUNet como extensión equivarante de RadioMapSeer y sus métricas DPM, IRT y DPM con coches.",
+    "evidence": "Local PDF supports group equivariant pathloss estimation and the exact reported metrics: 1.304 dB DPM, 1.936 dB IRT, and 1.392 dB with cars.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "pmnet_icassp2023",
+    "number": 21,
+    "status": "SUPPORTED",
+    "cited_info": "PMNet como ganador del reto ICASSP 2023 y su RMSE normalizado en test.",
+    "evidence": "Local PDF supports PMNet's 1st rank challenge result and normalized RMSE 0.0383 on the challenge test set. The approximate dB conversion uses the dataset scale described elsewhere.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "rmtransformer2025",
+    "number": 22,
+    "status": "SUPPORTED",
+    "cited_info": "RMTransformer como encoder-decoder MaxViT/CNN de 256 por 256 píxeles y sus métricas normalizadas.",
+    "evidence": "Local PDF supports RMTransformer as a MaxViT/CNN encoder decoder on 256 by 256 maps, with RMSE 0.007148, PMNet 0.01046, and channel prediction error 0.008099.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "wicopg2025",
+    "number": 23,
+    "status": "SUPPORTED",
+    "cited_info": "WiCo-PG como modelo cross modal con VQGANs, Transformer, MoE guiado por frecuencia, imágenes RGB desde UAV y NMSE reportado.",
+    "evidence": "Local PDF supports dual VQGANs, a transformer, frequency guided mixture of experts, RGB images from UAV capture as auxiliary modality, U2G scenarios, and NMSE 0.012.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "fmrme2026",
+    "number": 24,
+    "status": "SUPPORTED",
+    "cited_info": "FM-RME como modelo fundacional para radio map estimation con preentrenamiento autosupervisado.",
+    "evidence": "Local PDF supports FM-RME as a radio map foundation model with self supervised pretraining and zero shot/general inference framing.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "radiolam2025",
+    "number": 25,
+    "status": "SUPPORTED",
+    "cited_info": "RadioLAM como pipeline generativo para mapas radio 3D finos con tasas de muestreo ultrabajas.",
+    "evidence": "Local PDF supports fine grained 3D radio map construction at ultra low sampling rates using a large generative model pipeline.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "geomDL2024",
+    "number": 26,
+    "status": "SUPPORTED",
+    "cited_info": "La reconstrucción de radio maps con geometría asistida, diffraction, scattering, obstáculos virtuales y multi screen knife edge.",
+    "evidence": "Local PDF supports diffraction and scattering aware radio map reconstruction using geometry assisted learning, virtual obstacles, and multi screen knife edge features.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "reveal2025",
+    "number": 27,
+    "status": "SUPPORTED",
+    "cited_info": "ReVeal como PINN con residuo PDE de segundo orden y su RMSE outdoor sparse de 1.95 dB.",
+    "evidence": "Local PDF supports ReVeal as a physics informed neural network with a second order PDE residual and reports 1.95 dB RMSE in its rural/suburban radio environment setting.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "huang2025a2gtransformer",
+    "number": 28,
+    "status": "SUPPORTED",
+    "cited_info": "El predictor Transformer A2G mmWave de características de canal, incluyendo path loss o potencia recibida, delay spread y angular spread.",
+    "evidence": "Local PDF supports Transformer based A2G mmWave prediction of received power/path loss, delay spread, and angular spread. Table 18 contains RMS DS 4.577 ns and the cited angle spread RMSE values.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "kendall2017uncertainties",
+    "number": 29,
+    "status": "SUPPORTED",
+    "cited_info": "La pérdida de incertidumbre aleatoria heteroscedástica usada como base para modelar varianza dependiente de la entrada.",
+    "evidence": "Local PDF supports aleatoric and heteroscedastic uncertainty, learned attenuation, and the regression loss basis used for uncertainty modelling.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "saleh2021probabilistic",
+    "number": 30,
+    "status": "SUPPORTED",
+    "cited_info": "El uso de mixture density networks para predecir distribuciones probabilísticas de path loss mmWave.",
+    "evidence": "Local PDF supports mixture density networks for probabilistic mmWave path loss distributions.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "garciamarti2020mixture",
+    "number": 31,
+    "status": "SUPPORTED",
+    "cited_info": "El modelo de canal estocástico basado en mezcla gaussiana para diseño de capa física con deep learning.",
+    "evidence": "Local PDF supports a stochastic channel model learned as a Gaussian mixture distribution for physical layer design.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "lee2024timevarying",
+    "number": 32,
+    "status": "SUPPORTED",
+    "cited_info": "El modelado de canales variables en el tiempo con fading y shadowing usando una red y mezcla de gaussianas.",
+    "evidence": "Local PDF supports a deep learning plus mixture density network model using Gaussian kernels for time varying channels with fading and shadowing.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "radiodiff2025",
+    "number": 33,
+    "status": "SUPPORTED AFTER TEXT CHANGE",
+    "cited_info": "La difusión condicional para construir radio maps dinámicos usando localización de BS y características del entorno como prompts.",
+    "evidence": "Local PDF supports conditional diffusion for sampling free dynamic radio map construction using BS location and environment features as prompts.",
+    "action": "Changed state_of_art.tex from obstacle prompts to environment features."
+  },
+  {
+    "key": "perez2018film",
+    "number": 34,
+    "status": "SUPPORTED",
+    "cited_info": "FiLM como modulación lineal feature wise mediante transformaciones afines condicionadas.",
+    "evidence": "Local PDF supports FiLM as feature wise linear modulation by learned affine transformations based on conditioning inputs.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "izmailov2018swa",
+    "number": 35,
+    "status": "SUPPORTED",
+    "cited_info": "SWA como promedio de pesos que busca óptimos más anchos y mejor generalización.",
+    "evidence": "Local PDF supports stochastic weight averaging, weight averaging, wider optima, and improved generalization.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "airmap2025",
+    "number": 36,
+    "status": "SUPPORTED WITH CAVEAT",
+    "cited_info": "AIRMap como U-Net adaptativa con mapas de elevación 200 por 200, RMSE sub 4 dB de path gain, inferencia rápida y calibración con medidas.",
+    "evidence": "Local PDF supports adaptive U-Net/elevation map radio maps, 200 by 200 tensors, 2.5 to 15 m/pixel resolution, sub 4 dB path gain RMSE, 4 ms inference, 20 percent field calibration, and about 5 percent median error.",
+    "action": "No thesis wording change needed; the thesis already warns that AIRMap reports path gain, not the same path loss calibration."
+  },
+  {
+    "key": "gao2026",
+    "number": 37,
+    "status": "SUPPORTED",
+    "cited_info": "El predictor de path loss con mapas de profundidad Tx/Rx, mapa de distancia, weighting map de corredor y resultados RMSE de la Tabla III.",
+    "evidence": "Local PDF supports depth maps, a distance map, and weighting map inputs; Table III contains 5.59 dB for the proposed method, 8.09 dB PPNet, 9.56 dB RPNet, and 8.72 dB ViT-12.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "tarhouni2025",
+    "number": 38,
+    "status": "SUPPORTED",
+    "cited_info": "Un caso medido de predicción de path loss suburbano sub 6 GHz usado como comparación cualitativa no densa.",
+    "evidence": "Local PDF supports machine learning based path loss prediction in a measured sub 6 GHz suburban environment, matching the qualitative comparison role in the thesis.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "pathfinder2025",
+    "number": 39,
+    "status": "SUPPORTED",
+    "cited_info": "PathFinder para distribution shift en path loss, con atención mask guided low rank y métricas MSE, RMSE y DS-RPP.",
+    "evidence": "Local PDF supports distribution shift radio path loss prediction, mask guided low rank attention, 0.1068 MSE, 0.3263 RMSE, and DS-RPP RMSE 0.033069, which rounds to 0.0331.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "icassp2025indoor",
+    "number": 40,
+    "status": "SUPPORTED",
+    "cited_info": "El reto indoor ICASSP 2025 y su tabla de weighted RMSE para los métodos participantes.",
+    "evidence": "Local PDF supports the ICASSP 2025 indoor pathloss challenge and lists weighted RMSE values around 9.41, 9.50, 10.32, and 10.39 for the cited methods.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "indoor2025results",
+    "number": 41,
+    "status": "SUPPORTED",
+    "cited_info": "La página oficial de resultados con los weighted RMSE finales de SIP2Net, IPP-Net, TerRaIn y TransPathNet.",
+    "evidence": "Official challenge results page verified on 2026-06-17 lists final weighted RMSE 9.411 for SIP2Net, 9.501 for IPP-Net, 10.325 for TerRaIn, and 10.397 for TransPathNet.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "sip2net2025",
+    "number": 42,
+    "status": "SUPPORTED",
+    "cited_info": "La solución SIP2Net y su weighted RMSE de 9.411 dB como primer puesto del reto indoor.",
+    "evidence": "Local PDF supports SIP2Net's 9.411 dB weighted RMSE and 1st place indoor challenge result.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "ippnet2025",
+    "number": 43,
+    "status": "SUPPORTED",
+    "cited_info": "La solución IPP-Net y su weighted RMSE de 9.501 dB como segundo puesto del reto indoor.",
+    "evidence": "Local PDF supports IPP-Net's 9.501 dB weighted RMSE and second overall ranking.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "transPathNet2025",
+    "number": 44,
+    "status": "SUPPORTED",
+    "cited_info": "La solución TransPathNet de dos etapas y su RMSE final de 10.397 dB en el reto indoor.",
+    "evidence": "Local PDF supports TransPathNet's 10.397 dB overall RMSE on the indoor challenge full test set.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "radiopit2025",
+    "number": 45,
+    "status": "SUPPORTED",
+    "cited_info": "RadioPiT como generación de radio maps con Pixel Transformer a partir de datos reales ultraescasos.",
+    "evidence": "Local PDF supports RadioPiT as radio map generation using a pixel transformer driven by ultra sparse real world data.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "yang2019a2gml",
+    "number": 46,
+    "status": "SUPPORTED",
+    "cited_info": "La predicción ML de path loss y delay spread en canales A2G mmWave a nivel de enlace.",
+    "evidence": "Local PDF supports machine learning based prediction of A2G mmWave path loss and delay spread, and it is correctly described as scalar/link level rather than dense CKM map prediction.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "pmnet2023",
+    "number": 47,
+    "status": "SUPPORTED",
+    "cited_info": "PMNet como método supervisado encoder-decoder para predicción robusta de mapas de path loss.",
+    "evidence": "Local PDF supports PMNet as supervised robust pathloss map prediction with an encoder decoder style radio map model, matching the dense prediction neighbour citation.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "goldsmith",
+    "number": 48,
+    "status": "SUPPORTED WITH CAVEAT",
+    "cited_info": "La base teórica de propagación coherente de dos rayos y coeficientes de reflexión.",
+    "evidence": "Book reference is appropriate for coherent two ray propagation and reflection coefficient vocabulary, but the book is not locally text extracted in the audit folder.",
+    "action": "No thesis wording change needed; source is used as a whole textbook reference."
+  },
+  {
+    "key": "walfisch1988",
+    "number": 49,
+    "status": "SUPPORTED",
+    "cited_info": "La influencia de filas o bloques de edificios y difracción urbana en la propagación UHF.",
+    "evidence": "Local PDF supports urban UHF propagation modelling with rows or blocks of buildings treated as diffracting structures.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "ikegami1984",
+    "number": 50,
+    "status": "SUPPORTED",
+    "cited_info": "Los factores urbanos de calle, altura de edificios, anchura de calle, orientación y altura de antena móvil.",
+    "evidence": "Local PDF supports building height, street width, street orientation, and mobile antenna height as controlling urban street propagation factors.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "juang2021pathprofile",
+    "number": 51,
+    "status": "SUPPORTED",
+    "cited_info": "El uso de path profiles y características derivadas del mapa para predicción explicable de path loss.",
+    "evidence": "Local PDF supports explainable path loss prediction from map derived path profile features in urban environments.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "cai2019",
+    "number": 52,
+    "status": "SUPPORTED",
+    "cited_info": "Medidas A2G LTE y dependencia del path loss con ángulo de elevación en escenarios UAV.",
+    "evidence": "Local PDF supports passive LTE A2G measurements, UAV channel modelling, and elevation angle dependence in path loss modelling.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "izydorczyk2019",
+    "number": 53,
+    "status": "SUPPORTED",
+    "cited_info": "La variación de AoA y angular spread con la altura del UAV en escenarios urbanos y rurales.",
+    "evidence": "Local PDF supports Angle of Arrival and Angular Spread variation with height in urban and rural UAV LTE measurements.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "moreno2026tfgprogress",
+    "number": 54,
+    "status": "SOURCE RECORD",
+    "cited_info": "El repositorio de historial experimental y notas internas de desarrollo que documentan intentos y módulos del proyecto.",
+    "evidence": "Repository citation is a reproducibility/source record for the broader development history and internal spread prior notes, not an external paper claim.",
+    "action": "No thesis wording change needed; keep empty paper page fields."
+  },
+  {
+    "key": "mi2024pointcloud",
+    "number": 55,
+    "status": "SUPPORTED",
+    "cited_info": "La predicción con PointNet de path loss, RMS delay spread, angular spread y factor K a partir de nubes de puntos indoor.",
+    "evidence": "Local PDF supports indoor 60 GHz point cloud based prediction of path loss, RMS delay spread, azimuth angular spread, and Rician K factor; it reports average angular spread RMSE 7.39 degrees.",
+    "action": "No thesis wording change needed."
+  },
+  {
+    "key": "moreno2026ckmgenerator",
+    "number": 56,
+    "status": "SOURCE RECORD",
+    "cited_info": "El repositorio del generador público de mapas CKM para path loss, delay spread y angular spread.",
+    "evidence": "Repository citation supports the standalone CKM generator source record, not a paper claim.",
+    "action": "No thesis wording change needed; keep empty paper page fields."
+  },
+  {
+    "key": "moreno2026finalcode",
+    "number": 57,
+    "status": "SOURCE RECORD",
+    "cited_info": "El repositorio del código final de entrenamiento y evaluación.",
+    "evidence": "Repository citation supports the final training and evaluation code source record, not a paper claim.",
+    "action": "No thesis wording change needed; keep empty paper page fields."
+  },
+  {
+    "key": "moreno2026tfgtext",
+    "number": 58,
+    "status": "SOURCE RECORD",
+    "cited_info": "El repositorio con el texto fuente LaTeX de la tesis.",
+    "evidence": "Repository citation supports the thesis source record, not a paper claim.",
+    "action": "No thesis wording change needed; keep empty paper page fields."
+  }
+]
