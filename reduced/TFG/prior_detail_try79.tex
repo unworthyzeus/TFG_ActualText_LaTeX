@@ -397,10 +397,9 @@ y_{\max,r},
 \label{eq:spread_clip}
 \end{equation}
 with delay spread clipped to $[0, 910]$~ns and angular spread clipped to
-$[0, 15^\circ]$ in LoS or $[0, 90^\circ]$ in NLoS. The asymmetric angular
-limit is deliberate: LoS angular spread is dominated by the direct path and is
-physically closer to a near zero spike plus small reflections, whereas NLoS
-angular spread can occupy a much wider support.
+$[0, 180^\circ]$ in both LoS and NLoS. These bounds are applied only to the
+frozen priors used as Try~80 input channels, not to the final neural model
+output, and they match the natural value ranges stored in the CKM dataset.
 
 \subsection{Delay and angular spread prior pipeline}
 

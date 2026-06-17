@@ -20,17 +20,17 @@ This split is what makes the final model both accurate and interpretable.
 
 The final pipeline meets the original numerical targets. The frozen priors
 already give strong anchors on the unseen test split: \SI{1.9383}{dB} RMSE for
-channel attenuation, \SI{28.1211}{ns} for delay spread and \(13.7416^\circ\)
+channel attenuation, \SI{28.1211}{ns} for delay spread and \(13.8162^\circ\)
 for angular spread. \textsc{HARP-Net CKM} improves them to
-\SI{1.6950}{dB}, \SI{26.6915}{ns} and \(11.4197^\circ\). Because the priors
+\SI{1.6947}{dB}, \SI{26.6882}{ns} and \(11.5253^\circ\). Because the priors
 are already strong, the RMSE gains are not the whole story. The residual model
 still does meaningful spatial work: delay spread RMSE improves by about \(5\%\)
 and angular spread RMSE by about \(17\%\), while MapCorr improves much more
-clearly, from \(0.306026\) to \(0.414823\) for delay spread and from
-\(0.377700\) to \(0.595179\) for angular spread. These are relative MapCorr
-gains of about \(36\%\) and \(58\%\), well above \(25\%\) for both spread
+clearly, from \(0.306026\) to \(0.414692\) for delay spread and from
+\(0.348713\) to \(0.581783\) for angular spread. These are relative MapCorr
+gains of about \(36\%\) and \(67\%\), well above \(25\%\) for both spread
 targets. Channel attenuation also improves structurally, from \(0.947710\) to
-\(0.961054\). Thus the neural residual is not only shaving a small amount of
+\(0.961055\). Thus the neural residual is not only shaving a small amount of
 RMSE from a strong prior; it places the high and low regions of the maps more
 like the ray traced target, especially for the two spread maps.
 

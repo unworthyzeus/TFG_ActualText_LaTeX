@@ -519,12 +519,12 @@ cities are unseen during training.}
 \toprule
 Target & Scope & Model RMSE & Prior RMSE & \(\Delta\) RMSE \\
 \midrule
-Attenuation & LoS & 1.5177 & 1.7519 & -0.2342 \\
-Attenuation & NLoS & 3.1502 & 3.5143 & -0.3641 \\
-Delay spread & LoS & 25.6189 & 27.5119 & -1.8930 \\
-Delay spread & NLoS & 29.2455 & 29.6157 & -0.3702 \\
-Angular spread & LoS & 12.3914 & 15.2818 & -2.8904 \\
-Angular spread & NLoS & 8.4556 & 8.6614 & -0.2058 \\
+Attenuation & LoS & 1.5175 & 1.7519 & -0.2344 \\
+Attenuation & NLoS & 3.1596 & 3.5143 & -0.3547 \\
+Delay spread & LoS & 25.6137 & 27.5119 & -1.8983 \\
+Delay spread & NLoS & 29.2464 & 29.6157 & -0.3693 \\
+Angular spread & LoS & 12.5270 & 15.3751 & -2.8481 \\
+Angular spread & NLoS & 8.4550 & 8.6614 & -0.2064 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -547,9 +547,9 @@ priors. Negative \(\Delta\) RMSE means that the model improves the prior.}
 \toprule
 Target & Model RMSE & Prior RMSE & \(\Delta\) RMSE & Model MAE & Unit \\
 \midrule
-Attenuation & 1.6950 & 1.9383 & -0.2433 & 0.9773 & dB \\
-Delay spread & 26.6915 & 28.1211 & -1.4296 & 7.7878 & ns \\
-Angular spread & 11.4197 & 13.7416 & -2.3220 & 4.8597 & \(^{\circ}\) \\
+Attenuation & 1.6947 & 1.9383 & -0.2436 & 0.9772 & dB \\
+Delay spread & 26.6882 & 28.1211 & -1.4329 & 7.8160 & ns \\
+Angular spread & 11.5253 & 13.8162 & -2.2909 & 4.8899 & \(^{\circ}\) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -568,15 +568,15 @@ Output & Broad target & Current Try 80 test RMSE & Judgment \\
 \midrule
 Attenuation &
 \(<\SI{5}{dB}\) &
-\SI{1.6950}{dB} overall; \SI{3.1502}{dB} NLoS &
+\SI{1.6947}{dB} overall; \SI{3.1596}{dB} NLoS &
 Excellent overall, and still good in the harder NLoS pixels. \\
 Delay spread &
 \(<\SI{50}{ns}\) &
-\SI{26.6915}{ns} overall &
+\SI{26.6882}{ns} overall &
 Good as scalar RMSE, with remaining spatial difficulty visible in MapCorr. \\
 Angular spread &
 \(<\SI{20}{\degree}\) &
-\(11.4197^\circ\) overall; \(8.4556^\circ\) NLoS &
+\(11.5253^\circ\) overall; \(8.4550^\circ\) NLoS &
 Good overall, especially in NLoS where angular dispersion matters most. \\
 \bottomrule
 \end{tabularx}
@@ -588,7 +588,7 @@ requirement, but it is no longer the most informative benchmark: Try 78 already
 provided a frozen attenuation prior below \SI{2}{dB}. The relevant final
 question is therefore whether the neural residual model improves that prior
 without damaging the map structure. It does: RMSE falls from \SI{1.9383}{dB}
-to \SI{1.6950}{dB}, and MapCorr rises from \(0.947710\) to \(0.961054\).
+to \SI{1.6947}{dB}, and MapCorr rises from \(0.947710\) to \(0.961055\).
 This is not directly comparable with easier radio map challenge scores that use
 fixed transmitter heights, random splits, different clipping or different
 building masks, but it is very strong for strict city holdout, continuous UAV
@@ -610,11 +610,11 @@ power uncertainty of
 \begin{equation}
   G(e) = 10^{e/10}.
 \end{equation}
-Thus \SI{1.6950}{dB} corresponds to a factor of \(10^{1.6950/10}=1.48\),
+Thus \SI{1.6947}{dB} corresponds to a factor of \(10^{1.6947/10}=1.48\),
 whereas the original \SI{5}{dB} target corresponds to a factor of
 \(10^{5/10}=3.16\). Near a coverage boundary, a \SI{5}{dB} error is therefore
 not a small perturbation: it can change outage decisions, link margin, MCS
-selection or handover regions. The final \SI{1.6950}{dB} value is much smaller,
+selection or handover regions. The final \SI{1.6947}{dB} value is much smaller,
 corresponding to a factor of about \(1.48\times\), so the remaining global
 attenuation uncertainty is close to the one dB quantization scale of the stored
 maps. This is why the final attenuation result is the strongest claim in the
@@ -626,8 +626,8 @@ length,
   \Delta d = c\,\Delta \tau,
 \end{equation}
 where \(c=0.299792458~\mathrm{m/ns}\). The final
-\SI{26.6915}{ns} delay spread RMSE therefore corresponds to
-\(0.299792458\times 26.6915=\SI{8.00}{m}\), while the original
+\SI{26.6882}{ns} delay spread RMSE therefore corresponds to
+\(0.299792458\times 26.6882=\SI{8.00}{m}\), while the original
 \SI{50}{ns} target corresponds to \SI{14.99}{m}. This means that the typical
 error in RMS temporal dispersion is on the scale of the delay produced by
 about \SI{8}{m} of additional multipath path length. It does not mean that each
@@ -651,9 +651,9 @@ richness, and the final NLoS angular RMSE is lower than the LoS value.
 \toprule
 Target & Model MapCorr & Prior MapCorr & \(\Delta\) MapCorr \\
 \midrule
-Attenuation & 0.961054 & 0.947710 & +0.013344 \\
-Delay spread & 0.414823 & 0.306026 & +0.108798 \\
-Angular spread & 0.595179 & 0.377700 & +0.217479 \\
+Attenuation & 0.961055 & 0.947710 & +0.013345 \\
+Delay spread & 0.414692 & 0.306026 & +0.108666 \\
+Angular spread & 0.581783 & 0.348713 & +0.233070 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -664,10 +664,10 @@ interpreted together with the qualitative panels in Section~\ref{sec:qualitative
 where the difference between RMSE and structural improvement is discussed.
 This distinction is important for the two spread targets. The delay spread
 RMSE reduction is modest in absolute terms, from \SI{28.1211}{ns} to
-\SI{26.6915}{ns}, about \(5.1\%\), but MapCorr rises from \(0.306026\) to
-\(0.414823\), about \(35.6\%\). Angular spread shows the same effect more
-strongly: RMSE improves by about \(16.9\%\), while MapCorr rises from
-\(0.377700\) to \(0.595179\), about \(57.6\%\). Therefore the residual model is
+\SI{26.6882}{ns}, about \(5.1\%\), but MapCorr rises from \(0.306026\) to
+\(0.414692\), about \(35.5\%\). Angular spread shows the same effect more
+strongly: RMSE improves by about \(16.6\%\), while MapCorr rises from
+\(0.348713\) to \(0.581783\), about \(66.8\%\). Therefore the residual model is
 not only reducing scalar error; it is placing high and low spread regions more
 correctly on the map.
 
@@ -675,11 +675,11 @@ correctly on the map.
 
 Channel attenuation is the cleanest final result because both RMSE and MAE improve over
 the frozen prior on unseen test cities. Overall RMSE drops from
-\SI{1.9383}{dB} to \SI{1.6950}{dB}, while MAE drops from \SI{1.2319}{dB} to
-\SI{0.9773}{dB}. The LoS and NLoS rows in
+\SI{1.9383}{dB} to \SI{1.6947}{dB}, while MAE drops from \SI{1.2319}{dB} to
+\SI{0.9772}{dB}. The LoS and NLoS rows in
 Table~\ref{tab:try80_final_test_los_nlos} show that the improvement is not
-coming from only one visibility case: LoS improves by \SI{0.2342}{dB} RMSE and
-NLoS by \SI{0.3641}{dB}.
+coming from only one visibility case: LoS improves by \SI{0.2344}{dB} RMSE and
+NLoS by \SI{0.3547}{dB}.
 
 In link budget terms this is a very small residual error. A dB error of the
 final global magnitude corresponds to a power factor of about \(1.48\times\),
@@ -688,7 +688,7 @@ That older objective is therefore useful as a coarse success threshold, but
 too generous for the final path loss line. A \SI{5}{dB} error near a coverage
 edge could change whether a receiver is considered served, which MCS is chosen,
 or where a handover boundary is placed. The NLoS row remains harder, with
-\SI{3.1502}{dB} RMSE, but even that corresponds to roughly a \(2.06\times\)
+\SI{3.1596}{dB} RMSE, but even that corresponds to roughly a \(2.07\times\)
 power factor and is below the original global target. Path loss is therefore
 the clearest case where the result should be described not only as acceptable,
 but as very strong for the CKM city holdout setting.
@@ -697,10 +697,10 @@ but as very strong for the CKM city holdout setting.
 
 For angular spread, the frozen prior already meets the original project target,
 but \textsc{HARP-Net CKM} still reduces RMSE on unseen test cities. Overall
-RMSE drops from \(13.7416^\circ\) to \(11.4197^\circ\), and MAE drops from
-\(4.9890^\circ\) to \(4.8597^\circ\). The clearest gain appears in LoS
-pixels, from \(15.2818^\circ\) to \(12.3914^\circ\), while NLoS improves only
-slightly, from \(8.6614^\circ\) to \(8.4556^\circ\).
+RMSE drops from \(13.8162^\circ\) to \(11.5253^\circ\), and MAE drops from
+\(5.0033^\circ\) to \(4.8899^\circ\). The clearest gain appears in LoS
+pixels, from \(15.3751^\circ\) to \(12.5270^\circ\), while NLoS improves only
+slightly, from \(8.6614^\circ\) to \(8.4550^\circ\).
 
 The fact that the NLoS angular RMSE is lower than the LoS angular RMSE is a
 positive property rather than a weakness. In LoS, the direct path dominates the
@@ -709,15 +709,15 @@ that are difficult to regress but have limited link level impact. In NLoS, by
 contrast, angular spread describes how energy arrives through reflections and
 diffraction from several directions, so it is closer to beam selection,
 spatial multiplexing, interference interpretation and beam tracking ambiguity.
-The final NLoS value of \(8.4556^\circ\) is therefore the more important angular
+The final NLoS value of \(8.4550^\circ\) is therefore the more important angular
 spread number, and it is better than both the LoS angular RMSE and the original
 \(20^\circ\) project target. This is also the visibility regime where a wrong
 angular spread map can most easily misrepresent the richness of the multipath
 environment, so the NLoS result is the stronger practical argument.
 
 The angular spread improvement is also more visible in map structure than in
-RMSE alone. The final model improves overall RMSE by \(2.3220^\circ\), but the
-larger change is the MapCorr gain of \(+0.217479\). This means that the model
+RMSE alone. The final model improves overall RMSE by \(2.2909^\circ\), but the
+larger change is the MapCorr gain of \(+0.233070\). This means that the model
 is not merely shifting the global angular spread level; it is better locating
 where angular dispersion is high or low within the city map.
 
@@ -747,13 +747,13 @@ upsampling.
 
 Delay spread also improves in RMSE, although it is the only output where RMSE
 and MAE move in opposite directions. Overall RMSE drops from \SI{28.1211}{ns}
-to \SI{26.6915}{ns}, while MAE increases from \SI{7.3041}{ns} to
-\SI{7.7878}{ns}. This should be read as a tail focused gain: suppressing the
+to \SI{26.6882}{ns}, while MAE increases from \SI{7.3041}{ns} to
+\SI{7.8160}{ns}. This should be read as a tail focused gain: suppressing the
 largest delay errors can improve RMSE while many small local shifts slightly
-increase MAE. The LoS RMSE improves by \SI{1.8930}{ns}; the NLoS RMSE improves
-only by \SI{0.3702}{ns}.
+increase MAE. The LoS RMSE improves by \SI{1.8983}{ns}; the NLoS RMSE improves
+only by \SI{0.3693}{ns}.
 
-The \SI{26.6915}{ns} RMSE can be made more concrete by converting time into an
+The \SI{26.6882}{ns} RMSE can be made more concrete by converting time into an
 equivalent path length. Since radio waves propagate approximately at
 \(c=0.299792458~\mathrm{m/ns}\), the final delay spread error corresponds to
 \SI{8.00}{m} of equivalent excess propagation path. The original
@@ -774,7 +774,7 @@ still moderate.
 
 The delay spread result is the clearest example where RMSE understates the
 model contribution. The RMSE gain over the frozen prior is only
-\SI{1.4296}{ns}, but MapCorr improves by \(+0.108798\). The model therefore
+\SI{1.4329}{ns}, but MapCorr improves by \(+0.108666\). The model therefore
 does not radically change the global delay spread scale, which the prior
 already captures, but it improves the spatial placement of delay spread
 features across the \(513\times513\) map.
@@ -818,7 +818,7 @@ test row is the final unseen city generalisation result.}
 Split & Samples & PL RMSE & DS RMSE & DS prior RMSE & AS RMSE & Meaning \\
 \midrule
 Validation & 2750 & 1.6272 & 22.1946 & 23.4516 & 11.4141 & Same selected model state evaluated on validation cities. \\
-Test & 2590 & 1.6950 & 26.6915 & 28.1211 & 11.4197 & Separate 14-city holdout; this is the thesis generalisation number. \\
+Test & 2590 & 1.6947 & 26.6882 & 28.1211 & 11.5253 & Separate 14-city holdout; this is the thesis generalisation number. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -844,7 +844,7 @@ channel attenuation, angular spread and delay spread simultaneously.
 The selected final model clears the original numerical targets on the unseen city
 test split: \SI{1.70}{dB} channel attenuation against the \SI{5}{dB} target,
 \SI{26.69}{ns} delay spread against the \SI{50}{ns} target, and
-\(11.42^\circ\) angular spread against the \(20^\circ\) target. The same
+\(11.53^\circ\) angular spread against the \(20^\circ\) target. The same
 target check also holds on validation and on the all city aggregation. The
 fine grouped audit is stricter: all topology classes and antenna bins improve,
 although a few very small topology by antenna cells can exceed the delay spread
@@ -856,7 +856,7 @@ subexpert audit, the corresponding worst cases are \SI{2.45}{dB},
 The interpretation is different for the three targets. Channel attenuation is
 the most externally comparable result because most radio map papers report a
 dB scale path loss or path gain error. Under the stricter CKM setting used
-here, \SI{1.6950}{dB} is a strong result for unseen cities, continuous UAV
+here, \SI{1.6947}{dB} is a strong result for unseen cities, continuous UAV
 height, native \(513\times513\) maps and ground receiver masking. Delay spread
 and angular spread require a more cautious reading: they are not commonly
 reported as dense per pixel maps over unseen cities. Their strongest claim is
@@ -954,7 +954,7 @@ value under the same approximate \SI{36}{dB} assumption. &
 The DS-RPP conversion follows RM3D scaling; the rural conversion is only an
 approximate scale check because the paper reports normalised image-space RMSE. \\
 \textbf{Final model} &
-\textbf{\SI{1.6950}{dB} PL, \SI{26.6915}{ns} DS, \(11.4197^\circ\) AS on unseen CKM cities} &
+\textbf{\SI{1.6947}{dB} PL, \SI{26.6882}{ns} DS, \(11.5253^\circ\) AS on unseen CKM cities} &
 \textbf{Reference row for the ratios above.} &
 Only row here reporting all three dense CKM targets under the final
 city holdout protocol. \\
@@ -1022,7 +1022,7 @@ Measurement based DL reference that includes both DS and AS. &
 Indoor point cloud measurement task with mostly link level samples, not outdoor
 UAV CKM generation or unseen city dense map testing. \\
 \textbf{Final model} &
-\textbf{\SI{26.6915}{ns} DS RMSE and \(11.4197^\circ\) AS RMSE on unseen CKM
+\textbf{\SI{26.6882}{ns} DS RMSE and \(11.5253^\circ\) AS RMSE on unseen CKM
 cities.} &
 \textbf{Only row here with dense PL/DS/AS maps and the final ground mask
 city holdout protocol.} &
@@ -1164,8 +1164,8 @@ regions and sharp transitions. A small spatial shift, a slightly smoother ridge
 or one missed high spread pocket can lower the full map pixel correlation even
 when the prediction looks structurally closer. For that reason, the relevant
 reading is comparative: under the same samples, masks and valid pixels, the
-model raises MapCorr from \(0.306026\) to \(0.414823\) for delay spread and
-from \(0.377700\) to \(0.595179\) for angular spread. In relative terms these
+model raises MapCorr from \(0.306026\) to \(0.414692\) for delay spread and
+from \(0.348713\) to \(0.581783\) for angular spread. In relative terms these
 are approximately \(35.6\%\) and \(57.6\%\) increases, respectively, much larger
 than the corresponding RMSE reductions. This is why the final spread results
 should not be described only as small RMSE gains: the main improvement is
