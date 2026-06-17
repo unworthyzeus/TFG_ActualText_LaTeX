@@ -66,8 +66,8 @@ bounded, distribution aware corrections instead of full maps from scratch. The
 model receives a building height map, support/visibility masks, five frozen
 prior maps, and scalar UAV transmitter height, and outputs three dense
 \(513\times513\) maps. On a 14 city held out test split it reaches
-\SI{1.6950}{dB} attenuation RMSE, \SI{26.6915}{ns} delay spread RMSE, and
-\(11.4197^\circ\) angular spread RMSE, improving the frozen priors for all
+\SI{1.6947}{dB} attenuation RMSE, \SI{26.6882}{ns} delay spread RMSE, and
+\(11.5253^\circ\) angular spread RMSE, improving the frozen priors for all
 three targets. The result supports a practical design rule: keep stable radial,
 visibility, height, and spread structure in auditable priors, and spend neural
 capacity on the residual structure that remains.
@@ -348,7 +348,7 @@ model outputs are not quantized to these grids: the residual network emits
 continuous values, and all reported metrics compare those continuous outputs
 against the stored targets. This matters for interpretation: the final path
 loss MAE is \SI{0.9773}{dB}, close to the label step, while RMSE remains
-\SI{1.6950}{dB} because it emphasizes hard tails. Less quantized labels would
+\SI{1.6947}{dB} because it emphasizes hard tails. Less quantized labels would
 likely expose more of the continuous surrogate's resolution, especially for
 small residual improvements and spread map boundaries.
 
@@ -977,7 +977,7 @@ Target & Overall & LoS & NLoS & Unit \\
 \midrule
 Attenuation & 1.9383 & 1.7519 & 3.5143 & dB \\
 Delay spread & 28.1211 & 27.5119 & 29.6157 & ns \\
-Angular spread & 13.7416 & 15.2818 & 8.6614 & deg \\
+Angular spread & 13.8162 & 15.3751 & 8.6614 & deg \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1423,20 +1423,20 @@ low/mid/high antenna percentage.}
 \toprule
 City & Samples & Atten. & DS & AS & Topology mix & Height mix \\
 \midrule
-Barcelona & 50 & 1.74 & 33.0 & 11.0 & 30/30/40 & 40/32/28 \\
-Beijing & 200 & 1.57 & 23.3 & 10.5 & 28/65/8 & 30/41/30 \\
-Carcassonne & 110 & 1.43 & 8.0 & 9.6 & 41/50/9 & 30/29/41 \\
-Copenhagen & 220 & 1.83 & 27.3 & 11.9 & 14/68/18 & 37/27/36 \\
-Halifax & 250 & 1.43 & 19.9 & 9.6 & 78/22/0 & 36/33/31 \\
+Barcelona & 50 & 1.74 & 33.0 & 11.1 & 30/30/40 & 40/32/28 \\
+Beijing & 200 & 1.57 & 23.3 & 10.7 & 28/65/8 & 30/41/30 \\
+Carcassonne & 110 & 1.43 & 8.0 & 9.7 & 41/50/9 & 30/29/41 \\
+Copenhagen & 220 & 1.83 & 27.3 & 12.0 & 14/68/18 & 37/27/36 \\
+Halifax & 250 & 1.43 & 19.9 & 9.7 & 78/22/0 & 36/33/31 \\
 Jaipur & 120 & 2.05 & 21.6 & 11.9 & 12/25/62 & 37/34/29 \\
 Johannesburg & 245 & 1.76 & 21.0 & 12.1 & 10/55/35 & 34/34/32 \\
 Key West & 105 & 1.39 & 20.0 & 10.4 & 52/43/5 & 33/30/37 \\
-Kuala Lumpur & 360 & 2.05 & 44.2 & 13.3 & 18/44/38 & 29/38/34 \\
-Osaka & 50 & 2.43 & 37.3 & 14.5 & 0/60/40 & 28/44/28 \\
-Phuket & 50 & 1.82 & 37.2 & 13.7 & 20/50/30 & 28/36/36 \\
-Pune & 135 & 1.95 & 33.3 & 13.1 & 15/67/19 & 32/27/41 \\
-Surat & 190 & 1.63 & 23.5 & 10.2 & 34/16/50 & 36/32/32 \\
-Vancouver & 505 & 1.53 & 17.7 & 10.7 & 29/67/4 & 31/35/34 \\
+Kuala Lumpur & 360 & 2.05 & 44.2 & 13.5 & 18/44/38 & 29/38/34 \\
+Osaka & 50 & 2.43 & 37.3 & 14.9 & 0/60/40 & 28/44/28 \\
+Phuket & 50 & 1.82 & 37.2 & 13.8 & 20/50/30 & 28/36/36 \\
+Pune & 135 & 1.95 & 33.3 & 13.2 & 15/67/19 & 32/27/41 \\
+Surat & 190 & 1.63 & 23.5 & 10.3 & 34/16/50 & 36/32/32 \\
+Vancouver & 505 & 1.53 & 17.7 & 10.8 & 29/67/4 & 31/35/34 \\
 \bottomrule
 \end{tabularx}
 \end{table*}
@@ -1460,9 +1460,9 @@ that the residual model improves the frozen prior.}
 \toprule
 Target & Model RMSE & Prior RMSE & \(\Delta\)RMSE & Model MAE & Unit \\
 \midrule
-Attenuation & 1.6950 & 1.9383 & -0.2433 & 0.9773 & dB \\
-Delay spread & 26.6915 & 28.1211 & -1.4296 & 7.7878 & ns \\
-Angular spread & 11.4197 & 13.7416 & -2.3220 & 4.8597 & deg \\
+Attenuation & 1.6947 & 1.9383 & -0.2436 & 0.9772 & dB \\
+Delay spread & 26.6882 & 28.1211 & -1.4329 & 7.8160 & ns \\
+Angular spread & 11.5253 & 13.8162 & -2.2909 & 4.8899 & deg \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -1477,9 +1477,9 @@ Angular spread & 11.4197 & 13.7416 & -2.3220 & 4.8597 & deg \\
 \toprule
 Target & Model & Prior & \(\Delta\) \\
 \midrule
-Attenuation & 0.961054 & 0.947710 & +0.013344 \\
-Delay spread & 0.414823 & 0.306026 & +0.108798 \\
-Angular spread & 0.595179 & 0.377700 & +0.217479 \\
+Attenuation & 0.961055 & 0.947710 & +0.013345 \\
+Delay spread & 0.414692 & 0.306026 & +0.108666 \\
+Angular spread & 0.581783 & 0.348713 & +0.233070 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1499,14 +1499,14 @@ after each map's mean and scale are removed, the residual model places the
 relative high and low regions better than the frozen priors for all three
 targets. This is especially important for the spread maps. Delay spread RMSE
 improves by about \(5\%\) and angular spread RMSE by about \(17\%\), but their
-MapCorr values rise by about \(36\%\) and \(58\%\) relative to the frozen priors.
+MapCorr values rise by about \(36\%\) and \(67\%\) relative to the frozen priors.
 Thus the residual model is doing visible map-structure correction even when the
 unit aware RMSE gain looks modest.
 
 \paragraph{Channel attenuation}
 The frozen path loss prior is already strong, reaching \SI{1.9383}{dB} RMSE
 and \SI{1.2319}{dB} MAE on the final test split. \textsc{HARP-Net CKM}
-reduces these to \SI{1.6950}{dB} and \SI{0.9773}{dB}. This is the most
+reduces these to \SI{1.6947}{dB} and \SI{0.9772}{dB}. This is the most
 uniform gain: the residual model improves both squared error and typical
 absolute error, and it improves both LoS and NLoS pixels in
 Table~\ref{tab:los-nlos}. The closest external references are dense path loss
@@ -1514,8 +1514,8 @@ radio map papers, but they still differ in split, height protocol, frequency,
 and target definition.
 
 \paragraph{Angular spread}
-The angular spread prior reaches \(13.7416^\circ\) RMSE and \(4.9890^\circ\)
-MAE; the final model reaches \(11.4197^\circ\) RMSE and \(4.8597^\circ\) MAE.
+The angular spread prior reaches \(13.8162^\circ\) RMSE and \(5.0033^\circ\)
+MAE; the final model reaches \(11.5253^\circ\) RMSE and \(4.8899^\circ\) MAE.
 The MAE gain is smaller than the RMSE gain, so the residual model mainly suppresses larger angular
 spread errors rather than shifting every pixel uniformly. The LoS gain is much
 larger than the NLoS gain, which is expected because the NLoS angular spread
@@ -1528,8 +1528,8 @@ characteristic maps from lower resolution channel maps
 against the frozen prior and the same protocol target.
 
 \paragraph{Delay spread}
-The delay spread prior reaches \SI{28.1211}{ns} RMSE and \SI{7.3033}{ns} MAE;
-the final model reaches \SI{26.6915}{ns} RMSE and \SI{7.7878}{ns} MAE. This
+The delay spread prior reaches \SI{28.1211}{ns} RMSE and \SI{7.3041}{ns} MAE;
+the final model reaches \SI{26.6882}{ns} RMSE and \SI{7.8160}{ns} MAE. This
 is the least uniform target: RMSE improves because rare high delay errors are
 reduced, while MAE slightly worsens because small local shifts appear in many
 easy pixels. The LoS/NLoS split confirms that the model improves both
@@ -1555,12 +1555,12 @@ in the physically hard NLoS subset.
 \toprule
 Target & Scope & Model & Prior & \(\Delta\) \\
 \midrule
-Atten. & LoS & 1.5177 & 1.7519 & -0.2342 \\
-Atten. & NLoS & 3.1502 & 3.5143 & -0.3641 \\
-DS & LoS & 25.6189 & 27.5119 & -1.8930 \\
-DS & NLoS & 29.2455 & 29.6157 & -0.3702 \\
-AS & LoS & 12.3914 & 15.2818 & -2.8904 \\
-AS & NLoS & 8.4556 & 8.6614 & -0.2058 \\
+Atten. & LoS & 1.5175 & 1.7519 & -0.2344 \\
+Atten. & NLoS & 3.1596 & 3.5143 & -0.3547 \\
+DS & LoS & 25.6137 & 27.5119 & -1.8983 \\
+DS & NLoS & 29.2464 & 29.6157 & -0.3693 \\
+AS & LoS & 12.5270 & 15.3751 & -2.8481 \\
+AS & NLoS & 8.4550 & 8.6614 & -0.2064 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1582,7 +1582,7 @@ city mix effect rather than an evaluator change.
 Split & Samples & Atten. RMSE & DS RMSE & AS RMSE \\
 \midrule
 Validation & 2750 & 1.6272 & 22.1946 & 11.4141 \\
-Test & 2590 & 1.6950 & 26.6915 & 11.4197 \\
+Test & 2590 & 1.6947 & 26.6882 & 11.5253 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1714,7 +1714,7 @@ error of \(e\) dB corresponds to a received power factor
 \begin{equation}
   G(e)=10^{e/10}.
 \end{equation}
-Thus the final \SI{1.6950}{dB} attenuation RMSE is about \(1.48\times\) in
+Thus the final \SI{1.6947}{dB} attenuation RMSE is about \(1.48\times\) in
 received power, while the original \SI{5}{dB} target would allow a
 \(3.16\times\) factor. A \SI{5}{dB} error is therefore not small near a
 coverage edge: it can change outage, link margin, MCS or handover decisions.
@@ -1726,7 +1726,7 @@ path length,
 \begin{equation}
   \Delta d = c\,\Delta\tau,\qquad c=0.299792458~\mathrm{m/ns}.
 \end{equation}
-The final \SI{26.6915}{ns} delay spread RMSE therefore corresponds to
+The final \SI{26.6882}{ns} delay spread RMSE therefore corresponds to
 \SI{8.00}{m} of equivalent multipath path length uncertainty; the original
 \SI{50}{ns} target corresponds to \SI{14.99}{m}. This does not mean that every
 ray path is geometrically wrong by \SI{8}{m}. It only gives the physical scale
@@ -1742,7 +1742,7 @@ average. LoS angular spread can be dominated by the direct ray plus narrow
 secondary components, so angular spikes may affect RMSE without being the most
 important link level ambiguity. NLoS angular spread is more relevant for
 beam selection, spatial richness and multipath ambiguity; the final NLoS AS
-RMSE is \(8.4556^\circ\), below both the global \(11.4197^\circ\) value and
+RMSE is \(8.4550^\circ\), below both the global \(11.5253^\circ\) value and
 the original \(20^\circ\) target.
 
 For spread targets, quantized labels make visual and RMSE interpretation harder.
@@ -1813,7 +1813,7 @@ AIRMap \cite{airmap2025} &
 Path gain error \(<\SI{4}{dB}\) against ray tracing &
 Same broad digital twin motivation, but path gain and a fixed \(200\times200\) input grid with variable physical extent. \\
 \textbf{Final model (ours)} &
-\textbf{\SI{1.6950}{dB} attenuation; \SI{26.6915}{ns} DS; \(11.4197^\circ\) AS} &
+\textbf{\SI{1.6947}{dB} attenuation; \SI{26.6882}{ns} DS; \(11.5253^\circ\) AS} &
 \textbf{Strict CKM city holdout, centred variable height UAV, dense \(513\times513\) channel attenuation/DS/AS.} \\
 \bottomrule
 \end{tabularx}
@@ -1860,7 +1860,7 @@ Closest map based spread reference reviewed. &
 Super resolution starts from a sampled coarse channel map; this paper predicts
 dense maps from topology, priors and UAV height with no coarse DS/AS input. \\
 \textbf{Final model} &
-\textbf{\SI{26.6915}{ns} DS RMSE and \(11.4197^\circ\) AS RMSE.} &
+\textbf{\SI{26.6882}{ns} DS RMSE and \(11.5253^\circ\) AS RMSE.} &
 \textbf{Dense channel attenuation/DS/AS maps under the final city holdout setting.} &
 \textbf{Should be judged mainly against the frozen spread priors and thesis
 targets under the same protocol.} \\
@@ -1915,7 +1915,7 @@ quantization, and local blocked/scattered paths.
 Limitations remain. The labels come from ray tracing rather than field
 measurements, so the result is simulator agreement, not over the air validation.
 Target quantization also limits sub unit learning even though the model outputs
-continuous channel attenuation, DS, and AS values; the \SI{0.9773}{dB} final
+continuous channel attenuation, DS, and AS values; the \SI{0.9772}{dB} final
 attenuation MAE is already close to the \SI{1}{dB} label step. Finally, the
 model is selected under one city holdout split and one final seed, with fixed
 frequency, antenna pattern, and simulator assumptions.
@@ -1936,8 +1936,8 @@ are external artifacts or Git LFS objects.
 
 This paper presents a dense variable height UAV CKM surrogate that jointly
 predicts channel attenuation, delay spread, and angular spread on unseen cities.
-Under strict city holdout, the final model reaches \SI{1.6950}{dB},
-\SI{26.6915}{ns}, and \(11.4197^\circ\), respectively. Its main contribution is
+Under strict city holdout, the final model reaches \SI{1.6947}{dB},
+\SI{26.6882}{ns}, and \(11.5253^\circ\), respectively. Its main contribution is
 a hybrid recipe: fit strong priors on training cities for predictable structure,
 then learn bounded residual distributions around those anchors.
 
@@ -1945,11 +1945,11 @@ The calibrated priors combine coherent two-ray LoS path loss, height dependent
 calibration, morphology aware NLoS correction, visibility switching, and log
 domain DS/AS spread statistics. These anchors explain most radial, visibility,
 height, and spread scale structure; the residual model improves them by
-\SI{0.2433}{dB}, \SI{1.4296}{ns}, and \(2.3220^\circ\) RMSE on the held out
-test set. It also improves map correlation from 0.947710 to 0.961054 for
-attenuation, from 0.306026 to 0.414823 for delay spread, and from 0.377700 to
-0.595179 for angular spread. For the two spread targets this is a relative
-MapCorr gain of about \(36\%\) and \(58\%\), respectively, both above the
+\SI{0.2436}{dB}, \SI{1.4329}{ns}, and \(2.2909^\circ\) RMSE on the held out
+test set. It also improves map correlation from 0.947710 to 0.961055 for
+attenuation, from 0.306026 to 0.414692 for delay spread, and from 0.348713 to
+0.581783 for angular spread. For the two spread targets this is a relative
+MapCorr gain of about \(36\%\) and \(67\%\), respectively, both above the
 \(25\%\) mark. This makes clear that the residual model improves map similarity
 even when the RMSE reduction is moderate. Continuous transmitter height is
 handled through both the priors and a
