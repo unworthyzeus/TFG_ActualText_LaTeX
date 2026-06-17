@@ -90,6 +90,15 @@
 %%%% BIBLIOGRAPHY (using biblatex) %%%%
 %\usepackage[section,numbib]{tocbibind}       % Makes bibliography appear in the Table of Contents
 \usepackage[backend=biber,style=numeric]{biblatex}
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map{
+      \step[fieldsource=doi, final]
+      \step[fieldset=url, null]
+      \step[fieldset=urldate, null]
+    }
+  }
+}
 \addbibresource{TFG.bib}
 
 %%%% QUOTES %%%%

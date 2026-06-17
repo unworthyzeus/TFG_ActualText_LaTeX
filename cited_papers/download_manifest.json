@@ -658,5 +658,16 @@
     "source_url": "",
     "file": "",
     "notes": "not a paper PDF target"
+  },
+  {
+    "key": "wang2023multitasksr",
+    "type": "article",
+    "title": "Super-Resolution of Wireless Channel Characteristics: A Multitask Learning Model",
+    "doi": "10.1109/TAP.2023.3305096",
+    "url": "https://doi.org/10.1109/TAP.2023.3305096",
+    "status": "downloaded_open_preprint",
+    "source_url": "https://arxiv.org/pdf/2209.04207",
+    "file": "C:\\TFG\\FINAL_THESIS\\cited_papers\\wang2023multitasksr__Super_Resolution_of_Wireless_Channel_Characteristics_A_Multitask_Learning_Model_open_preprint_arxiv2209_04207.pdf",
+    "notes": "6919456 bytes from arXiv open preprint for the multitask super resolution line; IEEE PDF blocked by access controls"
   }
 ]

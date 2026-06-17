@@ -303,6 +303,20 @@ means are assembled. The residual is bounded and guarded against the frozen
 prior because the goal is not to let the neural model overwrite a strong prior,
 but to correct the part that the prior cannot explain.
 
+This distribution modelling is a central part of the final method. A dense CKM
+map is not only a smooth image regression target: it contains visibility
+changes, building edge transitions, blocked receiver pockets and occasional
+high spread regions. If the residual head is forced to predict only one direct
+value everywhere, training tends to average together easy ground pixels and rare
+difficult pixels. That average can look acceptable in global RMSE while still
+missing the spatial tail behaviour that matters for NLoS attenuation, delay
+spread and angular spread. The GMM style head gives the model a controlled way
+to keep several residual hypotheses during training, then export a single
+deterministic point map for evaluation. In this sense, predicting the residual
+distribution is not separate from obtaining good dense CKM maps; it is one of
+the mechanisms that makes the prior anchored model useful under varying UAV
+height and city holdout.
+
 \section{Dataset and split}
 \label{sec:methodology_dataset_split}
 The data source is \texttt{CKM\_Dataset\_270326.h5}, a project HDF5 version of
@@ -971,6 +985,12 @@ Mixture Model (GMM) style residual head is retained because both blocked
 attenuation errors and spread targets are heavy tailed; a single residual value
 is too brittle in those regimes. Finally, the residual is bounded and guarded
 so that the model can correct a strong prior without erasing it.
+
+The GMM head should therefore be read as part of the prediction model, not only
+as a training loss detail. The prior supplies the stable mean structure; FiLM
+changes the interpretation of that structure with transmitter height; and the
+GMM head models the remaining residual uncertainty and tail behaviour before a
+deterministic map is assembled.
 
 The network is a shared GroupNorm U-Net with task specific residual heads. For
 each target and visibility region, the head predicts bounded residual

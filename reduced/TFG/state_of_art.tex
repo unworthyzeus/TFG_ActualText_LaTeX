@@ -443,22 +443,50 @@ this convention by working in $\log(1+y)$ space throughout, consistent with the
 Work on deep learning for delay and angular spread is sparser than for channel
 attenuation. Most published methods either predict spread globally per sample
 (a single scalar) rather than per pixel, or treat it as an ancillary output of a
-multitask attenuation model. Per pixel dense prediction of delay spread and
-angular spread over $513 \times 513$ maps is, to the best of the author's
-knowledge, not addressed by the reviewed methods.
+multitask attenuation model. A notable exception is the multitask super
+resolution work of Wang et al.\ \cite{wang2023multitasksr}, which reconstructs
+path loss, delay spread, RMS azimuth angle spread, RMS elevation angle spread
+and LoS/NLoS maps from lower resolution channel maps. This is a map recovery
+task, but it is not the same as predicting full \(513\times513\) CKM maps from
+building topology and continuous UAV height under held out city evaluation.
 
-The closest external quantitative references for spreads are therefore scalar
-channel characteristic predictors rather than dense CKM-map benchmarks. Huang et al.\
+The difference is not only dataset naming. In super resolution, the low
+resolution input is already a sampled version of the desired channel field, so
+large scale DS and AS structure is partially present before learning. The
+network mainly restores spatial detail and reduces degradation artifacts. In
+the final task of this thesis, the model is not given a measured or simulated
+low resolution DS or AS map at inference time. It must use the building height
+map, geometric priors, visibility structure and UAV height to generate the
+dense spread maps for unseen city layouts. This changes the information
+available to the model and makes direct numeric comparison with super
+resolution RMSEs misleading.
+
+The closest external quantitative references for spreads are therefore mixed:
+some are map super resolution papers, while others are scalar channel
+characteristic predictors rather than dense CKM-map benchmarks. Huang et al.\
 \cite{huang2025a2gtransformer} are not used in the results comparison tables
 because their Wireless InSite campus dataset predicts scalar A2G link
 characteristics from coordinates and link features, not dense CKM maps from
 city topologies.
 
+This subsection therefore separates three problem families. The first family
+predicts scalar link statistics and is useful for understanding which features
+matter, but it does not evaluate dense spatial CKMs. The second family,
+represented by Wang et al., is genuinely map based, but the input already
+contains a lower resolution channel map of the target quantity. The present
+thesis is a third family: dense topology conditioned CKM generation, with no
+sampled target spread map at inference time, continuous UAV height conditioning
+and strict city holdout. This is why Chapter~4 lists Wang et al. as the nearest
+map based spread reference while still treating the frozen prior, the thesis
+targets and the internal city holdout protocol as the fair numerical anchors.
+
 \textbf{Limitation for this thesis.}
 Most reviewed angular spread work reports scalar link level angle of arrival or
-angle of departure statistics rather than dense CKM maps under city holdout.
-Chapter~4 therefore compares angular spread mainly against the frozen prior, the
-thesis target, and nearby papers whose tasks are related but not equivalent.
+angle of departure statistics, or reconstructs angle spread maps from already
+sampled coarse channel maps, rather than predicting dense CKM maps from
+topology under city holdout. Chapter~4 therefore compares angular spread mainly
+against the frozen prior, the thesis target, and nearby papers whose tasks are
+related but not equivalent.
 
 The main challenge is the spike plus exponential distribution shape of spread
 targets.  A model trained only with mean squared error (MSE) collapses to the
@@ -479,10 +507,14 @@ matters for wideband links.
 
 \textbf{Limitation for this thesis.}
 Most reviewed delay spread work reports scalar link level channel parameters
-or simulation specific statistics rather than dense \(513\times513\) CKM maps
-under city holdout. Chapter~4 therefore compares delay spread mainly against
-the frozen prior, the thesis target, and nearby papers whose tasks are related
-but not equivalent.
+or simulation specific statistics. The map based super resolution line
+\cite{wang2023multitasksr} is closer, but it starts from lower resolution
+channel maps and does not use the same topology to dense \(513\times513\) CKM
+city holdout protocol. Its low resolution DS input already contains the main
+delay field, while the present thesis must infer that field from city geometry
+and UAV height. Chapter~4 therefore compares delay spread mainly against the
+frozen prior, the thesis target, and nearby papers whose tasks are related but
+not equivalent.
 
 \subsection{Distributional mismatch and the spike plus exponential problem}
 

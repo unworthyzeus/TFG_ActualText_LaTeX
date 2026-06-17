@@ -198,6 +198,15 @@ H.~Mi, B.~Ai, R.~He, A.~Bodi, R.~Caromi, J.~Wang, J.~Senic, C.~Gentile, and
   \url{https://doi.org/10.1109/OJVT.2024.3436857}
 \BIBentrySTDinterwordspacing
 
+\bibitem{wang2023multitasksr}
+\BIBentryALTinterwordspacing
+X.~Wang, K.~Guan, D.~He, Z.~Zhang, H.~Zhang, J.~Dou, and Z.~Zhong,
+  ``Super-resolution of wireless channel characteristics: A multitask learning
+  model,'' \emph{IEEE Transactions on Antennas and Propagation}, vol.~71,
+  no.~10, pp. 8197--8209, 2023. [Online]. Available:
+  \url{https://doi.org/10.1109/TAP.2023.3305096}
+\BIBentrySTDinterwordspacing
+
 \bibitem{kendall2017uncertainties}
 \BIBentryALTinterwordspacing
 A.~Kendall and Y.~Gal, ``What uncertainties do we need in {Bayesian} deep

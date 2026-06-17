@@ -140,9 +140,13 @@ A2G delay spread with classical regressors \cite{yang2019a2gml}; Huang et al.\
 use a Transformer style UAV mmWave predictor for received power, RMS delay
 spread, and RMS angular spread \cite{huang2025a2gtransformer}; and Mi et al.\
 predict mmWave channel attenuation (PL), DS, AS, and \(K\)-factor from measurement linked point
-clouds \cite{mi2024pointcloud}. These works are close in target type but still
-predict link level or sparse channel parameters, not dense \(513\times513\)
-CKM maps for unseen cities.
+clouds \cite{mi2024pointcloud}. A closer map based reference is the multitask
+super resolution model of Wang et al.\ \cite{wang2023multitasksr}, which
+reconstructs path loss, delay spread, RMS azimuth/elevation angular spread and
+LoS/NLoS maps from lower resolution channel maps. This is still a different
+input contract: the low resolution channel field already contains sampled DS/AS
+structure, whereas this paper generates dense \(513\times513\) CKM maps from
+topology, support masks, priors and continuous UAV height for unseen cities.
 
 Finally, heteroscedastic regression \cite{kendall2017uncertainties}, mixture
 density wireless predictors \cite{saleh2021probabilistic,garciamarti2020mixture,
@@ -1485,6 +1489,11 @@ The original numerical targets were \SI{5}{dB}, \SI{50}{ns}, and
 importantly, it does so jointly: the same network predicts channel attenuation,
 DS, and AS instead of
 using separate specialist models.
+The targets are broad acceptance thresholds rather than equally informative
+final benchmarks. In particular, the attenuation prior is already below
+\SI{2}{dB}, so the final attenuation question is whether the residual network
+beats that prior and preserves map structure; Tables~\ref{tab:main-results}
+and~\ref{tab:mapcorr} show that it does.
 The map correlation results in Table~\ref{tab:mapcorr} add a structural check:
 after each map's mean and scale are removed, the residual model places the
 relative high and low regions better than the frozen priors for all three
@@ -1512,9 +1521,11 @@ spread errors rather than shifting every pixel uniformly. The LoS gain is much
 larger than the NLoS gain, which is expected because the NLoS angular spread
 prior is already close to the target distribution. No reviewed external method
 reports the same dense CKM city holdout angular spread map task. The nearest
-papers predict link level or sparse angular spread channel parameters
-\cite{huang2025a2gtransformer,mi2024pointcloud}, so the primary comparison is
-against the frozen prior and the thesis target.
+papers either predict link level or sparse angular spread channel parameters
+\cite{huang2025a2gtransformer,mi2024pointcloud}, or reconstruct channel
+characteristic maps from lower resolution channel maps
+\cite{wang2023multitasksr}. The primary numerical comparison is therefore
+against the frozen prior and the same protocol target.
 
 \paragraph{Delay spread}
 The delay spread prior reaches \SI{28.1211}{ns} RMSE and \SI{7.3033}{ns} MAE;
@@ -1523,9 +1534,10 @@ is the least uniform target: RMSE improves because rare high delay errors are
 reduced, while MAE slightly worsens because small local shifts appear in many
 easy pixels. The LoS/NLoS split confirms that the model improves both
 visibility cases in RMSE. Similar A2G delay spread predictors exist
-\cite{yang2019a2gml,huang2025a2gtransformer}, but they are not dense
-\(513\times513\) CKM generators under city holdout, so they are used only as
-context.
+\cite{yang2019a2gml,huang2025a2gtransformer}, and Wang et al.\ provide a
+map based super resolution reference \cite{wang2023multitasksr}. None is the
+same topology to dense CKM city holdout generation task, so they are used as
+context rather than as direct leaderboards.
 
 \subsection{LoS/NLoS and Split Diagnostics}
 
@@ -1697,6 +1709,42 @@ during training because attenuation, delay spread and angular spread have
 different LoS/NLoS regimes and tail behaviour, but the final claim is the RMSE
 and MAE of the exported point prediction.
 
+The three RMSE units have different physical meanings. For attenuation, an
+error of \(e\) dB corresponds to a received power factor
+\begin{equation}
+  G(e)=10^{e/10}.
+\end{equation}
+Thus the final \SI{1.6950}{dB} attenuation RMSE is about \(1.48\times\) in
+received power, while the original \SI{5}{dB} target would allow a
+\(3.16\times\) factor. A \SI{5}{dB} error is therefore not small near a
+coverage edge: it can change outage, link margin, MCS or handover decisions.
+The final attenuation error is much smaller and also improves a strong
+\SI{1.9383}{dB} frozen prior.
+
+For delay spread, time can be converted into an equivalent excess propagation
+path length,
+\begin{equation}
+  \Delta d = c\,\Delta\tau,\qquad c=0.299792458~\mathrm{m/ns}.
+\end{equation}
+The final \SI{26.6915}{ns} delay spread RMSE therefore corresponds to
+\SI{8.00}{m} of equivalent multipath path length uncertainty; the original
+\SI{50}{ns} target corresponds to \SI{14.99}{m}. This does not mean that every
+ray path is geometrically wrong by \SI{8}{m}. It only gives the physical scale
+of the remaining RMS temporal dispersion error. 3GPP TR 38.901 uses example
+CDL/TDL delay scaling values from very short \SI{10}{ns} and short
+\SI{30}{ns} to \SI{100}{ns}, \SI{300}{ns} and \SI{1000}{ns}
+\cite{tr38901}; the final DS RMSE is therefore around the short profile scale,
+but the moderate MapCorr shows that spatial delay placement is still the
+hardest spread behaviour.
+
+For angular spread, the LoS/NLoS split is more informative than the global
+average. LoS angular spread can be dominated by the direct ray plus narrow
+secondary components, so angular spikes may affect RMSE without being the most
+important link level ambiguity. NLoS angular spread is more relevant for
+beam selection, spatial richness and multipath ambiguity; the final NLoS AS
+RMSE is \(8.4556^\circ\), below both the global \(11.4197^\circ\) value and
+the original \(20^\circ\) target.
+
 For spread targets, quantized labels make visual and RMSE interpretation harder.
 The released delay and angular maps are integer valued; smooth predictions can
 be penalized across staircase like target boundaries even when the morphology is
@@ -1805,6 +1853,12 @@ Regression PointNet for indoor \SI{60}{GHz} measurements; predicts RMS DS,
 azimuth AS, PL and \(K\)-factor; average AS RMSE \(7.39^\circ\). &
 Measurement based DL reference including DS and AS. &
 Indoor point cloud task with link level samples, not outdoor UAV CKM generation. \\
+Wang et al.\ \cite{wang2023multitasksr} &
+Multitask super resolution of path loss, DS, RMS azimuth/elevation AS and
+LoS/NLoS maps from lower resolution channel maps. &
+Closest map based spread reference reviewed. &
+Super resolution starts from a sampled coarse channel map; this paper predicts
+dense maps from topology, priors and UAV height with no coarse DS/AS input. \\
 \textbf{Final model} &
 \textbf{\SI{26.6915}{ns} DS RMSE and \(11.4197^\circ\) AS RMSE.} &
 \textbf{Dense channel attenuation/DS/AS maps under the final city holdout setting.} &
@@ -1816,8 +1870,10 @@ targets under the same protocol.} \\
 
 The fair conclusion is narrow: the attenuation result is in the same range as
 strong dense radio map references, while spread results should be read mainly
-against same protocol internal baselines because no external dense CKM
-attenuation/DS/AS benchmark was found.
+against same protocol internal baselines because no external dense topology
+conditioned CKM attenuation/DS/AS city holdout benchmark was found. Wang et al.\
+are the closest map based spread reference, but their task is channel map super
+resolution rather than topology to dense CKM generation.
 
 \subsection{Runtime}
 
