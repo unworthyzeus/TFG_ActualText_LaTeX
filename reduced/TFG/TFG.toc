@@ -15,9 +15,9 @@
 \contentsline {section}{\numberline {1.4}Objectives and research questions}{17}{section.1.4}%
 \contentsline {section}{\numberline {1.5}Proposed approach and headline results}{18}{section.1.5}%
 \contentsline {section}{\numberline {1.6}Contributions}{18}{section.1.6}%
-\contentsline {section}{\numberline {1.7}Thesis outline}{19}{section.1.7}%
+\contentsline {section}{\numberline {1.7}Thesis outline}{18}{section.1.7}%
 \contentsline {section}{\numberline {1.8}Requirements and specifications}{19}{section.1.8}%
-\contentsline {section}{\numberline {1.9}Work plan}{19}{section.1.9}%
+\contentsline {section}{\numberline {1.9}Work plan}{20}{section.1.9}%
 \contentsline {chapter}{\numberline {2}State of the Art}{21}{chapter.2}%
 \contentsline {section}{\numberline {2.1}General Framework: CKM Surrogates and Evaluation Contracts}{21}{section.2.1}%
 \contentsline {section}{\numberline {2.2}Propagation and Channel Statistics Background}{22}{section.2.2}%

@@ -29,13 +29,6 @@ simulation acceleration. They are particularly useful for 6G scenarios where
 the radio access node can be elevated or moved and the planner must compare
 many possible operating heights before deployment.
 
-The CKM HDF5 file and the training code name the dB attenuation target
-\texttt{path\_loss}, and the implementation keeps the abbreviation PL for
-compatibility with those files. In the prose of this thesis, that predicted
-dense dB map is referred to as \emph{channel attenuation}. The term
-\emph{path loss} is kept when discussing standard propagation formulas, cited
-path loss models, or code and dataset names that explicitly use it.
-
 \section{UAV and elevated transmitter context}
 
 UAVs make CKM prediction both more useful and more difficult. In Third
@@ -207,6 +200,13 @@ Field & Shape & Type & Role \\
 \bottomrule
 \end{tabularx}
 \end{table}
+
+The CKM HDF5 file and the training code name the dB attenuation target
+\texttt{path\_loss}, and the implementation keeps the abbreviation PL for
+compatibility with those files. In the prose of this thesis, that predicted
+dense dB map is referred to as \emph{channel attenuation}. The term
+\emph{path loss} is kept when discussing standard propagation formulas, cited
+path loss models, or code and dataset names that explicitly use it.
 
 The physical receiver scenario is a ground user served by the UAV transmitter. Therefore,
 losses and metrics are computed only on valid ground receiver pixels. Building
