@@ -91,27 +91,27 @@
 \contentsline {paragraph}{How $\textbf {w}^{\mathrm {PL,NLoS}}_{r}$ is fitted.}{61}{paragraph*.67}%
 \contentsline {subsubsection}{NLoS clipping}{62}{subsubsection*.68}%
 \contentsline {subsection}{\numberline {3.6.4}Final channel attenuation prior assembly}{62}{subsection.3.6.4}%
-\contentsline {section}{\numberline {3.7}Delay and Angular Spread Prior and Residual Prediction}{62}{section.3.7}%
+\contentsline {section}{\numberline {3.7}Delay and Angular Spread Prior and Residual Prediction}{63}{section.3.7}%
 \contentsline {subsection}{\numberline {3.7.1}Physical motivation for log domain modeling}{63}{subsection.3.7.1}%
 \contentsline {subsection}{\numberline {3.7.2}Pixel wise notation for the spread prior fit}{63}{subsection.3.7.2}%
-\contentsline {subsection}{\numberline {3.7.3}Raw spread prior in log domain}{63}{subsection.3.7.3}%
+\contentsline {subsection}{\numberline {3.7.3}Raw spread prior in log domain}{64}{subsection.3.7.3}%
 \contentsline {subsection}{\numberline {3.7.4}Calibrated spread prior}{65}{subsection.3.7.4}%
 \contentsline {subsubsection}{Spread feature vector and design matrix}{65}{subsubsection*.70}%
-\contentsline {subsubsection}{Ridge calibration by regime}{66}{subsubsection*.74}%
+\contentsline {subsubsection}{Ridge calibration by regime}{67}{subsubsection*.74}%
 \contentsline {paragraph}{Fallback hierarchy.}{67}{paragraph*.75}%
-\contentsline {subsubsection}{Inverse transform and clipping}{67}{subsubsection*.76}%
+\contentsline {subsubsection}{Inverse transform and clipping}{68}{subsubsection*.76}%
 \contentsline {subsection}{\numberline {3.7.5}Delay and angular spread prior pipeline}{68}{subsection.3.7.5}%
 \contentsline {section}{\numberline {3.8}\textsc {HARP-Net CKM} Neural Residual Model}{68}{section.3.8}%
 \contentsline {subsection}{\numberline {3.8.1}Experimental protocol and reporting status}{69}{subsection.3.8.1}%
 \contentsline {subsection}{\numberline {3.8.2}HARP-Net CKM Residual Head}{70}{subsection.3.8.2}%
-\contentsline {subsection}{\numberline {3.8.3}Architecture: Shared UNet with FiLM}{71}{subsection.3.8.3}%
+\contentsline {subsection}{\numberline {3.8.3}Architecture: Shared UNet with FiLM}{72}{subsection.3.8.3}%
 \contentsline {paragraph}{Detailed sinusoidal height embedding and FiLM path.}{72}{paragraph*.79}%
-\contentsline {paragraph}{Detailed HARP-Net CKM residual head.}{72}{paragraph*.81}%
+\contentsline {paragraph}{Detailed HARP-Net CKM residual head.}{74}{paragraph*.81}%
 \contentsline {subsection}{\numberline {3.8.4}Composite Optimization Objective}{74}{subsection.3.8.4}%
 \contentsline {paragraph}{Map negative log likelihood.}{75}{paragraph*.84}%
 \contentsline {paragraph}{Distributional KL term.}{75}{paragraph*.85}%
 \contentsline {paragraph}{Moment matching.}{75}{paragraph*.86}%
-\contentsline {paragraph}{Anchor and guard terms.}{75}{paragraph*.87}%
+\contentsline {paragraph}{Anchor and guard terms.}{76}{paragraph*.87}%
 \contentsline {paragraph}{Outlier budget and deterministic losses.}{76}{paragraph*.88}%
 \contentsline {section}{\numberline {3.9}Evaluation Metrics}{77}{section.3.9}%
 \contentsline {chapter}{\numberline {4}Results}{78}{chapter.4}%

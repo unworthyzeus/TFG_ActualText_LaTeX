@@ -776,6 +776,15 @@ first-principles propagation formula: the two-ray and A2G terms set the
 shape, while per regime fitting adapts the coefficients to the CKM simulator
 and to the dataset's stored masks.
 
+\emph{Implementation note.} The first coefficient in
+\eqref{eq:pl_nlos_dense_highrise_mid_coefficients} multiplies
+\texttt{prior\_sq}, the quadratic raw NLoS prior feature \(P_0(x)^2\). The
+released code keeps this term for consistency with the stored calibration
+vector. However, in the final code path, deleting this feature or setting only
+this coefficient to zero changes the resulting path loss maps by less than
+\SI{1}{dB}, so the quadratic term has little practical influence compared with
+the linear raw prior, morphology, elevation and bias terms.
+
 \subsubsection{NLoS clipping}
 
 \begin{equation}
@@ -791,7 +800,12 @@ and to the dataset's stored masks.
 \end{equation}
 
 Hard clipping to $[20, 185]$ dB prevents the linear model from producing
-physically unreasonable values in the obstructed branch.
+physically unreasonable values in the obstructed branch. This clipping is not a
+source of measured accuracy gain: the clipped and unclipped versions give the
+same results on the training, validation and test sets. It is kept for
+consistency with the dataset path loss range and as a conservative guard
+against possible outliers in very unusual environments not represented in the
+available CKM cities.
 
 \subsection{Final channel attenuation prior assembly}
 
