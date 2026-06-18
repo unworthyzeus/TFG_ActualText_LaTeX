@@ -1054,20 +1054,20 @@ mask and pixel weighting, replacing the squared error in \eqref{eq:rmse} by
 Map correlation is reported as the main companion structural metric. For each
 sample and target, let \(\Omega_s=\{(i,j):m_s(i,j)=1\}\),
 \(N_s=|\Omega_s|\), and let
-\(\bar y_s,\bar{\hat y}_s\) be the mean of the target and prediction over
+\(\bar y_s,\bar{\hat{y}}_s\) be the mean of the target and prediction over
 \(\Omega_s\). The standard deviations are computed over the same valid pixels,
 with the population normalization,
 \(\sigma_{y,s}^2=N_s^{-1}\sum_{\Omega_s}(y_s-\bar y_s)^2\) and
-\(\sigma_{\hat y,s}^2=N_s^{-1}\sum_{\Omega_s}(\hat y_s-\bar{\hat y}_s)^2\).
+\(\sigma_{\hat{y},s}^2=N_s^{-1}\sum_{\Omega_s}(\hat y_s-\bar{\hat{y}}_s)^2\).
 For non degenerate maps, the per sample map correlation is the Pearson
-correlation of the two valid pixel maps after both have been converted to local
+correlation of the two valid pixel maps after both have been converted to per map
 \(z\)-scores, meaning that each map has its valid pixel mean subtracted and is
 then divided by its valid pixel standard deviation:
 \begin{equation}
   z_{y,s}(i,j) = \frac{y_s(i,j)-\bar y_s}{\sigma_{y,s}},
   \qquad
-  z_{\hat y,s}(i,j) =
-  \frac{\hat y_s(i,j)-\bar{\hat y}_s}{\sigma_{\hat y,s}}.
+  z_{\hat{y},s}(i,j) =
+  \frac{\hat y_s(i,j)-\bar{\hat{y}}_s}{\sigma_{\hat{y},s}}.
   \label{eq:mapcorr_zscores}
 \end{equation}
 \begin{equation}
@@ -1076,8 +1076,8 @@ then divided by its valid pixel standard deviation:
   \frac{1}{N_s}
   \sum_{(i,j)\in\Omega_s}
   \frac{\left(y_s(i,j)-\bar y_s\right)
-        \left(\hat y_s(i,j)-\bar{\hat y}_s\right)}
-       {\sigma_{y,s}\sigma_{\hat y,s}} .
+        \left(\hat y_s(i,j)-\bar{\hat{y}}_s\right)}
+       {\sigma_{y,s}\sigma_{\hat{y},s}} .
   \label{eq:mapcorr}
 \end{equation}
 A \(z\)-score is not an error value. It says where one pixel sits relative to
