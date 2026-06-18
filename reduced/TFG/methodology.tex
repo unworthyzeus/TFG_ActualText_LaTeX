@@ -217,16 +217,15 @@ Evaluation Metrics & Valid receiver RMSE, MAE and map correlation rules for fina
 \section{Design route and rationale}
 \label{sec:methodology_rationale}
 
-Figure~\ref{fig:methodology_full_framework} is not only an implementation
-diagram. It summarizes how the final method follows from the research gap in
-Chapter~\ref{chap:introduction} and from the state of the art limitations in
-Chapter~\ref{chap:soa}. The problem is not a generic image regression task:
-the model must predict three dense CKM targets over unseen cities, respect a
-continuous UAV height variable, use only valid ground receiver pixels for the
-metric, and remain interpretable enough to explain what part of the map comes
-from propagation structure and what part comes from learned correction.
+Figure~\ref{fig:methodology_full_framework} gives the methodological argument
+behind the final system. It connects the research gap in
+Chapter~\ref{chap:introduction} and the state of the art limitations in
+Chapter~\ref{chap:soa} to the concrete constraints used here: three dense CKM
+targets over unseen cities, continuous UAV height, valid ground receiver pixels
+for the metric, and an interpretable split between propagation structure and
+learned correction.
 
-The route to the final system is therefore staged. First, each CKM sample is
+The route to the final system has three steps. First, each CKM sample is
 converted into support maps that are known before any learning step: receiver
 validity, LoS/NLoS visibility, distance, elevation angle, local building
 density and local obstruction proxies. These maps define the common coordinate
@@ -234,8 +233,8 @@ system used by every later block. Second, the most stable effects are removed
 from the neural problem by frozen priors calibrated only on training cities.
 For channel attenuation, the LoS branch uses FSPL plus coherent two-ray
 interference and small radial/height calibration, because the dataset shows
-strong transmitter centred rings in visible regions. The NLoS branch is not
-left to a single formula: it combines a blocked link estimate with a
+strong transmitter centred rings in visible regions. The NLoS branch combines a
+blocked link estimate with a
 multilinear ordinary least squares correction over distance, height, elevation,
 visibility and morphology features. For delay spread and angular spread, the
 same idea is used in \(\log(1+y)\) space with ridge calibration, because both
@@ -254,13 +253,12 @@ auditable in Chapter~\ref{chap:results}.
 \subsection{Why these techniques}
 \label{sec:methodology_why_techniques}
 
-The calibrated priors are used because the strongest structures in this
-dataset are not arbitrary image texture. Distance decay, reflected path length,
-visibility state, local obstruction and environment class have direct
-propagation meaning. Freezing them before neural training reduces the burden on
-the data driven model and creates a baseline that can be evaluated on its own.
-This is especially important for a city holdout split, where memorizing city
-specific textures would give a misleading result.
+The calibrated priors encode the dataset's dominant propagation structures:
+distance decay, reflected path length, visibility state, local obstruction and
+environment class. Freezing those quantities before neural training reduces the
+burden on the data driven model and creates a baseline that can be evaluated on
+its own. This matters for a city holdout split because a model can otherwise
+learn city specific textures while appearing to generalize.
 
 Multilinear ordinary least squares (OLS) and ridge regression are used inside
 the priors because they are a deliberate compromise between physical formulas
@@ -294,28 +292,23 @@ injecting it as a conditioning signal lets the same map be interpreted
 differently at different UAV heights without duplicating height as a constant
 image at every layer.
 
-The GMM style residual head is used because the residuals are not always
-single mode Gaussian errors. Blocked attenuation, delay spread and angular
-spread can contain rare but important tails. The mixture parameterization gives
-the model a way to represent several plausible correction modes during
-training, while the final thesis maps remain deterministic after the component
-means are assembled. The residual is bounded and guarded against the frozen
-prior because the goal is not to let the neural model overwrite a strong prior,
-but to correct the part that the prior cannot explain.
+The GMM style residual head represents rare blocked-link and spread-tail
+corrections during training. Blocked attenuation, delay spread and angular
+spread often include tails that a single Gaussian error model handles poorly.
+The mixture parameterization keeps several plausible correction modes available
+during optimization, while the final thesis maps remain deterministic after the
+component means are assembled. Residual bounds and prior guards keep those
+corrections local to the part that the frozen prior cannot explain.
 
-This distribution modelling is a central part of the final method. A dense CKM
-map is not only a smooth image regression target: it contains visibility
-changes, building edge transitions, blocked receiver pockets and occasional
-high spread regions. If the residual head is forced to predict only one direct
-value everywhere, training tends to average together easy ground pixels and rare
-difficult pixels. That average can look acceptable in global RMSE while still
-missing the spatial tail behaviour that matters for NLoS attenuation, delay
-spread and angular spread. The GMM style head gives the model a controlled way
-to keep several residual hypotheses during training, then export a single
-deterministic point map for evaluation. In this sense, predicting the residual
-distribution is not separate from obtaining good dense CKM maps; it is one of
-the mechanisms that makes the prior anchored model useful under varying UAV
-height and city holdout.
+Distribution modelling is part of the final method because dense CKM maps
+contain visibility changes, building edge transitions, blocked receiver pockets
+and occasional high spread regions. A direct single-value residual head tends to
+average easy ground pixels with rare difficult pixels; the resulting global RMSE
+can look acceptable while the NLoS attenuation, delay-spread and angular-spread
+tails are misplaced. The GMM style head keeps several residual hypotheses during
+training and exports a single deterministic point map for evaluation. This makes
+residual distribution modelling one mechanism by which the prior anchored model
+remains useful under varying UAV height and city holdout.
 
 \section{Dataset and split}
 \label{sec:methodology_dataset_split}

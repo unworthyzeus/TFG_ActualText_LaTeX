@@ -80,12 +80,12 @@ raw prior in original units, i.e.,
 \(\log(1+\mathrm{raw\_prior}_{\mathrm{clipped}}(x))\), not an unconstrained
 copy of \eqref{eq:raw_spread}.
 
-The raw prior is not a 3GPP formula copied directly into CKM. Instead, it
-takes the 3GPP/WINNER lesson that spread statistics should be separated by
-propagation state and represented in log space \cite{tr38901,winner2}, then
-adds CKM specific map morphology terms. UAV measurement studies also motivate
-the elevation angle dependence: low elevation links usually interact with more
-rooftops and street canyons than near overhead links \cite{cai2019,izydorczyk2019}.
+The raw prior adapts the 3GPP/WINNER log spread idea to CKM: spread statistics
+are separated by propagation state and represented in log space
+\cite{tr38901,winner2}, then augmented with CKM specific map morphology terms.
+UAV measurement studies also motivate the elevation angle dependence: low
+elevation links usually interact with more rooftops and street canyons than
+near overhead links \cite{cai2019,izydorczyk2019}.
 The development repository documents this spread module as a transparent
 non neural baseline whose purpose is to measure how much of DS/AS can already
 be explained by geometry, morphology and lightweight calibration

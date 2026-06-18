@@ -12,8 +12,8 @@ without leaving the method section.
 
 \subsection{High level architecture}
 
-The central design decision in the final model is \emph{not} to learn path
-loss, delay spread, and angular spread from scratch. Instead:
+The final model assigns stable large scale structure to frozen priors and
+reserves the neural network for bounded residual correction:
 
 \begin{itemize}
 \setlength{\itemsep}{0.12em}
@@ -26,16 +26,15 @@ loss, delay spread, and angular spread from scratch. Instead:
 \item \textsc{HARP-Net CKM} learns bounded corrections around those priors.
 \end{itemize}
 
-The deterministic or interpretable structure is kept in the prior, and the deep
-model is used only for the residual part that the prior cannot explain.
+The priors keep the deterministic or interpretable structure, while the deep
+model handles the residual part that the prior cannot explain.
 Figure~\ref{fig:methodology_full_framework} illustrates the overall pipeline.
 
-This prior phase is not presented as a new universal closed form propagation
-law. Its value is more practical: it turns physics, morphology, visibility, and
-height dependent calibration into a strong auditable baseline. The final model
-then follows a split of responsibility: calibrated priors
-remove the stable component of the targets, and the neural residual model
-focuses on the local errors that remain.
+The prior phase has a practical role: it turns physics, morphology, visibility,
+and height dependent calibration into a strong auditable baseline. The final
+model then follows a split of responsibility: calibrated priors remove stable
+target structure, and the neural residual model focuses on the local errors that
+remain.
 
 In this chapter, a prior is a deterministic frozen estimator map computed before
 the neural residual correction. Three such estimators are used:
@@ -150,12 +149,11 @@ separate open overhead links from obstructed street canyon like links. \\
 \subsection{Prior design rules}
 \label{sec:good_prior_design}
 
-The main prior design rule is that a useful prior is not just a physical
-looking equation. It is a complete estimator: the formula, fitted calibration,
-feature units, LoS/NLoS mask, topology features, and evaluation mask must be
-identical between fitting and inference. The final prior is strong because it
-keeps those pieces self contained and auditable under the same city holdout
-split used for the final model.
+A useful prior is a complete estimator: the formula, fitted calibration,
+feature units, LoS/NLoS mask, topology features, and evaluation mask must match
+between fitting and inference. The final prior is strong because it keeps those
+pieces self contained and auditable under the same city holdout split used for
+the final model.
 
 The distinction matters most for NLoS. A calibration fitted for one physical
 formula cannot reliably correct another; local height and density features
@@ -165,12 +163,11 @@ Once those constraints were enforced, the prior could separate deterministic
 large scale structure from the genuinely local residual that the final model later
 learned.
 
-This also explains why the final network is residual and distribution aware.
+The same constraint motivates the residual and distribution aware network.
 Blocked NLoS and spread targets are multimodal and heavy tailed, so a single
 point estimate without a strong anchor tends to average incompatible regimes.
-\textsc{HARP-Net CKM} therefore keeps the priors as frozen anchors and lets the
-neural head model bounded residual structure and uncertainty without turning
-the main method into an unconstrained direct regressor.
+\textsc{HARP-Net CKM} keeps the priors as frozen anchors and lets the neural
+head model bounded residual structure and uncertainty within those anchors.
 
 \begin{table}[H]
 \centering
