@@ -332,23 +332,24 @@ targets. The coefficient vector
 \end{equation}
 where \(\textbf{D}=\mathrm{diag}(d_1,\ldots,d_{23})\), with \(d_{23}=0\)
 and \(d_i=1\) for \(i\ne23\). Thus, the final interaction term
-\(t_{41}n_{41}\), which is the last entry of \eqref{eq:spread_calibration_vector}, is left
-unpenalized by the ridge term in the frozen calibration used by the final
-model. This is an implementation detail of the stored artifact, not a separate
-physical assumption. The regularizer is small, but it prevents unstable
-coefficients when a regime contains few valid pixels or when two morphology
-features are strongly correlated.
+\(t_{41}n_{41}\), the last entry of \eqref{eq:spread_calibration_vector}, is
+left unpenalized in the stored calibration. Usually the unpenalized coordinate
+in ridge regression is the constant bias, but this is only an implementation
+detail: tests using the bias instead, and tests with these weights penalized or
+unpenalized, did not materially change the metrics, while the stored
+\(t_{41}n_{41}\) choice was marginally better. In the final stored
+calibration, across the 72 exact regimes, the mean coefficients are \(-3.07\)
+for bias and \(-2.68\) for \(t_{41}n_{41}\). These close averages show that,
+in this case, the penalization choice does not strongly affect the fitted
+weights. The small regularizer stabilizes sparse or correlated regimes.
 
 Term by term, \(\textbf{X}_r^\top\textbf{X}_r\) is the feature correlation
-matrix for regime \(r\), \(\lambda\textbf{D}^\top\textbf{D}\) adds a small
-diagonal stabilizer to every coefficient except the final
-\(t_{41}n_{41}\) coefficient, and
-\(\textbf{X}_r^\top\textbf{z}_r\) is the feature target
-correlation vector in log spread space. This is ridge regression: it is the
-ordinary least squares fit plus a penalty that discourages very large
-coefficients. The penalty is important here because many morphology features
-are related; for example, \(\delta_{41}\), \(h_{41}\), \(b_{41}\) and \(t_{41}\)
-all increase in dense high rise areas.
+matrix, \(\lambda\textbf{D}^\top\textbf{D}\) is the diagonal ridge
+stabilizer, and \(\textbf{X}_r^\top\textbf{z}_r\) is the feature target
+correlation vector in log spread space. This is still ridge regression:
+ordinary least squares plus a diagonal stabilizer, useful because morphology
+features such as \(\delta_{41}\), \(h_{41}\), \(b_{41}\) and \(t_{41}\) are
+correlated in dense high rise areas.
 
 Sufficient statistics are accumulated incrementally:
 \begin{align}
@@ -356,11 +357,11 @@ Sufficient statistics are accumulated incrementally:
 \textbf{v}_r &\mathrel{+}= \textbf{X}_{r,s}^\top \textbf{z}_{r,s} \quad \forall s
 \end{align}
 so the full design matrix is never materialised in memory.
-This is important in practice because the calibration artifacts are already
-large even after compression into fitted coefficients and profiles. The path loss
-LoS calibration JSON reused by the final model is approximately 200\,000 lines, and the
-spread calibration must be rerun separately for delay spread and angular
-spread whenever the feature set changes.
+The spread calibration remains compact because it stores only fitted
+coefficients and profiles. Delay spread and angular spread share the same
+23 feature architecture, but the accumulators and coefficient vectors are keyed
+by metric, so feature changes require refitting both metric specific
+calibrations.
 
 \paragraph{Fallback hierarchy.} During fitting, each sampled pixel updates the
 exact accumulator and the four broader fallback accumulators listed below. A
