@@ -363,7 +363,9 @@ coefficients and profiles. Delay spread and angular spread share the same
 by metric, so feature changes require refitting both metric specific
 calibrations.
 
-\paragraph{Fallback hierarchy.} During fitting, each sampled pixel updates the
+\par\smallskip
+\noindent\textbf{Fallback hierarchy.}\par
+\noindent During fitting, each sampled pixel updates the
 exact accumulator and the four broader fallback accumulators listed below. A
 coefficient vector is written only for accumulators with at least
 $4 \times 23 = 92$ sampled pixels. During inference, the implementation tries
@@ -399,7 +401,7 @@ y_{\max,r},
 \end{equation}
 with delay spread clipped to $[0, 910]$~ns and angular spread clipped to
 $[0, 180^\circ]$ in both LoS and NLoS. These bounds are applied only to the
-frozen Try~80 prior channels, not to the final neural output. Because they are
+frozen spread prior channels, not to the final neural output. Because they are
 the values present in the CKM dataset, they do not alter any stored spread
 target; they only state the prior support.
 

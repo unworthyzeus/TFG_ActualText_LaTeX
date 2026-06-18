@@ -225,27 +225,28 @@ targets over unseen cities, continuous UAV height, valid ground receiver pixels
 for the metric, and an interpretable split between propagation structure and
 learned correction.
 
-The route to the final system has three steps. First, each CKM sample is
-converted into support maps that are known before any learning step: receiver
-validity, LoS/NLoS visibility, distance, elevation angle, local building
-density and local obstruction proxies. These maps define the common coordinate
-system used by every later block. Second, the most stable effects are removed
-from the neural problem by frozen priors calibrated only on training cities.
-For channel attenuation, the LoS branch uses FSPL plus coherent two-ray
-interference and small radial/height calibration, because the dataset shows
-strong transmitter centred rings in visible regions. The NLoS branch combines a
-blocked link estimate with a
+The route to the final system has three steps. \textbf{Map support.} First,
+each CKM sample is converted into support maps that are known before any
+learning step: receiver validity, LoS/NLoS visibility, distance, elevation
+angle, local building density and local obstruction proxies. These maps define
+the common coordinate system used by every later block. \textbf{Frozen priors.}
+Second, the most stable effects are removed from the neural problem by frozen
+priors calibrated only on training cities. For channel attenuation, the LoS
+branch uses FSPL plus coherent two-ray interference and small radial/height
+calibration, because the dataset shows strong transmitter centred rings in
+visible regions. The NLoS branch combines a blocked link estimate with a
 multilinear ordinary least squares correction over distance, height, elevation,
 visibility and morphology features. For delay spread and angular spread, the
 same idea is used in \(\log(1+y)\) space with ridge calibration, because both
 targets are nonnegative, highly skewed and sensitive to rare blocked paths.
 
-Third, the frozen priors and support maps are assembled as neural input
-channels instead of being treated as final answers. This is the main hybrid
-choice in the thesis. The priors explain the repeatable physics and dataset
-regularities, while the deep network receives the remaining task: learn local
-residuals where a transparent multilinear model is too simple. Finally, the
-output is assembled as prior plus bounded residual, with explicit LoS/NLoS
+\textbf{Residual correction.} Third, the frozen priors and support maps are
+assembled as neural input channels instead of being treated as final answers.
+This is the main hybrid choice in the thesis. The priors explain the repeatable
+physics and dataset regularities, while the deep network receives the remaining
+task: learn local residuals where a transparent multilinear model is too
+simple. Finally, the output is assembled as prior plus bounded residual, with
+explicit LoS/NLoS
 selection and ground mask evaluation. This keeps the final prediction
 compatible with the CKM evaluation rules while making the contribution of each block
 auditable in Chapter~\ref{chap:results}.
@@ -542,8 +543,13 @@ residual correction.
 Before any prior is evaluated, the raw map is converted into a common set of
 deterministic support maps. This section defines those maps once, because
 the LoS attenuation prior, the NLoS attenuation prior, the two spread priors and
-the final neural residual model all use the same shared geometry.
+the final neural residual model all use the same shared geometry. The
+definitions are grouped into support map geometry, visibility masks, local
+morphology maps, and regime or height keys.
 
+\par\smallskip
+\noindent\textbf{Support map geometry.}\par
+\noindent
 Let \(H=W=513\), let \(x=(i,j)\) denote a pixel with
 \(i,j\in\{0,\ldots,512\}\), and let the transmitter be at
 \(x_{\mathrm{tx}}=(i_{\mathrm{tx}},j_{\mathrm{tx}})=(256,256)\). This is the
@@ -635,6 +641,9 @@ Therefore \(\theta_{\mathrm{norm}}\) is high for near overhead links, while
 \(\theta_{\mathrm{inv}}\) is high for grazing links that pass through more urban
 structure.
 
+\par\smallskip
+\noindent\textbf{Visibility masks.}\par
+\noindent
 The LoS mask is treated as a support map, not as a target radio map. In the
 HDF5 experiments the stored CKM mask is used directly and then restricted to
 ground receivers:
@@ -722,6 +731,9 @@ against the same simulator support labels as the dataset. For new topology-only
 datasets, however, the generated masks are the operational input masks used by
 the generator and the final model.
 
+\par\smallskip
+\noindent\textbf{Local morphology maps.}\par
+\noindent
 The local morphology features are also computed before any prior is evaluated.
 The \(15\times15\) windows capture near receiver texture, while the
 \(41\times41\) windows capture a wider urban block context. In the code these
@@ -789,6 +801,9 @@ window: ground cells contribute zero because of \(m_{\mathrm{B}}\). Thus
 \(c_{41}\) is both a clearance and local building presence feature, and
 \(t_{41}\) is not a fraction conditioned on the cells already being buildings.
 
+\par\smallskip
+\noindent\textbf{Regime and height keys.}\par
+\noindent
 Two topology regime systems are used because the calibrated attenuation prior
 and the spread prior were fitted with different levels of granularity. Both are
 computed once per map from:
@@ -1049,6 +1064,13 @@ correlation of the two valid pixel maps after both have been converted to local
 \(z\)-scores, meaning that each map has its valid pixel mean subtracted and is
 then divided by its valid pixel standard deviation:
 \begin{equation}
+  z_{y,s}(i,j) = \frac{y_s(i,j)-\bar y_s}{\sigma_{y,s}},
+  \qquad
+  z_{\hat y,s}(i,j) =
+  \frac{\hat y_s(i,j)-\bar{\hat y}_s}{\sigma_{\hat y,s}}.
+  \label{eq:mapcorr_zscores}
+\end{equation}
+\begin{equation}
   \mathrm{MapCorr}_s
   =
   \frac{1}{N_s}
@@ -1058,6 +1080,13 @@ then divided by its valid pixel standard deviation:
        {\sigma_{y,s}\sigma_{\hat y,s}} .
   \label{eq:mapcorr}
 \end{equation}
+A \(z\)-score is not an error value. It says where one pixel sits relative to
+the other valid ground pixels of the same map: \(z=0\) is that map's valid
+ground mean, \(z=1\) is one valid pixel standard deviation above it, and
+\(z=-1\) is one standard deviation below it. MapCorr is therefore the average
+product of the target \(z\)-score map and the prediction \(z\)-score map. It is
+high when both maps put their above average and below average regions in the
+same places, even if their absolute mean or scale is different.
 Let \(\mathcal{C}\) be the set of samples with \(N_s\ge 2\) and non zero
 standard deviation in both maps. Degenerate maps do not contribute a
 correlation term. The final split value is aggregated by valid pixel count:

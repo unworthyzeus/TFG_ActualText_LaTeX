@@ -216,6 +216,90 @@
       \verb https://portal.3gpp.org/desktopmodules/Specifications/SpecificationDetails.aspx?specificationId=3545
       \endverb
     \endentry
+    \entry{vinogradov2018uavtutorial}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=c32411412cc568dd8306107f27a999ac}{%
+           family={Vinogradov},
+           familyi={V\bibinitperiod},
+           given={Evgenii},
+           giveni={E\bibinitperiod}}}%
+        {{hash=7bbcc46cf55bce41f432a9c5fc2b2b3b}{%
+           family={Sallouha},
+           familyi={S\bibinitperiod},
+           given={Hazem},
+           giveni={H\bibinitperiod}}}%
+        {{hash=c4d979b3da2126ed76c7d2265f741ae1}{%
+           family={Bast},
+           familyi={B\bibinitperiod},
+           given={Sibren\bibnamedelima De},
+           giveni={S\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=31933f08516d0d4370d7dfe606982cc6}{%
+           family={Azari},
+           familyi={A\bibinitperiod},
+           given={Mohammad\bibnamedelima Mahdi},
+           giveni={M\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=852b32255e2f980cb148a63b7f580a4f}{%
+           family={Pollin},
+           familyi={P\bibinitperiod},
+           given={Sofie},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{bf40ca190bf262585333b0b650c88648}
+      \strng{fullhash}{6492c3144f340bd530bdedd530aa0606}
+      \strng{fullhashraw}{6492c3144f340bd530bdedd530aa0606}
+      \strng{bibnamehash}{bf40ca190bf262585333b0b650c88648}
+      \strng{authorbibnamehash}{bf40ca190bf262585333b0b650c88648}
+      \strng{authornamehash}{bf40ca190bf262585333b0b650c88648}
+      \strng{authorfullhash}{6492c3144f340bd530bdedd530aa0606}
+      \strng{authorfullhashraw}{6492c3144f340bd530bdedd530aa0606}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Mobile Multimedia}
+      \field{number}{4}
+      \field{title}{Tutorial on {UAVs}: A Blue Sky View on Wireless Communication}
+      \field{volume}{14}
+      \field{year}{2018}
+      \field{pages}{395\bibrangedash 468}
+      \range{pages}{74}
+      \verb{doi}
+      \verb 10.13052/jmm1550-4646.1443
+      \endverb
+    \endentry
+    \entry{saboor2025height}{misc}{}{}
+      \name{author}{2}{}{%
+        {{hash=a71831135b6551ca1a82f745c80e500a}{%
+           family={Saboor},
+           familyi={S\bibinitperiod},
+           given={Abdul},
+           giveni={A\bibinitperiod}}}%
+        {{hash=c32411412cc568dd8306107f27a999ac}{%
+           family={Vinogradov},
+           familyi={V\bibinitperiod},
+           given={Evgenii},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{66ebcb581df11b78340c639449b2ed27}
+      \strng{fullhash}{66ebcb581df11b78340c639449b2ed27}
+      \strng{fullhashraw}{66ebcb581df11b78340c639449b2ed27}
+      \strng{bibnamehash}{66ebcb581df11b78340c639449b2ed27}
+      \strng{authorbibnamehash}{66ebcb581df11b78340c639449b2ed27}
+      \strng{authornamehash}{66ebcb581df11b78340c639449b2ed27}
+      \strng{authorfullhash}{66ebcb581df11b78340c639449b2ed27}
+      \strng{authorfullhashraw}{66ebcb581df11b78340c639449b2ed27}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{arXiv:2511.10763}
+      \field{title}{Millimeter-Wave {UAV} Channel Model with Height-Dependent Path Loss and Shadowing in Urban Scenarios}
+      \field{year}{2025}
+      \verb{doi}
+      \verb 10.48550/arXiv.2511.10763
+      \endverb
+    \endentry
     \entry{ckmdata2024}{article}{}{}
       \name{author}{2}{}{%
         {{hash=c2da6499f273100afb10c9bad0d92b56}{%
@@ -237,8 +321,8 @@
       \strng{authornamehash}{3ee58cf0660a15f1e9c9f35c2968aedf}
       \strng{authorfullhash}{3ee58cf0660a15f1e9c9f35c2968aedf}
       \strng{authorfullhashraw}{3ee58cf0660a15f1e9c9f35c2968aedf}
-      \field{sortinit}{5}
-      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Wireless Communications}
@@ -284,8 +368,8 @@
       \strng{authorfullhash}{4137760e557d22a983fbf306ceeee49d}
       \strng{authorfullhashraw}{4137760e557d22a983fbf306ceeee49d}
       \field{extraname}{1}
-      \field{sortinit}{6}
-      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{howpublished}{{IEEE} DataPort dataset}
@@ -332,8 +416,8 @@
       \strng{authorfullhash}{efd322256e24bcc3e5ad966a4159e693}
       \strng{authorfullhashraw}{efd322256e24bcc3e5ad966a4159e693}
       \field{extraname}{2}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{{ICASSP} 2023 - 2023 {IEEE} International Conference on Acoustics, Speech and Signal Processing ({ICASSP})}
@@ -371,8 +455,8 @@
       \strng{authornamehash}{31b07cc382aaab4c4662c328ccd97b71}
       \strng{authorfullhash}{31b07cc382aaab4c4662c328ccd97b71}
       \strng{authorfullhashraw}{31b07cc382aaab4c4662c328ccd97b71}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{howpublished}{arXiv:2402.00878}
@@ -418,8 +502,8 @@
       \strng{authornamehash}{3eb202db88e1e4b941bddfb83401ad23}
       \strng{authorfullhash}{cc1d0bfff44914f787a5846bfcdd6c8a}
       \strng{authorfullhashraw}{cc1d0bfff44914f787a5846bfcdd6c8a}
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Communications}
@@ -624,38 +708,6 @@
       \verb 10.1109/LWC.2014.2342736
       \endverb
     \endentry
-    \entry{saboor2025height}{misc}{}{}
-      \name{author}{2}{}{%
-        {{hash=a71831135b6551ca1a82f745c80e500a}{%
-           family={Saboor},
-           familyi={S\bibinitperiod},
-           given={Abdul},
-           giveni={A\bibinitperiod}}}%
-        {{hash=c32411412cc568dd8306107f27a999ac}{%
-           family={Vinogradov},
-           familyi={V\bibinitperiod},
-           given={Evgenii},
-           giveni={E\bibinitperiod}}}%
-      }
-      \strng{namehash}{66ebcb581df11b78340c639449b2ed27}
-      \strng{fullhash}{66ebcb581df11b78340c639449b2ed27}
-      \strng{fullhashraw}{66ebcb581df11b78340c639449b2ed27}
-      \strng{bibnamehash}{66ebcb581df11b78340c639449b2ed27}
-      \strng{authorbibnamehash}{66ebcb581df11b78340c639449b2ed27}
-      \strng{authornamehash}{66ebcb581df11b78340c639449b2ed27}
-      \strng{authorfullhash}{66ebcb581df11b78340c639449b2ed27}
-      \strng{authorfullhashraw}{66ebcb581df11b78340c639449b2ed27}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{arXiv:2511.10763}
-      \field{title}{Millimeter-Wave {UAV} Channel Model with Height-Dependent Path Loss and Shadowing in Urban Scenarios}
-      \field{year}{2025}
-      \verb{doi}
-      \verb 10.48550/arXiv.2511.10763
-      \endverb
-    \endentry
     \entry{vinogradov2026shadow}{inproceedings}{}{}
       \name{author}{5}{}{%
         {{hash=c32411412cc568dd8306107f27a999ac}{%
@@ -692,6 +744,7 @@
       \strng{authornamehash}{bf40ca190bf262585333b0b650c88648}
       \strng{authorfullhash}{fe1b52347a8b9cf61ef6f81980ca7b60}
       \strng{authorfullhashraw}{fe1b52347a8b9cf61ef6f81980ca7b60}
+      \field{extraname}{2}
       \field{sortinit}{1}
       \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
@@ -703,6 +756,33 @@
       \range{pages}{6}
       \verb{doi}
       \verb 10.1109/ICNC68183.2026.11416865
+      \endverb
+    \endentry
+    \entry{vinogradov2026upsim}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=c32411412cc568dd8306107f27a999ac}{%
+           family={Vinogradov},
+           familyi={V\bibinitperiod},
+           given={Evgenii},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{c32411412cc568dd8306107f27a999ac}
+      \strng{fullhash}{c32411412cc568dd8306107f27a999ac}
+      \strng{fullhashraw}{c32411412cc568dd8306107f27a999ac}
+      \strng{bibnamehash}{c32411412cc568dd8306107f27a999ac}
+      \strng{authorbibnamehash}{c32411412cc568dd8306107f27a999ac}
+      \strng{authornamehash}{c32411412cc568dd8306107f27a999ac}
+      \strng{authorfullhash}{c32411412cc568dd8306107f27a999ac}
+      \strng{authorfullhashraw}{c32411412cc568dd8306107f27a999ac}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{arXiv:2605.17378}
+      \field{title}{{UPSim}: {UxNB} Propagation Simulator for {3D} Map-Driven {FR3} Deployments}
+      \field{year}{2026}
+      \verb{doi}
+      \verb 10.48550/arXiv.2605.17378
       \endverb
     \endentry
     \entry{winner2}{report}{}{}
@@ -726,8 +806,8 @@
       \strng{authornamehash}{54a6c9c2ebf84c1a0240993940e2360d}
       \strng{authorfullhash}{54a6c9c2ebf84c1a0240993940e2360d}
       \strng{authorfullhashraw}{54a6c9c2ebf84c1a0240993940e2360d}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{{WINNER II} Channel Models}
@@ -1142,8 +1222,8 @@
       \strng{authornamehash}{ef64bf70f0d11116367c61c505919d2b}
       \strng{authorfullhash}{ef64bf70f0d11116367c61c505919d2b}
       \strng{authorfullhashraw}{ef64bf70f0d11116367c61c505919d2b}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Wireless Communications}
@@ -1218,8 +1298,8 @@
       \strng{authornamehash}{655adcdfdb4839bef73d8fb0bc849505}
       \strng{authorfullhash}{f47150c40f1db0752bc145f4d803251e}
       \strng{authorfullhashraw}{f47150c40f1db0752bc145f4d803251e}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{2025 {IEEE} International Symposium on Dynamic Spectrum Access Networks ({DySPAN})}
@@ -1568,8 +1648,8 @@
       \strng{authorfullhash}{fba18d72d3def69e2fd55f01b8e40ed9}
       \strng{authorfullhashraw}{fba18d72d3def69e2fd55f01b8e40ed9}
       \field{extraname}{2}
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Cognitive Communications and Networking}
@@ -1621,8 +1701,8 @@
       \strng{authornamehash}{e27a95b1212beb87546ed77c5ec8b570}
       \strng{authorfullhash}{1577c94eaa2667bc6986ff02dfdb1114}
       \strng{authorfullhashraw}{1577c94eaa2667bc6986ff02dfdb1114}
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Proceedings of the AAAI Conference on Artificial Intelligence}
@@ -1665,8 +1745,8 @@
       \strng{authornamehash}{1e32dac02a9d45257816a00000c4f5e6}
       \strng{authorfullhash}{fe7e6d4305141332d4e6f29e488f1cc3}
       \strng{authorfullhashraw}{fe7e6d4305141332d4e6f29e488f1cc3}
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Proceedings of the 34th Conference on Uncertainty in Artificial Intelligence}
@@ -1727,8 +1807,8 @@
       \strng{authornamehash}{08901f3b699b6c5a3afcc67bc57f3417}
       \strng{authorfullhash}{74ab7ec4d5eb8a143bfe7fb822369a4a}
       \strng{authorfullhashraw}{74ab7ec4d5eb8a143bfe7fb822369a4a}
-      \field{sortinit}{6}
-      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{howpublished}{arXiv:2511.05522}
@@ -1784,8 +1864,8 @@
       \strng{authornamehash}{ca567478943da4464a1488087692cb3a}
       \strng{authorfullhash}{2a884c4f095241e9929c610ad710f44a}
       \strng{authorfullhashraw}{2a884c4f095241e9929c610ad710f44a}
-      \field{sortinit}{6}
-      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Vehicular Technology}
@@ -1823,8 +1903,8 @@
       \strng{authornamehash}{458df7591f0dc4a4512c02f0f4f31e7b}
       \strng{authorfullhash}{458df7591f0dc4a4512c02f0f4f31e7b}
       \strng{authorfullhashraw}{458df7591f0dc4a4512c02f0f4f31e7b}
-      \field{sortinit}{6}
-      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Vehicular Technology}
@@ -2142,8 +2222,8 @@
       \strng{authorfullhash}{70c5b9d0cf6ae9f349d2d611a2ee3911}
       \strng{authorfullhashraw}{70c5b9d0cf6ae9f349d2d611a2ee3911}
       \field{extraname}{2}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{2025 30th Asia-Pacific Conference on Communications ({APCC})}
@@ -2244,8 +2324,8 @@
       \strng{authorfullhash}{627539bbbc70cbf1148cae26f6049138}
       \strng{authorfullhashraw}{627539bbbc70cbf1148cae26f6049138}
       \field{extraname}{2}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Proc.\ IEEE Global Communications Conference ({GLOBECOM})}

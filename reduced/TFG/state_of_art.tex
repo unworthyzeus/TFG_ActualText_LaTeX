@@ -2,8 +2,8 @@
 \label{chap:soa}
 
 This chapter separates the technical background from the related work needed to
-read the method. Section~\ref{sec:soa_ckm_context} defines the channel
-knowledge map (CKM) surrogate setting and the evaluation protocol.
+read the method. Section~\ref{sec:soa_ckm_context} defines the CKM surrogate
+setting and the evaluation protocol.
 Section~\ref{sec:soa_classical} is technical background only: path loss,
 two-ray propagation, UAV air to ground conditioning, and the delay and angular
 spread definitions used later. Sections~\ref{sec:soa_pathloss_sota}
@@ -20,9 +20,9 @@ and under what benchmark setup.
 \label{sec:soa_ckm_context}
 % Section separator
 
-The term channel knowledge map (CKM) refers to a site specific database of
-location tagged channel knowledge, such as channel gain, angles, or delay
-information, used to make future radio systems environment aware
+A CKM is a site-specific database of location tagged channel knowledge, such as
+channel gain, angles, or delay information, used to make future radio systems
+environment-aware
 \cite{zengx2021ckm,ckmtutorial2024}. This framing is more precise than a
 generic radio map: the map is not only an image like coverage estimate, but a
 queryable prior that can reduce channel state acquisition overhead, guide
@@ -153,24 +153,37 @@ metres.  Al-Hourani et al.~\cite{alhourani2014} showed that the LoS probability
 increases monotonically with elevation angle and depends on city/environment type
 (suburban, urban, dense urban, high rise).  The A2G modelling literature
 \cite{alhourani2014,khawaja_survey} commonly parameterises this dependence
-through logistic functions of the elevation angle
-$\theta = \arctan\!\bigl((h_{\mathrm{tx}} - h_{\mathrm{rx}})/d_{2D}\bigr)$,
-where $h_{\mathrm{tx}}$ and $h_{\mathrm{rx}}$ are transmit and receive heights
-respectively and $d_{2D}$ is the horizontal distance. 3GPP~TR~38.901
+through logistic functions of the elevation angle \(\theta\). In this thesis,
+that angle is the angle between the ground plane and the transmitter to
+receiver link:
+\begin{equation}
+  \theta =
+  \arctan\!\left(
+    \frac{h_{\mathrm{tx}} - h_{\mathrm{rx}}}{d_{2D}}
+  \right),
+  \label{eq:a2g_elevation_angle}
+\end{equation}
+where \(h_{\mathrm{tx}}\) and \(h_{\mathrm{rx}}\) are transmit and receive
+heights respectively, and \(d_{2D}\) is the horizontal distance. 3GPP~TR~38.901
 \cite{tr38901} is used here as standardized LoS/NLoS large scale channel model
-context, not as the direct source of that elevation-logistic A2G formula.
+context, not as the direct source of that elevation angle A2G formula.
 
 \paragraph{Related UAV evidence.}
-Recent work by Saboor and Vinogradov \cite{saboor2025height} makes this
-height dependence especially relevant for the present thesis: in simulated
-26~GHz urban A2G links, LoS path loss remains close to a free space exponent,
-whereas NLoS path loss exponents and shadow fading evolve with ABS height and
-with urban layout. Vinogradov et al.\ \cite{vinogradov2026shadow} also propose
-3D shadow projections as a fast way to generate spatially consistent A2G LoS
-maps without full point by point ray tracing. These results support two design
-choices used throughout this work: treating the LoS/NLoS mask as a physical
-input rather than as a cosmetic label, and conditioning every dense prediction
-on UAV height.
+A broader UAV communication tutorial by Vinogradov et al.\
+\cite{vinogradov2018uavtutorial} separates aerial user equipment and aerial
+base station scenarios, and frames UAV height as a central channel modelling
+variable rather than a deployment detail. Recent work by Saboor and Vinogradov
+\cite{saboor2025height} makes this height dependence especially relevant for
+the present thesis: in simulated 26~GHz urban A2G links, LoS path loss remains
+close to a free space exponent, whereas NLoS path loss exponents and shadow
+fading evolve with ABS height and with urban layout. Vinogradov et al.\
+\cite{vinogradov2026shadow} also propose 3D shadow projections as a fast way
+to generate spatially consistent A2G LoS maps without full point by point ray
+tracing, and UPSim \cite{vinogradov2026upsim} extends this map based direction
+into an open simulator for 3D urban FR3 deployments. These results support two
+design choices used throughout this work: treating the LoS/NLoS mask as a
+physical input rather than as a cosmetic label, and conditioning every dense
+prediction on UAV height.
 
 These works motivate a useful separation for the thesis methodology: LoS/NLoS
 visibility and continuous UAV height should be treated as physical conditioning
@@ -368,7 +381,7 @@ topology map.  An alternative is to precompute a physics based channel prior and
 provide it as an additional input channel, reducing the learning problem to
 residual estimation.
 
-Shadow projection methods \cite{vinogradov2026shadow} occupy an intermediate
+Shadow projection methods \cite{vinogradov2026shadow,vinogradov2026upsim} occupy an intermediate
 point between stochastic LoS probability models and full ray tracing. They use
 3D building geometry to project blocked ground regions from the aerial
 transmitter, producing a deterministic LoS map that is spatially consistent
@@ -480,8 +493,9 @@ and strict city holdout. This is why Chapter~4 lists Wang et al. as the nearest
 map based spread reference while still treating the frozen prior, the thesis
 targets and the internal city holdout protocol as the fair numerical anchors.
 
-\textbf{Limitation for this thesis.}
-Most reviewed angular spread work reports scalar link level angle of arrival or
+\par\smallskip
+\noindent\textbf{Limitations.}\par
+\noindent Most reviewed angular spread work reports scalar link level angle of arrival or
 angle of departure statistics, or reconstructs angle spread maps from already
 sampled coarse channel maps, rather than predicting dense CKM maps from
 topology under city holdout. Chapter~4 therefore compares angular spread mainly
@@ -505,8 +519,9 @@ multiple reflected and diffracted paths. This makes the quantity sensitive to
 rare high delay pixels, so a mean-error metric can hide the tail behaviour that
 matters for wideband links.
 
-\textbf{Limitation for this thesis.}
-Most reviewed delay spread work reports scalar link level channel parameters
+\par\smallskip
+\noindent\textbf{Limitations.}\par
+\noindent Most reviewed delay spread work reports scalar link level channel parameters
 or simulation specific statistics. The map based super resolution line
 \cite{wang2023multitasksr} is closer, but it starts from lower resolution
 channel maps and does not use the same topology to dense \(513\times513\) CKM
@@ -848,7 +863,7 @@ loss network. Fifth, distribution aware outputs are useful when targets contain
 multiple modes, near-zero masses or long tails. These observations motivate the
 methodology in Chapter~3.
 
-\section{Synthesis: Gap Addressed by This Thesis}
+\section{Gap Addressed by This Thesis}
 \label{sec:soa_gap_synthesis}
 
 The reviewed work leaves a specific combination only partially covered.

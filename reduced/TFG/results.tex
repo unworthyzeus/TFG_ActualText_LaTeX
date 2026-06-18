@@ -555,15 +555,16 @@ Angular spread & 11.5253 & 13.8162 & -2.2909 & 4.8899 & \(^{\circ}\) \\
 
 \begin{table}[!htbp]
 \centering
-\caption[Engineering reading of the final Try 80 RMSE values.]%
-{Engineering reading of the final Try 80 RMSE values. The broad targets are the
-initial project acceptance thresholds; the final interpretation also considers
-the frozen prior and the structural metrics in Table~\ref{tab:try80_final_test_mapcorr}.}
+\caption[Engineering reading of the final \textsc{HARP-Net CKM} RMSE values.]%
+{Engineering reading of the final \textsc{HARP-Net CKM} RMSE values. The broad
+targets are the initial project acceptance thresholds; the final interpretation
+also considers the frozen prior and the structural metrics in
+Table~\ref{tab:try80_final_test_mapcorr}.}
 \label{tab:try80_final_engineering_judgement}
 \scriptsize
 \begin{tabularx}{\textwidth}{l>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
 \toprule
-Output & Broad target & Current Try 80 test RMSE & Judgment \\
+Output & Broad target & Final test RMSE & Judgment \\
 \midrule
 Attenuation &
 \(<\SI{5}{dB}\) &
@@ -583,8 +584,8 @@ Good overall, especially in NLoS where angular dispersion matters most. \\
 
 Under this evaluation protocol, the attenuation result is the clearest final
 success. The original \SI{5}{dB} target remains defensible as a broad project
-requirement, but it is no longer the most informative benchmark: Try 78 already
-provided a frozen attenuation prior below \SI{2}{dB}. The relevant final
+requirement, but it is no longer the most informative benchmark: the calibrated
+attenuation prior already provides a frozen baseline below \SI{2}{dB}. The relevant final
 question is therefore whether the neural residual model improves that prior
 without damaging the map structure. It does: RMSE falls from \SI{1.9383}{dB}
 to \SI{1.6947}{dB}, and MapCorr rises from \(0.947710\) to \(0.961055\).
@@ -599,9 +600,9 @@ with the same inputs. Their strongest interpretation is therefore internal to
 this thesis and within the same protocol: both targets beat the project
 thresholds and both improve over the frozen priors. The RMSE changes are
 modest for delay spread and clearer for angular spread, while MapCorr improves
-much more strongly for both. This means that Try 80 is not merely moving the
-global mean of the spread maps; it is better locating the relative high and low
-dispersion regions inside each city.
+much more strongly for both. This means that \textsc{HARP-Net CKM} is not
+merely moving the global mean of the spread maps; it is better locating the
+relative high and low dispersion regions inside each city.
 
 The physical meaning of the three RMSE values is also different. For channel
 attenuation, an error of \(e\) dB corresponds to a multiplicative received
@@ -1118,10 +1119,10 @@ GT ray-caster with zero LoS/NLoS differences on the Barcelona samples and on
 \section{Qualitative Analysis}
 \label{sec:qualitative_analysis}
 
-The qualitative evidence supports the quantitative story without needing the
-full inspection gallery in the main body. Figure~\ref{fig:try80_panel_results}
-at the start of this chapter gives the representative panel; the appendix keeps
-the wider set. The early channel attenuation histograms showed NLoS mode
+The qualitative evidence supports the quantitative story.
+Figure~\ref{fig:try80_panel_results} at the start of this chapter gives the
+representative panel; the appendix keeps the wider set. The early channel
+attenuation histograms showed NLoS mode
 collapse: visually plausible maps could follow the radial LoS trend while
 missing the blocked link tail. The selected final model removes the worst of
 that collapse, reduces RMSE relative to the frozen priors across the split and
@@ -1154,15 +1155,15 @@ those structures, especially for DS and AS.
 
 The absolute MapCorr values should also be read with care. It is a demanding
 metric because it is computed on every valid receiver pixel of the full map,
-not on smoothed regions or selected visual examples. It also converts each map
-to z scores before comparison, subtracting that map's valid pixel mean and
-dividing by its valid pixel standard deviation, so it gives no credit for
-correcting the global offset or scale that RMSE already measures. For delay spread and angular spread this is
-especially strict: the targets are heavy tailed, with rare local scattering
-regions and sharp transitions. A small spatial shift, a slightly smoother ridge
-or one missed high spread pocket can lower the full map pixel correlation even
-when the prediction looks structurally closer. For that reason, the relevant
-reading is comparative: under the same samples, masks and valid pixels, the
+not on smoothed regions or selected visual examples. It also removes each
+map's mean and scale before comparison, so it gives no credit for correcting
+the global offset or scale that RMSE already measures. For delay spread and
+angular spread this is especially strict: the targets are heavy tailed, with
+rare local scattering regions and sharp transitions. A small spatial shift, a
+slightly smoother ridge or one missed high spread pocket can lower the full map
+pixel correlation even when the prediction looks structurally closer. For that
+reason, the relevant reading is comparative: under the same samples, masks and
+valid pixels, the
 model raises MapCorr from \(0.306026\) to \(0.414692\) for delay spread and
 from \(0.348713\) to \(0.581783\) for angular spread. In relative terms these
 are approximately \(35.6\%\) and \(57.6\%\) increases, respectively, much larger

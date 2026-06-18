@@ -2,8 +2,8 @@
 \label{chap:introduction}
 
 Reliable radio coverage prediction is a central requirement for future 6G
-systems. A channel knowledge map (CKM) is a site specific repository of channel
-information that can support environment aware planning and reduce online
+systems. A channel knowledge map (CKM) is a site-specific repository of channel
+information that can support environment-aware planning and reduce online
 channel acquisition overhead \cite{zengx2021ckm,ckmtutorial2024}. Classical ray
 tracing can generate detailed CKMs, but it is too expensive to repeat for every
 candidate city, transmitter height and deployment assumption. This motivates
@@ -17,9 +17,9 @@ beyond conventional terrestrial cells. In some scenarios, unmanned aerial
 vehicles (UAVs), high altitude platforms or other elevated nodes may provide
 temporary coverage, emergency connectivity, capacity above crowded urban areas
 or flexible access where fixed infrastructure is not enough
-\cite{khawaja_survey,threegpp22125}. This makes the radio environment more
-variable: the same city may need to be evaluated for different transmitter
-heights, visibility conditions and deployment hypotheses.
+\cite{khawaja_survey,threegpp22125,vinogradov2018uavtutorial}. This makes the
+radio environment more variable: the same city may need to be evaluated for
+different transmitter heights, visibility conditions and deployment hypotheses.
 
 The general problem addressed in this thesis is dense radio map prediction. In
 the CKM setting, the goal is not to estimate one link at a time, but to predict
@@ -32,12 +32,13 @@ many possible operating heights before deployment.
 \section{UAV and elevated transmitter context}
 
 UAVs make CKM prediction both more useful and more difficult. In Third
-Generation Partnership Project (3GPP) terminology, a UAV mounted radio access
+Generation Partnership Project (3GPP) terminology, a UAV-mounted radio access
 node is called a UxNB \cite{threegpp22125}. The
 transmitter height is therefore no longer a fixed rooftop constant; it becomes a
 continuous variable that changes visibility, interference geometry, ground
-coverage and multipath behaviour. The dataset used here defines the transmitter
-as a UAV operating at \SI{7.125}{GHz}; within the same simulation setting, the
+coverage and multipath behaviour \cite{saboor2025height}. The dataset used here
+defines the transmitter as a UAV operating at a given frequency, which is
+\SI{7.125}{GHz} in our case; within the same simulation setting, the
 model can also be read as a surrogate for other elevated radio access nodes in
 the sampled height range. The visibility regimes used throughout the thesis are
 line of sight and non line of sight (LoS/NLoS).
@@ -46,7 +47,7 @@ Channel attenuation alone is not a complete description of this setting.
 Attenuation gives the received power scale, but delay spread (DS) and angular
 spread (AS) describe how dispersed the received energy is in time and direction.
 These quantities affect equalisation, beam selection and link robustness.
-Predicting all three outputs over the same \(513\times513\) city map therefore
+Predicting all three outputs over the same city map therefore
 turns the task into a broader CKM generation problem rather than a single path
 loss map benchmark.
 
@@ -125,6 +126,9 @@ sinusoidal FiLM height conditioning with a GMM style residual head, so that
 continuous transmitter height and non Gaussian residual tails are both handled
 explicitly. The model therefore focuses on residual radio map structure instead
 of being asked to rediscover all propagation geometry from pixels alone.
+The joint design is part of the contribution: channel attenuation, delay spread
+and angular spread are predicted by one shared height conditioned residual
+model, not by three unrelated runs.
 
 Within the fixed CKM simulation setting used in the thesis, the final answer to
 the three research questions is positive. \textsc{HARP-Net CKM} reaches
@@ -158,23 +162,6 @@ The main contributions of the thesis are:
         transmitter height and LoS/NLoS state, rather than relying only on one
         global average.
 \end{itemize}
-
-\section{Thesis outline}
-
-Chapter~2 reviews the state of the art and the technical background needed for
-the thesis: classical propagation models, radio map deep learning, hybrid
-physics/neural methods, distribution aware prediction, and fair comparison
-criteria. Chapter~3 describes the final methodology: the CKM dataset, the
-ground receiver evaluation rules, the city holdout split, the calibrated
-priors, and the \textsc{HARP-Net CKM} residual model. The method chapter is
-intentionally final pipeline first; the chronological attempt trace is kept in
-Appendix~A. Chapter~4 reports the final quantitative results, the comparison
-with the frozen priors and the closest published benchmarks, qualitative
-examples, runtime, and limitations. Chapter~5 discusses sustainability,
-economic impact, social impact, and ethical scope. Chapter~6 answers the
-research questions and presents future work. The appendices preserve the
-development trace, representative panels, generator documentation, and the
-declaration on generative AI use.
 
 \section{Requirements and specifications}
 
@@ -241,4 +228,21 @@ ground receiver masking, regime diagnostics, topology and height audits,
 physical priors, and finally the prior anchored residual design used by the
 final system. The result is a project whose final method is more hybrid and
 more interpretable than the initial proposal anticipated.
+
+\section{Thesis outline}
+
+Chapter~2 reviews the state of the art and the technical background needed for
+the thesis: classical propagation models, radio map deep learning, hybrid
+physics/neural methods, distribution aware prediction, and fair comparison
+criteria. Chapter~3 describes the final methodology: the CKM dataset, the
+ground receiver evaluation rules, the city holdout split, the calibrated
+priors, and the \textsc{HARP-Net CKM} residual model. The method chapter is
+intentionally final pipeline first; the chronological attempt trace is kept in
+Appendix~A. Chapter~4 reports the final quantitative results, the comparison
+with the frozen priors and the closest published benchmarks, qualitative
+examples, runtime, and limitations. Chapter~5 discusses sustainability,
+economic impact, social impact, and ethical scope. Chapter~6 answers the
+research questions and presents future work. The appendices preserve the
+development trace, representative panels, generator documentation, and the
+declaration on generative AI use.
 

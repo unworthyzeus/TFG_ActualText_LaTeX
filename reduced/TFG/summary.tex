@@ -7,48 +7,47 @@
   \huge\bfseries\raggedright Resum~\hrulefill
 \end{center}
 Aquest TFG estudia la predicció de mapes de coneixement de canal (CKM) per a
-xarxes 6G amb vehicles aeris no tripulats. L'objectiu és generar mapes densos
-d'atenuació del canal, dispersió de retard i dispersió angular a partir de
-mapes d'edificis, visibilitat i altura d'antena contínua, mantenint ciutats
-completes fora de l'entrenament. La proposta, \textsc{HARP-Net CKM}, Height
-Aware Residual Prior Network for CKM prediction, combina priors físics calibrats
-amb una xarxa residual. Els priors recullen distància, geometria, morfologia
-urbana, visibilitat i altura; la xarxa aprèn correccions locals que aquests
-models simples no expliquen. La metodologia defineix píxels receptors,
-separació per ciutat i avaluació per visibilitat, topologia i altura. La
-contribució és una estratègia híbrida, reproduïble i interpretable per
-accelerar la generació de CKM densos.
+xarxes 6G basades en estacions base desplegades en vehicles aeris no tripulats.
+L'objectiu és generar mapes densos d'atenuació del canal, dispersió de retard i
+dispersió angular a partir de mapes d'edificis i altura de l'antena transmissora.
+El sistema proposat, Height Aware Residual Prior Network for CKM prediction
+(\textsc{HARP-Net CKM}), combina priors físics calibrats amb una xarxa residual.
+Els priors prediuen els efectes de distància, geometria, morfologia urbana,
+visibilitat i altura; la xarxa aprèn les correccions locals que aquests models
+simples no poden explicar. Per disseny, la metodologia gestiona diverses
+topologies urbanes i ciutats no vistes durant l'entrenament. La contribució
+principal és una estratègia híbrida, reproduïble i interpretable per generar
+CKM densos més ràpidament.
 
 %%% RESUMEN EN CASTELLANO
 \begin{center}
   \huge\bfseries\raggedleft\vspace*{.5\baselineskip} \hrulefill ~Resumen
 \end{center}
 Este TFG estudia la predicción de mapas de conocimiento de canal (CKM) para
-redes 6G con vehículos aéreos no tripulados. Busca generar mapas densos de
-atenuación de canal, dispersión de retardo y dispersión angular desde edificios,
-visibilidad y altura continua, con ciudades completas fuera del entrenamiento.
-La propuesta,
-\textsc{HARP-Net CKM}, Height Aware Residual Prior Network for CKM prediction,
-combina priors físicos calibrados con una red residual. Los priors recogen
-distancia, geometría, morfología urbana, visibilidad y altura; la red aprende
-correcciones locales que esos modelos simples no explican. La metodología
-define píxeles receptores, separación por ciudad y evaluación por visibilidad,
-topología y altura. La contribución es una estrategia híbrida,
-reproducible e interpretable para acelerar la generación de CKM densos.
+redes 6G basadas en estaciones base desplegadas en vehículos aéreos no
+tripulados. El objetivo es generar mapas densos de atenuación del canal,
+dispersión de retardo y dispersión angular a partir de mapas de edificios y
+altura de la antena transmisora. El sistema propuesto, Height Aware Residual
+Prior Network for CKM prediction (\textsc{HARP-Net CKM}), combina priors físicos
+calibrados con una red residual. Los priors predicen los efectos de distancia,
+geometría, morfología urbana, visibilidad y altura; la red aprende las
+correcciones locales que estos modelos simples no pueden explicar. Por diseño,
+la metodología maneja diversas topologías urbanas y ciudades no vistas durante
+el entrenamiento. La contribución principal es una estrategia híbrida,
+reproducible e interpretable para generar CKM densos más rápido.
 
 %%% ENGLISH SUMMARY
 \begin{center}
   \huge\bfseries\raggedright\vspace*{.5\baselineskip} Summary~\hrulefill
 \end{center}
-This thesis studies channel knowledge map (CKM) prediction for 6G networks with
-unmanned aerial vehicles. The goal is to generate dense maps of channel
-attenuation, delay spread and angular spread from building maps, visibility
-information and continuous antenna height, while keeping complete cities
-outside training. The proposed system, \textsc{HARP-Net CKM}, short for Height
-Aware Residual Prior Network for CKM prediction, combines calibrated physical
-priors with a residual neural network. The priors summarize distance, geometry,
-urban morphology, visibility and height; the network learns the local
-corrections that these simple models cannot explain. The methodology also
-defines valid receiver pixels, city holdout splitting and reporting by
-visibility state, topology and antenna height. The main contribution is a
-reproducible and interpretable hybrid strategy for faster dense CKM generation.
+This thesis studies channel knowledge map (CKM) prediction for 6G networks
+based on base stations deployed on unmanned aerial vehicles. The goal is to
+generate dense maps of channel attenuation, delay spread and angular spread
+based only on building maps and transmit antenna height. The proposed system,
+Height Aware Residual Prior Network for CKM prediction (\textsc{HARP-Net CKM}),
+combines calibrated physical priors with a residual neural network. The priors
+predict the effects of distance, geometry, urban morphology, visibility and
+height; the network learns the local corrections that these simple models
+cannot explain. By design, the methodology handles diverse city topologies and
+city layouts not seen during training. The main contribution is a reproducible
+and interpretable hybrid strategy for faster dense CKM generation.

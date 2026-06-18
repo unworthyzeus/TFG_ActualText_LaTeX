@@ -68,7 +68,11 @@ artifact.
 
 The first contribution is \textsc{HARP-Net CKM}, a variable height CKM
 predictor that jointly estimates channel attenuation, delay spread and angular
-spread for unseen city layouts.
+spread for unseen city layouts. The model also makes two architectural choices
+that matter for this task: sinusoidal FiLM conditions the residual network on
+continuous UAV height, and the GMM style head predicts a mixture distribution
+for each residual output before its mean is assembled into the deterministic
+map used for evaluation.
 
 The second contribution is the calibrated prior family. The path loss prior
 combines radial structure, coherent two-ray LoS behaviour, height dependent
