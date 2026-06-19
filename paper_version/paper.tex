@@ -62,7 +62,7 @@ for Channel Knowledge Map prediction), a prior anchored surrogate. The method
 first calibrates frozen physical and statistical priors on training cities
 only: coherent two-ray and NLoS attenuation priors, plus log domain DS/AS
 spread priors. A shared height conditioned residual network then predicts
-bounded, distribution aware corrections instead of full maps from scratch. The
+bounded, distribution aware residuals instead of full maps from scratch. The
 model receives a building height map, support/visibility masks, five frozen
 prior maps, and scalar UAV transmitter height, and outputs three dense
 \(513\times513\) maps. On a 14 city held out test split it reaches
@@ -103,7 +103,7 @@ The contribution is \textsc{HARP-Net CKM}, the Height Aware Residual Prior
 Network for Channel Knowledge Map prediction. It is a dense CKM recipe for one
 fixed UAV evaluation setting: strict city holdout, valid receiver masking,
 explicit LoS/NLoS and height reporting, priors calibrated only on the training
-split, and a neural correction around those priors. The paper also reports
+split, and a neural residual model anchored to those priors. The paper also reports
 city, height and visibility diagnostics so the final average is not presented
 as a single opaque score.
 
@@ -361,7 +361,7 @@ that remains hard to model analytically. First, the attenuation prior captures
 LoS distance, height and two-ray effects and adds a calibrated NLoS branch for
 blocked regions. Second, the spread priors use log domain regime calibration
 for delay spread and angular spread. Third, the neural model receives these
-frozen maps and predicts only bounded residual corrections. This division keeps
+frozen maps and predicts only bounded residual structure. This division keeps
 the predictable part of the map auditable and reserves learning capacity for
 the local errors that the frozen estimators cannot explain.
 
@@ -548,7 +548,7 @@ horizontal coordinate remains fixed at the map centre.
 This explicit LoS branch is diagnostic: many CKM LoS errors are radial rings
 around the centred transmitter rather than building edge artifacts. The
 two-ray plus radial table removes that height/radius component before the
-network spends capacity on local visibility and morphology corrections.
+network spends capacity on local visibility and morphology residuals.
 
 The raw NLoS propagation prior is the maximum of two coarse branches: a
 COST231 shaped urban loss branch and an A2G NLoS elevation envelope. These are
@@ -612,7 +612,7 @@ regime linear calibration fitted on training cities:
 =\operatorname{clip}(\mathbf{x}_{\mathrm{NLoS}}^{\top}\mathbf{w}_{\mathrm{NLoS},r},20,185).
 \label{eq:nlos-prior-paper}
 \end{equation}
-The path loss prior is therefore not one formula with a small correction. It
+The path loss prior is therefore not one formula with a small residual term. It
 is two different calibrated feature extractors. The LoS side calibrates
 height binned two-ray amplitude/phase, height bias, and radial residual curves.
 The NLoS side adds calibration terms for height, building topology, and
@@ -662,7 +662,7 @@ observable scene descriptors: topology/morphology class, LoS/NLoS state, and
 antenna height group, with fallback calibrations when an exact regime has too
 few training pixels. Thus the prior is auditable: one can inspect the raw
 blocked estimate \(P_0\), the local morphology terms, the selected regime, and
-the final linear correction separately.
+the final linear calibration separately.
 
 This NLoS branch is intentionally less physical than the LoS branch. The
 visibility mask says that the direct ray is blocked, but it does not say which
@@ -695,7 +695,7 @@ Term & Prior block & Source & Role in this paper \\
 \(d_{\mathrm{ref}}\) & LoS PL & Image source two-ray geometry
 \cite{rappaport,goldsmith,wocc2021} & Length of the single ground reflected ray. \\
 \(C_{\mathrm{2ray}}\) & LoS PL & Coherent direct/reflected field sum
-\cite{rappaport,goldsmith} & Constructive/destructive radial rings before learned correction. \\
+\cite{rappaport,goldsmith} & Constructive/destructive radial rings before the learned residual. \\
 \(P_0\) & NLoS PL & COST231/Hata trend \cite{cost231} + A2G elevation envelope
 \cite{alhourani2014,khawaja_survey} & Raw blocked link scale before morphology OLS calibration. \\
 \addlinespace[1pt]
@@ -773,7 +773,7 @@ used as frozen statistical anchors. \\
 \node[data] (sample) at (0,-1.15) {Held out or new city\\topology + \(h_{\mathrm{tx}}\)\\LoS/NLoS mask};
 \node[deploy] (features) at (3.8,-1.15) {Deterministic features\\distance, elevation\\morphology windows};
 \node[deploy] (maps) at (7.5,-1.15) {Prior maps\\PL LoS / PL NLoS\\DS / AS};
-\node[deploy] (residual) at (11.0,-1.15) {Final residual model\\bounded GMM correction};
+\node[deploy] (residual) at (11.0,-1.15) {Final residual model\\bounded GMM residual};
 
 \draw[arr] (train.east) -- ++(0.55,0) |- (losfit.west);
 \draw[arr] (train.east) -- (nlosfit.west);
@@ -865,7 +865,7 @@ encode the spike plus tail split visible in CKM spread histograms, topology
 offsets rank broad morphology classes, and positive weights on range, low
 elevation, density, height, and NLoS support encode the expectation that richer
 urban multipath increases spread. The ridge fit then learns the CKM specific
-linear correction around this raw log prior. Numerically, for delay spread,
+linear calibration around this raw log prior. Numerically, for delay spread,
 \(b_{\mathrm{LoS}}^{\mathrm{nat}}=\SI{4.0}{ns}\),
 \(b_{\mathrm{NLoS}}^{\mathrm{nat}}=\SI{11.0}{ns}\), and
 \((a_1,\ldots,a_6)=(0.11,0.62,0.48,0.32,0.86,0.60)\). For angular spread,
@@ -935,7 +935,7 @@ calibrated log prior is ridge regularized per metric and regime:
 The calibrated log prior is then
 \(\hat z=\mathbf{x}_{\mathrm{sp}}^{\top}\hat{\mathbf{w}}_{\mathrm{sp},r}\).
 The diagonal regularizer \(\mathbf{D}\) keeps the calibrated curve close to the
-raw prior unless the training residuals consistently justify a correction. In
+raw prior unless the training residuals consistently justify a residual shift. In
 practice this matters for the spread targets: a flexible unregularized fit can
 chase rare high spread pixels, whereas the ridge fit keeps the near zero LoS
 bulk and the NLoS tail connected to the same physical features.
@@ -988,15 +988,15 @@ The neural model receives nine aligned channels: topology, LoS mask, NLoS
 mask, ground mask, combined path loss prior, LoS path loss prior, NLoS
 path loss prior, delay spread prior, and angular spread prior. Height is
 encoded with sinusoidal features and injected through FiLM modulation
-\cite{perez2018film}, so the final network can adapt the residual correction
+\cite{perez2018film}, so the final network can adapt the residual field
 continuously between the calibrated height regimes instead of learning one
-height agnostic correction. The backbone is a shared U-Net style
+height agnostic residual. The backbone is a shared U-Net style
 encoder decoder with GroupNorm, FiLM conditioning, and task specific residual
 heads.
 
 The actual final model is therefore not a replacement for the priors. Its
 input tensor already contains the deployed attenuation and spread estimates, and
-its output head is constrained to make bounded corrections around them. This
+its output head is constrained to learn bounded residuals around them. This
 choice changes the learning problem: the encoder decoder does not need to infer
 absolute free space attenuation, altitude trends, or the average spread scale
 from pixels alone. It learns where the frozen estimates are locally biased and
@@ -1025,7 +1025,7 @@ modulates a feature map as
 Encoder FiLM uses the height condition directly; decoder FiLM and the global
 task heads use a fused condition formed from the height code and the pooled
 bottleneck context. Thus the same centred topology can receive different
-residual corrections when the UAV is at \SI{30}{m}, \SI{150}{m}, or
+residual fields when the UAV is at \SI{30}{m}, \SI{150}{m}, or
 \SI{350}{m}. The height aware results in Sec.~V show that this is not only an
 architectural convenience: sinusoidal height embeddings with FiLM modulation are
 sufficient for one model to cover the full varying height range without
@@ -1103,7 +1103,7 @@ training a separate network per altitude bin.
 \end{tikzpicture}}
 \caption{Final shared deep learning architecture used in the reported system
 diagram. The map stack carries topology, masks, and frozen priors; the scalar
-Transmitter height is encoded separately and injected through FiLM. Encoder FiLM uses
+transmitter height is encoded separately and injected through FiLM. Encoder FiLM uses
 the height code; decoder FiLM and global heads use the fused height/bottleneck
 context. A shared U-Net produces local residual fields, pooled bottleneck
 features produce global GMM parameters, and the \textsc{HARP-Net CKM} residual assembly
@@ -1301,7 +1301,7 @@ convenient but physically uninformative density, and the outlier budget term
 discourages a solution that spends most of its capacity on the easy bulk while
 leaving large tails unconstrained. The final fine tuning phase then disables
 those terms and optimizes the deterministic mixture mean point map for RMSE/MAE,
-with a small anchor and guard that keep the correction close to the prior.
+with a small anchor and guard that keep the residual anchored to the prior.
 Table~\ref{tab:loss-roles} summarizes the roles. The selected checkpoint is
 therefore reported as a deterministic RMSE improvement over the frozen priors,
 not as a calibrated probabilistic predictor. In this final phase, checkpoint
@@ -1337,7 +1337,7 @@ Penalizes unnecessary deviation from the frozen prior; this is especially
 important because the prior is already a strong calibrated predictor. \\
 Prior guard & both phases &
 Adds a penalty when the model becomes worse than the prior at valid pixels,
-discouraging destructive corrections. \\
+discouraging destructive residual shifts. \\
 RMSE / MAE & both phases, dominant in final fine tuning &
 Optimizes the deterministic map reported in the final evaluation; RMSE handles
 tails and MAE tracks typical absolute error. \\
@@ -1500,7 +1500,7 @@ relative high and low regions better than the frozen priors for all three
 targets. This is especially important for the spread maps. Delay spread RMSE
 improves by about \(5\%\) and angular spread RMSE by about \(17\%\), but their
 MapCorr values rise by about \(36\%\) and \(67\%\) relative to the frozen priors.
-Thus the residual model is doing visible map-structure correction even when the
+Thus the residual model is doing visible map structure recovery even when the
 unit aware RMSE gain looks modest.
 
 \paragraph{Channel attenuation}
@@ -1756,10 +1756,10 @@ checking spatial pattern recovery in DS/AS maps where MAE is less conclusive.
 \subsection{Qualitative Residual Behavior}
 
 Fig.~\ref{fig:panel} is the qualitative check. The model receives the frozen
-prior and predicts a correction. The useful visual evidence is not merely that
-the prediction resembles the target; it is that the correction row tends to
-correlate negatively with the prior error row, which is the expected behavior of a
-\textsc{HARP-Net CKM} residual corrector.
+prior and predicts a residual map. The useful visual evidence is not merely
+that the prediction resembles the target; it is that the residual row tends to
+correlate negatively with the prior error row, which is the expected behavior of
+a prior anchored residual model.
 
 \begin{figure*}[!t]
 \centering
@@ -1767,7 +1767,7 @@ correlate negatively with the prior error row, which is the expected behavior of
 \caption{Representative final model inspection panel for a dense, mid antenna
 held out test sample in Vancouver. Columns are channel attenuation, delay spread, and angular
 spread. Rows show ground truth, frozen prior, final prediction,
-context/support, prior error, and model correction.}
+context/support, prior error, and model residual.}
 \label{fig:panel}
 \end{figure*}
 
@@ -1942,7 +1942,7 @@ a hybrid recipe: fit strong priors on training cities for predictable structure,
 then learn bounded residual distributions around those anchors.
 
 The calibrated priors combine coherent two-ray LoS path loss, height dependent
-calibration, morphology aware NLoS correction, visibility switching, and log
+calibration, morphology aware NLoS modelling, visibility switching, and log
 domain DS/AS spread statistics. These anchors explain most radial, visibility,
 height, and spread scale structure; the residual model improves them by
 \SI{0.2436}{dB}, \SI{1.4329}{ns}, and \(2.2909^\circ\) RMSE on the held out
