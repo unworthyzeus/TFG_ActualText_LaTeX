@@ -1026,7 +1026,7 @@ below.
 All reported final metrics use the valid receiver mask \(m_s(i,j)\). For
 channel attenuation, valid receivers are non building pixels with a stored path
 loss value at least \SI{20}{dB}; for delay spread and angular spread, all
-finite non building pixels are valid. Pixel weighted RMSE is
+finite non building pixels are valid. The pixel pooled RMSE is
 \begin{equation}
   \mathrm{RMSE}
   =
@@ -1041,7 +1041,7 @@ CKM sample has the same \(513\times513\) grid. The reason for using it is that
 the targets are dense maps. Every valid receiver pixel contributes directly, so
 clusters of large local errors are not hidden by first reducing each sample to
 one RMSE and then averaging those sample scores. MAE is computed with the same
-mask and pixel weighting, replacing the squared error in \eqref{eq:rmse} by
+mask and pixel pooling, replacing the squared error in \eqref{eq:rmse} by
 \(|\hat y_s(i,j)-y_s(i,j)|\):
 \begin{equation}
   \mathrm{MAE}
